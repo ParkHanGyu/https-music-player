@@ -1,0 +1,215 @@
+.main-wrap {
+  font-size: 14px;
+  color: #fff;
+}
+
+/* 웹 상단 */
+.main-wrap-top {
+  display: flex;
+  height: 60em;
+}
+
+.main-left {
+  background-color: rgb(25, 25, 25);
+  width: 18em;
+}
+
+.main-search-box {
+  display: flex;
+  width: 200px;
+  margin: 11px;
+  border: 1px solid rgb(51, 51, 51);
+  padding: 7px;
+  border-radius: 6px;
+}
+
+.main-menu-box {
+  margin-top: 20px;
+}
+
+.main-menu-box > div {
+  cursor: pointer;
+  padding: 10px 20px 10px 20px;
+}
+
+.main-search-input {
+  background-color: rgb(25, 25, 25);
+  border: none;
+  outline: none;
+  color: #fff;
+}
+.main-search-btn {
+  border: 1px solid rgb(60, 29, 174);
+  width: 25px;
+  height: 25px;
+  border-radius: 6px;
+}
+
+.main-right {
+  width: 100%;
+}
+
+/* 음악 데이터 부분 */
+.main-music-data-column-box,
+.main-music-data-info-box {
+  display: flex;
+  padding: 10px;
+}
+
+.music-info-number,
+.music-column-number {
+  width: 5px;
+  text-align: center;
+}
+
+.music-info-image-title-box,
+.music-column-title {
+  width: 500px;
+}
+
+.music-info-artist,
+.music-column-artist {
+  width: 300px;
+}
+
+.music-info-album,
+.music-column-album {
+  width: 300px;
+}
+
+.music-info-duration,
+.music-column-duration {
+  width: 300px;
+}
+
+.main-music-data-column-box > div,
+.main-music-data-info-box > div {
+  margin: 0px 20px;
+}
+
+.main-music-data-info-box {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.main-music-data-info-box:hover {
+  background-color: rgb(33, 33, 33);
+}
+
+.music-info-image {
+  background-image: url("../../assets/music-info-image.PNG");
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+}
+
+.music-info-image-title-box {
+  display: flex;
+  align-items: center;
+}
+.main-music-data-column-box {
+  color: #dedede;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(39, 39, 39);
+}
+
+/* ====================웹 하단=================== */
+.main-wrap-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(27, 27, 27);
+  border-top: 1px solid rgb(51, 51, 51);
+}
+
+.main-play-box {
+  margin: 10px 0px;
+  width: 50em;
+  height: 4em;
+}
+
+.main-play-top {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  cursor: pointer;
+}
+
+.main-play-prev-btn {
+  background-image: url("../../assets/play-prev-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-prev-btn:hover {
+  background-image: url("../../assets/play-prev-btn-icon-hover.png");
+}
+.main-play-play-btn {
+  background-image: url("../../assets/play-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-play-btn:hover {
+  background-image: url("../../assets/play-btn-icon-hover.png");
+}
+
+.main-play-next-btn {
+  background-image: url("../../assets/play-next-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-next-btn:hover {
+  background-image: url("../../assets/play-next-btn-icon-hover.png");
+}
+
+.main-play-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-current-time,
+.music-full-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 20px;
+  color: rgb(173, 173, 173);
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+.music-progress-bar-box {
+  border: none;
+  background-color: rgb(51, 51, 51);
+  border-radius: 10px;
+  height: 0.3em;
+  width: 500px;
+  margin: 0px 10px;
+}
+
+.music-progress-real-time-bar {
+  border: none;
+  background-color: rgb(204, 204, 204);
+  border-radius: 10px;
+  height: 0.3em;
+  width: 20%;
+}
