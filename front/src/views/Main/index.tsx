@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 
 const Main = () => {
@@ -9,6 +9,29 @@ const Main = () => {
   const testResponse = (responseBody: any) => {
     alert(responseBody);
   };
+
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+    if (isPlaying) {
+      // 음악 일시정지 로직
+      console.log("음악 일시정지");
+    } else {
+      // 음악 재생 로직
+      console.log("음악 재생");
+    }
+  };
+
+  // =========================음악 진행도
+  const [progress, setProgress] = useState<number>(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // 진행도를 업데이트하는 로직 (0에서 100 사이의 값)
+      setProgress((prev) => (prev < 100 ? prev + 1 : 0));
+    }, 2000); // 1초마다 진행도 업데이트
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       <div className="main-wrap">
@@ -66,19 +89,36 @@ const Main = () => {
         </div>
 
         <div className="main-wrap-bottom">
-          <div className="main-play-box">
-            <div className="main-play-top">
-              <div className="main-play-prev-btn"></div>
-              <div className="main-play-play-btn"></div>
-              <div className="main-play-next-btn"></div>
-            </div>
-            <div className="main-play-bottom">
-              <div className="music-current-time">0:14</div>
-              <div className="music-progress-bar-box">
-                <div className="music-progress-real-time-bar"></div>
+          <div className="main-wrap-bottom-left"></div>
+          <div className="main-wrap-bottom-center">
+            <div className="main-play-box">
+              <div className="main-play-top">
+                <div className="main-play-prev-btn"></div>
+                <div
+                  className={isPlaying ? "main-pause-btn" : "main-play-btn"}
+                  onClick={handlePlayPause}
+                ></div>
+                <div className="main-play-next-btn"></div>
               </div>
-              <div className="music-full-time">3:31</div>
+              <div className="main-play-bottom">
+                <div className="music-current-time">0:14</div>
+                <div className="music-progress-bar-box">
+                  <div
+                    className="music-progress-real-time-bar"
+                    style={{
+                      width: `${progress}%`,
+                      backgroundColor: "rgb(204, 204, 204)",
+                      height: "5px",
+                    }}
+                  ></div>
+                </div>
+                <div className="music-full-time">3:31</div>
+              </div>
             </div>
+          </div>
+
+          <div className="main-wrap-bottom-right">
+            <div className="music-sound-bar"></div>
           </div>
         </div>
       </div>
