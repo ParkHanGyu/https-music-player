@@ -1,0 +1,25 @@
+.progress {
+  width: 182px;
+  height: 3.2px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.pin {
+  position: absolute;
+  top: -5px;
+  width: 16px;
+  left: 96.5%;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: all;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.bar {
+  position: relative;
+  background: #fff;
+  width: 0;
+  height: 100%;
+}
