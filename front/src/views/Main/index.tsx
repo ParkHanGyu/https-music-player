@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
+import ReactPlayer from "react-player";
 
 const Main = () => {
   // const testOnClick = () => {
@@ -10,17 +11,17 @@ const Main = () => {
     alert(responseBody);
   };
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    if (isPlaying) {
-      // 음악 일시정지 로직
-      console.log("음악 일시정지");
-    } else {
-      // 음악 재생 로직
-      console.log("음악 재생");
-    }
-  };
+  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // const handlePlayPause = () => {
+  //   setIsPlaying(!isPlaying);
+  //   if (isPlaying) {
+  //     // 음악 일시정지 로직
+  //     console.log("음악 일시정지");
+  //   } else {
+  //     // 음악 재생 로직
+  //     console.log("음악 재생");
+  //   }
+  // };
 
   // =========================음악 진행도
   const [progress, setProgress] = useState<number>(0);
@@ -32,14 +33,51 @@ const Main = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // =============================추가
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVideoUrl(event.target.value);
+  };
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  const playerRef = useRef<ReactPlayer | null>(null);
+
+  const handleProgress = (progress: { played: number }) => {
+    setPlayed(progress.played);
+  };
+  const [played, setPlayed] = useState<number>(0); // 진행률 (0 ~ 1)
+
+  const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newPlayed = parseFloat(event.target.value);
+    setPlayed(newPlayed);
+    playerRef.current?.seekTo(newPlayed);
+  };
+
   return (
     <>
       <div className="main-wrap">
         <div className="main-wrap-top">
           <div className="main-left">
             <div className="main-search-box">
-              <input className="main-search-input" type="text" />
-              <div className="main-search-btn"></div>
+              {/* <input className="main-search-input" type="text" /> */}
+              <input
+                type="text"
+                placeholder="YouTube URL 입력"
+                value={videoUrl}
+                onChange={handleInputChange}
+                style={{ width: "400px", marginRight: "10px" }}
+              />
+              <div className="main-search-btn">
+                <button onClick={handlePlayPause}>
+                  {isPlaying ? "일시 정지" : "재생"}
+                </button>
+              </div>
             </div>
 
             <div className="main-menu-box">
@@ -103,14 +141,23 @@ const Main = () => {
               <div className="main-play-bottom">
                 <div className="music-current-time">0:14</div>
                 <div className="music-progress-bar-box">
-                  <div
-                    className="music-progress-real-time-bar"
-                    style={{
-                      width: `${progress}%`,
-                      backgroundColor: "rgb(204, 204, 204)",
-                      height: "5px",
-                    }}
-                  ></div>
+                  <ReactPlayer
+                    ref={playerRef}
+                    url={videoUrl}
+                    playing={isPlaying}
+                    onProgress={handleProgress}
+                    style={{ display: "none" }} // 완전히 숨김 처리
+                  />
+                  <input
+                    id="music-progress-bar"
+                    type="range"
+                    min={0}
+                    max={1}
+                    step="0.01"
+                    value={played}
+                    onChange={handleSeek}
+                    style={{ width: "400px", height: "5px" }}
+                  />
                 </div>
                 <div className="music-full-time">3:31</div>
               </div>

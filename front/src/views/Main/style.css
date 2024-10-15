@@ -225,14 +225,14 @@
   letter-spacing: 1px;
   font-size: 12px;
 }
-.music-progress-bar-box {
+/* .music-progress-bar-box {
   border: none;
   background-color: rgb(51, 51, 51);
   border-radius: 10px;
   height: 0.3em;
   width: 500px;
   margin: 0px 10px;
-}
+} */
 
 .music-progress-real-time-bar {
   border: none;
@@ -254,4 +254,23 @@
   height: 20px;
   margin-right: 10px;
   cursor: pointer;
+}
+
+/* input[type="range"] {
+  width: 100%;
+
+  color: lightblue;
+  padding: 0px;
+  border: none;
+  margin: 0px;
+  background-color: #3711b6;
+  accent-color: rgb(164, 35, 35);
+} */
+
+#music-progress-bar::-webkit-slider-thumb {
+  transform: scale(0);
+}
+
+#music-progress-bar {
+  accent-color: red;
 }

@@ -13,8 +13,8 @@ function App() {
     <Router>
       <Routes>
         <Route element={<Container />}>
-          {/* <Route path={MAIN_PATH()} element={<Main />} /> */}
-          <Route path={MAIN_PATH()} element={<TestView2 />} />
+          <Route path={MAIN_PATH()} element={<Main />} />
+          {/* <Route path={MAIN_PATH()} element={<TestView2 />} /> */}
         </Route>
       </Routes>
     </Router>
