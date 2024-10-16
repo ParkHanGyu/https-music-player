@@ -39,10 +39,13 @@
   color: #fff;
 }
 .main-search-btn {
-  border: 1px solid rgb(60, 29, 174);
+  border: 1px solid rgb(34, 34, 34);
   width: 25px;
   height: 25px;
   border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-right {

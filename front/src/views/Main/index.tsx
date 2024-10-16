@@ -3,39 +3,11 @@ import "./style.css";
 import ReactPlayer from "react-player";
 
 const Main = () => {
-  // const testOnClick = () => {
-  //   testApi().then(testResponse);
-  // };
-
-  const testResponse = (responseBody: any) => {
-    alert(responseBody);
-  };
-
-  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  // const handlePlayPause = () => {
-  //   setIsPlaying(!isPlaying);
-  //   if (isPlaying) {
-  //     // 음악 일시정지 로직
-  //     console.log("음악 일시정지");
-  //   } else {
-  //     // 음악 재생 로직
-  //     console.log("음악 재생");
-  //   }
-  // };
-
-  // =========================음악 진행도
-  const [progress, setProgress] = useState<number>(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // 진행도를 업데이트하는 로직 (0에서 100 사이의 값)
-      setProgress((prev) => (prev < 100 ? prev + 1 : 0));
-    }, 2000); // 1초마다 진행도 업데이트
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // =============================추가
   const [videoUrl, setVideoUrl] = useState<string>("");
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [played, setPlayed] = useState<number>(0); // 진행률 (0 ~ 1)
+  const playerRef = useRef<ReactPlayer | null>(null);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
   };
@@ -44,20 +16,78 @@ const Main = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-
-  const playerRef = useRef<ReactPlayer | null>(null);
-
-  const handleProgress = (progress: { played: number }) => {
+  const [currentTime, setCurrentTime] = useState<number>(0); // 현재 재생 시간
+  // 진행도 자동 이동
+  const handleProgress = (progress: {
+    played: number;
+    playedSeconds: number;
+    loaded: number;
+    loadedSeconds: number;
+  }) => {
     setPlayed(progress.played);
+    setCurrentTime(progress.playedSeconds); // 현재 재생 시간
   };
-  const [played, setPlayed] = useState<number>(0); // 진행률 (0 ~ 1)
 
-  const handleSeek = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newPlayed = parseFloat(event.target.value);
+  const [duration, setDuration] = useState<number>(0); // 전체 재생 시간
+  // 전체 재생 시간
+  const handleDuration = (duration: number) => {
+    setDuration(duration);
+  };
+
+  // 사용자에 의한 진행도 수동 이동
+  const handleSeek = (newPlayed: number) => {
     setPlayed(newPlayed);
     playerRef.current?.seekTo(newPlayed);
   };
+
+  // 시간 계산
+  function formatTime(time: number) {
+    if (isNaN(time)) {
+      return `00:00`;
+    }
+    const date = new Date(time * 1000);
+    const hh = date.getUTCHours();
+    const mm = date.getUTCMinutes();
+    const ss = pad(date.getUTCSeconds());
+    if (hh) {
+      return `${hh}:${pad(mm)}:${ss}`;
+    }
+    return `${mm}:${ss}`;
+  }
+
+  function pad(number: number) {
+    return ("0" + number).slice(-2);
+  }
+
+  const handleMouseDown = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const progressBar = event.currentTarget;
+    const rect = progressBar.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const newPlayed = offsetX / rect.width;
+    handleSeek(newPlayed);
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const offsetX = moveEvent.clientX - rect.left;
+      const newPlayed = Math.max(0, Math.min(1, offsetX / rect.width));
+      handleSeek(newPlayed);
+    };
+
+    const handleMouseUp = () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
+
+  useEffect(() => {
+    if (played === 1) {
+      setIsPlaying(!isPlaying);
+    }
+  }, [played]);
 
   return (
     <>
@@ -65,18 +95,16 @@ const Main = () => {
         <div className="main-wrap-top">
           <div className="main-left">
             <div className="main-search-box">
-              {/* <input className="main-search-input" type="text" /> */}
               <input
+                className="main-search-input"
                 type="text"
                 placeholder="YouTube URL 입력"
                 value={videoUrl}
                 onChange={handleInputChange}
                 style={{ width: "400px", marginRight: "10px" }}
               />
-              <div className="main-search-btn">
-                <button onClick={handlePlayPause}>
-                  {isPlaying ? "일시 정지" : "재생"}
-                </button>
+              <div className="main-search-btn" onClick={handlePlayPause}>
+                {isPlaying ? ">" : ">>"}
               </div>
             </div>
 
@@ -139,27 +167,41 @@ const Main = () => {
                 <div className="main-play-next-btn"></div>
               </div>
               <div className="main-play-bottom">
-                <div className="music-current-time">0:14</div>
-                <div className="music-progress-bar-box">
+                <div className="music-current-time">
+                  {formatTime(currentTime)}
+                </div>
+                <div
+                  className="music-progress-bar-box"
+                  onMouseDown={handleMouseDown}
+                  style={{
+                    width: "400px",
+                    height: "5px",
+                    background: "#3f3f3f",
+                    position: "relative",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    className="music-progress-fill"
+                    style={{
+                      background: "#cacaca",
+                      height: "100%",
+                      width: `${played * 100}%`,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                    }}
+                  ></div>
                   <ReactPlayer
                     ref={playerRef}
                     url={videoUrl}
                     playing={isPlaying}
                     onProgress={handleProgress}
+                    onDuration={handleDuration}
                     style={{ display: "none" }} // 완전히 숨김 처리
                   />
-                  <input
-                    id="music-progress-bar"
-                    type="range"
-                    min={0}
-                    max={1}
-                    step="0.01"
-                    value={played}
-                    onChange={handleSeek}
-                    style={{ width: "400px", height: "5px" }}
-                  />
                 </div>
-                <div className="music-full-time">3:31</div>
+                <div className="music-full-time">{formatTime(duration)}</div>
               </div>
             </div>
           </div>
