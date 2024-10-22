@@ -1,12 +1,20 @@
-import React from "react";
-import Header from "../Header";
 import { Outlet } from "react-router-dom";
+import Menu from "../Menu";
+import MusicInfo from "../MusicInfo";
 
 const Container = () => {
   return (
     <>
-      <Header />
-      <Outlet />
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+        }}
+      >
+        <Menu />
+        <Outlet />
+        <MusicInfo />
+      </div>
     </>
   );
 };

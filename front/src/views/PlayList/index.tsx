@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import ReactPlayer from "react-player";
 
-const Main = () => {
+const PlayList = () => {
   const [matchVideoUrl, setMatchVideoUrl] = useState<string>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -202,8 +202,7 @@ const Main = () => {
     <>
       <div className={styles["main-wrap"]}>
         <div className={styles["main-wrap-top"]}>
-          {/* ================================================== */}
-          <div className={styles["main-center"]}>
+          {/* <div className={styles["main-left"]}>
             <div className={styles["main-search-box"]}>
               <input
                 className={styles["main-search-input"]}
@@ -218,13 +217,58 @@ const Main = () => {
               ></div>
             </div>
 
-            <div className={styles["main-title-box"]}>
-              A simple template for telling the world when you'll launch your
-              next big thing. Brought to you by HTML5 UP.
+            <div className={styles["main-menu-box"]}>
+              <div className={styles["main-menu-item1"]}>All Tracks</div>
+              <div className={styles["main-menu-item2"]}>PlayList</div>
+              <div className={styles["main-menu-item3"]}>Youtube</div>
+              <div className={styles["main-menu-item4"]}>SoundCloud</div>
+            </div>
+          </div> */}
+          <div className={styles["main-right"]}>
+            <div className={styles["main-music-data-column-box"]}>
+              <div className={styles["music-column-number"]}>#</div>
+              <div className={styles["music-column-title"]}>Title</div>
+              <div className={styles["music-column-artist"]}>Artist</div>
+              <div className={styles["music-column-album"]}>Album</div>
+              <div className={styles["music-column-duration"]}>Duration</div>
+            </div>
+
+            <div className={styles["main-music-data-info-box"]}>
+              <div className={styles["music-info-number"]}>1</div>
+
+              <div className={styles["music-info-image-title-box"]}>
+                <div className={styles["music-info-image"]}></div>
+
+                <div
+                  className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
+                >
+                  제목1
+                </div>
+              </div>
+
+              <div className={styles["music-info-artist"]}>아티스트1</div>
+              <div className={styles["music-info-album"]}>앨범1</div>
+              <div className={styles["music-info-duration"]}>3:33</div>
+            </div>
+
+            <div className={styles["main-music-data-info-box"]}>
+              <div className={styles["music-info-number"]}>2</div>
+
+              <div className={styles["music-info-image-title-box"]}>
+                <div className={styles["music-info-image"]}></div>
+
+                <div
+                  className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
+                >
+                  제목2
+                </div>
+              </div>
+
+              <div className={styles["music-info-artist"]}>아티스트2</div>
+              <div className={styles["music-info-album"]}>앨범2</div>
+              <div className={styles["music-info-duration"]}>4:12</div>
             </div>
           </div>
-
-          {/* ================================================== */}
         </div>
 
         <div className={styles["main-wrap-bottom"]}>
@@ -305,4 +349,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default PlayList;

@@ -1,0 +1,39 @@
+.main-left {
+  background-color: rgb(25, 25, 25);
+  width: 15em;
+  font-size: 14px;
+  color: #dddddd;
+
+  padding: 20px;
+}
+
+.music-info-title {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.music-info-image {
+  background-image: url("../../assets/sum.jpg");
+  width: 180px;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 30px;
+}
+
+.music-info-data > div {
+  margin-top: 15px;
+}
+
+.album-info,
+.genre-info,
+.artist-info {
+  color: #b0b0b0;
+}
+
+.album-data,
+.genre-data,
+.artist-data {
+  font-size: 12px;
+}

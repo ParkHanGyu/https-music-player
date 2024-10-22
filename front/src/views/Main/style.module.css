@@ -1,0 +1,323 @@
+.main-wrap {
+  font-size: 14px;
+  color: #fff;
+  width: 100%;
+}
+
+/* 웹 상단 */
+.main-wrap-top {
+  display: flex;
+  height: 60em;
+}
+
+.main-left {
+  background-color: rgb(25, 25, 25);
+  width: 18em;
+}
+
+.main-search-box {
+  display: flex;
+  width: 50em;
+  margin: auto;
+  border: 1px solid rgb(51, 51, 51);
+  padding: 7px;
+  border-radius: 6px;
+}
+
+.main-menu-box {
+  margin-top: 20px;
+}
+
+.main-menu-box > div {
+  cursor: pointer;
+  padding: 10px 20px 10px 20px;
+}
+
+.main-search-input {
+  background-color: rgb(11, 11, 11);
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 95%;
+  margin-right: 5px;
+}
+.main-search-btn {
+  background-image: url("../../assets/magnifier1.png");
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.main-center {
+  margin: auto;
+}
+
+/* 음악 데이터 부분 */
+.main-music-data-column-box,
+.main-music-data-info-box {
+  display: flex;
+  padding: 10px;
+}
+
+.music-info-number,
+.music-column-number {
+  width: 5px;
+  text-align: center;
+}
+
+.music-info-image-title-box,
+.music-column-title {
+  width: 500px;
+}
+
+.music-info-artist,
+.music-column-artist {
+  width: 300px;
+}
+
+.music-info-album,
+.music-column-album {
+  width: 300px;
+}
+
+.music-info-duration,
+.music-column-duration {
+  width: 300px;
+}
+
+.main-music-data-column-box > div,
+.main-music-data-info-box > div {
+  margin: 0px 20px;
+}
+
+.main-music-data-info-box {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.main-music-data-info-box:hover {
+  background-color: rgb(33, 33, 33);
+}
+
+.music-info-image {
+  background-image: url("../../assets/music-info-image.PNG");
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+}
+
+.music-info-image-title-box {
+  display: flex;
+  align-items: center;
+}
+.main-music-data-column-box {
+  color: #dedede;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(39, 39, 39);
+}
+
+/* ====================웹 하단=================== */
+
+.main-wrap-bottom {
+  display: flex;
+  border-top: 1px solid rgb(51, 51, 51);
+  background-color: rgb(27, 27, 27);
+}
+.main-wrap-bottom-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+.main-wrap-bottom-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative; /* 위치 조정에 필요 */
+}
+
+.main-wrap-bottom-left {
+  outline: 1px solid green;
+}
+
+.main-play-box {
+  margin: 10px 0px;
+  width: 50em;
+  height: 4em;
+}
+
+.main-play-top {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.main-play-prev-btn {
+  background-image: url("../../assets/play-prev-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-prev-btn:hover {
+  background-image: url("../../assets/play-prev-btn-icon-hover.png");
+}
+
+.main-pause-btn {
+  background-image: url("../../assets/pause-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-pause-btn:hover {
+  background-image: url("../../assets/pause-btn-icon-hover.png");
+}
+
+.main-play-btn {
+  background-image: url("../../assets/play-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-btn:hover {
+  background-image: url("../../assets/play-btn-icon-hover.png");
+}
+
+.main-play-next-btn {
+  background-image: url("../../assets/play-next-btn-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-next-btn:hover {
+  background-image: url("../../assets/play-next-btn-icon-hover.png");
+}
+
+.main-play-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-current-time,
+.music-full-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 20px;
+  color: rgb(173, 173, 173);
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+.music-progress-bar-box {
+  width: 450px;
+  height: 5px;
+  background: #3f3f3f;
+  position: relative;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.music-progress-fill {
+  background: #cacaca;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 6px;
+}
+
+.music-progress-real-time-bar {
+  border: none;
+  background-color: rgb(204, 204, 204);
+  border-radius: 10px;
+  height: 0.3em;
+  width: 20%;
+}
+
+.music-sound-icon {
+  background-image: url("../../assets/music-sound-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.music-sound-bar-container {
+  width: 2em;
+  height: 8em;
+  border-radius: 6px;
+  background-color: #292929;
+  position: absolute; /* 절대 위치 */
+  bottom: 80%; /* 아이콘 위에 위치 */
+  right: 1.2em; /* 오른쪽 정렬 */
+  z-index: 10; /* 다른 요소들 위에 표시 */
+  flex-direction: column; /* 세로 정렬 */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-sound-bar {
+  width: 7px;
+  height: 6.5em;
+
+  background: #3f3f3f;
+  position: relative;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.music-sound-bar-fill {
+  background: #fff;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 6px;
+}
+
+#music-progress-bar::-webkit-slider-thumb {
+  transform: scale(0);
+}
+
+#music-progress-bar {
+  accent-color: red;
+}
+
+.main-title-box {
+  margin: 20px 0px 20px 5px;
+}

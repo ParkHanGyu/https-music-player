@@ -1,0 +1,42 @@
+.main-left {
+  background-color: rgb(25, 25, 25);
+  width: 18em;
+  font-size: 14px;
+  color: #fff;
+}
+.main-search-box {
+  display: flex;
+  width: 200px;
+  margin: 11px;
+  border: 1px solid rgb(51, 51, 51);
+  padding: 7px;
+  border-radius: 6px;
+}
+
+.main-search-input {
+  background-color: rgb(25, 25, 25);
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 180px;
+  margin-right: 5px;
+}
+
+.main-search-btn {
+  background-image: url("../../assets/magnifier1.png");
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.main-menu-box {
+  margin-top: 20px;
+}
+
+.main-menu-box > div {
+  cursor: pointer;
+  padding: 10px 20px 10px 20px;
+}
