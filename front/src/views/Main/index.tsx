@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import ReactPlayer from "react-player";
+import MusicInfo from "../../layouts/MusicInfo";
 
 const Main = () => {
   const [matchVideoUrl, setMatchVideoUrl] = useState<string>("");
@@ -49,7 +50,7 @@ const Main = () => {
   };
 
   // 시간 계산
-  function formatTime(time: number) {
+  const formatTime = (time: number) => {
     if (isNaN(time)) {
       return;
     }
@@ -61,7 +62,7 @@ const Main = () => {
       return `${hh}:${pad(mm)}:${ss}`;
     }
     return `${mm}:${ss}`;
-  }
+  };
 
   function pad(number: number) {
     return ("0" + number).slice(-2);
@@ -112,15 +113,19 @@ const Main = () => {
     }
   }, [played]);
 
+  const [urlMatch, setUrlMatch] = useState<string>("");
+
   const videoSearch = () => {
     // "youtu"을 포함한 경우
     if (videoUrl.includes("youtu")) {
       if (videoUrl.includes("www.")) {
         const urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
         if (urlMatch) {
+          const matchedId = urlMatch[0];
+          setUrlMatch(matchedId);
           // 유튜브 영상 ID 추출 성공 시, 해당 ID로 matchVideoUrl 설정
-          setMatchVideoUrl(`youtu.be/${urlMatch[0]}`);
-          setIsPlaying(!isPlaying);
+          setMatchVideoUrl(`youtu.be/${matchedId}`);
+          // setIsPlaying(!isPlaying);
         } else {
           alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
           return;
@@ -198,33 +203,40 @@ const Main = () => {
     };
   }, [soundDropdownOpen]);
 
+  // ===============기능 변경중===================
+
   return (
     <>
       <div className={styles["main-wrap"]}>
         <div className={styles["main-wrap-top"]}>
-          {/* ================================================== */}
-          <div className={styles["main-center"]}>
-            <div className={styles["main-search-box"]}>
-              <input
-                className={styles["main-search-input"]}
-                type="text"
-                placeholder="YouTube URL 입력"
-                value={videoUrl}
-                onChange={handleInputChange}
-              />
-              <div
-                className={styles["main-search-btn"]}
-                onClick={videoSearch}
-              ></div>
+          <div className={styles["main-wrap-top-content"]}>
+            {/* ================================================== */}
+            <div className={styles["main-center"]}>
+              <div className={styles["main-search-box"]}>
+                <input
+                  className={styles["main-search-input"]}
+                  type="text"
+                  placeholder="YouTube URL 입력"
+                  value={videoUrl}
+                  onChange={handleInputChange}
+                />
+                <div
+                  className={styles["main-search-btn"]}
+                  onClick={videoSearch}
+                  // onClick={onSubmit}
+                ></div>
+              </div>
+
+              <div className={styles["main-title-box"]}>
+                A simple template for telling the world when you'll launch your
+                next big thing. Brought to you by HTML5 UP.
+              </div>
             </div>
 
-            <div className={styles["main-title-box"]}>
-              A simple template for telling the world when you'll launch your
-              next big thing. Brought to you by HTML5 UP.
-            </div>
+            {/* ================================================== */}
           </div>
 
-          {/* ================================================== */}
+          <MusicInfo videoUrl={urlMatch} duration={duration} />
         </div>
 
         <div className={styles["main-wrap-bottom"]}>

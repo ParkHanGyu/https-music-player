@@ -1,13 +1,14 @@
 .main-left {
-  background-color: rgb(25, 25, 25);
+  background-color: rgb(0, 0, 0);
   width: 15em;
   font-size: 14px;
   color: #dddddd;
 
   padding: 20px;
+  border-left: 1px solid rgb(23, 23, 23);
 }
 
-.music-info-title {
+.music-info {
   font-size: 18px;
   margin-bottom: 20px;
 }
@@ -22,18 +23,21 @@
   margin-bottom: 30px;
 }
 
-.music-info-data > div {
+.music-info-data > div,
+.music-info-playtime {
   margin-top: 15px;
 }
 
-.album-info,
+.title-info,
 .genre-info,
-.artist-info {
+.artist-info,
+.playtime-info {
   color: #b0b0b0;
 }
 
-.album-data,
+.title-data,
 .genre-data,
-.artist-data {
+.artist-data,
+.playtime-data {
   font-size: 12px;
 }

@@ -13,7 +13,6 @@ const Container = () => {
       >
         <Menu />
         <Outlet />
-        <MusicInfo />
       </div>
     </>
   );
