@@ -13,6 +13,8 @@ interface YoutubeInfo {
 interface MusicInfoProps {
   videoUrl: string; // videoUrl 타입 정의
   duration: number;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>; // 상태 변경 함수
+  setMatchVideoUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const noEmbed = "https://noembed.com/embed?url=";
@@ -20,7 +22,12 @@ const urlForm = "https://www.youtube.com/watch?v=";
 const defaultImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
 
-const MusicInfo: React.FC<MusicInfoProps> = ({ videoUrl, duration }) => {
+const MusicInfo: React.FC<MusicInfoProps> = ({
+  videoUrl,
+  duration,
+  setIsPlaying,
+  setMatchVideoUrl,
+}) => {
   useEffect(() => {
     setInputValue(videoUrl);
     onSubmit(videoUrl);
@@ -81,6 +88,11 @@ const MusicInfo: React.FC<MusicInfoProps> = ({ videoUrl, duration }) => {
     return ("0" + number).slice(-2);
   }
 
+  const playHandleClick = () => {
+    setIsPlaying(true); // 상태를 반전시킴
+    setMatchVideoUrl(`youtu.be/${videoUrl}`);
+  };
+
   return (
     <>
       <div className={styles["main-left"]}>
@@ -109,11 +121,31 @@ const MusicInfo: React.FC<MusicInfoProps> = ({ videoUrl, duration }) => {
             <div className={styles["album-info"]}>Album</div>
             <div className={styles["album-data"]}>-</div>
           </div>
+
+          <div className={styles["music-info-playtime"]}>
+            <div className={styles["playtime-info"]}>Playtime</div>
+            <div className={styles["playtime-data"]}>
+              {formatTime(duration)}
+            </div>
+          </div>
         </div>
 
-        <div className={styles["music-info-playtime"]}>
-          <div className={styles["playtime-info"]}>Playtime</div>
-          <div className={styles["playtime-data"]}>{formatTime(duration)}</div>
+        <div className={styles["music-info-controller"]}>
+          <div
+            className={styles["info-controller-play-btn"]}
+            onClick={playHandleClick}
+          ></div>
+
+          {/* <div
+                  className={
+                    isPlaying
+                      ? styles["info-controller-pause-btn"]
+                      : styles["info-controller-play-btn"]
+                  }
+                  onClick={handlePlayPause}
+                ></div> */}
+
+          <div className={styles["controller-add-playlist"]}></div>
         </div>
       </div>
     </>

@@ -2,8 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import ReactPlayer from "react-player";
 import MusicInfo from "../../layouts/MusicInfo";
+import { useOutletContext } from "react-router-dom";
 
 const Main = () => {
+  const { setGlobalVideoUrl } = useOutletContext<{
+    setGlobalVideoUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  }>();
   const [matchVideoUrl, setMatchVideoUrl] = useState<string>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -13,6 +17,7 @@ const Main = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
+    setGlobalVideoUrl(event.target.value);
   };
 
   const handlePlayPause = () => {
@@ -124,7 +129,8 @@ const Main = () => {
           const matchedId = urlMatch[0];
           setUrlMatch(matchedId);
           // 유튜브 영상 ID 추출 성공 시, 해당 ID로 matchVideoUrl 설정
-          setMatchVideoUrl(`youtu.be/${matchedId}`);
+
+          // setMatchVideoUrl(`youtu.be/${matchedId}`);
           // setIsPlaying(!isPlaying);
         } else {
           alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
@@ -236,10 +242,15 @@ const Main = () => {
             {/* ================================================== */}
           </div>
 
-          <MusicInfo videoUrl={urlMatch} duration={duration} />
+          <MusicInfo
+            videoUrl={urlMatch}
+            duration={duration}
+            setIsPlaying={setIsPlaying}
+            setMatchVideoUrl={setMatchVideoUrl}
+          />
         </div>
 
-        <div className={styles["main-wrap-bottom"]}>
+        {/* <div className={styles["main-wrap-bottom"]}>
           <div className={styles["main-wrap-bottom-left"]}></div>
           <div className={styles["main-wrap-bottom-center"]}>
             <div className={styles["main-play-box"]}>
@@ -311,7 +322,7 @@ const Main = () => {
               onClick={onSoundDropDown}
             ></div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

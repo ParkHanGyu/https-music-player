@@ -1,7 +1,19 @@
 import React from "react";
 import styles from "./style.module.css";
+import { useNavigate } from "react-router-dom";
+import { MAIN_PATH, PLAY_LIST_PATH } from "../../constant";
 
 const Menu = () => {
+  const navigator = useNavigate();
+
+  const playListClickHandler = () => {
+    navigator(PLAY_LIST_PATH());
+  };
+
+  const homeClickHandler = () => {
+    navigator(MAIN_PATH());
+  };
+
   return (
     <div className={styles["main-left"]}>
       <div className={styles["main-search-box"]}>
@@ -14,8 +26,15 @@ const Menu = () => {
       </div>
 
       <div className={styles["main-menu-box"]}>
-        <div className={styles["main-menu-item1"]}>All Tracks</div>
-        <div className={styles["main-menu-item2"]}>PlayList</div>
+        <div className={styles["main-menu-item1"]} onClick={homeClickHandler}>
+          Home
+        </div>
+        <div
+          className={styles["main-menu-item2"]}
+          onClick={playListClickHandler}
+        >
+          PlayList
+        </div>
         <div className={styles["main-menu-item3"]}>Youtube</div>
         <div className={styles["main-menu-item4"]}>SoundCloud</div>
       </div>

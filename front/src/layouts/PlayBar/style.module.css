@@ -7,7 +7,7 @@
 /* 웹 상단 */
 .main-wrap-top {
   display: flex;
-  height: 58.8em;
+  height: 59.6em;
 }
 
 .main-left {
@@ -154,7 +154,7 @@
 }
 
 .main-play-box {
-  margin: 10px 0px;
+  margin: 20px 0px 10px 0px;
   width: 50em;
   height: 4em;
 }
@@ -164,7 +164,7 @@
   justify-content: center;
   gap: 15px;
   cursor: pointer;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .main-play-prev-btn {
