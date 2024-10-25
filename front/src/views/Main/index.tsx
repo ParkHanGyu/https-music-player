@@ -3,12 +3,12 @@ import styles from "./style.module.css";
 import ReactPlayer from "react-player";
 import MusicInfo from "../../layouts/MusicInfo";
 import { useOutletContext } from "react-router-dom";
+import { useVideoStore } from "../../store/useVideoStore";
 
 const Main = () => {
-  const { setGlobalVideoUrl } = useOutletContext<{
-    setGlobalVideoUrl: React.Dispatch<React.SetStateAction<string | null>>;
-  }>();
-  const [matchVideoUrl, setMatchVideoUrl] = useState<string>("");
+  const { matchVideoUrl, setMatchVideoUrl, setDuration, duration, setInfoUrl } =
+    useVideoStore();
+
   const [videoUrl, setVideoUrl] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // 진행률 (0 ~ 1)
@@ -17,7 +17,6 @@ const Main = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
-    setGlobalVideoUrl(event.target.value);
   };
 
   const handlePlayPause = () => {
@@ -42,7 +41,6 @@ const Main = () => {
     setCurrentTime(progress.playedSeconds); // 현재 재생 시간
   };
 
-  const [duration, setDuration] = useState<number>(0); // 전체 재생 시간
   // 전체 재생 시간
   const handleDuration = (duration: number) => {
     setDuration(duration);
@@ -127,7 +125,8 @@ const Main = () => {
         const urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
         if (urlMatch) {
           const matchedId = urlMatch[0];
-          setUrlMatch(matchedId);
+
+          setInfoUrl(matchedId);
           // 유튜브 영상 ID 추출 성공 시, 해당 ID로 matchVideoUrl 설정
 
           // setMatchVideoUrl(`youtu.be/${matchedId}`);
@@ -243,10 +242,10 @@ const Main = () => {
           </div>
 
           <MusicInfo
-            videoUrl={urlMatch}
-            duration={duration}
-            setIsPlaying={setIsPlaying}
-            setMatchVideoUrl={setMatchVideoUrl}
+          // videoUrl={urlMatch}
+          // duration={duration}
+          // setIsPlaying={setIsPlaying}
+          // setMatchVideoUrl={setMatchVideoUrl}
           />
         </div>
 

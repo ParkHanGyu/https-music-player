@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { url } from "inspector";
+import { useVideoStore } from "../../store/useVideoStore";
 
 interface YoutubeInfo {
   id: string | null;
@@ -10,28 +11,31 @@ interface YoutubeInfo {
   vid_title: string | null;
 }
 
-interface MusicInfoProps {
-  videoUrl: string; // videoUrl 타입 정의
-  duration: number;
-  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>; // 상태 변경 함수
-  setMatchVideoUrl: React.Dispatch<React.SetStateAction<string>>;
-}
-
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
 const defaultImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
 
-const MusicInfo: React.FC<MusicInfoProps> = ({
-  videoUrl,
-  duration,
-  setIsPlaying,
-  setMatchVideoUrl,
-}) => {
+const MusicInfo = () => {
+  const {
+    videoUrl,
+    setVideoUrl,
+    isPlaying,
+    setIsPlaying,
+    duration,
+    setDuration,
+    matchVideoUrl,
+    setMatchVideoUrl,
+    infoUrl,
+  } = useVideoStore();
+
   useEffect(() => {
-    setInputValue(videoUrl);
-    onSubmit(videoUrl);
-  }, [videoUrl]);
+    if (infoUrl) {
+      setInputValue(infoUrl);
+      onSubmit(infoUrl);
+      setDuration(duration);
+    }
+  }, [infoUrl]);
 
   const [youtube, setYoutube] = useState<YoutubeInfo>({
     id: "-",
@@ -89,8 +93,9 @@ const MusicInfo: React.FC<MusicInfoProps> = ({
   }
 
   const playHandleClick = () => {
+    alert("matchVideoUrl 값 : " + infoUrl);
+    setMatchVideoUrl(infoUrl);
     setIsPlaying(true); // 상태를 반전시킴
-    setMatchVideoUrl(`youtu.be/${videoUrl}`);
   };
 
   return (
