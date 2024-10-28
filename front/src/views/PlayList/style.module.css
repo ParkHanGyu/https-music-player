@@ -7,7 +7,7 @@
 /* 웹 상단 */
 .main-wrap-top {
   display: flex;
-  height: 60em;
+  height: 58.8em;
 }
 
 .main-left {
@@ -85,7 +85,7 @@
 
 .music-info-duration,
 .music-column-duration {
-  width: 300px;
+  width: 110px;
 }
 
 .main-music-data-column-box > div,

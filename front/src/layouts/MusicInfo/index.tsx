@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { url } from "inspector";
 import { useVideoStore } from "../../store/useVideoStore";
-
-interface YoutubeInfo {
-  id: string | null;
-  vid_url: string | null;
-  author: string | null;
-  thumb: string | null;
-  vid_title: string | null;
-}
+import ReactPlayer from "react-player";
+import useFormatTime from "../../hooks/useFormatTime";
+import { YoutubeInfo } from "../../types/interface/youtube.interface";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -17,38 +11,27 @@ const defaultImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
 
 const MusicInfo = () => {
-  const {
-    videoUrl,
-    setVideoUrl,
-    isPlaying,
-    setIsPlaying,
-    duration,
-    setDuration,
-    matchVideoUrl,
-    setMatchVideoUrl,
-    infoUrl,
-  } = useVideoStore();
+  const { isPlaying, setIsPlaying, urlId, setPlayUrl, setPlayBarInfo } =
+    useVideoStore();
+  const formatTime = useFormatTime();
 
   useEffect(() => {
-    if (infoUrl) {
-      setInputValue(infoUrl);
-      onSubmit(infoUrl);
-      setDuration(duration);
+    if (urlId) {
+      onSubmit(urlId);
     }
-  }, [infoUrl]);
+  }, [urlId]);
 
   const [youtube, setYoutube] = useState<YoutubeInfo>({
-    id: "-",
+    // info 초기값
     vid_url: "-",
     author: "-",
     thumb: defaultImage, // 기본 이미지 설정
     vid_title: "-",
   });
-  const [inputValue, setInputValue] = useState<string>("");
 
-  const onSubmit = (videoUrl: string) => {
-    if (videoUrl) {
-      getInfo(videoUrl);
+  const onSubmit = (urlId: string) => {
+    if (urlId) {
+      getInfo(urlId);
     }
   };
 
@@ -65,7 +48,6 @@ const MusicInfo = () => {
   const setInfo = (data: any) => {
     const { url, author_name, thumbnail_url, title } = data;
     setYoutube({
-      id: inputValue,
       vid_url: url || null,
       author: author_name || null,
       thumb: thumbnail_url || null,
@@ -73,29 +55,29 @@ const MusicInfo = () => {
     });
   };
 
-  // 시간 계산
-  const formatTime = (time: number) => {
-    if (isNaN(time)) {
-      return;
-    }
-    const date = new Date(time * 1000);
-    const hh = date.getUTCHours();
-    const mm = date.getUTCMinutes();
-    const ss = pad(date.getUTCSeconds());
-    if (hh) {
-      return `${hh}:${pad(mm)}:${ss}`;
-    }
-    return `${mm}:${ss}`;
+  // 재생버튼
+  const playHandleClick = () => {
+    setPlayUrl(urlId);
+    setIsPlaying(true);
+    // youtube데이터를 useVideoStore에 셋팅
+    setPlayBarInfo(youtube);
   };
 
-  function pad(number: number) {
-    return ("0" + number).slice(-2);
-  }
+  // url 시간 상태
+  const [infoDuration, setInfoDuration] = useState<number>(0);
 
-  const playHandleClick = () => {
-    alert("matchVideoUrl 값 : " + infoUrl);
-    setMatchVideoUrl(infoUrl);
-    setIsPlaying(true); // 상태를 반전시킴
+  // url 시간 셋팅
+  const handleDuration = (infoDuration: number) => {
+    setInfoDuration(infoDuration);
+  };
+
+  // ===========재생목록 관련
+  // 재생 목록 데이터 (예시)
+  const mockPlaylists = ["My Favorites", "Top Hits", "Chill Vibes"];
+  // 재생목록 팝업 상태
+  const [isPlaylistPopupOpen, setPlaylistPopupOpen] = useState(false);
+  const togglePlaylistPopup = () => {
+    setPlaylistPopupOpen(!isPlaylistPopupOpen);
   };
 
   return (
@@ -130,7 +112,7 @@ const MusicInfo = () => {
           <div className={styles["music-info-playtime"]}>
             <div className={styles["playtime-info"]}>Playtime</div>
             <div className={styles["playtime-data"]}>
-              {formatTime(duration)}
+              {formatTime(infoDuration)}
             </div>
           </div>
         </div>
@@ -141,18 +123,47 @@ const MusicInfo = () => {
             onClick={playHandleClick}
           ></div>
 
-          {/* <div
-                  className={
-                    isPlaying
-                      ? styles["info-controller-pause-btn"]
-                      : styles["info-controller-play-btn"]
-                  }
-                  onClick={handlePlayPause}
-                ></div> */}
-
-          <div className={styles["controller-add-playlist"]}></div>
+          <div
+            className={styles["controller-add-playlist"]}
+            onClick={togglePlaylistPopup}
+          ></div>
         </div>
       </div>
+      <ReactPlayer
+        url={`youtu.be/${urlId}`}
+        playing={false}
+        onDuration={handleDuration}
+        style={{ display: "none" }} // 완전히 숨김 처리
+      />
+
+      {/* =======================================재생목록 팝업 */}
+      {isPlaylistPopupOpen && (
+        <div className={styles["playlist-popup"]}>
+          <div className={styles["playlist-popup-content"]}>
+            <div className={styles["playlist-popup-left"]}>
+              <h3>Select Playlist</h3>
+              <ul>
+                {mockPlaylists.map((playlist, index) => (
+                  <li
+                    key={index}
+                    onClick={() => console.log(`Added to ${playlist}`)}
+                  >
+                    {playlist}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className={styles["playlist-popup-right"]}>
+              <div
+                className={styles["playlist-popup-close"]}
+                onClick={togglePlaylistPopup}
+              ></div>
+
+              <div className={styles["playlist-popup-add"]}></div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

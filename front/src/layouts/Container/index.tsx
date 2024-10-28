@@ -5,7 +5,6 @@ import PlayBar from "../PlayBar";
 import { useState } from "react";
 
 const Container = () => {
-  const [globalVideoUrl, setGlobalVideoUrl] = useState<string | null>(null);
   return (
     <>
       <div className="warp">
@@ -16,8 +15,8 @@ const Container = () => {
           }}
         >
           <Menu />
-          <Outlet context={{ setGlobalVideoUrl }} />
-          {/* <MusicInfo /> */}
+          <Outlet />
+          <MusicInfo />
         </div>
         <PlayBar />
       </div>
