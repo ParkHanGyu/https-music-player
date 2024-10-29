@@ -4,6 +4,7 @@ import { useVideoStore } from "../../store/useVideoStore";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
+import { testApi } from "../../apis";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -11,8 +12,14 @@ const defaultImage =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
 
 const MusicInfo = () => {
-  const { isPlaying, setIsPlaying, urlId, setPlayUrl, setPlayBarInfo } =
-    useVideoStore();
+  const {
+    isPlaying,
+    setIsPlaying,
+    urlId,
+    setUrlId,
+    setPlayUrl,
+    setPlayBarInfo,
+  } = useVideoStore();
   const formatTime = useFormatTime();
 
   useEffect(() => {
@@ -55,8 +62,23 @@ const MusicInfo = () => {
     });
   };
 
+  // 정보 초기화
+  const resetYoutubeInfo = () => {
+    setYoutube({
+      vid_url: `youtu.be/${urlId}`,
+      author: "-",
+      thumb: defaultImage, // 기본 이미지 설정
+      vid_title: "-",
+    });
+    setInfoDuration(0);
+  };
+
   // 재생버튼
   const playHandleClick = () => {
+    if (isInfoError) {
+      alert("error");
+      return;
+    }
     setPlayUrl(urlId);
     setIsPlaying(true);
     // youtube데이터를 useVideoStore에 셋팅
@@ -78,6 +100,40 @@ const MusicInfo = () => {
   const [isPlaylistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
     setPlaylistPopupOpen(!isPlaylistPopupOpen);
+  };
+
+  // ==========================
+  // info페이지 에러 상태
+  const [isInfoError, setIsInfoError] = useState<boolean>(false);
+
+  // const apiTest = () => {
+  //   testApi().then(apiTestResponse);
+  // };
+  // const apiTestResponse = (responseBody: { code: string }) => {
+  //   if (!responseBody) {
+  //     alert("서버로부터 응답이 없습니다.");
+  //     return;
+  //   }
+
+  //   if (responseBody) {
+  //     alert(responseBody);
+  //     return;
+  //   }
+  // };
+
+  const apiTest = () => {
+    testApi().then(apiTestResponse);
+  };
+  const apiTestResponse = (responseBody: { code: string }) => {
+    if (!responseBody) {
+      alert("서버로부터 응답이 없습니다.");
+      return;
+    }
+
+    if (responseBody) {
+      alert(responseBody);
+      return;
+    }
   };
 
   return (
@@ -129,19 +185,39 @@ const MusicInfo = () => {
           ></div>
         </div>
       </div>
-      <ReactPlayer
-        url={`youtu.be/${urlId}`}
-        playing={false}
-        onDuration={handleDuration}
-        style={{ display: "none" }} // 완전히 숨김 처리
-      />
+      {urlId && (
+        <ReactPlayer
+          url={`youtu.be/${urlId}`}
+          playing={false}
+          onDuration={handleDuration}
+          style={{ display: "none" }} // 완전히 숨김 처리
+          onError={(e) => {
+            alert(
+              "동영상 소유자가 외부 재생을 제한했습니다. YouTube에서 직접 시청해주세요."
+            );
+            resetYoutubeInfo();
+            setIsInfoError(true);
+            setUrlId("");
+          }}
+          onReady={() => {
+            setIsInfoError(false);
+          }}
+        />
+      )}
 
       {/* =======================================재생목록 팝업 */}
       {isPlaylistPopupOpen && (
         <div className={styles["playlist-popup"]}>
           <div className={styles["playlist-popup-content"]}>
-            <div className={styles["playlist-popup-left"]}>
+            <div className={styles["playlist-popup-top"]}>
               <h3>Select Playlist</h3>
+              <div
+                className={styles["playlist-popup-close"]}
+                onClick={togglePlaylistPopup}
+              ></div>
+            </div>
+
+            <div className={styles["playlist-popup-center"]}>
               <ul>
                 {mockPlaylists.map((playlist, index) => (
                   <li
@@ -153,13 +229,12 @@ const MusicInfo = () => {
                 ))}
               </ul>
             </div>
-            <div className={styles["playlist-popup-right"]}>
-              <div
-                className={styles["playlist-popup-close"]}
-                onClick={togglePlaylistPopup}
-              ></div>
 
-              <div className={styles["playlist-popup-add"]}></div>
+            <div className={styles["playlist-popup-bottom"]}>
+              <div
+                className={styles["playlist-popup-add"]}
+                onClick={apiTest}
+              ></div>
             </div>
           </div>
         </div>
