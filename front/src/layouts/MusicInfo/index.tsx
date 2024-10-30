@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideoStore";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import { testApi } from "../../apis";
+import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -102,28 +103,26 @@ const MusicInfo = () => {
     setPlaylistPopupOpen(!isPlaylistPopupOpen);
   };
 
-  // ==========================
-  // info페이지 에러 상태
-  const [isInfoError, setIsInfoError] = useState<boolean>(false);
+  // 팝업 관련
+  const [isAddPlaylistPopupOpen, setAddPlaylistPopupOpen] = useState(false); // 추가 팝업 상태 추가
 
-  // const apiTest = () => {
-  //   testApi().then(apiTestResponse);
-  // };
-  // const apiTestResponse = (responseBody: { code: string }) => {
-  //   if (!responseBody) {
-  //     alert("서버로부터 응답이 없습니다.");
-  //     return;
-  //   }
-
-  //   if (responseBody) {
-  //     alert(responseBody);
-  //     return;
-  //   }
-  // };
-
-  const apiTest = () => {
-    testApi().then(apiTestResponse);
+  const craetePlayList = () => {
+    setAddPlaylistPopupOpen(!isAddPlaylistPopupOpen);
   };
+
+  // add 팝업 관련
+  const addPlayListInputRef = useRef<HTMLInputElement>(null); // input ref 생성
+
+  //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
+  const toggleAddPlaylistPopup = () => {
+    if (addPlayListInputRef.current) {
+      const playListName = addPlayListInputRef.current.value;
+      const user = "bob";
+      const requestBody: AddPlayListRequestDto = { playListName, user };
+      testApi(requestBody).then(apiTestResponse);
+    }
+  };
+
   const apiTestResponse = (responseBody: { code: string }) => {
     if (!responseBody) {
       alert("서버로부터 응답이 없습니다.");
@@ -131,10 +130,13 @@ const MusicInfo = () => {
     }
 
     if (responseBody) {
-      alert(responseBody);
+      console.log("서버에서 넘어온 데이터 : " + JSON.stringify(responseBody));
       return;
     }
   };
+  // ==========================
+  // info페이지 에러 상태
+  const [isInfoError, setIsInfoError] = useState<boolean>(false);
 
   return (
     <>
@@ -233,7 +235,34 @@ const MusicInfo = () => {
             <div className={styles["playlist-popup-bottom"]}>
               <div
                 className={styles["playlist-popup-add"]}
-                onClick={apiTest}
+                onClick={craetePlayList}
+              ></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAddPlaylistPopupOpen && (
+        <div className={styles["add-playlist-popup"]}>
+          <div className={styles["add-playlist-popup-content"]}>
+            <div className={styles["add-playlist-popup-top"]}>
+              <h3>Create New Playlist</h3>
+              <div
+                className={styles["add-playlist-popup-close-btn"]}
+                onClick={() => setAddPlaylistPopupOpen(false)}
+              ></div>
+            </div>
+
+            <div className={styles["add-playlist-popup-bottom"]}>
+              <input
+                ref={addPlayListInputRef}
+                type="text"
+                placeholder="New playlist name"
+              />
+
+              <div
+                className={styles["add-playlist-popup-add-btn"]}
+                onClick={toggleAddPlaylistPopup}
               ></div>
             </div>
           </div>
