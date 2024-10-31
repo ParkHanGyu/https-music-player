@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useNavigate } from "react-router-dom";
 import { MAIN_PATH, PLAY_LIST_PATH } from "../../constant";
+import { getPlayListReqeust } from "../../apis";
+import PlayList from "../../types/interface/playList.interface";
+import ResponseDto from "../../apis/response/response.dto";
+import GetPlayListResponseDto from "../../apis/response/PlayList/PlayList.dto";
 
 const Menu = () => {
   const navigator = useNavigate();
@@ -13,6 +17,33 @@ const Menu = () => {
   const homeClickHandler = () => {
     navigator(MAIN_PATH());
   };
+
+  //==========================================
+  //==========================================
+  //==========================================
+  //==========================================
+  useEffect(() => {
+    const userName = "bob";
+    getPlayListReqeust(userName).then(getPlayListResponse);
+  }, []);
+
+  const getPlayListResponse = (
+    responseBody: GetPlayListResponseDto | ResponseDto | null
+  ) => {
+    console.log(responseBody);
+
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    if (responseBody) {
+      // setPlayLists(responseBody);
+      return;
+    }
+  };
+
+  const [playLists, setPlayLists] = useState<PlayList[]>([]);
 
   return (
     <div className={styles["main-left"]}>
@@ -34,6 +65,7 @@ const Menu = () => {
           onClick={playListClickHandler}
         >
           PlayList
+          <div></div>
         </div>
         <div className={styles["main-menu-item3"]}>Youtube</div>
         <div className={styles["main-menu-item4"]}>SoundCloud</div>

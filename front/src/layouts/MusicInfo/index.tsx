@@ -4,7 +4,7 @@ import { useVideoStore } from "../../store/useVideoStore";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
-import { testApi } from "../../apis";
+import { getPlayListReqeust, playListAdd } from "../../apis";
 import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto";
 
 const noEmbed = "https://noembed.com/embed?url=";
@@ -95,6 +95,7 @@ const MusicInfo = () => {
   };
 
   // ===========재생목록 관련
+
   // 재생 목록 데이터 (예시)
   const mockPlaylists = ["My Favorites", "Top Hits", "Chill Vibes"];
   // 재생목록 팝업 상태
@@ -117,13 +118,13 @@ const MusicInfo = () => {
   const toggleAddPlaylistPopup = () => {
     if (addPlayListInputRef.current) {
       const playListName = addPlayListInputRef.current.value;
-      const user = "bob";
-      const requestBody: AddPlayListRequestDto = { playListName, user };
-      testApi(requestBody).then(apiTestResponse);
+      const userName = "bob";
+      const requestBody: AddPlayListRequestDto = { playListName, userName };
+      playListAdd(requestBody).then(playListAddResponse);
     }
   };
 
-  const apiTestResponse = (responseBody: { code: string }) => {
+  const playListAddResponse = (responseBody: { code: string }) => {
     if (!responseBody) {
       alert("서버로부터 응답이 없습니다.");
       return;
@@ -241,7 +242,7 @@ const MusicInfo = () => {
           </div>
         </div>
       )}
-
+      {/* 재생목록 add 화면 */}
       {isAddPlaylistPopupOpen && (
         <div className={styles["add-playlist-popup"]}>
           <div className={styles["add-playlist-popup-content"]}>
