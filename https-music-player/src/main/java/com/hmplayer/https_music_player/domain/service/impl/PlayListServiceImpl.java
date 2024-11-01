@@ -28,7 +28,8 @@ public class PlayListServiceImpl implements PlayListService {
         Playlist playlist = new Playlist(userName,playListName);
 
         playListRepoSerivce.save(playlist);
-        return null;
+
+        return PlayListResponse.success();
     }
     @Override
     public ResponseEntity<? super PlayListResponse> getPlayList(String userName) {

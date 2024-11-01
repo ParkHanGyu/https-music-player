@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { YoutubeInfo } from "../types/interface/youtube.interface";
+import Playlist from "../types/interface/playList.interface";
 
 // Zustand 상태 정의
 interface VideoState {
@@ -14,8 +15,12 @@ interface VideoState {
   playUrl: string | ""; // playBar에 사용하는 Url 상태
   setPlayUrl: (playUrl: string | "") => void; // 비디오 URL을 설정하는 함수
 
-  playBarInfo: YoutubeInfo | null; // 추가된 부분
-  setPlayBarInfo: (info: YoutubeInfo) => void; // 추가된 부분
+  playBarInfo: YoutubeInfo | null;
+  setPlayBarInfo: (info: YoutubeInfo) => void;
+
+  // ============================================
+  playlists: Playlist[]; // 재생목록 데이터 추가
+  setPlaylists: (playlists: Playlist[]) => void; // 재생목록 설정 함수
 }
 
 // Zustand 스토어 생성
@@ -33,4 +38,8 @@ export const useVideoStore = create<VideoState>((set) => ({
 
   playBarInfo: null, // 초기값 설정
   setPlayBarInfo: (info) => set({ playBarInfo: info }), // playInfo 상태를 업데이트하는 함수
+
+  // ============================================
+  playlists: [], // 초기 재생목록은 빈 배열
+  setPlaylists: (playlists) => set({ playlists }), // 재생목록 데이터를 설정하는 함수
 }));

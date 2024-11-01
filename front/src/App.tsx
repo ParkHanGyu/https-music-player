@@ -1,5 +1,3 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Container from "./layouts/Container";
@@ -15,7 +13,10 @@ function App() {
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={TEST_PATH()} element={<TestView2 />} />
-          <Route path={PLAY_LIST_PATH()} element={<PlayList />} />
+          <Route
+            path={PLAY_LIST_PATH(":playlistTitle")}
+            element={<PlayList />}
+          />
         </Route>
       </Routes>
     </Router>

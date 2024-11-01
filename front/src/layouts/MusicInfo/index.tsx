@@ -6,6 +6,8 @@ import useFormatTime from "../../hooks/useFormatTime";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import { getPlayListReqeust, playListAdd } from "../../apis";
 import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto";
+import GetPlayListResponseDto from "../../apis/response/PlayList/PlayList.dto";
+import ResponseDto from "../../apis/response/response.dto";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -20,6 +22,8 @@ const MusicInfo = () => {
     setUrlId,
     setPlayUrl,
     setPlayBarInfo,
+    setPlaylists,
+    playlists,
   } = useVideoStore();
   const formatTime = useFormatTime();
 
@@ -96,8 +100,6 @@ const MusicInfo = () => {
 
   // ===========재생목록 관련
 
-  // 재생 목록 데이터 (예시)
-  const mockPlaylists = ["My Favorites", "Top Hits", "Chill Vibes"];
   // 재생목록 팝업 상태
   const [isPlaylistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
@@ -117,6 +119,11 @@ const MusicInfo = () => {
   //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
   const toggleAddPlaylistPopup = () => {
     if (addPlayListInputRef.current) {
+      if (!addPlayListInputRef.current.value.trim()) {
+        alert("재생목록의 제목을 입력해주세요.");
+        return;
+      }
+
       const playListName = addPlayListInputRef.current.value;
       const userName = "bob";
       const requestBody: AddPlayListRequestDto = { playListName, userName };
@@ -132,9 +139,38 @@ const MusicInfo = () => {
 
     if (responseBody) {
       console.log("서버에서 넘어온 데이터 : " + JSON.stringify(responseBody));
-      return;
+      const userName = "bob";
+      getPlayListReqeust(userName).then(getPlayListResponse);
+      craetePlayList();
     }
   };
+
+  useEffect(() => {
+    const userName = "bob";
+    getPlayListReqeust(userName).then(getPlayListResponse);
+  }, []);
+
+  const getPlayListResponse = (
+    responseBody: GetPlayListResponseDto | ResponseDto | null
+  ) => {
+    console.log(responseBody);
+
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+
+    const playListResult = responseBody as GetPlayListResponseDto;
+
+    setPlaylists(playListResult.playlists);
+  };
+
   // ==========================
   // info페이지 에러 상태
   const [isInfoError, setIsInfoError] = useState<boolean>(false);
@@ -222,12 +258,12 @@ const MusicInfo = () => {
 
             <div className={styles["playlist-popup-center"]}>
               <ul>
-                {mockPlaylists.map((playlist, index) => (
+                {playlists.map((playlist, index) => (
                   <li
                     key={index}
                     onClick={() => console.log(`Added to ${playlist}`)}
                   >
-                    {playlist}
+                    {playlist.title}
                   </li>
                 ))}
               </ul>

@@ -1,4 +1,4 @@
-export default interface PlayList {
+export default interface Playlist {
   playlistId: bigint;
   userName: string;
   title: string;
