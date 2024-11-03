@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useNavigate } from "react-router-dom";
 import { MAIN_PATH, PLAY_LIST_PATH } from "../../constant";
-import { getPlayListReqeust } from "../../apis";
 import Playlist from "../../types/interface/playList.interface";
 import ResponseDto from "../../apis/response/response.dto";
-import GetPlayListResponseDto from "../../apis/response/PlayList/PlayList.dto";
 import { useVideoStore } from "../../store/useVideoStore";
 
 const Menu = () => {

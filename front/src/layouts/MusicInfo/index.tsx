@@ -4,10 +4,15 @@ import { useVideoStore } from "../../store/useVideoStore";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
-import { getPlayListReqeust, playListAdd } from "../../apis";
+import {
+  getPlayListLibraryReqeust,
+  playlistAddMusicReqeust,
+  playlistAddReqeust,
+} from "../../apis";
 import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto";
-import GetPlayListResponseDto from "../../apis/response/PlayList/PlayList.dto";
+import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
+import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -84,6 +89,11 @@ const MusicInfo = () => {
       alert("error");
       return;
     }
+
+    if (!urlId) {
+      alert("음악 검색 후 시도 해주셈");
+      return;
+    }
     setPlayUrl(urlId);
     setIsPlaying(true);
     // youtube데이터를 useVideoStore에 셋팅
@@ -103,6 +113,10 @@ const MusicInfo = () => {
   // 재생목록 팝업 상태
   const [isPlaylistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
+    if (!urlId) {
+      alert("음악 검색 후 시도 해주셈");
+      return;
+    }
     setPlaylistPopupOpen(!isPlaylistPopupOpen);
   };
 
@@ -127,7 +141,7 @@ const MusicInfo = () => {
       const playListName = addPlayListInputRef.current.value;
       const userName = "bob";
       const requestBody: AddPlayListRequestDto = { playListName, userName };
-      playListAdd(requestBody).then(playListAddResponse);
+      playlistAddReqeust(requestBody).then(playListAddResponse);
     }
   };
 
@@ -140,17 +154,17 @@ const MusicInfo = () => {
     if (responseBody) {
       console.log("서버에서 넘어온 데이터 : " + JSON.stringify(responseBody));
       const userName = "bob";
-      getPlayListReqeust(userName).then(getPlayListResponse);
+      getPlayListLibraryReqeust(userName).then(getPlaylistLibraryResponse);
       craetePlayList();
     }
   };
 
   useEffect(() => {
     const userName = "bob";
-    getPlayListReqeust(userName).then(getPlayListResponse);
+    getPlayListLibraryReqeust(userName).then(getPlaylistLibraryResponse);
   }, []);
 
-  const getPlayListResponse = (
+  const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
   ) => {
     console.log(responseBody);
@@ -169,6 +183,21 @@ const MusicInfo = () => {
     const playListResult = responseBody as GetPlayListResponseDto;
 
     setPlaylists(playListResult.playlists);
+  };
+
+  //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
+  const toggleAddMusicToPlaylist = (playlistTitle: string) => {
+    if (!playlistTitle) {
+      return;
+    }
+
+    const userName: string = "bob"; // userName도 string으로 선언
+    const requestBody: AddPlayListToMusicRequestDto = {
+      playlistTitle: playlistTitle, // playlistTitle이 string이어야 함
+      userName: userName, // userName이 string이어야 함
+    };
+
+    playlistAddMusicReqeust(requestBody).then();
   };
 
   // ==========================
@@ -261,7 +290,7 @@ const MusicInfo = () => {
                 {playlists.map((playlist, index) => (
                   <li
                     key={index}
-                    onClick={() => console.log(`Added to ${playlist}`)}
+                    onClick={() => toggleAddMusicToPlaylist(playlist.title)}
                   >
                     {playlist.title}
                   </li>

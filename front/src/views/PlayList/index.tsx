@@ -1,8 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
-import ReactPlayer from "react-player";
+import { getPlaylistMusicReqeust } from "../../apis";
+import ResponseDto from "../../apis/response/response.dto";
+import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
+import { useParams } from "react-router-dom";
 
 const PlayList = () => {
+  const { playlistTitle } = useParams();
+
+  useEffect(() => {
+    if (!playlistTitle) return;
+    getPlaylistMusicReqeust(playlistTitle).then(getPlaylistMusicResponse);
+  }, []);
+
+  const getPlaylistMusicResponse = (
+    responseBody: GetPlayListResponseDto | ResponseDto | null
+  ) => {
+    console.log(responseBody);
+
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+
+    const playListResult = responseBody as GetPlayListResponseDto;
+  };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
