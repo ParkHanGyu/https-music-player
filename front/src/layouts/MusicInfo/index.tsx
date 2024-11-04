@@ -40,10 +40,10 @@ const MusicInfo = () => {
 
   const [youtube, setYoutube] = useState<YoutubeInfo>({
     // info 초기값
-    vid_url: "-",
+    vidUrl: "-",
     author: "-",
     thumb: defaultImage, // 기본 이미지 설정
-    vid_title: "-",
+    vidTitle: "-",
   });
 
   const onSubmit = (urlId: string) => {
@@ -65,20 +65,20 @@ const MusicInfo = () => {
   const setInfo = (data: any) => {
     const { url, author_name, thumbnail_url, title } = data;
     setYoutube({
-      vid_url: url || null,
+      vidUrl: url || null,
       author: author_name || null,
       thumb: thumbnail_url || null,
-      vid_title: title || null,
+      vidTitle: title || null,
     });
   };
 
   // 정보 초기화
   const resetYoutubeInfo = () => {
     setYoutube({
-      vid_url: `youtu.be/${urlId}`,
+      vidUrl: `youtu.be/${urlId}`,
       author: "-",
       thumb: defaultImage, // 기본 이미지 설정
-      vid_title: "-",
+      vidTitle: "-",
     });
     setInfoDuration(0);
   };
@@ -186,16 +186,25 @@ const MusicInfo = () => {
   };
 
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
-  const toggleAddMusicToPlaylist = (playlistTitle: string) => {
-    if (!playlistTitle) {
+  const toggleAddMusicToPlaylist = (
+    youtube: YoutubeInfo,
+    infoDuration: number,
+    playlistId: bigint
+  ) => {
+    if (!youtube) {
       return;
     }
 
     const userName: string = "bob"; // userName도 string으로 선언
+
     const requestBody: AddPlayListToMusicRequestDto = {
-      playlistTitle: playlistTitle, // playlistTitle이 string이어야 함
-      userName: userName, // userName이 string이어야 함
+      userName,
+      youtube,
+      infoDuration,
+      playlistId,
     };
+
+    console.log(requestBody);
 
     playlistAddMusicReqeust(requestBody).then();
   };
@@ -217,7 +226,7 @@ const MusicInfo = () => {
         <div className={styles["music-info-data"]}>
           <div className={styles["music-info-title-box"]}>
             <div className={styles["title-info"]}>Title</div>
-            <div className={styles["title-data"]}>{youtube.vid_title}</div>
+            <div className={styles["title-data"]}>{youtube.vidTitle}</div>
           </div>
           <div className={styles["music-info-artist-box"]}>
             <div className={styles["artist-info"]}>Artist</div>
@@ -290,7 +299,13 @@ const MusicInfo = () => {
                 {playlists.map((playlist, index) => (
                   <li
                     key={index}
-                    onClick={() => toggleAddMusicToPlaylist(playlist.title)}
+                    onClick={() =>
+                      toggleAddMusicToPlaylist(
+                        youtube,
+                        infoDuration,
+                        playlist.playlistId
+                      )
+                    }
                   >
                     {playlist.title}
                   </li>

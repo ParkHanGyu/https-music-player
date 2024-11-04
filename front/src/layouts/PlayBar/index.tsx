@@ -8,6 +8,9 @@ const PlayBar = () => {
   const { isPlaying, setIsPlaying, playUrl, playBarInfo } = useVideoStore();
 
   const handlePlayPause = () => {
+    if (!playBarInfo) {
+      return;
+    }
     setIsPlaying(!isPlaying);
   };
 
@@ -156,7 +159,7 @@ const PlayBar = () => {
         </div>
         <div className={styles["main-wrap-play-info-box"]}>
           <div className={styles["main-wrap-play-title"]}>
-            {playBarInfo?.vid_title}
+            {playBarInfo?.vidTitle}
           </div>
           <div className={styles["main-wrap-play-artist"]}>
             {playBarInfo?.author}

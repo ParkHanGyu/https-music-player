@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PlayListRepoSerivce {
+public class PlayListRepoService {
     private final PlayListRepository playListRepository;
 
     @Transactional
@@ -29,7 +29,4 @@ public class PlayListRepoSerivce {
                 userName);
         return playListRepository.findListByName(userName);
     }
-
-
-
 }

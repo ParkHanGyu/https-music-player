@@ -27,7 +27,7 @@ export const playlistAddReqeust = async (
 
 // 재생목록에 음악 추가
 // + 이어서 작성하기
-const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/add/playList?userName=`;
+const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/add/playList_to_music`;
 export const playlistAddMusicReqeust = async (
   requestBody: AddPlayListToMusicRequestDto
 ) => {

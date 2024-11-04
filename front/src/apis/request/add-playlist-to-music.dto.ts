@@ -1,4 +1,8 @@
+import { YoutubeInfo } from "../../types/interface/youtube.interface";
+
 export default interface AddPlayListToMusicRequestDto {
-  playlistTitle: string;
   userName: string;
+  youtube: YoutubeInfo;
+  infoDuration: number;
+  playlistId: bigint;
 }
