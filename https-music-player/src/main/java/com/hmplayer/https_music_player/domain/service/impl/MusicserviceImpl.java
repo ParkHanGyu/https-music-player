@@ -1,17 +1,24 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
+import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
+import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
+import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.service.Musicservice;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,30 +27,34 @@ import java.util.Optional;
 @Slf4j
 public class MusicserviceImpl implements Musicservice {
     private final MusicRepoService musicRepoService;
-    private final PlayListRepository playListRepository;
+    private final PlayListRepoService playListRepoService;
 
 
     @Override
-    public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request){
-
+    public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request) {
+        YoutubeDto youtube = request.getYoutube();
+        int infoDuration = request.getInfoDuration();
         Long playlistId = request.getPlaylistId();
-        int infoDuration =  request.getInfoDuration();
-        String vidUrl = request.getYoutube().getVidUrl();
-        String author = request.getYoutube().getAuthor();
-        String thumb = request.getYoutube().getThumb();
-        String vidTitle = request.getYoutube().getVidTitle();
 
-//        List<Playlist> playlist = playListRepository.findById(request.getPlaylistId());
+        Optional<Playlist> optionalPlaylist = playListRepoService.findById(playlistId);
+        System.out.println("playListRepository.findById(playlistId) 값 : "+optionalPlaylist);
+        if (optionalPlaylist.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MusicResponse());
+        }
 
-        Optional<Playlist> playlist = playListRepository.findById(playlistId);
+        Playlist playlist = optionalPlaylist.get();
+
+        System.out.println("optionalPlaylist.get() 값 : "+playlist);
 
 
+        Music music = new Music(youtube, infoDuration, null);
+        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,music);
 
-// + music에 데이터들 담아서 save해주기 11월 04일 마무리
-//        Music music = new Music(vidTitle, author, vidUrl, infoDuration, thumb, playlist);
+        music.setPlaylists(Collections.singletonList(playlistMusic));
 
-//        musicRepoService.save(music);
+        musicRepoService.save(music);
 
         return MusicResponse.success();
     }
+
 }

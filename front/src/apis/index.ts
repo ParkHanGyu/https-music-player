@@ -65,11 +65,11 @@ export const getPlayListLibraryReqeust = async (userName: string) => {
 
 // 메뉴에 재생목록 클릭시 음악 리스트 보여주기
 // + 이어서 작성하기
-const GET_PLAYLIST_MUSIC_URL = (playlistTitle: string) =>
-  `${API_DOMAIN}/playList?playlistTitle=${playlistTitle}`;
-export const getPlaylistMusicReqeust = async (playlistTitle: string) => {
+const GET_PLAYLIS_URL = (playlistId: string | bigint) =>
+  `${API_DOMAIN}/playList/${playlistId}`;
+export const getPlaylistMusicReqeust = async (playlistId: string | bigint) => {
   const result = await axios
-    .get(GET_PLAYLIST_MUSIC_URL(playlistTitle))
+    .get(GET_PLAYLIS_URL(playlistId))
     .then((response) => {
       const responseBody = response.data;
       return responseBody;

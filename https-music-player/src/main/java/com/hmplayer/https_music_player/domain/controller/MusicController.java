@@ -27,6 +27,6 @@ public class MusicController {
         System.out.println("서버에서 받아온 getUserName : " + request.getUserName());
         System.out.println("서버에서 받아온 getInfoDuration : " + request.getInfoDuration());
         System.out.println("서버에서 받아온 getPlaylistId : " + request.getPlaylistId());
-        return null;
+        return musicservice.addPlayListToMusic(request);
     }
 }

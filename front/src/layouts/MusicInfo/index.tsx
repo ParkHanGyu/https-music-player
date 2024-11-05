@@ -13,6 +13,7 @@ import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto"
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
+import AddMusicResponseDto from "../../apis/response/Music/add-music.dto";
 
 const noEmbed = "https://noembed.com/embed?url=";
 const urlForm = "https://www.youtube.com/watch?v=";
@@ -111,13 +112,13 @@ const MusicInfo = () => {
   // ===========재생목록 관련
 
   // 재생목록 팝업 상태
-  const [isPlaylistPopupOpen, setPlaylistPopupOpen] = useState(false);
+  const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
     if (!urlId) {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
-    setPlaylistPopupOpen(!isPlaylistPopupOpen);
+    setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
   // 팝업 관련
@@ -206,7 +207,27 @@ const MusicInfo = () => {
 
     console.log(requestBody);
 
-    playlistAddMusicReqeust(requestBody).then();
+    playlistAddMusicReqeust(requestBody).then(playlistAddMusicResponse);
+  };
+
+  const playlistAddMusicResponse = (
+    responseBody: AddMusicResponseDto | ResponseDto | null
+  ) => {
+    console.log(responseBody);
+
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+
+    alert("음악 추가됨");
+    setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
   // ==========================
@@ -283,7 +304,7 @@ const MusicInfo = () => {
       )}
 
       {/* =======================================재생목록 팝업 */}
-      {isPlaylistPopupOpen && (
+      {playlistPopupOpen && (
         <div className={styles["playlist-popup"]}>
           <div className={styles["playlist-popup-content"]}>
             <div className={styles["playlist-popup-top"]}>

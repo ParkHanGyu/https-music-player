@@ -1,5 +1,6 @@
 package com.hmplayer.https_music_player.domain.jpa.entity;
 
+import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,17 +40,16 @@ public class Music {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;  // 생성 날짜
 
-    @ManyToOne(fetch = FetchType.LAZY)  // 재생 목록과의 다대일 관계
-    @JoinColumn(name = "playlist_id", nullable = false)
-    private List<Playlist> playlist;  // 해당 음악이 포함된 재생 목록
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlaylistMusic> playlists;  // 연결된 재생 목록들
 
-    public Music(String title, String author, String imageUrl, int duration, String url, List<Playlist> playlist) {
-        this.title = title;
-        this.author = author;
-        this.imageUrl = imageUrl;
+    public Music(YoutubeDto youtube, int duration, List<PlaylistMusic> playlist) {
+        this.title = youtube.getVidTitle();
+        this.author = youtube.getAuthor();
+        this.imageUrl = youtube.getThumb();
         this.duration = duration;
-        this.url = url;
-        this.playlist = playlist;
+        this.url = youtube.getVidUrl();
+        this.playlists = playlist;
 
         this.createdAt = new Date();  // 생성 시 현재 날짜로 초기화
     }

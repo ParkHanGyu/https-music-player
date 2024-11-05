@@ -27,12 +27,22 @@ public class PlaylistController {
         return playListService.addPlayList(request);
     }
 
-    // 재생목록 불러오기
+    // 재생목록 라이브러리 불러오기
 //    @GetMapping("/playList/{userName}")
     @GetMapping("/playList")
-    public ResponseEntity<? super PlayListResponse> getPlayList(@RequestParam("userName") String userName) {
+    public ResponseEntity<? super PlayListResponse> getPlayListLibrary(@RequestParam("userName") String userName) {
         System.out.println("서버에서 받아온 playListName : " + userName);
-        return playListService.getPlayList(userName);
+        return playListService.getPlayListLibrary(userName);
+    }
+
+    // 재생목록에 있는 노래 불러오기
+    @GetMapping("/playList/{playlistId}")
+    public ResponseEntity<? super PlayListResponse> getPlayList(@PathVariable("playlistId") Long playlistId) {
+        System.out.println("서버에서 받아온 playlistId : " + playlistId);
+        System.out.println("서버에서 받아온 playListService.getPlayList(userName) : " + playListService.getPlayList(playlistId));
+
+
+        return null;
     }
 
 

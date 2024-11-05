@@ -22,7 +22,4 @@ public class MusicResponse extends ResponseDto {
     public static ResponseEntity<MusicResponse> success(){ // 성공
         return ResponseEntity.status(HttpStatus.OK).body(new MusicResponse());
     }
-
-
-
 }

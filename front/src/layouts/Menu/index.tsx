@@ -29,7 +29,7 @@ const Menu = () => {
 
   const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
 
-  const showPlaylistDetail = (playlistTitle: string) => {
+  const showPlaylistDetail = (playlistTitle: bigint) => {
     navigator(PLAY_LIST_PATH(playlistTitle));
   };
 
@@ -53,7 +53,7 @@ const Menu = () => {
               {playlists.map((playlist, index) => (
                 <li
                   key={index}
-                  onClick={() => showPlaylistDetail(playlist.title)}
+                  onClick={() => showPlaylistDetail(playlist.playlistId)}
                 >
                   {playlist.title}
                 </li>
