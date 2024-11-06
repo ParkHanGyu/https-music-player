@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
@@ -37,12 +38,10 @@ public class PlaylistController {
 
     // 재생목록에 있는 노래 불러오기
     @GetMapping("/playList/{playlistId}")
-    public ResponseEntity<? super PlayListResponse> getPlayList(@PathVariable("playlistId") Long playlistId) {
+    public ResponseEntity<? super GetMusicResponse> getPlayList(@PathVariable("playlistId") Long playlistId) {
         System.out.println("서버에서 받아온 playlistId : " + playlistId);
         System.out.println("서버에서 받아온 playListService.getPlayList(userName) : " + playListService.getPlayList(playlistId));
-
-
-        return null;
+        return playListService.getPlayList(playlistId);
     }
 
 

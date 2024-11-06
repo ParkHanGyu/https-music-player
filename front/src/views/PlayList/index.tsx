@@ -4,17 +4,18 @@ import { getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { useParams } from "react-router-dom";
+import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 
 const PlayList = () => {
-  const { playlistTitle } = useParams();
+  const { playlistId } = useParams();
 
   useEffect(() => {
-    if (!playlistTitle) return;
-    getPlaylistMusicReqeust(playlistTitle).then(getPlaylistMusicResponse);
+    if (!playlistId) return;
+    getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
   }, []);
 
   const getPlaylistMusicResponse = (
-    responseBody: GetPlayListResponseDto | ResponseDto | null
+    responseBody: GetMusciResponseDto | ResponseDto | null
   ) => {
     console.log(responseBody);
 
@@ -29,7 +30,7 @@ const PlayList = () => {
       return false;
     }
 
-    const playListResult = responseBody as GetPlayListResponseDto;
+    const playListResult = responseBody as GetMusciResponseDto;
   };
 
   return (

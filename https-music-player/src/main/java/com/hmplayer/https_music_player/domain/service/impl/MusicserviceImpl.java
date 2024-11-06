@@ -47,7 +47,7 @@ public class MusicserviceImpl implements Musicservice {
         System.out.println("optionalPlaylist.get() 값 : "+playlist);
 
 
-        Music music = new Music(youtube, infoDuration, null);
+        Music music = new Music(youtube, infoDuration);
         PlaylistMusic playlistMusic = new PlaylistMusic(playlist,music);
 
         music.setPlaylists(Collections.singletonList(playlistMusic));

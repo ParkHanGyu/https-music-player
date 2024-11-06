@@ -13,10 +13,7 @@ function App() {
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={TEST_PATH()} element={<TestView2 />} />
-          <Route
-            path={PLAY_LIST_PATH(":playlistTitle")}
-            element={<PlayList />}
-          />
+          <Route path={PLAY_LIST_PATH(":playlistId")} element={<PlayList />} />
         </Route>
       </Routes>
     </Router>

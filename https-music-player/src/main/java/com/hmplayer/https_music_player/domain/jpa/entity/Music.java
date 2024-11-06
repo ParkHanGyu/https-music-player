@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "music")
+@ToString
 public class Music {
 
     @Id
@@ -40,16 +42,15 @@ public class Music {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;  // 생성 날짜
 
-    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PlaylistMusic> playlists;  // 연결된 재생 목록들
 
-    public Music(YoutubeDto youtube, int duration, List<PlaylistMusic> playlist) {
+    public Music(YoutubeDto youtube, int duration) {
         this.title = youtube.getVidTitle();
         this.author = youtube.getAuthor();
         this.imageUrl = youtube.getThumb();
         this.duration = duration;
         this.url = youtube.getVidUrl();
-        this.playlists = playlist;
 
         this.createdAt = new Date();  // 생성 시 현재 날짜로 초기화
     }

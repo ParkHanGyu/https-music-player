@@ -72,6 +72,7 @@ export const getPlaylistMusicReqeust = async (playlistId: string | bigint) => {
     .get(GET_PLAYLIS_URL(playlistId))
     .then((response) => {
       const responseBody = response.data;
+      console.log("서버에서 받아온 데이터 : " + JSON.stringify(responseBody));
       return responseBody;
     })
     .catch((error) => {
