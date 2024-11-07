@@ -6,6 +6,7 @@ import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class MusicDto {
 
     private Long musicId;  // 음악 ID
@@ -23,6 +25,16 @@ public class MusicDto {
     private String imageUrl;  // 음악 이미지
     private Date createdAt;  // 생성 날짜
 
+
+    public MusicDto(Music music) {
+        this.musicId = music.getMusicId();
+        this.title = music.getTitle();
+        this.author = music.getAuthor();
+        this.duration = music.getDuration();
+        this.url = music.getUrl();
+        this.imageUrl = music.getImageUrl();
+        this.createdAt = music.getCreatedAt();
+    }
 
     public MusicDto of(Music music){
         this.musicId = music.getMusicId();
@@ -35,13 +47,13 @@ public class MusicDto {
         return this;
     }
 
-    public static List<MusicDto> ofList(List<Music> Musics){
-        List<MusicDto> result = new ArrayList<>();
-        for (Music music : Musics) {
-            result.add(new MusicDto().of(music));
-        }
-        return result;
-    }
+//    public static List<MusicDto> ofList(List<Music> Musics){
+//        List<MusicDto> result = new ArrayList<>();
+//        for (Music music : Musics) {
+//            result.add(new MusicDto().of(music));
+//        }
+//        return result;
+//    }
 
 
 }

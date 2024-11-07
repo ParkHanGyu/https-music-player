@@ -57,57 +57,31 @@ public class PlayListServiceImpl implements PlayListService {
 
     @Override
     public ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId) {
-        Optional<Playlist> filteredPlayList = playListRepoService.findById(playlistId);
+        List<MusicDto> musicsData;
+        try{
+            Optional<Playlist> filteredPlayList = playListRepoService.findById(playlistId);
 
-        if (filteredPlayList.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+            if (filteredPlayList.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
 
-        Playlist playlist = filteredPlayList.get();
+            Playlist playlistAndMusics = filteredPlayList.get();
 
-
-        System.out.println("findById한 값 : "+filteredPlayList.get());
-        System.out.println("filteredPlayList.get().getMusics() 값 : "+filteredPlayList.get().getMusics());
-
-        List<PlaylistMusic> test1 = filteredPlayList.get().getMusics();
-        System.out.println("test1 값 : "+filteredPlayList.get().getMusics());
-
-        List<MusicDto> musicDtos = playlist.getMusics()
-                .stream()
-                .map(PlaylistMusic::getMusic)
-                .map(music -> new MusicDto()) // 명시적으로 생성자 호출
-                .toList();
-
-        System.out.println("musics 값 : "+musicDtos);
+            musicsData = playlistAndMusics.getMusics()
+                    .stream()
+                    .map(PlaylistMusic::getMusic)
+                    .map(MusicDto::new) // 명시적으로 생성자 호출
+                    .toList();
 
 
-        //==============================
+        } catch(Exception e) {
+            e.printStackTrace();
+            return GetMusicResponse.databaseError();
+
+        };
+        return GetMusicResponse.success(musicsData);
 
 
-
-
-        List<Music> musicList1 = filteredPlayList.get().getMusics().stream()
-                .map(PlaylistMusic::getMusic)
-                .collect(Collectors.toList());
-
-        // PlaylistMusic을 가져와서 music 객체만 추출
-        List<Music> musicList2 = filteredPlayList.get().getMusics().stream()
-                .map(playlistMusic -> playlistMusic.getMusic())
-                .collect(Collectors.toList());
-
-        List<Music> musicList3 = playlist.getMusics().stream()
-                .map(PlaylistMusic::getMusic)  // PlaylistMusic에서 Music만 추출
-                .collect(Collectors.toList());
-
-        System.out.println("filteredPlayList.get().getMusics(); 값 : "+filteredPlayList.get().getMusics());
-        System.out.println("musicList1 : "+musicList1);
-        System.out.println("musicList2 : "+musicList2);
-        System.out.println("musicList3 : "+musicList3);
-
-
-
-
-        return GetMusicResponse.success(musicDtos);
     }
 
 }

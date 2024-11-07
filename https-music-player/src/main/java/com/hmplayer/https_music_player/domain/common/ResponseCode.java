@@ -4,4 +4,5 @@ public interface ResponseCode {
 
     String SUCCESS = "SU";
     String DATABASE_ERROR = "DBE";
+    String BAD_REQUEST = "BR";
 }

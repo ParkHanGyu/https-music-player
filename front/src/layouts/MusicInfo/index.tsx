@@ -14,11 +14,7 @@ import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-librar
 import ResponseDto from "../../apis/response/response.dto";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import AddMusicResponseDto from "../../apis/response/Music/add-music.dto";
-
-const noEmbed = "https://noembed.com/embed?url=";
-const urlForm = "https://www.youtube.com/watch?v=";
-const defaultImage =
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
+import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 
 const MusicInfo = () => {
   const {
@@ -26,52 +22,21 @@ const MusicInfo = () => {
     setIsPlaying,
     urlId,
     setUrlId,
-    setPlayUrl,
+    setPlayBarUrl,
     setPlayBarInfo,
     setPlaylists,
     playlists,
   } = useVideoStore();
   const formatTime = useFormatTime();
+  const defaultImage =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
+  const { youtube, setYoutube, getInfo } = useYoutubeInfo(defaultImage); // 커스텀 훅 사용
 
   useEffect(() => {
     if (urlId) {
-      onSubmit(urlId);
-    }
-  }, [urlId]);
-
-  const [youtube, setYoutube] = useState<YoutubeInfo>({
-    // info 초기값
-    vidUrl: "-",
-    author: "-",
-    thumb: defaultImage, // 기본 이미지 설정
-    vidTitle: "-",
-  });
-
-  const onSubmit = (urlId: string) => {
-    if (urlId) {
       getInfo(urlId);
     }
-  };
-
-  const getInfo = (id: string) => {
-    const fullUrl = noEmbed + urlForm + id;
-    fetch(fullUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        setInfo(data);
-        console.log(data);
-      });
-  };
-
-  const setInfo = (data: any) => {
-    const { url, author_name, thumbnail_url, title } = data;
-    setYoutube({
-      vidUrl: url || null,
-      author: author_name || null,
-      thumb: thumbnail_url || null,
-      vidTitle: title || null,
-    });
-  };
+  }, [urlId]);
 
   // 정보 초기화
   const resetYoutubeInfo = () => {
@@ -95,8 +60,10 @@ const MusicInfo = () => {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
-    setPlayUrl(urlId);
-    setIsPlaying(true);
+    setPlayBarUrl(urlId);
+    if (!isPlaying) {
+      setIsPlaying(!isPlaying);
+    }
     // youtube데이터를 useVideoStore에 셋팅
     setPlayBarInfo(youtube);
   };

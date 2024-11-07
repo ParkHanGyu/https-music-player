@@ -39,7 +39,7 @@
   color: #b7b7b7;
   list-style: none;
   margin-bottom: 5px;
-  padding: 5px 7px;
+  padding: 5px;
 
   display: flex;
   align-items: center;
@@ -47,7 +47,6 @@
 
 .main-menu-item2 ul {
   padding-left: 10px;
-  margin-top: 5px;
 }
 
 .main-menu-item2 li:hover {

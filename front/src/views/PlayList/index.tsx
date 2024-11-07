@@ -3,11 +3,25 @@ import styles from "./style.module.css";
 import { getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
-import { useParams } from "react-router-dom";
+import { Form, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
+import Music from "../../types/interface/music.interface";
+import useFormatTime from "../../hooks/useFormatTime";
+import { useVideoStore } from "../../store/useVideoStore";
+import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 
 const PlayList = () => {
   const { playlistId } = useParams();
+  const {
+    setPlayBarUrl,
+    isPlaying,
+    setIsPlaying,
+    playBarInfo,
+    setPlayBarInfo,
+  } = useVideoStore();
+  const formatTime = useFormatTime();
+
+  const { youtube, setYoutube, getInfo } = useYoutubeInfo("");
 
   useEffect(() => {
     if (!playlistId) return;
@@ -31,6 +45,30 @@ const PlayList = () => {
     }
 
     const playListResult = responseBody as GetMusciResponseDto;
+    setMusics(playListResult.musicList);
+  };
+
+  const [musics, setMusics] = useState<Music[]>([]);
+
+  const testBtn = () => {
+    console.log("셋팅된 값 : " + JSON.stringify(youtube));
+  };
+
+  useEffect(() => {
+    setPlayBarInfo(youtube);
+  }, [youtube]);
+
+  const onPlayMusic = (index: number) => {
+    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+
+    if (itemMusicUrl) {
+      getInfo(itemMusicUrl[0]);
+      setPlayBarUrl(itemMusicUrl[0]);
+
+      if (!isPlaying) {
+        setIsPlaying(true);
+      }
+    }
   };
 
   return (
@@ -39,48 +77,48 @@ const PlayList = () => {
         <div className={styles["main-wrap-top"]}>
           <div className={styles["main-right"]}>
             <div className={styles["main-music-data-column-box"]}>
-              <div className={styles["music-column-number"]}>#</div>
+              <div className={styles["music-column-number"]} onClick={testBtn}>
+                #
+              </div>
               <div className={styles["music-column-title"]}>Title</div>
               <div className={styles["music-column-artist"]}>Artist</div>
-              <div className={styles["music-column-album"]}>Album</div>
+              <div className={styles["music-column-createdAt"]}>CreatedAt</div>
               <div className={styles["music-column-duration"]}>Duration</div>
             </div>
 
-            <div className={styles["main-music-data-info-box"]}>
-              <div className={styles["music-info-number"]}>1</div>
+            {musics.map((music, index) => (
+              <div
+                className={styles["main-music-data-info-box"]}
+                onClick={() => onPlayMusic(index)}
+              >
+                <div className={styles["music-info-number"]}>{index + 1}</div>
 
-              <div className={styles["music-info-image-title-box"]}>
-                <div className={styles["music-info-image"]}></div>
+                <div className={styles["music-info-image-title-box"]}>
+                  <div
+                    className={styles["music-info-image"]}
+                    style={{
+                      backgroundImage: `url(${music.imageUrl})`,
+                    }}
+                  ></div>
 
-                <div
-                  className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
-                >
-                  제목1
+                  <div
+                    className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
+                  >
+                    {music.title}
+                  </div>
+                </div>
+
+                <div className={styles["music-info-artist"]}>
+                  {music.author}
+                </div>
+                <div className={styles["music-info-createdAt"]}>
+                  {music.createdAt.split("T")[0]}
+                </div>
+                <div className={styles["music-info-duration"]}>
+                  {formatTime(music.duration)}
                 </div>
               </div>
-
-              <div className={styles["music-info-artist"]}>아티스트1</div>
-              <div className={styles["music-info-album"]}>앨범1</div>
-              <div className={styles["music-info-duration"]}>3:33</div>
-            </div>
-
-            <div className={styles["main-music-data-info-box"]}>
-              <div className={styles["music-info-number"]}>2</div>
-
-              <div className={styles["music-info-image-title-box"]}>
-                <div className={styles["music-info-image"]}></div>
-
-                <div
-                  className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
-                >
-                  제목2
-                </div>
-              </div>
-
-              <div className={styles["music-info-artist"]}>아티스트2</div>
-              <div className={styles["music-info-album"]}>앨범2</div>
-              <div className={styles["music-info-duration"]}>4:12</div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

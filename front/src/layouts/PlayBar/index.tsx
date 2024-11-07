@@ -5,12 +5,9 @@ import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 
 const PlayBar = () => {
-  const { isPlaying, setIsPlaying, playUrl, playBarInfo } = useVideoStore();
+  const { isPlaying, setIsPlaying, playBarUrl, playBarInfo } = useVideoStore();
 
   const handlePlayPause = () => {
-    if (!playBarInfo) {
-      return;
-    }
     setIsPlaying(!isPlaying);
   };
 
@@ -194,7 +191,7 @@ const PlayBar = () => {
               ></div>
               <ReactPlayer
                 ref={playerRef}
-                url={`youtu.be/${playUrl}`}
+                url={`youtu.be/${playBarUrl}`}
                 playing={isPlaying}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
