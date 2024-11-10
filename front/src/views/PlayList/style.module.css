@@ -59,7 +59,7 @@
 .main-music-data-column-box,
 .main-music-data-info-box {
   display: flex;
-  padding: 10px;
+  padding: 2px 0px;
 }
 
 .music-info-number,
@@ -98,16 +98,22 @@
   align-items: center;
   cursor: pointer;
   font-size: 12px;
+  border: 1px solid rgba(0, 0, 0, 0);
 }
 
 .main-music-data-info-box:hover {
   background-color: rgb(33, 33, 33);
 }
 
+.music-target {
+  background-color: rgb(33, 33, 33);
+  border: 1px solid rgb(73, 73, 73);
+}
+
 .music-info-image {
   background-image: url("../../assets/music-info-image.PNG");
-  width: 30px;
-  height: 30px;
+  width: 45px;
+  height: 45px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -124,6 +130,7 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgb(39, 39, 39);
+  padding: 10px 0px;
 }
 
 /* ====================웹 하단=================== */

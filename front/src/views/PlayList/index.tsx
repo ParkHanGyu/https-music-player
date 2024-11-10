@@ -13,6 +13,7 @@ import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 const PlayList = () => {
   const { playlistId } = useParams();
   const {
+    playBarUrl,
     setPlayBarUrl,
     isPlaying,
     setIsPlaying,
@@ -51,11 +52,18 @@ const PlayList = () => {
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    console.log("셋팅된 값 : " + JSON.stringify(youtube));
+    console.log("셋팅된 youtube 값 : " + JSON.stringify(youtube));
+    console.log("셋팅된 playBarUrl 값 : " + JSON.stringify(playBarUrl));
+    // console.log(
+    //   "셋팅된 musics[0].url.includes(playBarUrl) 값 : " +
+    //     JSON.stringify(musics[0].url.includes(playBarUrl))
+    // );
   };
 
   useEffect(() => {
-    setPlayBarInfo(youtube);
+    if (youtube.vidUrl !== "-") {
+      setPlayBarInfo(youtube);
+    }
   }, [youtube]);
 
   const onPlayMusic = (index: number) => {
@@ -88,7 +96,12 @@ const PlayList = () => {
 
             {musics.map((music, index) => (
               <div
-                className={styles["main-music-data-info-box"]}
+                key={index} // key 추가
+                className={
+                  playBarUrl && music.url.includes(playBarUrl) // 재생중인 음악 urlId가 선택한 음악 url에 포함되어 있다면
+                    ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
+                    : styles["main-music-data-info-box"]
+                }
                 onClick={() => onPlayMusic(index)}
               >
                 <div className={styles["music-info-number"]}>{index + 1}</div>

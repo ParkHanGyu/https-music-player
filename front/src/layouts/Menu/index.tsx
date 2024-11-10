@@ -19,13 +19,25 @@ const Menu = () => {
   };
 
   //==========================================
-  //==========================================
-  //==========================================
-  //==========================================
 
   const testValue = () => {
-    console.log("서버에서 가져온 playLists값 : " + JSON.stringify(playlists));
+    const currentUrl = window.location.href;
+    alert("현재 url : " + currentUrl);
+
+    if (currentUrl.includes("play-list")) {
+      alert("url에 play-list가 포함되어 있습니다.");
+    }
+    // console.log("서버에서 가져온 playLists값 : " + JSON.stringify(playlists));
   };
+
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    if (currentUrl.includes("play-list")) {
+      setIsPlaylistDrop(true);
+    } else {
+      setIsPlaylistDrop(false);
+    }
+  }, [window.location.href]);
 
   const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
 
