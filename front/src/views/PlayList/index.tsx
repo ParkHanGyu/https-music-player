@@ -27,7 +27,7 @@ const PlayList = () => {
   useEffect(() => {
     if (!playlistId) return;
     getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
-  }, []);
+  }, [playlistId]);
 
   const getPlaylistMusicResponse = (
     responseBody: GetMusciResponseDto | ResponseDto | null
@@ -79,6 +79,16 @@ const PlayList = () => {
     }
   };
 
+  const [isMusicActionDrop, setIsMusicActionDrop] = useState(false);
+
+  const onMusicAction = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+
+    setIsMusicActionDrop(!isMusicActionDrop);
+  };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -92,6 +102,7 @@ const PlayList = () => {
               <div className={styles["music-column-artist"]}>Artist</div>
               <div className={styles["music-column-createdAt"]}>CreatedAt</div>
               <div className={styles["music-column-duration"]}>Duration</div>
+              <div className={styles["music-column-action-menu"]}></div>
             </div>
 
             {musics.map((music, index) => (
@@ -129,6 +140,20 @@ const PlayList = () => {
                 </div>
                 <div className={styles["music-info-duration"]}>
                   {formatTime(music.duration)}
+                </div>
+
+                <div
+                  className={styles["music-info-action-btn"]}
+                  onClick={(
+                    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+                  ) => onMusicAction(event)}
+                >
+                  {isMusicActionDrop && (
+                    // ul li로 할까 div로 할까?
+                    <ul>
+                      <li>dd</li>
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}

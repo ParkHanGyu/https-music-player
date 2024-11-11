@@ -11,4 +11,6 @@ npm install axios
 ## icon color
 
 #5f5f5f
+
+hover color
 #cccccc

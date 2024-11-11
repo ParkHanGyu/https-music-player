@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MAIN_PATH, PLAY_LIST_PATH } from "../../constant";
-import Playlist from "../../types/interface/playList.interface";
-import ResponseDto from "../../apis/response/response.dto";
 import { useVideoStore } from "../../store/useVideoStore";
 
 const Menu = () => {
   const { playlists } = useVideoStore();
   const navigator = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const playListClickHandler = () => {
     setIsPlaylistDrop(!isPlaylistDrop);
@@ -21,28 +21,35 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    const currentUrl = window.location.href;
-    alert("현재 url : " + currentUrl);
-
-    if (currentUrl.includes("play-list")) {
-      alert("url에 play-list가 포함되어 있습니다.");
-    }
-    // console.log("서버에서 가져온 playLists값 : " + JSON.stringify(playlists));
+    alert("isPlaylistDrop 값 : " + isPlaylistDrop);
+    alert("currentPath 값 : " + currentPath);
   };
 
   useEffect(() => {
-    const currentUrl = window.location.href;
-    if (currentUrl.includes("play-list")) {
+    if (currentPath.includes("play-list")) {
       setIsPlaylistDrop(true);
     } else {
       setIsPlaylistDrop(false);
     }
-  }, [window.location.href]);
+  }, [currentPath]);
 
   const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
 
-  const showPlaylistDetail = (playlistTitle: bigint) => {
-    navigator(PLAY_LIST_PATH(playlistTitle));
+  const showPlaylistDetail = (playlistId: bigint, event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (currentPath !== `/play-list/${playlistId}`) {
+      navigator(PLAY_LIST_PATH(playlistId));
+    }
+    return;
+  };
+
+  const onYoutubeUrl = (pageName: string) => {
+    if (pageName === "youtube") {
+      window.open(`https://www.${pageName}.com`);
+    }
+    if (pageName === "soundcloud") {
+      window.open(`https://www.${pageName}.com`);
+    }
   };
 
   return (
@@ -65,7 +72,9 @@ const Menu = () => {
               {playlists.map((playlist, index) => (
                 <li
                   key={index}
-                  onClick={() => showPlaylistDetail(playlist.playlistId)}
+                  onClick={(
+                    event: React.MouseEvent<HTMLLIElement, MouseEvent>
+                  ) => showPlaylistDetail(playlist.playlistId, event)}
                 >
                   {playlist.title}
                 </li>
@@ -73,8 +82,18 @@ const Menu = () => {
             </ul>
           )}
         </div>
-        <div className={styles["main-menu-item3"]}>Youtube</div>
-        <div className={styles["main-menu-item4"]}>SoundCloud</div>
+        <div
+          className={styles["main-menu-item3"]}
+          onClick={() => onYoutubeUrl("youtube")}
+        >
+          Youtube
+        </div>
+        <div
+          className={styles["main-menu-item4"]}
+          onClick={() => onYoutubeUrl("soundcloud")}
+        >
+          SoundCloud
+        </div>
       </div>
     </div>
   );
