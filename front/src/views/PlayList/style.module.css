@@ -93,7 +93,10 @@
   width: 110px;
 }
 
+/* 더보기 버튼 */
 .music-info-action-btn {
+  position: relative; /* ul 기준 */
+
   display: none;
   margin-left: 130px;
   background-image: url("../../assets/more-button.png");
@@ -104,7 +107,12 @@
   background-repeat: no-repeat;
 }
 
+/* hover 더보기 버튼 보여줌 */
 .main-music-data-info-box:hover .music-info-action-btn {
+  display: block;
+}
+
+.music-info-action-btn:active {
   display: block;
 }
 
@@ -162,17 +170,52 @@
 /* =========================더보기  */
 /* ul + li로 할지 div로 할지 정하고 dropDown 작성하기 */
 .music-info-action-btn ul {
-  border: 1px solid white;
-  width: 100px;
-  height: 100px;
-  /* cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-  color: #b7b7b7;
-  list-style: none;
-  margin-bottom: 5px;
-  padding: 5px;
+  position: absolute; /* 기준인 div로 위치 설정 */
+  border: none;
+  right: 0;
+  min-width: 120px;
+  min-height: 80px;
+  background-color: rgb(25, 25, 25);
+  border-radius: 5%;
+  z-index: 1000;
+  outline: none;
+  padding-left: 0px;
+  margin: 30px 0px 0px 0px;
+  pointer-events: auto;
+}
 
+.music-info-action-btn li {
+  list-style: none;
+  padding: 14px;
+  cursor: pointer;
   display: flex;
-  align-items: center; */
+  align-items: center;
+  color: #dbdbdb;
+}
+
+.music-info-action-btn li:hover {
+  background-color: #333333;
+  border-radius: 5%;
+}
+
+.music-info-action-btn li::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 삭제하기 아이콘 */
+.music-info-action-btn li:last-child::before {
+  background-image: url("../../assets/delete-icon.png"); /* 삭제 아이콘 */
+}
+.music-info-action-btn li:last-child {
+  color: rgb(255, 47, 47);
+}
+
+.music-info-action-btn li:first-child::before {
+  background-image: url("../../assets/modify-icon-hover.png"); /* 수정 아이콘 */
 }

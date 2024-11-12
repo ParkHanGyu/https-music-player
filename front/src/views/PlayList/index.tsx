@@ -1,28 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
-import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
-import { Form, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 import Music from "../../types/interface/music.interface";
 import useFormatTime from "../../hooks/useFormatTime";
 import { useVideoStore } from "../../store/useVideoStore";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 const PlayList = () => {
   const { playlistId } = useParams();
-  const {
-    playBarUrl,
-    setPlayBarUrl,
-    isPlaying,
-    setIsPlaying,
-    playBarInfo,
-    setPlayBarInfo,
-  } = useVideoStore();
+  const { playBarUrl, setPlayBarUrl, isPlaying, setIsPlaying, setPlayBarInfo } =
+    useVideoStore();
   const formatTime = useFormatTime();
 
-  const { youtube, setYoutube, getInfo } = useYoutubeInfo("");
+  const { youtube, getInfo } = useYoutubeInfo("");
 
   useEffect(() => {
     if (!playlistId) return;
@@ -54,10 +48,6 @@ const PlayList = () => {
   const testBtn = () => {
     console.log("셋팅된 youtube 값 : " + JSON.stringify(youtube));
     console.log("셋팅된 playBarUrl 값 : " + JSON.stringify(playBarUrl));
-    // console.log(
-    //   "셋팅된 musics[0].url.includes(playBarUrl) 값 : " +
-    //     JSON.stringify(musics[0].url.includes(playBarUrl))
-    // );
   };
 
   useEffect(() => {
@@ -79,15 +69,22 @@ const PlayList = () => {
     }
   };
 
-  const [isMusicActionDrop, setIsMusicActionDrop] = useState(false);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
+    null
+  );
 
-  const onMusicAction = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    event.stopPropagation();
-
-    setIsMusicActionDrop(!isMusicActionDrop);
+  const onMusicAction = (index: number) => {
+    // 현재 선택된 인덱스가 열려있다면 닫고, 아니면 열기
+    // 열어줄 index를 set해줌
+    setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+    setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
+
+  const onHandleMusicEdit = () => {};
+  const onHandleMusicDelete = () => {};
+
+  // 마우스 외부 클릭 이벤트 커스텀 hook
+  const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
   return (
     <>
@@ -107,7 +104,7 @@ const PlayList = () => {
 
             {musics.map((music, index) => (
               <div
-                key={index} // key 추가
+                key={index}
                 className={
                   playBarUrl && music.url.includes(playBarUrl) // 재생중인 음악 urlId가 선택한 음악 url에 포함되어 있다면
                     ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
@@ -125,6 +122,7 @@ const PlayList = () => {
                     }}
                   ></div>
 
+                  {/* 수정을 위해 title div를 input으로 바꿔주기 */}
                   <div
                     className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                   >
@@ -132,6 +130,7 @@ const PlayList = () => {
                   </div>
                 </div>
 
+                {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
                 <div className={styles["music-info-artist"]}>
                   {music.author}
                 </div>
@@ -142,16 +141,26 @@ const PlayList = () => {
                   {formatTime(music.duration)}
                 </div>
 
+                {/* ================= 더보기 btn ================ */}
                 <div
                   className={styles["music-info-action-btn"]}
                   onClick={(
                     event: React.MouseEvent<HTMLDivElement, MouseEvent>
-                  ) => onMusicAction(event)}
+                  ) => {
+                    event.stopPropagation();
+                    onMusicAction(index); // 클릭된 음악의 인덱스를 전달
+                  }}
+                  style={{
+                    display:
+                      openDropdownIndex === index && isOpen ? "block" : "",
+                  }}
                 >
-                  {isMusicActionDrop && (
-                    // ul li로 할까 div로 할까?
-                    <ul>
-                      <li>dd</li>
+                  {/* 더보기 드롭다운 */}
+                  {/* set해준 값과 index가 일치하면 보여줌  */}
+                  {openDropdownIndex === index && isOpen && (
+                    <ul ref={ref}>
+                      <li onClick={onHandleMusicEdit}>정보수정</li>
+                      <li onClick={onHandleMusicDelete}>삭제</li>
                     </ul>
                   )}
                 </div>
