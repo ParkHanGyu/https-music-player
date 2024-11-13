@@ -46,8 +46,10 @@ const PlayList = () => {
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    console.log("셋팅된 youtube 값 : " + JSON.stringify(youtube));
-    console.log("셋팅된 playBarUrl 값 : " + JSON.stringify(playBarUrl));
+    console.log(
+      "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
+    );
+    console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
   };
 
   useEffect(() => {
@@ -81,11 +83,21 @@ const PlayList = () => {
   };
 
   const onHandleMusicEdit = () => {};
-  const onHandleMusicDelete = () => {};
+  const onHandleMusicDelete = () => {
+    console.log(
+      "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
+    );
+    console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
+  };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenDropdownIndex(null);
+    }
+  }, [isOpen]);
   return (
     <>
       <div className={styles["main-wrap"]}>

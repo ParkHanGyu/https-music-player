@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { MAIN_PATH, PLAY_LIST_PATH } from "../../constant";
+import {
+  MAIN_PATH,
+  PLAY_LIST_PATH,
+  SIGN_IN_PATH,
+  SIGN_UP_PATH,
+} from "../../constant";
 import { useVideoStore } from "../../store/useVideoStore";
 
 const Menu = () => {
@@ -52,10 +57,31 @@ const Menu = () => {
     }
   };
 
+  //      event handler: 로그인 클릭 이벤트 처리 함수       //
+  const onSignInClickHandler = () => {
+    navigator(SIGN_IN_PATH());
+  };
+
+  //      event handler: 로그인 클릭 이벤트 처리 함수       //
+  const onSignUpClickHandler = () => {
+    navigator(SIGN_UP_PATH());
+  };
+
   return (
-    <div className={styles["main-left"]}>
-      <div className={styles["main-search-box"]}>
-        <div className={styles["main-search-btn"]} onClick={testValue}></div>
+    <div className={styles["menu-container"]}>
+      <div className={styles["menu-user-info-box"]}>
+        <div
+          className={styles["menu-user-sign-in-btn"]}
+          onClick={onSignInClickHandler}
+        >
+          SIGN IN
+        </div>
+        <div
+          className={styles["menu-user-sign-up-btn"]}
+          onClick={onSignUpClickHandler}
+        >
+          SIGN UP
+        </div>
       </div>
 
       <div className={styles["main-menu-box"]}>

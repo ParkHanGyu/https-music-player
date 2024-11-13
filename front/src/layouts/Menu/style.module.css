@@ -1,26 +1,30 @@
-.main-left {
+.menu-container {
   background-color: rgb(25, 25, 25);
-  width: 18em;
+  width: 16em;
   font-size: 14px;
   color: #fff;
+  padding: 10px;
 }
-.main-search-box {
+/* user info */
+.menu-user-info-box {
   display: flex;
   width: 200px;
   margin: 11px;
-  border: 1px solid rgb(51, 51, 51);
-  padding: 7px;
   border-radius: 6px;
+  justify-content: space-between;
 }
 
-.main-search-btn {
-  background-image: url("../../assets/magnifier1.png");
-  width: 20px;
-  height: 20px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+.menu-user-sign-in-btn,
+.menu-user-sign-up-btn {
   cursor: pointer;
+  border: none;
+  background-color: rgb(37, 37, 37);
+  border-radius: 10%;
+  width: 85px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .main-menu-box {

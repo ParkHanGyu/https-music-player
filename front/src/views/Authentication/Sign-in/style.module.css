@@ -1,0 +1,80 @@
+.sign-in-wrap {
+  font-size: 14px;
+  color: #fff;
+  width: 100%;
+  height: 58.8em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sign-in-container {
+  padding: 20px 0px;
+  background-color: rgb(28, 28, 28);
+  border-radius: 10px;
+
+  min-width: 30em;
+  height: 30em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sign-in-container-top {
+  font-size: 30px;
+}
+
+.sign-in-password,
+.sign-in-password-check,
+.sign-in-email {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sign-in-btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #e74736;
+
+  width: 315px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+}
+.input-style {
+  padding: 5px 7px;
+  border-radius: 3px;
+  width: 300px;
+  height: 25px;
+  outline: none;
+  border: none;
+}
+
+.input-style:focus {
+  outline: none;
+  border: none;
+}
+
+.sign-in-container-mid {
+  display: flex;
+  flex-direction: column;
+
+  gap: 35px;
+}
+.sign-in-auth-options {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 0px 30px;
+}
+
+.sign-in-container-bottom {
+  height: 150px;
+}

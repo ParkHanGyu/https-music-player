@@ -1,6 +1,9 @@
 import axios from "axios";
 import AddPlayListRequestDto from "./request/add-play-list-request.dto";
 import AddPlayListToMusicRequestDto from "./request/add-playlist-to-music.dto";
+import SignUpRequestDto from "./request/auth/sign-up-request.dto";
+import SignUpResponseDto from "./response/auth/sign-up-response.dto";
+import ResponseDto from "./response/response.dto";
 
 const DOMAIN = "http://localhost:8081";
 const API_DOMAIN = `${DOMAIN}/api`;
@@ -64,7 +67,6 @@ export const getPlayListLibraryReqeust = async (userName: string) => {
 };
 
 // 메뉴에 재생목록 클릭시 음악 리스트 보여주기
-// + 이어서 작성하기
 const GET_PLAYLIS_URL = (playlistId: string | bigint) =>
   `${API_DOMAIN}/playList/${playlistId}`;
 export const getPlaylistMusicReqeust = async (playlistId: string | bigint) => {
@@ -78,6 +80,23 @@ export const getPlaylistMusicReqeust = async (playlistId: string | bigint) => {
     .catch((error) => {
       if (!error) return null;
       const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 회원가입
+const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
+export const signUpRequest = async (requestBody: SignUpRequestDto) => {
+  const result = await axios
+    .post(SIGN_UP_URL(), requestBody)
+    .then((response) => {
+      const responseBody: SignUpResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response.data) return null;
+      const responseBody: ResponseDto = error.response.data;
       return responseBody;
     });
   return result;
