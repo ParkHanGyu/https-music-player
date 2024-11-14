@@ -6,6 +6,8 @@ public interface ResponseMessage {
     String DATABASE_ERROR = "Databse error";
     String BAD_REQUEST = "Bad Request";
     String DUPLICATE_EMAIL = "Duplicate Email";
+    String NON_EXISTED_USER = "존재하지 않는 유저입니다."; // Non existed user
+
 
 
 

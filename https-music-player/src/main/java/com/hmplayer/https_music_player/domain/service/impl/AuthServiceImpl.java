@@ -8,9 +8,9 @@ import com.hmplayer.https_music_player.domain.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepoService userRepoService;
-//    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
     @Override
@@ -29,8 +29,7 @@ public class AuthServiceImpl implements AuthService {
             Optional<User> findExistingUser = userRepoService.existCheckEmail(request.getEmail());
             if (findExistingUser.isPresent()) return SignUpResponse.existingUser();
 
-//            String password = passwordEncoder.encode(request.getPassword());
-            String password = request.getPassword();
+            String password = passwordEncoder.encode(request.getPassword());
             User user = SignUpRequest.of(request, password);
             userRepoService.save(user);
         } catch (Exception e) {

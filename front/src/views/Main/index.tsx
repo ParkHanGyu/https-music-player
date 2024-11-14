@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import MusicInfo from "../../layouts/MusicInfo";
-import { useVideoStore } from "../../store/useVideoStore";
+import { useVideoStore } from "../../store/useVideo.store";
 
 const Main = () => {
   const { setUrlId } = useVideoStore();

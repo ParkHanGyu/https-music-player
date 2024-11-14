@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
-import { useVideoStore } from "../../store/useVideoStore";
+import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 

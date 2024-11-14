@@ -11,8 +11,34 @@ import PlayList from "./views/PlayList";
 import Main from "./views/Main";
 import SignIn from "./views/Authentication/Sign-in";
 import SignUp from "./views/Authentication/Sign-up";
+import { useCookies } from "react-cookie";
+import { useEffect } from "react";
+import useLoginUserStore from "./store/login-user.store";
+import GetUserResponseDto from "./apis/response/user/get-user-info-response.dto";
+import ResponseDto from "./apis/response/response.dto";
+import { ResponseUtil } from "./utils";
+import { getUserInfo } from "./apis";
 
 function App() {
+  const [cookies, setCookies] = useCookies();
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      resetLoginUser();
+      return;
+    }
+    getUserInfo(cookies.accessToken).then(getLoginUserResponse);
+  }, [cookies.accessToken]);
+  const getLoginUserResponse = (
+    responseBody: GetUserResponseDto | ResponseDto | null
+  ) => {
+    ResponseUtil(responseBody);
+    if (!responseBody) return;
+    const { userDto } = responseBody as GetUserResponseDto;
+    setLoginUser(userDto);
+  };
+
   return (
     <Router>
       <Routes>

@@ -7,6 +7,7 @@ npm i --save-dev @types/jquery
 npm install react-player
 npm install zustand
 npm install axios
+npm install react-cookie
 
 ## icon color
 

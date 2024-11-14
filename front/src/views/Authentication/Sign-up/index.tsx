@@ -4,8 +4,12 @@ import SignUpRequestDto from "../../../apis/request/auth/sign-up-request.dto";
 import { signUpRequest } from "../../../apis";
 import SignUpResponseDto from "../../../apis/response/auth/sign-up-response.dto";
 import ResponseDto from "../../../apis/response/response.dto";
+import { useNavigate } from "react-router-dom";
+import { MAIN_PATH, SIGN_IN_PATH } from "../../../constant";
 
 const SignUp = () => {
+  const navigator = useNavigate();
+
   // ========================================== 이메일
   //        state: 이메일 상태            //
   const [email, setEmail] = useState<string>("");
@@ -98,19 +102,12 @@ const SignUp = () => {
     }
 
     console.log("서버에서 반환해준 데이터 : " + JSON.stringify(responseBody));
-    // const { code } = responseBody;
-    // if (code === "DE") {
-    //   setEmailError(true);
-    //   setEmailErrorMessage("이미 존재하는 이메일 주소입니다.");
-    // }
-    // if (code === "DN") {
-    //   setNicknameError(true);
-    //   setNicknameErrorMessage("이미 존재하는 닉네임입니다.");
-    // }
-    // if (code === "VF") alert("모든 값을 입력하세요.");
-    // if (code === "DBE") alert("데이터베이스 오류입니다.");
-    // if (code !== "SU") return;
-    // navigate(SIGN_IN_PATH());
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류입니다.");
+    if (code === "DM") alert("사용중인 이메일 입니다.");
+    if (code !== "SU") return;
+    alert("회원가입 완료");
+    navigator(SIGN_IN_PATH());
   };
   return (
     <>

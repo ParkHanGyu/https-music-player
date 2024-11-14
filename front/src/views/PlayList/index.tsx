@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 import Music from "../../types/interface/music.interface";
 import useFormatTime from "../../hooks/useFormatTime";
-import { useVideoStore } from "../../store/useVideoStore";
+import { useVideoStore } from "../../store/useVideo.store";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import useOutsideClick from "../../hooks/useOutsideClick";
 

@@ -7,9 +7,12 @@ import {
   SIGN_IN_PATH,
   SIGN_UP_PATH,
 } from "../../constant";
-import { useVideoStore } from "../../store/useVideoStore";
+import { useVideoStore } from "../../store/useVideo.store";
+import useLoginUserStore from "../../store/login-user.store";
 
 const Menu = () => {
+  const { loginUser } = useLoginUserStore();
+
   const { playlists } = useVideoStore();
   const navigator = useNavigate();
   const location = useLocation();
@@ -26,8 +29,7 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    alert("isPlaylistDrop 값 : " + isPlaylistDrop);
-    alert("currentPath 값 : " + currentPath);
+    alert("셋팅된 loginUser 값 : " + loginUser);
   };
 
   useEffect(() => {
@@ -119,6 +121,10 @@ const Menu = () => {
           onClick={() => onYoutubeUrl("soundcloud")}
         >
           SoundCloud
+        </div>
+
+        <div className={styles["main-menu-item5"]} onClick={testValue}>
+          TEST
         </div>
       </div>
     </div>
