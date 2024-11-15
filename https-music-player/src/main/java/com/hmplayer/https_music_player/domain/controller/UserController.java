@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/get-info")
+    @GetMapping("/get-info") // 토큰 확인해서 회원 정보 가져오기
     public ResponseEntity<? super GetLoginUserResponse> getLoginUser(@AuthenticationPrincipal String request){
         return userService.getLoginUser(request);
     }

@@ -7,6 +7,7 @@ public interface ResponseMessage {
     String BAD_REQUEST = "Bad Request";
     String DUPLICATE_EMAIL = "Duplicate Email";
     String NON_EXISTED_USER = "존재하지 않는 유저입니다."; // Non existed user
+    String SIGN_IN_FAIL = "Login information mismatch.";
 
 
 

@@ -129,7 +129,7 @@ export const signInRequest = async (requestBody: SignInRequestDto) => {
 const authorication = (accessToken: string) => {
   return { headers: { Authorization: `Bearer ${accessToken}` } };
 };
-// 로그인 회원 정보 가져오기
+// 엑세스토큰으로 회원 정보 가져오기
 const GET_USER_INFO = () => `${API_DOMAIN}/user/get-info`;
 export const getUserInfo = async (accessToken: string) => {
   const result = await axios

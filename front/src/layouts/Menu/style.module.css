@@ -1,17 +1,26 @@
 .menu-container {
   background-color: rgb(25, 25, 25);
-  width: 16em;
+  width: 18em;
   font-size: 14px;
   color: #fff;
-  padding: 10px;
+  /* padding: 10px; */
 }
 /* user info */
-.menu-user-info-box {
+.menu-sign-box {
   display: flex;
-  width: 200px;
-  margin: 11px;
+  width: 230px;
   border-radius: 6px;
   justify-content: space-between;
+  padding: 0px 10px;
+  margin: 20px 0px 10px 0px;
+}
+
+.menu-user-sign-in-btn {
+  margin-left: 10px;
+}
+
+.menu-user-sign-up-btn {
+  margin-right: 10px;
 }
 
 .menu-user-sign-in-btn,
@@ -55,4 +64,40 @@
 
 .main-menu-item2 li:hover {
   background-color: #333333;
+}
+
+.menu-user-info-image {
+  cursor: pointer;
+  background-image: url("../../assets/sum.jpg");
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-size: 180%;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-left: 10px;
+}
+.menu-user-info-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-user-info-box {
+  display: flex;
+  width: 230px;
+  border-radius: 6px;
+  justify-content: space-between;
+  padding: 0px 10px;
+  margin: 20px 0px 10px 0px;
+}
+
+.menu-user-info-logout-btn {
+  cursor: pointer;
+  background-image: url("../../assets/sign-out-hover.png");
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

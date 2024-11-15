@@ -9,8 +9,11 @@ import {
 } from "../../constant";
 import { useVideoStore } from "../../store/useVideo.store";
 import useLoginUserStore from "../../store/login-user.store";
+import { useCookies } from "react-cookie";
 
 const Menu = () => {
+  const [cookies, removeCookie, deleteCookie] = useCookies();
+
   const { loginUser } = useLoginUserStore();
 
   const { playlists } = useVideoStore();
@@ -29,7 +32,7 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    alert("셋팅된 loginUser 값 : " + loginUser);
+    alert("셋팅된 loginUser 값 : " + JSON.stringify(loginUser));
   };
 
   useEffect(() => {
@@ -69,22 +72,45 @@ const Menu = () => {
     navigator(SIGN_UP_PATH());
   };
 
+  const onSignOutBtnClickHandler = () => {
+    if (cookies.accessToken) {
+      deleteCookie("accessToken");
+      deleteCookie("refreshToken");
+      alert("로그아웃 되었습니다.");
+      navigator(MAIN_PATH());
+    }
+  };
+
   return (
     <div className={styles["menu-container"]}>
-      <div className={styles["menu-user-info-box"]}>
-        <div
-          className={styles["menu-user-sign-in-btn"]}
-          onClick={onSignInClickHandler}
-        >
-          SIGN IN
+      {loginUser ? (
+        <div className={styles["menu-user-info-box"]}>
+          <div className={styles["menu-user-info-image"]}></div>
+
+          <div className={styles["menu-user-info-email"]}>
+            {loginUser?.email}
+          </div>
+          <div
+            className={styles["menu-user-info-logout-btn"]}
+            onClick={onSignOutBtnClickHandler}
+          ></div>
         </div>
-        <div
-          className={styles["menu-user-sign-up-btn"]}
-          onClick={onSignUpClickHandler}
-        >
-          SIGN UP
+      ) : (
+        <div className={styles["menu-sign-box"]}>
+          <div
+            className={styles["menu-user-sign-in-btn"]}
+            onClick={onSignInClickHandler}
+          >
+            SIGN IN
+          </div>
+          <div
+            className={styles["menu-user-sign-up-btn"]}
+            onClick={onSignUpClickHandler}
+          >
+            SIGN UP
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={styles["main-menu-box"]}>
         <div className={styles["main-menu-item1"]} onClick={homeClickHandler}>

@@ -1,6 +1,8 @@
 package com.hmplayer.https_music_player.domain.controller;
 
+import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
+import com.hmplayer.https_music_player.domain.dto.response.auth.SignInResponse;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
 import com.hmplayer.https_music_player.domain.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,11 @@ public class AuthController {
     public ResponseEntity<? super SignUpResponse> signUp(@RequestBody SignUpRequest request) {
         System.out.println("클라이언트랑 연결 완료");
         return authService.signUp(request);
+    }
+
+    @PostMapping("/sign-in") // 로그인
+    public ResponseEntity<? super SignInResponse> signIn(@RequestBody SignInRequest request) {
+        return authService.signIn(request);
     }
 
 

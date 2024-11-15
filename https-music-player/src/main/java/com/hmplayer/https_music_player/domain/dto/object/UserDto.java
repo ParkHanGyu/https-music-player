@@ -4,9 +4,11 @@ import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.entity.enumType.ADMIN;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class UserDto {
     private String email;
     private String profileImage;

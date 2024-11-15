@@ -20,7 +20,7 @@ import { ResponseUtil } from "./utils";
 import { getUserInfo } from "./apis";
 
 function App() {
-  const [cookies, setCookies] = useCookies();
+  const [cookies] = useCookies();
   const { setLoginUser, resetLoginUser } = useLoginUserStore();
 
   useEffect(() => {

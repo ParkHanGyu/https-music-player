@@ -55,6 +55,9 @@ const SignIn = () => {
       alert("네트워크 이상입니다.");
       return;
     }
+
+    console.log("받아온 데이터 : " + JSON.stringify(responseBody));
+
     const { code } = responseBody;
     if (code === "DBE") alert("데이터베이스 오류입니다.");
     if (code !== "SU") return;

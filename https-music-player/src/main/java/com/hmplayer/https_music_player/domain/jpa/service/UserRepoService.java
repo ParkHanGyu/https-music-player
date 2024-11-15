@@ -27,6 +27,7 @@ public class UserRepoService {
         return userRepository.findByEmail(email);
     }
 
+
     public User findByEmail(String email){
         return optionalCheck(userRepository.findByEmail(email));
     }

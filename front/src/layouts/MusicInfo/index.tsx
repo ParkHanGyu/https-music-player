@@ -15,6 +15,7 @@ import ResponseDto from "../../apis/response/response.dto";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import AddMusicResponseDto from "../../apis/response/Music/add-music.dto";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
+import useLoginUserStore from "../../store/login-user.store";
 
 const MusicInfo = () => {
   const {
@@ -27,6 +28,8 @@ const MusicInfo = () => {
     setPlaylists,
     playlists,
   } = useVideoStore();
+  const { loginUser } = useLoginUserStore();
+
   const formatTime = useFormatTime();
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
@@ -127,6 +130,7 @@ const MusicInfo = () => {
     }
   };
 
+  // =========== 재생목록 셋팅 수정전===============================
   useEffect(() => {
     const userName = "bob";
     getPlayListLibraryReqeust(userName).then(getPlaylistLibraryResponse);
@@ -152,6 +156,38 @@ const MusicInfo = () => {
 
     setPlaylists(playListResult.playlists);
   };
+
+  // =========== 재생목록 셋팅 수정중 ================================
+
+  // useEffect(() => {
+  //   if(!loginUser) {
+  //     alert("로그인 정보 없음");
+  //     return
+  //   }
+  //   const userEmail = loginUser?.email;
+  //   getPlayListLibraryReqeust(userEmail).then(getPlaylistLibraryResponse);
+  // }, []);
+
+  // const getPlaylistLibraryResponse = (
+  //   responseBody: GetPlayListResponseDto | ResponseDto | null
+  // ) => {
+  //   console.log(responseBody);
+
+  //   if (!responseBody) {
+  //     alert("데이터 없음");
+  //     return;
+  //   }
+
+  //   const { code } = responseBody;
+  //   if (code === "DBE") alert("데이터베이스 오류");
+  //   if (code !== "SU") {
+  //     return false;
+  //   }
+
+  //   const playListResult = responseBody as GetPlayListResponseDto;
+
+  //   setPlaylists(playListResult.playlists);
+  // };
 
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
   const toggleAddMusicToPlaylist = (
