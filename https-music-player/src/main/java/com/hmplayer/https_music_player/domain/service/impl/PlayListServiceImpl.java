@@ -8,8 +8,10 @@ import com.hmplayer.https_music_player.domain.dto.response.music.PlayListRespons
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
+import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
+import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,32 +28,57 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PlayListServiceImpl implements PlayListService {
     private final PlayListRepoService playListRepoService;
+    private final UserRepoService userRepoService;
+
+
 
 
     @Override
-    public ResponseEntity<? super PlayListResponse> addPlayList(AddPlayListRequest request){
+    public ResponseEntity<? super PlayListResponse> createPlayList(AddPlayListRequest request, String email){
 
-        String userName = request.getUserName();
+        User user = userRepoService.findByEmail(email);
+
+        System.out.println("findByEmail해서 찾은 User값 : " + user);
+
         String playListName = request.getPlayListName();
-        Playlist playlist = new Playlist(userName,playListName);
+        System.out.println("클라이언트에서 받은 request.getPlayListName() 값 : " + playListName);
+
+        Playlist playlist = new Playlist(user,playListName);
+        System.out.println("값들을 셋팅한 playList 값 : " + playlist);
+
 
         playListRepoService.save(playlist);
 
         return PlayListResponse.success();
+//        return null;
     }
 
 
     @Override
-    public ResponseEntity<? super PlayListResponse> getPlayListLibrary(String userName) {
+    public ResponseEntity<? super PlayListResponse> getPlayListLibrary(String email) {
+        System.out.println("Impl에서 받은 값 : "+email);
+
+        User user = userRepoService.findByEmail(email);
+
+        System.out.println("user 값 : "+user);
+
+        List<Playlist> filteredPlayList = playListRepoService.findByUserId(user.getId());
+
+        System.out.println("db에서 가져온 playlists 값 : "+filteredPlayList);
+
+
+
+
+
         List<PlayListDto> playLists; // dto 변환할것
-        List<Playlist> filteredPlayList; //
-
-        System.out.println("서버에서 받아온 playListName : " + userName);
-
-        filteredPlayList = playListRepoService.findListByName(userName);
-
         playLists = PlayListDto.ofList(filteredPlayList);
 
+
+//        List<Playlist> filteredPlayList; //
+//        filteredPlayList = playListRepoService.findListByName(userName);
+//
+//        playLists = PlayListDto.ofList(filteredPlayList);
+//
         return PlayListResponse.success(playLists);
     }
 

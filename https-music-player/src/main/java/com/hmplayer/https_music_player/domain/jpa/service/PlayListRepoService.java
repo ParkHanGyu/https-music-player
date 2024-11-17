@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.jpa.service;
 
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
+import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class PlayListRepoService {
         playListRepository.save(playlist);
         log.info("저장된 데이터: 생성일 = {}, ID = {}, 제목 = {}, 사용자 = {}",
                 playlist.getCreateDate(), playlist.getPlaylistId(),
-                playlist.getTitle(), playlist.getUserName());
+                playlist.getTitle(), playlist.getUser());
     }
 
     public List<Playlist> findListByName(String userName) {
@@ -37,4 +38,8 @@ public class PlayListRepoService {
     }
 
 
+
+    public List<Playlist> findByUserId(Long userId) {
+        return playListRepository.findByUserId(userId);
+    }
 }

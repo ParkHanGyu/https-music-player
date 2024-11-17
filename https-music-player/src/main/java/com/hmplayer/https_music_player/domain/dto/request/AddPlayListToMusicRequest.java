@@ -9,7 +9,6 @@ import java.util.List;
 @Setter
 @Getter
 public class AddPlayListToMusicRequest {
-    private String userName;
     private YoutubeDto youtube;
     private int infoDuration;
     private Long playlistId;

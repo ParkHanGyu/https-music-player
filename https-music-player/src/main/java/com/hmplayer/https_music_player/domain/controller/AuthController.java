@@ -22,7 +22,6 @@ public class AuthController {
 
     @PostMapping("/sign-up") // 회원가입
     public ResponseEntity<? super SignUpResponse> signUp(@RequestBody SignUpRequest request) {
-        System.out.println("클라이언트랑 연결 완료");
         return authService.signUp(request);
     }
 

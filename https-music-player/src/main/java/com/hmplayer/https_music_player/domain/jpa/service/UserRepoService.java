@@ -27,10 +27,10 @@ public class UserRepoService {
         return userRepository.findByEmail(email);
     }
 
-
     public User findByEmail(String email){
         return optionalCheck(userRepository.findByEmail(email));
     }
+
     public User optionalCheck(Optional<User> optionalUser) {
         if (optionalUser.isEmpty()) {
             throw new NonExistUserException();

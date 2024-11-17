@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "user_entity")
 @Getter
@@ -21,11 +22,11 @@ public class User {
     private Long id;
 
     // 회원 이메일
-    @Column(name = "User_Email")
+    @Column(name = "User_Email", nullable = false)
     private String email;
 
     // 회원 비밀번호
-    @Column(name = "User_Password")
+    @Column(name = "User_Password", nullable = false)
     private String password;
 
     // 회원 프로필 이미지
@@ -35,6 +36,9 @@ public class User {
     // 회원 권한
     @Enumerated(EnumType.STRING)
     private ADMIN admin = ADMIN.NORMAL;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Playlist> playlists; // 해당 유저의 재생목록들
 
     public void setUser(String email, String password){
         this.email = email;

@@ -13,16 +13,16 @@ import java.util.List;
 public class PlayListDto {
 
     private Long playlistId;
-    private String userName;
     private String title;
     private LocalDateTime createDate;
+    private String userEmail;
 
 
     public PlayListDto of(Playlist playList){
         this.playlistId = playList.getPlaylistId();
-        this.userName = playList.getUserName();
         this.title = playList.getTitle();
         this.createDate = playList.getCreateDate();
+        this.userEmail = playList.getUser().getEmail();
         return this;
     }
 

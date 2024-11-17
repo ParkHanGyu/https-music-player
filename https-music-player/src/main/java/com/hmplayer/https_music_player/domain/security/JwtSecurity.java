@@ -6,6 +6,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.SignatureException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -71,6 +71,29 @@ public class JwtSecurity {
         return claims.getSubject();
     }
 
+
+    // JWT 토큰의 유효성 검사 (boolean 반환)
+    public boolean isValid(String jwt) {
+        Claims claims = null;
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        try {
+            // JWT 토큰의 유효성 검사
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt).getBody();
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우
+            return false;
+        } catch (SignatureException e) {
+            // 서명 오류 발생
+            return false;
+        } catch (Exception e) {
+            // 기타 오류 처리
+            return false;
+        }
+        return true;  // 유효한 토큰인 경우
+    }
 
 
     // JWT에서 이메일 추출

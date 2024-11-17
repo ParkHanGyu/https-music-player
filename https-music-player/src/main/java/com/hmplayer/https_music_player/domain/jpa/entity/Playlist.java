@@ -24,6 +24,10 @@ public class Playlist extends BaseEntity {
     @Column(name = "user_name")
     private String userName;
 
+    @ManyToOne(fetch = FetchType.LAZY) // 재생목록 소유 회원
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(name = "playList_name")
     private String title;
 
@@ -31,8 +35,8 @@ public class Playlist extends BaseEntity {
     private List<PlaylistMusic> musics;  // 연결된 음악들
 
 
-    public Playlist(String userName, String playListName) {
-        this.userName = userName;
+    public Playlist(User user, String playListName) {
+        this.user = user;
         this.title = playListName;
     }
 }

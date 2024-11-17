@@ -7,15 +7,16 @@ import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import {
   getPlayListLibraryReqeust,
   playlistAddMusicReqeust,
-  playlistAddReqeust,
+  playlistCreateReqeust,
 } from "../../apis";
-import AddPlayListRequestDto from "../../apis/request/add-play-list-request.dto";
+import AddPlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import AddMusicResponseDto from "../../apis/response/Music/add-music.dto";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import useLoginUserStore from "../../store/login-user.store";
+import { useCookies } from "react-cookie";
 
 const MusicInfo = () => {
   const {
@@ -29,6 +30,7 @@ const MusicInfo = () => {
     playlists,
   } = useVideoStore();
   const { loginUser } = useLoginUserStore();
+  const [cookies, setCookie] = useCookies();
 
   const formatTime = useFormatTime();
   const defaultImage =
@@ -110,9 +112,12 @@ const MusicInfo = () => {
       }
 
       const playListName = addPlayListInputRef.current.value;
-      const userName = "bob";
-      const requestBody: AddPlayListRequestDto = { playListName, userName };
-      playlistAddReqeust(requestBody).then(playListAddResponse);
+
+      const requestBody: AddPlayListRequestDto = { playListName };
+
+      playlistCreateReqeust(requestBody, cookies.accessToken).then(
+        playListAddResponse
+      );
     }
   };
 
@@ -124,17 +129,21 @@ const MusicInfo = () => {
 
     if (responseBody) {
       console.log("서버에서 넘어온 데이터 : " + JSON.stringify(responseBody));
-      const userName = "bob";
-      getPlayListLibraryReqeust(userName).then(getPlaylistLibraryResponse);
+      getPlayListLibraryReqeust(cookies.accessToken).then(
+        getPlaylistLibraryResponse
+      );
       craetePlayList();
     }
   };
 
   // =========== 재생목록 셋팅 수정전===============================
   useEffect(() => {
-    const userName = "bob";
-    getPlayListLibraryReqeust(userName).then(getPlaylistLibraryResponse);
-  }, []);
+    if (cookies.accessToken) {
+      getPlayListLibraryReqeust(cookies.accessToken).then(
+        getPlaylistLibraryResponse
+      );
+    }
+  }, [cookies.accessToken]);
 
   const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
@@ -142,7 +151,6 @@ const MusicInfo = () => {
     console.log(responseBody);
 
     if (!responseBody) {
-      alert("데이터 없음");
       return;
     }
 
@@ -199,18 +207,18 @@ const MusicInfo = () => {
       return;
     }
 
-    const userName: string = "bob"; // userName도 string으로 선언
-
     const requestBody: AddPlayListToMusicRequestDto = {
-      userName,
       youtube,
       infoDuration,
       playlistId,
     };
 
-    console.log(requestBody);
+    console.log("음악 추가 api requestBody 값 :  " + requestBody);
+    console.log("음악 추가 api accessToken 값 :  " + cookies.accessToken);
 
-    playlistAddMusicReqeust(requestBody).then(playlistAddMusicResponse);
+    playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
+      playlistAddMusicResponse
+    );
   };
 
   const playlistAddMusicResponse = (

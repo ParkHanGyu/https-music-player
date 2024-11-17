@@ -7,5 +7,4 @@ import lombok.Setter;
 @Getter
 public class AddPlayListRequest {
     private String playListName;
-    private String userName;
 }
