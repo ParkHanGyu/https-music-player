@@ -7,7 +7,6 @@ const Main = () => {
   const { setUrlId } = useVideoStore();
 
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
@@ -21,11 +20,19 @@ const Main = () => {
         if (urlMatch) {
           setUrlId(urlMatch[0]);
         } else {
+          return;
+        }
+      }
+      if (!videoUrl.includes("www.")) {
+        const urlMatch = videoUrl.match(
+          /(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/
+        );
+        if (urlMatch) {
+          setUrlId(urlMatch[0]);
+        } else {
           alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
           return;
         }
-      } else {
-        setIsPlaying(!isPlaying);
       }
     } else {
       // "youtu"를 포함하지 않은 경우

@@ -21,8 +21,8 @@ public class Playlist extends BaseEntity {
     @Column(name = "playList_id")
     private Long playlistId;
 
-    @Column(name = "user_name")
-    private String userName;
+//    @Column(name = "user_name")
+//    private String userName;
 
     @ManyToOne(fetch = FetchType.LAZY) // 재생목록 소유 회원
     @JoinColumn(name = "user_id", nullable = false)

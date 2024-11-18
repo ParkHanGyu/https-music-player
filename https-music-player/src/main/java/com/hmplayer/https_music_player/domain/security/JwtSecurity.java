@@ -54,7 +54,7 @@ public class JwtSecurity {
 
 
 
-    public String validate(String jwt){ // JWT 토큰의 유효성 검사
+    public String validate(String jwt){ // JWT 토큰의 유효성 검사 후 email반환
         Claims claims = null;
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         try{

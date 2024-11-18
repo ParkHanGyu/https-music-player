@@ -13,10 +13,11 @@ import AddPlayListRequestDto from "../../apis/request/create-play-list-request.d
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
-import AddMusicResponseDto from "../../apis/response/Music/add-music.dto";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
-import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
+import { useNavigate, useParams } from "react-router-dom";
+import useLoginUserStore from "../../store/login-user.store";
+import { SIGN_IN_PATH } from "../../constant";
 
 const MusicInfo = () => {
   const {
@@ -29,10 +30,12 @@ const MusicInfo = () => {
     setPlaylists,
     playlists,
   } = useVideoStore();
-  const { loginUser } = useLoginUserStore();
-  const [cookies, setCookie] = useCookies();
-
+  const [cookies] = useCookies();
+  const { playlistId } = useParams();
   const formatTime = useFormatTime();
+  const navigator = useNavigate();
+  const { loginUser } = useLoginUserStore();
+
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
   const { youtube, setYoutube, getInfo } = useYoutubeInfo(defaultImage); // 커스텀 훅 사용
@@ -90,6 +93,11 @@ const MusicInfo = () => {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
+    if (!loginUser) {
+      alert("로그인해주세요");
+      navigator(SIGN_IN_PATH());
+      return;
+    }
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
@@ -126,24 +134,17 @@ const MusicInfo = () => {
       alert("서버로부터 응답이 없습니다.");
       return;
     }
-
-    if (responseBody) {
-      console.log("서버에서 넘어온 데이터 : " + JSON.stringify(responseBody));
-      getPlayListLibraryReqeust(cookies.accessToken).then(
-        getPlaylistLibraryResponse
-      );
-      craetePlayList();
-    }
+    craetePlayList();
   };
 
-  // =========== 재생목록 셋팅 수정전===============================
+  // =========== 재생목록 셋팅 ===============================
   useEffect(() => {
     if (cookies.accessToken) {
       getPlayListLibraryReqeust(cookies.accessToken).then(
         getPlaylistLibraryResponse
       );
     }
-  }, [cookies.accessToken]);
+  }, [cookies.accessToken, isAddPlaylistPopupOpen]);
 
   const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
@@ -165,55 +166,15 @@ const MusicInfo = () => {
     setPlaylists(playListResult.playlists);
   };
 
-  // =========== 재생목록 셋팅 수정중 ================================
-
-  // useEffect(() => {
-  //   if(!loginUser) {
-  //     alert("로그인 정보 없음");
-  //     return
-  //   }
-  //   const userEmail = loginUser?.email;
-  //   getPlayListLibraryReqeust(userEmail).then(getPlaylistLibraryResponse);
-  // }, []);
-
-  // const getPlaylistLibraryResponse = (
-  //   responseBody: GetPlayListResponseDto | ResponseDto | null
-  // ) => {
-  //   console.log(responseBody);
-
-  //   if (!responseBody) {
-  //     alert("데이터 없음");
-  //     return;
-  //   }
-
-  //   const { code } = responseBody;
-  //   if (code === "DBE") alert("데이터베이스 오류");
-  //   if (code !== "SU") {
-  //     return false;
-  //   }
-
-  //   const playListResult = responseBody as GetPlayListResponseDto;
-
-  //   setPlaylists(playListResult.playlists);
-  // };
-
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
   const toggleAddMusicToPlaylist = (
-    youtube: YoutubeInfo,
-    infoDuration: number,
-    playlistId: bigint
+    requestBody: AddPlayListToMusicRequestDto
   ) => {
-    if (!youtube) {
-      return;
-    }
+    if (!requestBody.youtube) return;
 
-    const requestBody: AddPlayListToMusicRequestDto = {
-      youtube,
-      infoDuration,
-      playlistId,
-    };
-
-    console.log("음악 추가 api requestBody 값 :  " + requestBody);
+    console.log(
+      "음악 추가 api requestBody 값 :  " + JSON.stringify(requestBody)
+    );
     console.log("음악 추가 api accessToken 값 :  " + cookies.accessToken);
 
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
@@ -221,10 +182,33 @@ const MusicInfo = () => {
     );
   };
 
-  const playlistAddMusicResponse = (
-    responseBody: AddMusicResponseDto | ResponseDto | null
-  ) => {
-    console.log(responseBody);
+  // const toggleAddMusicToPlaylist = (
+  //   youtube: YoutubeInfo,
+  //   infoDuration: number,
+  //   playlistId: bigint
+  // ) => {
+  //   if (!youtube) {
+  //     return;
+  //   }
+
+  //   const requestBody: AddPlayListToMusicRequestDto = {
+  //     youtube,
+  //     infoDuration,
+  //     playlistId,
+  //   };
+
+  //   console.log("음악 추가 api requestBody 값 :  " + requestBody);
+  //   console.log("음악 추가 api accessToken 값 :  " + cookies.accessToken);
+
+  //   playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
+  //     playlistAddMusicResponse
+  //   );
+  // };
+
+  const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
+    console.log(
+      "음악 추가 api 클라이언트 Response 값 : " + JSON.stringify(responseBody)
+    );
 
     if (!responseBody) {
       alert("데이터 없음");
@@ -239,6 +223,17 @@ const MusicInfo = () => {
 
     alert("음악 추가됨");
     setPlaylistPopupOpen(!playlistPopupOpen);
+
+    const specificUrl = `/play-list/${playlistId}`;
+    const currentUrl = window.location.pathname;
+
+    // navigator(0);
+    if (currentUrl === specificUrl) {
+      alert("url이 같음");
+      // navigator(-1);
+      // window.location.replace(window.location.href);
+      //  + playList 새로고침 하게 하기
+    }
   };
 
   // ==========================
@@ -332,11 +327,11 @@ const MusicInfo = () => {
                   <li
                     key={index}
                     onClick={() =>
-                      toggleAddMusicToPlaylist(
-                        youtube,
-                        infoDuration,
-                        playlist.playlistId
-                      )
+                      toggleAddMusicToPlaylist({
+                        youtube: youtube,
+                        infoDuration: infoDuration,
+                        playlistId: playlist.playlistId,
+                      })
                     }
                   >
                     {playlist.title}

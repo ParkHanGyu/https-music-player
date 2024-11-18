@@ -20,6 +20,7 @@ public class UserController {
 
     @GetMapping("/get-info") // 토큰 확인해서 회원 정보 가져오기
     public ResponseEntity<? super GetLoginUserResponse> getLoginUser(@AuthenticationPrincipal String request){
+        System.out.println("받아온 데이터 : "+ request);
         return userService.getLoginUser(request);
     }
 }

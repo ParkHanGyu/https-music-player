@@ -42,31 +42,23 @@ public class MusicserviceImpl implements Musicservice {
 
         jwtSecurity.isValid(pureToken); // 엑세스 토큰 유효하니?
 
-        System.out.println("jwtSecurity.validate(token) 값 : "+jwtSecurity.validate(pureToken));
-
         YoutubeDto youtube = request.getYoutube();
         int infoDuration = request.getInfoDuration();
         Long playlistId = request.getPlaylistId();
 
-
-
         Optional<Playlist> optionalPlaylist = playListRepoService.findById(playlistId);
-        System.out.println("playListRepository.findById(playlistId) 값 : "+optionalPlaylist);
         if (optionalPlaylist.isEmpty()) {
             return ResponseEntity.badRequest().body(new MusicResponse());
         }
 
         Playlist playlist = optionalPlaylist.get();
 
-        System.out.println("optionalPlaylist.get() 값 : "+playlist);
+        Music addMusicInfo = new Music(youtube, infoDuration);
+        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo);
 
+        addMusicInfo.setPlaylists(Collections.singletonList(playlistMusic));
 
-        Music music = new Music(youtube, infoDuration);
-        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,music);
-
-        music.setPlaylists(Collections.singletonList(playlistMusic));
-
-        musicRepoService.save(music);
+        musicRepoService.save(addMusicInfo);
 
         return MusicResponse.success();
     }

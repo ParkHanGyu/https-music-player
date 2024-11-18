@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface PlayListRepository extends JpaRepository<Playlist, Long> {
 
-    @Query("SELECT c FROM Playlist c WHERE c.userName = :userName")
-    List<Playlist> findListByName(@Param("userName") String userName);
+//    @Query("SELECT c FROM Playlist c WHERE c.userName = :userName")
+//    List<Playlist> findListByName(@Param("userName") String userName);
 
     List<Playlist> findByUserId(Long userId);
 }
