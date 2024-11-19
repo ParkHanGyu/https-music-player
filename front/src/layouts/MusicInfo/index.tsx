@@ -182,29 +182,6 @@ const MusicInfo = () => {
     );
   };
 
-  // const toggleAddMusicToPlaylist = (
-  //   youtube: YoutubeInfo,
-  //   infoDuration: number,
-  //   playlistId: bigint
-  // ) => {
-  //   if (!youtube) {
-  //     return;
-  //   }
-
-  //   const requestBody: AddPlayListToMusicRequestDto = {
-  //     youtube,
-  //     infoDuration,
-  //     playlistId,
-  //   };
-
-  //   console.log("음악 추가 api requestBody 값 :  " + requestBody);
-  //   console.log("음악 추가 api accessToken 값 :  " + cookies.accessToken);
-
-  //   playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
-  //     playlistAddMusicResponse
-  //   );
-  // };
-
   const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
     console.log(
       "음악 추가 api 클라이언트 Response 값 : " + JSON.stringify(responseBody)
@@ -224,16 +201,17 @@ const MusicInfo = () => {
     alert("음악 추가됨");
     setPlaylistPopupOpen(!playlistPopupOpen);
 
-    const specificUrl = `/play-list/${playlistId}`;
-    const currentUrl = window.location.pathname;
+    //  + playList 새로고침 하게 하기
+
+    // const specificUrl = `/play-list/${playlistId}`;
+    // const currentUrl = window.location.pathname;
 
     // navigator(0);
-    if (currentUrl === specificUrl) {
-      alert("url이 같음");
-      // navigator(-1);
-      // window.location.replace(window.location.href);
-      //  + playList 새로고침 하게 하기
-    }
+    // if (currentUrl === specificUrl) {
+    // alert("url이 같음");
+    // navigator(-1);
+    // window.location.replace(window.location.href);
+    // }
   };
 
   // ==========================

@@ -2,25 +2,40 @@ import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 import Music from "../../types/interface/music.interface";
 import useFormatTime from "../../hooks/useFormatTime";
 import { useVideoStore } from "../../store/useVideo.store";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import useLoginUserStore from "../../store/login-user.store";
+import { MAIN_PATH } from "../../constant";
 
 const PlayList = () => {
   const { playlistId } = useParams();
-  const { playBarUrl, setPlayBarUrl, isPlaying, setIsPlaying, setPlayBarInfo } =
-    useVideoStore();
+  const {
+    playBarUrl,
+    setPlayBarUrl,
+    setPlayBarInfo,
+    setNowPlayingPlaylistID,
+    nowPlayingPlaylistID,
+  } = useVideoStore();
   const formatTime = useFormatTime();
 
   const { youtube, getInfo } = useYoutubeInfo("");
+  const { loginUser } = useLoginUserStore();
+  const navigator = useNavigate();
 
   useEffect(() => {
-    if (!playlistId) return;
-    getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
+    if (!loginUser) {
+      alert("잘못된 접근입니다.");
+      navigator(MAIN_PATH());
+      return;
+    }
+    if (playlistId) {
+      getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
+    }
   }, [playlistId]);
 
   const getPlaylistMusicResponse = (
@@ -50,6 +65,8 @@ const PlayList = () => {
       "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
     );
     console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
+    console.log("셋팅된 musics 값 : " + JSON.stringify(musics));
+    alert(nowPlayingPlaylistID);
   };
 
   useEffect(() => {
@@ -64,10 +81,7 @@ const PlayList = () => {
     if (itemMusicUrl) {
       getInfo(itemMusicUrl[0]);
       setPlayBarUrl(itemMusicUrl[0]);
-
-      if (!isPlaying) {
-        setIsPlaying(true);
-      }
+      setNowPlayingPlaylistID(playlistId);
     }
   };
 
@@ -118,7 +132,9 @@ const PlayList = () => {
               <div
                 key={index}
                 className={
-                  playBarUrl && music.url.includes(playBarUrl) // 재생중인 음악 urlId가 선택한 음악 url에 포함되어 있다면
+                  nowPlayingPlaylistID === playlistId &&
+                  playBarUrl &&
+                  music.url.includes(playBarUrl) // 재생중인 음악 urlId가 선택한 음악 url에 포함되어 있다면
                     ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
                     : styles["main-music-data-info-box"]
                 }

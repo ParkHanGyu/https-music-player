@@ -12,7 +12,7 @@ import Main from "./views/Main";
 import SignIn from "./views/Authentication/Sign-in";
 import SignUp from "./views/Authentication/Sign-up";
 import { useCookies } from "react-cookie";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useLoginUserStore from "./store/login-user.store";
 import GetUserResponseDto from "./apis/response/user/get-user-info-response.dto";
 import ResponseDto from "./apis/response/response.dto";
@@ -22,10 +22,12 @@ import { getUserInfo } from "./apis";
 function App() {
   const [cookies] = useCookies();
   const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     if (!cookies.accessToken) {
       resetLoginUser();
+      setIsLoading(false); // 로그인 정보 없으면 로딩 상태 끝내기
       return;
     }
     getUserInfo(cookies.accessToken).then(getLoginUserResponse);
@@ -37,7 +39,13 @@ function App() {
     if (!responseBody) return;
     const { userDto } = responseBody as GetUserResponseDto;
     setLoginUser(userDto);
+    setIsLoading(false); // 로그인 정보 가져왔으면 로딩 끝내기
   };
+
+  // 로딩 중이면 PlayList 페이지를 렌더링하지 않음
+  if (isLoading) {
+    return <div>Loading...</div>; // 로딩 중 표시
+  }
 
   return (
     <Router>

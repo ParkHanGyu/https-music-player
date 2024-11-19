@@ -8,7 +8,9 @@ const PlayBar = () => {
   const { isPlaying, setIsPlaying, playBarUrl, playBarInfo } = useVideoStore();
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    if (!isBuffering) {
+      setIsPlaying(!isPlaying);
+    }
   };
 
   const formatTime = useFormatTime();
@@ -138,11 +140,27 @@ const PlayBar = () => {
     };
   }, [soundDropdownOpen]);
 
-  useEffect(() => {
-    console.log(JSON.stringify(playBarInfo));
-  }, [playBarInfo]);
+  // useEffect(() => {
+  //   console.log(JSON.stringify(playBarInfo));
+  // }, [playBarInfo]);
 
   // ==============================================사운드바 끝
+  const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
+  const handleBuffer = () => {
+    console.log("handleBuffer");
+    setIsBuffering(true); // 버퍼링 시작
+  };
+
+  const handleBufferEnd = () => {
+    console.log("handleBufferEnd");
+    setIsBuffering(false); // 버퍼링 종료
+  };
+
+  const handleReady = () => {
+    console.log("handleReady"); // 비디오 준비 완료 시 호출
+    setIsPlaying(true);
+  };
+
   return (
     <div className={styles["main-wrap-bottom"]}>
       <div className={styles["main-wrap-bottom-left"]}>
@@ -193,6 +211,9 @@ const PlayBar = () => {
                 ref={playerRef}
                 url={`youtu.be/${playBarUrl}`}
                 playing={isPlaying}
+                onBuffer={handleBuffer} // 버퍼링 시작 이벤트
+                onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트
+                onReady={handleReady}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
                 volume={volume}

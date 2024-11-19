@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
-import MusicInfo from "../../layouts/MusicInfo";
 import { useVideoStore } from "../../store/useVideo.store";
 
 const Main = () => {
@@ -14,30 +13,54 @@ const Main = () => {
 
   const videoSearch = () => {
     // "youtu"을 포함한 경우
+    // if (videoUrl.includes("youtu")) {
+    // // www으로 시작할때
+    // if (videoUrl.includes("www.")) {
+    //   const urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
+    //   if (urlMatch) {
+    //     setUrlId(urlMatch[0]);
+    //   } else {
+    //     return;
+    //   }
+    // }
+
+    // // www으로 시작하지 않을때
+    // if (!videoUrl.includes("www.")) {
+    //   const urlMatch = videoUrl.match(
+    //     /(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/
+    //   );
+
+    //   if (urlMatch) {
+    //     setUrlId(urlMatch[0]);
+    //   } else {
+    //     alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
+    //     return;
+    //   }
+    // }
+
+    // "youtu"을 포함한 경우
     if (videoUrl.includes("youtu")) {
+      let urlMatch; // urlMatch를 조건문 밖에서 선언
+
+      // www이 포함되어 있을때
       if (videoUrl.includes("www.")) {
-        const urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-        if (urlMatch) {
-          setUrlId(urlMatch[0]);
-        } else {
-          return;
-        }
+        urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
       }
-      if (!videoUrl.includes("www.")) {
-        const urlMatch = videoUrl.match(
-          /(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/
-        );
-        if (urlMatch) {
-          setUrlId(urlMatch[0]);
-        } else {
-          alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
-          return;
-        }
+
+      // www이 없고 ?si=를 포함할 경우
+      else if (videoUrl.includes("?si=")) {
+        urlMatch = videoUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
       }
-    } else {
-      // "youtu"를 포함하지 않은 경우
-      alert("유튜브 url이 아님");
-      return;
+      // https://youtu.be/로 시작할 때
+      else {
+        urlMatch = videoUrl.match(/(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/);
+      }
+
+      if (urlMatch) {
+        setUrlId(urlMatch[0]);
+      } else {
+        return;
+      }
     }
   };
 

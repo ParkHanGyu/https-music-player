@@ -68,14 +68,15 @@
 
 .menu-user-info-image {
   cursor: pointer;
-  background-image: url("../../assets/sum.jpg");
+  background-image: url("../../assets/default-profile.png");
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-size: 180%;
+  /* background-size: 180%; */
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  margin-left: 10px;
+  margin: auto;
 }
 .menu-user-info-email {
   display: flex;
@@ -86,10 +87,9 @@
 .menu-user-info-box {
   display: flex;
   width: 230px;
-  border-radius: 6px;
   justify-content: space-between;
-  padding: 0px 10px;
-  margin: 20px 0px 10px 0px;
+  padding: 20px 10px;
+  background-color: #292929;
 }
 
 .menu-user-info-logout-btn {
@@ -100,4 +100,5 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  margin: auto;
 }

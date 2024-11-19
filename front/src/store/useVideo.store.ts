@@ -21,12 +21,14 @@ interface VideoState {
   // ============================================
   playlists: Playlist[]; // 재생목록 데이터 추가
   setPlaylists: (playlists: Playlist[]) => void; // 재생목록 설정 함수
+
+  nowPlayingPlaylistID: string | undefined;
+  setNowPlayingPlaylistID: (nowPlayingPlaylistID: string | undefined) => void;
 }
 
 // Zustand 스토어 생성
 export const useVideoStore = create<VideoState>((set) => ({
   isPlaying: false, // 초기 재생 상태는 false (재생 중 아님)
-
   setIsPlaying: (playing) => set({ isPlaying: playing }), // 재생 상태 설정 함수 정의
 
   // ========================================================================
@@ -42,4 +44,9 @@ export const useVideoStore = create<VideoState>((set) => ({
   // ============================================
   playlists: [], // 초기 재생목록은 빈 배열
   setPlaylists: (playlists) => set({ playlists }), // 재생목록 데이터를 설정하는 함수
+
+  // 현재 재생중인 playList ID 설정
+  nowPlayingPlaylistID: "",
+  setNowPlayingPlaylistID: (nowPlayingPlaylistID) =>
+    set({ nowPlayingPlaylistID: nowPlayingPlaylistID }),
 }));

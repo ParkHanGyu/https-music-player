@@ -85,7 +85,14 @@ const Menu = () => {
     <div className={styles["menu-container"]}>
       {loginUser ? (
         <div className={styles["menu-user-info-box"]}>
-          <div className={styles["menu-user-info-image"]}></div>
+          <div
+            className={styles["menu-user-info-image"]}
+            style={
+              loginUser && loginUser.profileImage
+                ? { backgroundImage: `url(${loginUser.profileImage})` }
+                : {}
+            }
+          ></div>
 
           <div className={styles["menu-user-info-email"]}>
             {loginUser?.email}
