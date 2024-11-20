@@ -3,9 +3,20 @@ import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
+import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 
 const PlayBar = () => {
-  const { isPlaying, setIsPlaying, playBarUrl, playBarInfo } = useVideoStore();
+  const {
+    isPlaying,
+    setIsPlaying,
+    playBarUrl,
+    setPlayBarUrl,
+    playBarInfo,
+    setPlayBarInfo,
+    nowPlayingPlaylist,
+  } = useVideoStore();
+
+  const { youtube, getInfo } = useYoutubeInfo("");
 
   const handlePlayPause = () => {
     if (!isBuffering) {
@@ -87,6 +98,7 @@ const PlayBar = () => {
   };
 
   const [volume, setVolume] = useState<number>(1); // 초기 볼륨을 최대값으로 설정
+  const [isLoop, setIsLoop] = useState<boolean>(false); // 노래 반복 여부
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
@@ -140,10 +152,6 @@ const PlayBar = () => {
     };
   }, [soundDropdownOpen]);
 
-  // useEffect(() => {
-  //   console.log(JSON.stringify(playBarInfo));
-  // }, [playBarInfo]);
-
   // ==============================================사운드바 끝
   const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
   const handleBuffer = () => {
@@ -160,6 +168,119 @@ const PlayBar = () => {
     console.log("handleReady"); // 비디오 준비 완료 시 호출
     setIsPlaying(true);
   };
+  // ================= 반복재생 관련
+  const onLoopchange = () => {
+    setIsLoop(!isLoop);
+  };
+
+  // ============ 영상 끝나면 실행되는 함수
+  const handleEnded = () => {
+    alert("영상 끝나면 실행되는 함수 실행");
+    if (!isLoop) {
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const testBtn = () => {
+    console.log(
+      "playBar에서 확인한 재생목록 음악데이터" +
+        JSON.stringify(nowPlayingPlaylist)
+    );
+    console.log("재생중인 음악의 url : " + JSON.stringify(playBarUrl));
+
+    const index = nowPlayingPlaylist.findIndex((music) =>
+      music.url.includes(playBarUrl)
+    );
+
+    console.log(
+      "현재 재생중인 음악의 index값(재생목록 노래중 몇번쨰 노래인지) : " +
+        JSON.stringify(index)
+    );
+
+    console.log(
+      "현재 재생중인 음악의 playBarUrl 값 : " + JSON.stringify(playBarUrl)
+    );
+  };
+
+  // ============== 이전 음악
+  const onPrevMusic = () => {
+    // 재생목록에서 현재 음악 index값
+    const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+      music.url.includes(playBarUrl)
+    );
+
+    console.log(
+      "이전 노래 정보" + JSON.stringify(nowPlayingPlaylist[nowIndex - 1].url)
+    );
+
+    const prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].url;
+
+    if (prevMusicUrl.includes("youtu")) {
+      let urlMatch; // urlMatch를 조건문 밖에서 선언
+
+      // www이 포함되어 있을때
+      if (prevMusicUrl.includes("www.")) {
+        urlMatch = prevMusicUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
+      }
+
+      // www이 없고 ?si=를 포함할 경우
+      else if (prevMusicUrl.includes("?si=")) {
+        urlMatch = prevMusicUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
+      }
+      // https://youtu.be/로 시작할 때
+      else {
+        urlMatch = prevMusicUrl.match(
+          /(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/
+        );
+      }
+
+      if (urlMatch) {
+        getInfo(urlMatch[0]);
+        setPlayBarUrl(urlMatch[0]);
+      }
+    }
+  };
+
+  // ============== 다음 음악
+  const onNextMusic = () => {
+    // 재생목록에서 현재 음악 index값
+    const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+      music.url.includes(playBarUrl)
+    );
+
+    const prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+
+    if (prevMusicUrl.includes("youtu")) {
+      let urlMatch; // urlMatch를 조건문 밖에서 선언
+
+      // www이 포함되어 있을때
+      if (prevMusicUrl.includes("www.")) {
+        urlMatch = prevMusicUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
+      }
+
+      // www이 없고 ?si=를 포함할 경우
+      else if (prevMusicUrl.includes("?si=")) {
+        urlMatch = prevMusicUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
+      }
+      // https://youtu.be/로 시작할 때
+      else {
+        urlMatch = prevMusicUrl.match(
+          /(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/
+        );
+      }
+
+      if (urlMatch) {
+        getInfo(urlMatch[0]);
+        setPlayBarUrl(urlMatch[0]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (youtube.vidUrl !== "-") {
+      setPlayBarInfo(youtube);
+    }
+  }, [youtube]);
 
   return (
     <div className={styles["main-wrap-bottom"]}>
@@ -184,15 +305,45 @@ const PlayBar = () => {
       <div className={styles["main-wrap-bottom-center"]}>
         <div className={styles["main-play-box"]}>
           <div className={styles["main-play-top"]}>
-            <div className={styles["main-play-prev-btn"]}></div>
-            <div
-              className={
-                isPlaying ? styles["main-pause-btn"] : styles["main-play-btn"]
-              }
-              onClick={handlePlayPause}
-            ></div>
-            <div className={styles["main-play-next-btn"]}></div>
+            <div className={styles["main-play-top-left"]}>
+              {isLoop ? (
+                <div
+                  className={`${styles["main-play-loop-btn"]} ${styles["active"]}`}
+                  onClick={onLoopchange}
+                ></div>
+              ) : (
+                <div
+                  className={styles["main-play-loop-btn"]}
+                  onClick={onLoopchange}
+                ></div>
+              )}
+            </div>
+
+            <div className={styles["main-play-top-mid"]}>
+              <div
+                className={styles["main-play-prev-btn"]}
+                onClick={onPrevMusic}
+              ></div>
+              <div
+                className={
+                  isPlaying ? styles["main-pause-btn"] : styles["main-play-btn"]
+                }
+                onClick={handlePlayPause}
+              ></div>
+              <div
+                className={styles["main-play-next-btn"]}
+                onClick={onNextMusic}
+              ></div>
+            </div>
+
+            <div className={styles["main-play-top-right"]}>
+              <div
+                className={styles["main-play-random-btn"]}
+                onClick={testBtn}
+              ></div>
+            </div>
           </div>
+
           <div className={styles["main-play-bottom"]}>
             <div className={styles["music-current-time"]}>
               {formatTime(currentTime)}
@@ -216,6 +367,8 @@ const PlayBar = () => {
                 onReady={handleReady}
                 onProgress={handleProgress}
                 onDuration={handleDuration}
+                onEnded={handleEnded}
+                loop={isLoop}
                 volume={volume}
                 style={{ display: "none" }} // 완전히 숨김 처리
               />
@@ -247,6 +400,10 @@ const PlayBar = () => {
           </div>
         )}
 
+        <div
+          className={styles["music-sound-icon"]}
+          onClick={onSoundDropDown}
+        ></div>
         <div
           className={styles["music-sound-icon"]}
           onClick={onSoundDropDown}

@@ -171,11 +171,18 @@
 
 .main-play-box {
   margin: 20px 0px 10px 0px;
-  width: 50em;
+  width: 35em;
   height: 4em;
 }
 
 .main-play-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px 17px;
+}
+
+.main-play-top-mid {
   display: flex;
   justify-content: center;
   gap: 15px;
@@ -183,6 +190,43 @@
   margin-bottom: 10px;
 }
 
+.main-play-loop-btn {
+  cursor: pointer;
+  background-image: url("../../assets/loop-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-loop-btn:hover {
+  background-image: url("../../assets/loop-icon-hover.png");
+}
+
+.active {
+  background-image: url("../../assets/loop-icon-hover.png");
+}
+.main-play-random-btn {
+  background-image: url("../../assets/random-icon.png");
+  cursor: pointer;
+
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-play-random-btn:hover {
+  background-image: url("../../assets/random-icon-hover.png");
+
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .main-play-prev-btn {
   background-image: url("../../assets/play-prev-btn-icon.png");
   width: 25px;

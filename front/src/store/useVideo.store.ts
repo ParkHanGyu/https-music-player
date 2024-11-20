@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { YoutubeInfo } from "../types/interface/youtube.interface";
 import Playlist from "../types/interface/playList.interface";
+import Music from "../types/interface/music.interface";
 
 // Zustand 상태 정의
 interface VideoState {
   isPlaying: boolean | false; // 재생 상태
-
   setIsPlaying: (playing: boolean) => void; // 재생 상태를 설정하는 함수
 
   // ========================================================================
@@ -21,9 +21,21 @@ interface VideoState {
   // ============================================
   playlists: Playlist[]; // 재생목록 데이터 추가
   setPlaylists: (playlists: Playlist[]) => void; // 재생목록 설정 함수
+  // ============================================
 
   nowPlayingPlaylistID: string | undefined;
   setNowPlayingPlaylistID: (nowPlayingPlaylistID: string | undefined) => void;
+  // ============================================
+  // 로딩상태
+
+  isLoading: boolean | true;
+  setIsLoading: (isLoading: boolean) => void;
+
+  // ======================== 현재 재생중인 재생목록의 음악들
+  nowPlayingPlaylist: Music[]; // 음악 리스트 상태
+  setNowPlayingPlaylist: (musics: Music[]) => void; // 음악 리스트 설정 함수
+  addMusic: (music: Music) => void; // 음악 추가 함수
+  removeMusic: (id: bigint) => void; // 음악 제거 함수
 }
 
 // Zustand 스토어 생성
@@ -49,4 +61,22 @@ export const useVideoStore = create<VideoState>((set) => ({
   nowPlayingPlaylistID: "",
   setNowPlayingPlaylistID: (nowPlayingPlaylistID) =>
     set({ nowPlayingPlaylistID: nowPlayingPlaylistID }),
+
+  // 로딩상태
+  isLoading: true,
+  setIsLoading: (isLoading) => set({ isLoading: isLoading }),
+
+  // 음악 리스트 상태 및 함수들
+  nowPlayingPlaylist: [],
+  setNowPlayingPlaylist: (nowPlayingPlaylist) => set({ nowPlayingPlaylist }),
+  addMusic: (music) =>
+    set((state) => ({
+      nowPlayingPlaylist: [...state.nowPlayingPlaylist, music],
+    })),
+  removeMusic: (id) =>
+    set((state) => ({
+      nowPlayingPlaylist: state.nowPlayingPlaylist.filter(
+        (nowPlayingPlaylist) => nowPlayingPlaylist.musicId !== id
+      ),
+    })),
 }));

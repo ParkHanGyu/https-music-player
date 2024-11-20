@@ -20,6 +20,9 @@ const PlayList = () => {
     setPlayBarInfo,
     setNowPlayingPlaylistID,
     nowPlayingPlaylistID,
+    isLoading,
+    nowPlayingPlaylist,
+    setNowPlayingPlaylist,
   } = useVideoStore();
   const formatTime = useFormatTime();
 
@@ -28,21 +31,21 @@ const PlayList = () => {
   const navigator = useNavigate();
 
   useEffect(() => {
-    if (!loginUser) {
-      alert("잘못된 접근입니다.");
-      navigator(MAIN_PATH());
-      return;
+    if (!isLoading) {
+      if (!loginUser) {
+        alert("잘못된 접근입니다. loginUser 값 : " + JSON.stringify(loginUser));
+        navigator(MAIN_PATH());
+        return;
+      }
+      if (playlistId) {
+        getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
+      }
     }
-    if (playlistId) {
-      getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
-    }
-  }, [playlistId]);
+  }, [playlistId, isLoading]);
 
   const getPlaylistMusicResponse = (
     responseBody: GetMusciResponseDto | ResponseDto | null
   ) => {
-    console.log(responseBody);
-
     if (!responseBody) {
       alert("데이터 없음");
       return;
@@ -55,7 +58,7 @@ const PlayList = () => {
     }
 
     const playListResult = responseBody as GetMusciResponseDto;
-    setMusics(playListResult.musicList);
+    setNowPlayingPlaylist(playListResult.musicList);
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
@@ -65,7 +68,9 @@ const PlayList = () => {
       "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
     );
     console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
-    console.log("셋팅된 musics 값 : " + JSON.stringify(musics));
+    console.log(
+      "현재 재생중인 재생목록 음악들 : " + JSON.stringify(nowPlayingPlaylist)
+    );
     alert(nowPlayingPlaylistID);
   };
 
@@ -76,7 +81,8 @@ const PlayList = () => {
   }, [youtube]);
 
   const onPlayMusic = (index: number) => {
-    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+    const itemMusicUrl =
+      nowPlayingPlaylist[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
     if (itemMusicUrl) {
       getInfo(itemMusicUrl[0]);
@@ -112,6 +118,14 @@ const PlayList = () => {
       setOpenDropdownIndex(null);
     }
   }, [isOpen]);
+
+  if (isLoading) {
+    return (
+      <div className={styles["loading-container"]}>
+        <div className={styles["loading-spinner"]}></div>
+      </div>
+    ); // 로딩 중 표시
+  }
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -128,7 +142,7 @@ const PlayList = () => {
               <div className={styles["music-column-action-menu"]}></div>
             </div>
 
-            {musics.map((music, index) => (
+            {nowPlayingPlaylist.map((music, index) => (
               <div
                 key={index}
                 className={

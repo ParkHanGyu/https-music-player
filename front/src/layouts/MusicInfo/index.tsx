@@ -17,7 +17,7 @@ import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import useLoginUserStore from "../../store/login-user.store";
-import { SIGN_IN_PATH } from "../../constant";
+import { MAIN_PATH, SIGN_IN_PATH } from "../../constant";
 
 const MusicInfo = () => {
   const {
@@ -149,8 +149,6 @@ const MusicInfo = () => {
   const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
   ) => {
-    console.log(responseBody);
-
     if (!responseBody) {
       return;
     }
