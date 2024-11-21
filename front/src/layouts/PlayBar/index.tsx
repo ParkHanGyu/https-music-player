@@ -4,6 +4,7 @@ import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
+import Music from "../../types/interface/music.interface";
 
 const PlayBar = () => {
   const {
@@ -14,6 +15,7 @@ const PlayBar = () => {
     playBarInfo,
     setPlayBarInfo,
     nowPlayingPlaylist,
+    setNowPlayingPlaylist,
   } = useVideoStore();
 
   const { youtube, getInfo } = useYoutubeInfo("");
@@ -98,7 +100,6 @@ const PlayBar = () => {
   };
 
   const [volume, setVolume] = useState<number>(1); // 초기 볼륨을 최대값으로 설정
-  const [isLoop, setIsLoop] = useState<boolean>(false); // 노래 반복 여부
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
@@ -169,51 +170,92 @@ const PlayBar = () => {
     setIsPlaying(true);
   };
   // ================= 반복재생 관련
+  const [isLoop, setIsLoop] = useState<boolean>(false); // 노래 반복 여부
+
   const onLoopchange = () => {
     setIsLoop(!isLoop);
   };
 
+  // ================= 랜덤재생 관련
+  const [isRandom, setIsRandom] = useState<boolean>(false); // 노래 랜덤 여부
+
+  const onRandomchange = () => {
+    setIsRandom(!isRandom);
+  };
+
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
-    alert("영상 끝나면 실행되는 함수 실행");
     if (!isLoop) {
       setIsPlaying(!isPlaying);
     }
   };
 
-  const testBtn = () => {
-    console.log(
-      "playBar에서 확인한 재생목록 음악데이터" +
-        JSON.stringify(nowPlayingPlaylist)
-    );
-    console.log("재생중인 음악의 url : " + JSON.stringify(playBarUrl));
-
-    const index = nowPlayingPlaylist.findIndex((music) =>
-      music.url.includes(playBarUrl)
-    );
-
-    console.log(
-      "현재 재생중인 음악의 index값(재생목록 노래중 몇번쨰 노래인지) : " +
-        JSON.stringify(index)
-    );
-
-    console.log(
-      "현재 재생중인 음악의 playBarUrl 값 : " + JSON.stringify(playBarUrl)
-    );
+  const shuffle = (playlist: Music[]) => {
+    const copiedPlaylist = [...playlist]; // 배열 복사
+    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
   };
 
-  // ============== 이전 음악
-  const onPrevMusic = () => {
-    // 재생목록에서 현재 음악 index값
+  const testBtn = () => {
+    const shuffleList = shuffle(nowPlayingPlaylist);
+    console.log("셔플한 shuffleList 값 : ", shuffleList);
+    console.log("원본 nowPlayingPlaylist 값 : ", nowPlayingPlaylist);
+
+    // 재생중인 재생목록에서 재생중인 노래 제외하기
     const nowIndex = nowPlayingPlaylist.findIndex((music) =>
       music.url.includes(playBarUrl)
     );
 
-    console.log(
-      "이전 노래 정보" + JSON.stringify(nowPlayingPlaylist[nowIndex - 1].url)
+    const filteredPlaylist = nowPlayingPlaylist.filter(
+      (_, index) => index !== nowIndex
     );
 
-    const prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].url;
+    alert("원래 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
+    alert("현재 재생 노래 index값 : " + JSON.stringify(nowIndex));
+
+    alert(
+      "현재 노래를 제외한 filteredPlaylist 값 : " +
+        JSON.stringify(filteredPlaylist)
+    );
+    setNowPlayingPlaylist(filteredPlaylist);
+  };
+
+  // ============== 이전 음악
+  const onPrevMusic = () => {
+    let prevMusicUrl;
+
+    // 근데 랜덤이 활성화 되어 있다면
+    if (isRandom) {
+      // 현재 재생중인 index
+      const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+        music.url.includes(playBarUrl)
+      );
+      // 재생중인 재생목록에서 재생중인 노래 제외하기
+      const filteredPlaylist = nowPlayingPlaylist.filter(
+        (_, index) => index !== nowIndex
+      );
+      const shuffleList = shuffle(filteredPlaylist);
+      setNowPlayingPlaylist(shuffleList);
+      prevMusicUrl = shuffleList[0].url;
+    }
+
+    if (!isRandom) {
+      // 재생목록에서 현재 음악 index값
+      const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+        music.url.includes(playBarUrl)
+      );
+
+      // 지금 노래가 첫번째 노래라면
+      if (nowIndex === 0) {
+        const prevIndex = nowPlayingPlaylist.length - 1;
+        prevMusicUrl = nowPlayingPlaylist[prevIndex].url;
+      } else {
+        prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].url;
+      }
+    }
+
+    if (!prevMusicUrl) {
+      return;
+    }
 
     if (prevMusicUrl.includes("youtu")) {
       let urlMatch; // urlMatch를 조건문 밖에서 선언
@@ -248,7 +290,13 @@ const PlayBar = () => {
       music.url.includes(playBarUrl)
     );
 
-    const prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+    // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
+    let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
+    if (nowPlayingPlaylist.length === nowIndex + 1) {
+      prevMusicUrl = nowPlayingPlaylist[0].url;
+    } else {
+      prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+    }
 
     if (prevMusicUrl.includes("youtu")) {
       let urlMatch; // urlMatch를 조건문 밖에서 선언
@@ -308,7 +356,7 @@ const PlayBar = () => {
             <div className={styles["main-play-top-left"]}>
               {isLoop ? (
                 <div
-                  className={`${styles["main-play-loop-btn"]} ${styles["active"]}`}
+                  className={`${styles["main-play-loop-btn"]} ${styles["loop-active"]}`}
                   onClick={onLoopchange}
                 ></div>
               ) : (
@@ -337,10 +385,19 @@ const PlayBar = () => {
             </div>
 
             <div className={styles["main-play-top-right"]}>
-              <div
-                className={styles["main-play-random-btn"]}
-                onClick={testBtn}
-              ></div>
+              {isRandom ? (
+                <div
+                  className={`${styles["main-play-random-btn"]} ${styles["random-active"]}`}
+                  onClick={onRandomchange}
+                  // onClick={testBtn}
+                ></div>
+              ) : (
+                <div
+                  className={styles["main-play-random-btn"]}
+                  onClick={onRandomchange}
+                  // onClick={testBtn}
+                ></div>
+              )}
             </div>
           </div>
 
@@ -400,10 +457,6 @@ const PlayBar = () => {
           </div>
         )}
 
-        <div
-          className={styles["music-sound-icon"]}
-          onClick={onSoundDropDown}
-        ></div>
         <div
           className={styles["music-sound-icon"]}
           onClick={onSoundDropDown}

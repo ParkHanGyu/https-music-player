@@ -58,7 +58,7 @@ const PlayList = () => {
     }
 
     const playListResult = responseBody as GetMusciResponseDto;
-    setNowPlayingPlaylist(playListResult.musicList);
+    setMusics(playListResult.musicList);
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
@@ -71,7 +71,7 @@ const PlayList = () => {
     console.log(
       "현재 재생중인 재생목록 음악들 : " + JSON.stringify(nowPlayingPlaylist)
     );
-    alert(nowPlayingPlaylistID);
+    alert(JSON.stringify(musics));
   };
 
   useEffect(() => {
@@ -81,13 +81,13 @@ const PlayList = () => {
   }, [youtube]);
 
   const onPlayMusic = (index: number) => {
-    const itemMusicUrl =
-      nowPlayingPlaylist[index].url.match(/(?<=\?v=)[\w-]{11}/);
+    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
     if (itemMusicUrl) {
       getInfo(itemMusicUrl[0]);
       setPlayBarUrl(itemMusicUrl[0]);
       setNowPlayingPlaylistID(playlistId);
+      setNowPlayingPlaylist(musics);
     }
   };
 
@@ -142,7 +142,7 @@ const PlayList = () => {
               <div className={styles["music-column-action-menu"]}></div>
             </div>
 
-            {nowPlayingPlaylist.map((music, index) => (
+            {musics.map((music, index) => (
               <div
                 key={index}
                 className={

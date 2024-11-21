@@ -204,9 +204,10 @@
   background-image: url("../../assets/loop-icon-hover.png");
 }
 
-.active {
+.loop-active {
   background-image: url("../../assets/loop-icon-hover.png");
 }
+
 .main-play-random-btn {
   background-image: url("../../assets/random-icon.png");
   cursor: pointer;
@@ -220,12 +221,9 @@
 
 .main-play-random-btn:hover {
   background-image: url("../../assets/random-icon-hover.png");
-
-  width: 25px;
-  height: 25px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+}
+.random-active {
+  background-image: url("../../assets/random-icon-hover.png");
 }
 .main-play-prev-btn {
   background-image: url("../../assets/play-prev-btn-icon.png");
