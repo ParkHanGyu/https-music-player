@@ -33,7 +33,7 @@ const PlayList = () => {
   useEffect(() => {
     if (!isLoading) {
       if (!loginUser) {
-        alert("잘못된 접근입니다. loginUser 값 : " + JSON.stringify(loginUser));
+        alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
         navigator(MAIN_PATH());
         return;
       }
@@ -104,10 +104,7 @@ const PlayList = () => {
 
   const onHandleMusicEdit = () => {};
   const onHandleMusicDelete = () => {
-    console.log(
-      "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
-    );
-    console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
+    alert("삭제 실행");
   };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
@@ -202,7 +199,13 @@ const PlayList = () => {
                   {openDropdownIndex === index && isOpen && (
                     <ul ref={ref}>
                       <li onClick={onHandleMusicEdit}>정보수정</li>
-                      <li onClick={onHandleMusicDelete}>삭제</li>
+                      <li
+                        onClick={() => {
+                          onHandleMusicDelete(); // 클릭된 음악의 인덱스를 전달
+                        }}
+                      >
+                        삭제
+                      </li>
                     </ul>
                   )}
                 </div>

@@ -12,11 +12,11 @@ function useOutsideClick<T extends HTMLElement>(initialState: boolean) {
     };
 
     // 마운트 시 외부 클릭 이벤트 리스너 추가
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     // 언마운트 시 외부 클릭 이벤트 리스너 제거
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 

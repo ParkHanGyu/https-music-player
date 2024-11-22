@@ -5,6 +5,8 @@ import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import Music from "../../types/interface/music.interface";
+import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 const PlayBar = () => {
   const {
@@ -19,6 +21,8 @@ const PlayBar = () => {
   } = useVideoStore();
 
   const { youtube, getInfo } = useYoutubeInfo("");
+  // 정규식 커스텀 훅
+  const { extractYouTubeId } = useYouTubeIdExtractor();
 
   const handlePlayPause = () => {
     if (!isBuffering) {
@@ -92,11 +96,14 @@ const PlayBar = () => {
 
   // ============================ 영상 볼륨 진행도 조절
   // 사운드바 드롭 상태
-  const [soundDropdownOpen, setSoundDropdownOpen] = useState<boolean>(false);
-  const soundDropdownRef = useRef<HTMLDivElement | null>(null); // 드롭다운 영역을 참조하기 위한 ref
+  // const [soundDropdownOpen, setSoundDropdownOpen] = useState<boolean>(false);
+  // const soundDropdownRef = useRef<HTMLDivElement | null>(null); // 드롭다운 영역을 참조하기 위한 ref
 
-  const onSoundDropDown = () => {
-    setSoundDropdownOpen(!soundDropdownOpen);
+  const onSoundDropDown = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    setIsOpen(!isOpen);
   };
 
   const [volume, setVolume] = useState<number>(1); // 초기 볼륨을 최대값으로 설정
@@ -136,37 +143,19 @@ const PlayBar = () => {
     window.addEventListener("mouseup", handleMouseUp);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        soundDropdownOpen &&
-        soundDropdownRef.current &&
-        !soundDropdownRef.current.contains(event.target as Node)
-      ) {
-        setSoundDropdownOpen(false); // 영역 밖을 클릭하면 닫기
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [soundDropdownOpen]);
+  const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLDivElement>(false);
 
   // ==============================================사운드바 끝
   const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
   const handleBuffer = () => {
-    console.log("handleBuffer");
     setIsBuffering(true); // 버퍼링 시작
   };
 
   const handleBufferEnd = () => {
-    console.log("handleBufferEnd");
     setIsBuffering(false); // 버퍼링 종료
   };
 
   const handleReady = () => {
-    console.log("handleReady"); // 비디오 준비 완료 시 호출
     setIsPlaying(true);
   };
   // ================= 반복재생 관련
@@ -186,7 +175,7 @@ const PlayBar = () => {
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
     if (!isLoop) {
-      setIsPlaying(!isPlaying);
+      onNextMusic();
     }
   };
 
@@ -196,28 +185,20 @@ const PlayBar = () => {
   };
 
   const testBtn = () => {
-    const shuffleList = shuffle(nowPlayingPlaylist);
-    console.log("셔플한 shuffleList 값 : ", shuffleList);
-    console.log("원본 nowPlayingPlaylist 값 : ", nowPlayingPlaylist);
-
-    // 재생중인 재생목록에서 재생중인 노래 제외하기
-    const nowIndex = nowPlayingPlaylist.findIndex((music) =>
-      music.url.includes(playBarUrl)
-    );
-
-    const filteredPlaylist = nowPlayingPlaylist.filter(
-      (_, index) => index !== nowIndex
-    );
-
-    alert("원래 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
-    alert("현재 재생 노래 index값 : " + JSON.stringify(nowIndex));
-
+    alert("현재 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
+    alert("현재 playBarPlaylist 값 : " + JSON.stringify(playBarPlaylist));
     alert(
-      "현재 노래를 제외한 filteredPlaylist 값 : " +
-        JSON.stringify(filteredPlaylist)
+      "현재 playBarPlaylist.length 값 : " +
+        JSON.stringify(playBarPlaylist.length)
     );
-    setNowPlayingPlaylist(filteredPlaylist);
   };
+
+  const [playBarPlaylist, setPlayBarPlaylist] = useState<Music[]>([]);
+  useEffect(() => {
+    if (playBarPlaylist.length < 2 && playBarPlaylist !== nowPlayingPlaylist) {
+      setPlayBarPlaylist(nowPlayingPlaylist);
+    }
+  }, [playBarPlaylist, nowPlayingPlaylist]);
 
   // ============== 이전 음악
   const onPrevMusic = () => {
@@ -226,15 +207,16 @@ const PlayBar = () => {
     // 근데 랜덤이 활성화 되어 있다면
     if (isRandom) {
       // 현재 재생중인 index
-      const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+      const nowIndex = playBarPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
       // 재생중인 재생목록에서 재생중인 노래 제외하기
-      const filteredPlaylist = nowPlayingPlaylist.filter(
+      const filteredPlaylist = playBarPlaylist.filter(
         (_, index) => index !== nowIndex
       );
+      // 배열 랜덤
       const shuffleList = shuffle(filteredPlaylist);
-      setNowPlayingPlaylist(shuffleList);
+      setPlayBarPlaylist(shuffleList);
       prevMusicUrl = shuffleList[0].url;
     }
 
@@ -258,68 +240,55 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl.includes("youtu")) {
-      let urlMatch; // urlMatch를 조건문 밖에서 선언
-
-      // www이 포함되어 있을때
-      if (prevMusicUrl.includes("www.")) {
-        urlMatch = prevMusicUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-      }
-
-      // www이 없고 ?si=를 포함할 경우
-      else if (prevMusicUrl.includes("?si=")) {
-        urlMatch = prevMusicUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
-      }
-      // https://youtu.be/로 시작할 때
-      else {
-        urlMatch = prevMusicUrl.match(
-          /(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/
-        );
-      }
-
-      if (urlMatch) {
-        getInfo(urlMatch[0]);
-        setPlayBarUrl(urlMatch[0]);
+      const youtubeId = extractYouTubeId(prevMusicUrl);
+      if (youtubeId) {
+        getInfo(youtubeId);
+        setPlayBarUrl(youtubeId);
       }
     }
   };
 
   // ============== 다음 음악
   const onNextMusic = () => {
-    // 재생목록에서 현재 음악 index값
-    const nowIndex = nowPlayingPlaylist.findIndex((music) =>
-      music.url.includes(playBarUrl)
-    );
-
-    // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
-    if (nowPlayingPlaylist.length === nowIndex + 1) {
-      prevMusicUrl = nowPlayingPlaylist[0].url;
-    } else {
-      prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+
+    if (isRandom) {
+      // 재생목록에서 현재 음악 index값
+      const nowIndex = playBarPlaylist.findIndex((music) =>
+        music.url.includes(playBarUrl)
+      );
+
+      const filteredPlaylist = playBarPlaylist.filter(
+        (_, index) => index !== nowIndex
+      );
+
+      const shuffleList = shuffle(filteredPlaylist);
+      setPlayBarPlaylist(shuffleList);
+      prevMusicUrl = shuffleList[0].url;
+    }
+
+    if (!isRandom) {
+      const nowIndex = nowPlayingPlaylist.findIndex((music) =>
+        music.url.includes(playBarUrl)
+      );
+
+      // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
+      if (nowPlayingPlaylist.length === nowIndex + 1) {
+        prevMusicUrl = nowPlayingPlaylist[0].url;
+      } else {
+        prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+      }
+    }
+
+    if (!prevMusicUrl) {
+      return;
     }
 
     if (prevMusicUrl.includes("youtu")) {
-      let urlMatch; // urlMatch를 조건문 밖에서 선언
-
-      // www이 포함되어 있을때
-      if (prevMusicUrl.includes("www.")) {
-        urlMatch = prevMusicUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-      }
-
-      // www이 없고 ?si=를 포함할 경우
-      else if (prevMusicUrl.includes("?si=")) {
-        urlMatch = prevMusicUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
-      }
-      // https://youtu.be/로 시작할 때
-      else {
-        urlMatch = prevMusicUrl.match(
-          /(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/
-        );
-      }
-
-      if (urlMatch) {
-        getInfo(urlMatch[0]);
-        setPlayBarUrl(urlMatch[0]);
+      const youtubeId = extractYouTubeId(prevMusicUrl);
+      if (youtubeId) {
+        getInfo(youtubeId);
+        setPlayBarUrl(youtubeId);
       }
     }
   };
@@ -438,11 +407,8 @@ const PlayBar = () => {
       </div>
 
       <div className={styles["main-wrap-bottom-right"]}>
-        {soundDropdownOpen && (
-          <div
-            className={styles["music-sound-bar-container"]}
-            ref={soundDropdownRef}
-          >
+        {isOpen && (
+          <div className={styles["music-sound-bar-container"]} ref={ref}>
             <div
               className={styles["music-sound-bar"]}
               onMouseDown={handleMouseDownVolume}
