@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { getPlaylistMusicReqeust } from "../../apis";
+import { deleteMusic, getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useNavigate, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
@@ -11,8 +11,10 @@ import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import useLoginUserStore from "../../store/login-user.store";
 import { MAIN_PATH } from "../../constant";
+import { useCookies } from "react-cookie";
 
 const PlayList = () => {
+  const [cookies] = useCookies();
   const { playlistId } = useParams();
   const {
     playBarUrl,
@@ -103,8 +105,14 @@ const PlayList = () => {
   };
 
   const onHandleMusicEdit = () => {};
-  const onHandleMusicDelete = () => {
+
+  const onHandleMusicDelete = (musicId: bigint) => {
     alert("삭제 실행");
+
+    console.log("셋팅된 index 값 : " + JSON.stringify(musicId));
+    console.log("셋팅된 musics 값 : " + JSON.stringify(musics));
+
+    deleteMusic(musicId, cookies.accessToken).then();
   };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
@@ -201,7 +209,7 @@ const PlayList = () => {
                       <li onClick={onHandleMusicEdit}>정보수정</li>
                       <li
                         onClick={() => {
-                          onHandleMusicDelete(); // 클릭된 음악의 인덱스를 전달
+                          onHandleMusicDelete(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
                         }}
                       >
                         삭제

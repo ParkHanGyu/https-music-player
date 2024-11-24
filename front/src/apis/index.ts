@@ -14,6 +14,11 @@ const API_DOMAIN = `${DOMAIN}/api`;
 const authorication = (accessToken: string) => {
   return { headers: { Authorization: `Bearer ${accessToken}` } };
 };
+const errorResponse = (error: null | any) => {
+  if (!error) return null;
+  const responseBody: ResponseDto = error.response.data;
+  return responseBody;
+};
 
 // 재생목록 추가
 // + (누가 추가하는지 유저 정보 같이 보내기)
@@ -37,7 +42,6 @@ export const playlistCreateReqeust = async (
 };
 
 // 재생목록에 음악 추가
-// + 이어서 작성하기
 const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/add/playList_to_music`;
 export const playlistAddMusicReqeust = async (
   requestBody: AddPlayListToMusicRequestDto,
@@ -140,6 +144,25 @@ export const getUserInfo = async (accessToken: string) => {
       if (!error) return null;
       const responseBody: ResponseDto = error.response.data;
       return responseBody;
+    });
+  return result;
+};
+
+// =============== delete
+// 노래 삭제
+const DELETE_MUSIC = (musicId: bigint | string) =>
+  `${API_DOMAIN}/delete/music/${musicId}`;
+export const deleteMusic = async (
+  musicId: bigint | string,
+  accessToken: string
+) => {
+  const result = await axios
+    .delete(DELETE_MUSIC(musicId), authorication(accessToken))
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return errorResponse(error);
     });
   return result;
 };

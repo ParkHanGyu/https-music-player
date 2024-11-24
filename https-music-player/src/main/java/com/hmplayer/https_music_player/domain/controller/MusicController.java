@@ -32,4 +32,12 @@ public class MusicController {
 
 
 
+    @DeleteMapping("/delete/music/{musicId}")
+    public ResponseEntity<? super MusicResponse> deleteMusic(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
+        return musicservice.deleteMusic(musicId,email);
+
+    }
+
+
+
 }
