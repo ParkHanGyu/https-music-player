@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
@@ -16,6 +17,7 @@ import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoServi
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.Musicservice;
+import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -70,42 +72,23 @@ public class MusicserviceImpl implements Musicservice {
     }
 
     @Override
-    public ResponseEntity<? super MusicResponse> deleteMusic(Long musicId, String email) {
-//        String pureToken = token.replace("Bearer ", "").trim();
-//        jwtSecurity.isValid(pureToken); // 엑세스 토큰 유효하니?
+    public ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String email) {
+        try{
+            User user = userRepoService.findByEmail(email);
 
-        User user = userRepoService.findByEmail(email);
+            // 해당 사용자의 Playlist에 해당 Music이 존재하는지 확인
+            PlaylistMusic playlistMusic = playlistMusicRepoService.findByUserAndMusicId(user.getId(), musicId)
+                    .orElseThrow(() -> new IllegalArgumentException("삭제 권한이 없거나 음악이 존재하지 않습니다."));
 
+            playlistMusicRepoService.deletePlaylistMusicByUserAndMusicId(user.getId(), musicId);
 
-        System.out.println("받아온 user 값 : " + user);
-                log.info("토큰으로 가져온 user 데이터 : ID = {}, Admin = {}, email = {}, playlist = {}, password = {}, imageUrl = {}",
-                        user.getId(), user.getAdmin(), user.getEmail(),user.getPlaylists(),user.getPassword(),user.getImageUrl());
+            musicRepoService.deleteByMusicId(musicId);
 
-
-
-        // 해당 사용자의 Playlist에 해당 Music이 존재하는지 확인
-        PlaylistMusic playlistMusic = playlistMusicRepoService.findByUserAndMusicId(user.getId(), musicId)
-                .orElseThrow(() -> new IllegalArgumentException("삭제 권한이 없거나 음악이 존재하지 않습니다."));
-
-        System.out.println("db에서 찾아온 데이터 : "+playlistMusic);
-        log.info("db에서 찾아온 양쪽 데이터 : music = {}, playlist = {}, id = {}",playlistMusic.getMusic(), playlistMusic.getPlaylist(), playlistMusic.getId());
-
-// 삭제 전
-        log.info("삭제할 playlistMusic ID: {}", playlistMusic.getId());
-// 삭제 처리
-        playlistMusicRepoService.deleteById(playlistMusic.getId());
-// 삭제 후 확인
-        Optional<PlaylistMusic> deletedPlaylistMusic = playlistMusicRepoService.findById(playlistMusic.getId());
-        if (deletedPlaylistMusic.isEmpty()) {
-            log.info("playlistMusic ID {}가 정상적으로 삭제되었습니다.", playlistMusic.getId());
-        } else {
-            log.error("playlistMusic ID {} 삭제 실패", playlistMusic.getId());
-        }
-
-
-
-
-        return null;
+            return DeleteMusicResponse.success();
+        } catch (Exception e) {
+        e.printStackTrace();
+        throw new InternalException();
+    }
     }
 
 

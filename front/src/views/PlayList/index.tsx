@@ -23,6 +23,7 @@ const PlayList = () => {
     setNowPlayingPlaylistID,
     nowPlayingPlaylistID,
     isLoading,
+    setIsLoading,
     nowPlayingPlaylist,
     setNowPlayingPlaylist,
   } = useVideoStore();
@@ -107,12 +108,29 @@ const PlayList = () => {
   const onHandleMusicEdit = () => {};
 
   const onHandleMusicDelete = (musicId: bigint) => {
+    setIsLoading(true);
     alert("삭제 실행");
 
     console.log("셋팅된 index 값 : " + JSON.stringify(musicId));
     console.log("셋팅된 musics 값 : " + JSON.stringify(musics));
 
-    deleteMusic(musicId, cookies.accessToken).then();
+    deleteMusic(musicId, cookies.accessToken).then(deleteMusicResponse);
+  };
+
+  const deleteMusicResponse = (responseBody: ResponseDto | null) => {
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+
+    alert("음악 삭제됨");
+    setIsLoading(false);
   };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook

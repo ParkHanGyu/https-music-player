@@ -73,6 +73,13 @@ const SignIn = () => {
     // 'accessToken' : 이름, token 설정, path : 유효경로(MAIN_PATH() 이하의 모든 경로에서 유효함)
     navigator(MAIN_PATH());
   };
+
+  // 키보드 이벤트 핸들러
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      onSignInBtnClickHandler();
+    }
+  };
   return (
     <>
       <div className={styles["sign-in-wrap"]}>
@@ -89,7 +96,10 @@ const SignIn = () => {
                 onChange={onEmailChangeHandler}
               />
             </div>
-            <div className={styles["sign-in-password"]}>
+            <div
+              className={styles["sign-in-password"]}
+              onKeyDown={handleKeyDown}
+            >
               password
               <input
                 type="password"

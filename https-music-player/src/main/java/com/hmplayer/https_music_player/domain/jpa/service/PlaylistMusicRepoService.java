@@ -6,6 +6,7 @@ import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlaylistMusicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +58,11 @@ public class PlaylistMusicRepoService {
         return playlistMusicRepository.findById(playlistMusicId);
     }
 
+    @Transactional
+    public void deletePlaylistMusicByUserAndMusicId(Long userId, Long musicId) {
+        // music_id로 playlist_music 데이터 삭제
+        playlistMusicRepository.deletePlaylistMusicByUserAndMusicId(userId, musicId);
+        log.info("db에서 쿼리에 사용할 데이터 : userId = {}, musicId = {}", userId,musicId);
+    }
 
 }

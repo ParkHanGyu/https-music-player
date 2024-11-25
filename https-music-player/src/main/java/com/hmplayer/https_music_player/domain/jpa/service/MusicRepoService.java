@@ -24,5 +24,9 @@ public class MusicRepoService {
 //                playlist.getCreateDate(), playlist.getPlaylistId(),
 //                playlist.getTitle(), playlist.getUserName());
     }
+    @Transactional
+    public void deleteByMusicId(Long musicId) {
+        musicRepository.deleteByMusicId(musicId);
+    }
 
 }
