@@ -109,6 +109,8 @@ const PlayList = () => {
 
   const onHandleMusicDelete = (musicId: bigint) => {
     setIsLoading(true);
+    alert("api 작동 이전 musics 값 : " + JSON.stringify(musics));
+
     alert("삭제 실행");
 
     console.log("셋팅된 index 값 : " + JSON.stringify(musicId));
@@ -131,7 +133,15 @@ const PlayList = () => {
 
     alert("음악 삭제됨");
     setIsLoading(false);
+    alert("api 작동 이후 musics 값 : " + JSON.stringify(musics));
   };
+
+  useEffect(() => {
+    // 현재 플레이리스트 ID와 playBar에 셋팅된 플레이리스트 ID와 같을때
+    if (playlistId === nowPlayingPlaylistID) {
+      setNowPlayingPlaylist(musics);
+    }
+  }, [musics]);
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
@@ -141,7 +151,9 @@ const PlayList = () => {
       setOpenDropdownIndex(null);
     }
   }, [isOpen]);
-
+  const homeClickHandler = () => {
+    navigator(MAIN_PATH());
+  };
   if (isLoading) {
     return (
       <div className={styles["loading-container"]}>
@@ -149,6 +161,7 @@ const PlayList = () => {
       </div>
     ); // 로딩 중 표시
   }
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -164,6 +177,15 @@ const PlayList = () => {
               <div className={styles["music-column-duration"]}>Duration</div>
               <div className={styles["music-column-action-menu"]}></div>
             </div>
+
+            {Array.isArray(musics) && musics.length === 0 && (
+              <div
+                className={styles["music-item-undefined"]}
+                onClick={homeClickHandler}
+              >
+                {"재생목록이 비어있습니다. 음악을 추가해주세요."}
+              </div>
+            )}
 
             {musics.map((music, index) => (
               <div

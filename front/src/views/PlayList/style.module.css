@@ -251,3 +251,14 @@
     transform: rotate(360deg);
   }
 }
+
+.music-item-undefined {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  width: 370px;
+  margin: 350px auto;
+  color: #8c8c8c;
+  font-size: 17px;
+  cursor: pointer;
+}

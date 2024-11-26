@@ -7,6 +7,7 @@ import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import Music from "../../types/interface/music.interface";
 import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import { useParams } from "react-router-dom";
 
 const PlayBar = () => {
   const {
@@ -18,7 +19,9 @@ const PlayBar = () => {
     setPlayBarInfo,
     nowPlayingPlaylist,
     setNowPlayingPlaylist,
+    nowPlayingPlaylistID,
   } = useVideoStore();
+  const { playlistId } = useParams();
 
   const { youtube, getInfo } = useYoutubeInfo("");
   // 정규식 커스텀 훅
@@ -186,10 +189,9 @@ const PlayBar = () => {
 
   const testBtn = () => {
     alert("현재 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
-    alert("현재 playBarPlaylist 값 : " + JSON.stringify(playBarPlaylist));
     alert(
-      "현재 playBarPlaylist.length 값 : " +
-        JSON.stringify(playBarPlaylist.length)
+      "현재 nowPlayingPlaylist.length 값 : " +
+        JSON.stringify(nowPlayingPlaylist.length)
     );
   };
 
@@ -202,6 +204,10 @@ const PlayBar = () => {
 
   // ============== 이전 음악
   const onPrevMusic = () => {
+    if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
+      alert("노래가 없음");
+      return;
+    }
     let prevMusicUrl;
 
     // 근데 랜덤이 활성화 되어 있다면
@@ -250,6 +256,11 @@ const PlayBar = () => {
 
   // ============== 다음 음악
   const onNextMusic = () => {
+    if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
+      alert("노래가 없음");
+
+      return;
+    }
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
 
     if (isRandom) {
@@ -285,6 +296,7 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl.includes("youtu")) {
+      // 정규식으로 ID 추출
       const youtubeId = extractYouTubeId(prevMusicUrl);
       if (youtubeId) {
         getInfo(youtubeId);
@@ -299,6 +311,39 @@ const PlayBar = () => {
     }
   }, [youtube]);
 
+  useEffect(() => {
+    // URL에 playBarUrl이 포함된 항목이 있는지 확인
+    const isUrlPresent = nowPlayingPlaylist.some((music) =>
+      music.url.includes(playBarUrl)
+    );
+
+    // Playlist 컴포넌트에서 음악을 삭제했을때
+    // 어떤 조건하에 nowPlayingPlaylist가 변경.
+    // 현재 듣는 음악이 내가 제외한 playlist의 음악일경우 다음 음악으로.
+    if (playlistId === nowPlayingPlaylistID && !isUrlPresent) {
+      if (
+        Array.isArray(nowPlayingPlaylist) &&
+        nowPlayingPlaylist.length === 0
+      ) {
+        setPlayBarUrl("");
+        resetYoutubeInfo();
+        setIsPlaying(false);
+        setPlayBarDuration(0);
+        return;
+      }
+
+      onNextMusic();
+    }
+  }, [nowPlayingPlaylist]);
+
+  const resetYoutubeInfo = () => {
+    setPlayBarInfo({
+      vidUrl: "-",
+      author: "-",
+      thumb: "-",
+      vidTitle: "-",
+    });
+  };
   return (
     <div className={styles["main-wrap-bottom"]}>
       <div className={styles["main-wrap-bottom-left"]}>
@@ -427,6 +472,8 @@ const PlayBar = () => {
           className={styles["music-sound-icon"]}
           onClick={onSoundDropDown}
         ></div>
+
+        <div className={styles["music-sound-icon"]} onClick={testBtn}></div>
       </div>
     </div>
   );
