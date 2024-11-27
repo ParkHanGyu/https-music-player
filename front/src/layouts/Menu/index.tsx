@@ -6,6 +6,7 @@ import {
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
+  TEST_PATH,
 } from "../../constant";
 import { useVideoStore } from "../../store/useVideo.store";
 import useLoginUserStore from "../../store/login-user.store";
@@ -32,6 +33,7 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
+    // navigator(TEST_PATH());
     alert("셋팅된 loginUser 값 : " + JSON.stringify(loginUser));
   };
 

@@ -3,7 +3,6 @@ import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
-import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import {
   getPlayListLibraryReqeust,
   playlistAddMusicReqeust,
@@ -17,7 +16,7 @@ import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import useLoginUserStore from "../../store/login-user.store";
-import { MAIN_PATH, SIGN_IN_PATH } from "../../constant";
+import { SIGN_IN_PATH } from "../../constant";
 
 const MusicInfo = () => {
   const {
@@ -31,29 +30,25 @@ const MusicInfo = () => {
     playlists,
   } = useVideoStore();
   const [cookies] = useCookies();
-  const { playlistId } = useParams();
   const formatTime = useFormatTime();
   const navigator = useNavigate();
   const { loginUser } = useLoginUserStore();
 
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
-  const { youtube, setYoutube, getInfo } = useYoutubeInfo(defaultImage); // 커스텀 훅 사용
+  // 커스텀 훅 사용
+  const { infoData, setMusicInfo, resetYoutubeInfo } =
+    useYoutubeInfo(defaultImage);
 
   useEffect(() => {
     if (urlId) {
-      getInfo(urlId);
+      setMusicInfo(urlId);
     }
   }, [urlId]);
 
   // 정보 초기화
-  const resetYoutubeInfo = () => {
-    setYoutube({
-      vidUrl: `youtu.be/${urlId}`,
-      author: "-",
-      thumb: defaultImage, // 기본 이미지 설정
-      vidTitle: "-",
-    });
+  const resetInfo = () => {
+    resetYoutubeInfo();
     setInfoDuration(0);
   };
 
@@ -73,7 +68,7 @@ const MusicInfo = () => {
       setIsPlaying(!isPlaying);
     }
     // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(youtube);
+    setPlayBarInfo(infoData);
   };
 
   // url 시간 상태
@@ -169,22 +164,12 @@ const MusicInfo = () => {
     requestBody: AddPlayListToMusicRequestDto
   ) => {
     if (!requestBody.youtube) return;
-
-    console.log(
-      "음악 추가 api requestBody 값 :  " + JSON.stringify(requestBody)
-    );
-    console.log("음악 추가 api accessToken 값 :  " + cookies.accessToken);
-
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
       playlistAddMusicResponse
     );
   };
 
   const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
-    console.log(
-      "음악 추가 api 클라이언트 Response 값 : " + JSON.stringify(responseBody)
-    );
-
     if (!responseBody) {
       alert("데이터 없음");
       return;
@@ -198,18 +183,6 @@ const MusicInfo = () => {
 
     alert("음악 추가됨");
     setPlaylistPopupOpen(!playlistPopupOpen);
-
-    //  + playList 새로고침 하게 하기
-
-    // const specificUrl = `/play-list/${playlistId}`;
-    // const currentUrl = window.location.pathname;
-
-    // navigator(0);
-    // if (currentUrl === specificUrl) {
-    // alert("url이 같음");
-    // navigator(-1);
-    // window.location.replace(window.location.href);
-    // }
   };
 
   // ==========================
@@ -223,17 +196,17 @@ const MusicInfo = () => {
         <div
           className={styles["music-info-image"]}
           style={{
-            backgroundImage: `url(${youtube.thumb})`,
+            backgroundImage: `url(${infoData.thumb})`,
           }}
         ></div>
         <div className={styles["music-info-data"]}>
           <div className={styles["music-info-title-box"]}>
             <div className={styles["title-info"]}>Title</div>
-            <div className={styles["title-data"]}>{youtube.vidTitle}</div>
+            <div className={styles["title-data"]}>{infoData.vidTitle}</div>
           </div>
           <div className={styles["music-info-artist-box"]}>
             <div className={styles["artist-info"]}>Artist</div>
-            <div className={styles["artist-data"]}>{youtube.author}</div>
+            <div className={styles["artist-data"]}>{infoData.author}</div>
           </div>
           <div className={styles["music-info-genre-box"]}>
             <div className={styles["genre-info"]}>Genre</div>
@@ -275,7 +248,7 @@ const MusicInfo = () => {
             alert(
               "동영상 소유자가 외부 재생을 제한했습니다. YouTube에서 직접 시청해주세요."
             );
-            resetYoutubeInfo();
+            resetInfo();
             setIsInfoError(true);
             setUrlId("");
           }}
@@ -304,7 +277,7 @@ const MusicInfo = () => {
                     key={index}
                     onClick={() =>
                       toggleAddMusicToPlaylist({
-                        youtube: youtube,
+                        youtube: infoData,
                         infoDuration: infoDuration,
                         playlistId: playlist.playlistId,
                       })

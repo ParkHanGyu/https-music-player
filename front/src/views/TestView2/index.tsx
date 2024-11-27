@@ -1,78 +1,54 @@
 // YouTubeInfo.tsx
 import React, { useState } from "react";
-import "./style.css"; // CSS 파일 import
+import styles from "./style.module.css";
 
-interface YoutubeInfo {
-  id: string | null;
-  vid_url: string | null;
-  author: string | null;
-  thumb: string | null;
-  vid_title: string | null;
-}
+const TestView2 = () => {
+  const [nowPlayingPlaylist, setNowPlayingPlaylist] = useState<any[]>([]); // 현재 플레이리스트
+  const [nowIndex, setNowIndex] = useState<number>(0); // 현재 인덱스
+  const [isRandom, setIsRandom] = useState<boolean>(false); // 랜덤 모드 상태
 
-const noEmbed = "https://noembed.com/embed?url=";
-const urlForm = "https://www.youtube.com/watch?v=";
+  // 초기 플레이리스트 예시 (여기에 실제 데이터를 넣을 수 있습니다)
+  const initialPlaylist = [
+    { id: 1, name: "Song 1" },
+    { id: 2, name: "Song 2" },
+    { id: 3, name: "Song 3" },
+  ];
 
-const TestView2: React.FC = () => {
-  const [youtube, setYoutube] = useState<YoutubeInfo>({
-    id: null,
-    vid_url: null,
-    author: null,
-    thumb: null,
-    vid_title: null,
-  });
-  const [inputValue, setInputValue] = useState<string>("JFQOgt5DMBY");
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (inputValue) {
-      getInfo(inputValue);
+  // 상태 초기화 함수
+  const resetPlaylist = (randomState: boolean) => {
+    if (randomState) {
+      // 랜덤 모드일 때, 필터링된 상태 사용
+      setNowPlayingPlaylist((prevPlaylist) =>
+        prevPlaylist.filter((item, index) => index !== nowIndex)
+      );
+    } else {
+      // 랜덤이 아닐 때, 초기 상태로 복원
+      setNowPlayingPlaylist([...initialPlaylist]); // 초기 상태로 되돌리기
+      setNowIndex(0); // 인덱스 초기화
     }
   };
 
-  const getInfo = (id: string) => {
-    const fullUrl = noEmbed + urlForm + id;
-    fetch(fullUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        setInfo(data);
-      });
+  const toggleRandom = () => {
+    const newRandomState = !isRandom;
+    setIsRandom(newRandomState); // 랜덤 모드 상태 변경
+    resetPlaylist(newRandomState); // 플레이리스트 상태 초기화
   };
-
-  const setInfo = (data: any) => {
-    const { url, author_name, thumbnail_url, title } = data;
-    setYoutube({
-      id: inputValue,
-      vid_url: url || null,
-      author: author_name || null,
-      thumb: thumbnail_url || null,
-      vid_title: title || null,
-    });
-  };
-
   return (
-    <div>
-      <form onSubmit={onSubmit} style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="이곳에 유튭 아이디를 넣어봐"
-        />
-        <button type="submit">검색</button>
-      </form>
-
-      {youtube.vid_url && (
-        <div className="result-container">
-          <a href={youtube.vid_url} target="_blank" rel="noopener noreferrer">
-            {youtube.thumb && (
-              <img src={youtube.thumb} alt={youtube.vid_title || ""} />
-            )}
-            <div className="result-title">{youtube.vid_title}</div>
-            <span className="result-author">by {youtube.author}</span>
-          </a>
+    <div className={styles["main-wrap"]}>
+      <div>
+        <button onClick={toggleRandom}>Toggle Random</button>
+        <div>
+          <h2>Now Playing Playlist</h2>
+          <ul>
+            {nowPlayingPlaylist.map((item, index) => (
+              <li key={index}>{item.name}</li>
+            ))}
+          </ul>
         </div>
-      )}
+        <div>
+          <h3>Current Index: {nowIndex}</h3>
+        </div>
+      </div>
     </div>
   );
 };

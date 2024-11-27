@@ -29,7 +29,7 @@ const PlayList = () => {
   } = useVideoStore();
   const formatTime = useFormatTime();
 
-  const { youtube, getInfo } = useYoutubeInfo("");
+  const { infoData, setMusicInfo } = useYoutubeInfo("");
   const { loginUser } = useLoginUserStore();
   const navigator = useNavigate();
 
@@ -78,16 +78,16 @@ const PlayList = () => {
   };
 
   useEffect(() => {
-    if (youtube.vidUrl !== "-") {
-      setPlayBarInfo(youtube);
+    if (infoData.vidUrl !== "-") {
+      setPlayBarInfo(infoData);
     }
-  }, [youtube]);
+  }, [infoData]);
 
   const onPlayMusic = (index: number) => {
     const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
     if (itemMusicUrl) {
-      getInfo(itemMusicUrl[0]);
+      setMusicInfo(itemMusicUrl[0]);
       setPlayBarUrl(itemMusicUrl[0]);
       setNowPlayingPlaylistID(playlistId);
       setNowPlayingPlaylist(musics);

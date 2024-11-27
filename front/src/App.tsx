@@ -6,6 +6,7 @@ import {
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
+  TEST_PATH,
 } from "./constant";
 import PlayList from "./views/PlayList";
 import Main from "./views/Main";
@@ -19,6 +20,7 @@ import ResponseDto from "./apis/response/response.dto";
 import { ResponseUtil } from "./utils";
 import { getUserInfo } from "./apis";
 import { useVideoStore } from "./store/useVideo.store";
+import TestView2 from "./views/TestView2";
 
 function App() {
   const [cookies] = useCookies();
@@ -56,6 +58,7 @@ function App() {
           <Route path={SIGN_IN_PATH()} element={<SignIn />} />
           <Route path={SIGN_UP_PATH()} element={<SignUp />} />
           <Route path={PLAY_LIST_PATH(":playlistId")} element={<PlayList />} />
+          <Route path={TEST_PATH()} element={<TestView2 />} />
         </Route>
       </Routes>
     </Router>

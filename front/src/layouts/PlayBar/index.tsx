@@ -23,7 +23,7 @@ const PlayBar = () => {
   } = useVideoStore();
   const { playlistId } = useParams();
 
-  const { youtube, getInfo } = useYoutubeInfo("");
+  const { infoData, setMusicInfo } = useYoutubeInfo("");
   // 정규식 커스텀 훅
   const { extractYouTubeId } = useYouTubeIdExtractor();
 
@@ -76,8 +76,6 @@ const PlayBar = () => {
     // 마우스 클릭 위치와 진행 바의 왼쪽 경계 간의 차이를 계산
     const offsetX = event.clientX - rect.left;
 
-    console.log("event.clientX :  ", event.clientX);
-    console.log("rect.left :  ", rect.left);
     // 진행 바에서 클릭한 위치를 비율로 나타냄
     const newPlayed = offsetX / rect.width;
     handleSeek(newPlayed);
@@ -188,20 +186,46 @@ const PlayBar = () => {
   };
 
   const testBtn = () => {
-    alert("현재 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
-    alert(
-      "현재 nowPlayingPlaylist.length 값 : " +
-        JSON.stringify(nowPlayingPlaylist.length)
+    // alert("현재 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
+    // alert(
+    //   "현재 nowPlayingPlaylist.length 값 : " +
+    //     JSON.stringify(nowPlayingPlaylist.length)
+    // );
+
+    console.log(
+      "현재 nowPlayingPlaylist 값 : ",
+      nowPlayingPlaylist,
+      "\n",
+      nowPlayingPlaylist.length
     );
+    console.log(
+      "현재 playBarPlaylist 값 : ",
+      playBarPlaylist,
+      "\n",
+      playBarPlaylist.length
+    );
+
+    console.log(nowPlayingPlaylistID, ", ", playBarPlaylistID);
   };
 
   const [playBarPlaylist, setPlayBarPlaylist] = useState<Music[]>([]);
+  const [playBarPlaylistID, setPlayBarPlaylistID] = useState<string>();
   useEffect(() => {
     if (playBarPlaylist.length < 2 && playBarPlaylist !== nowPlayingPlaylist) {
       setPlayBarPlaylist(nowPlayingPlaylist);
+      setPlayBarPlaylistID(nowPlayingPlaylistID);
     }
   }, [playBarPlaylist, nowPlayingPlaylist]);
 
+  // useEffect(() => {
+  //   if (
+  //     nowPlayingPlaylistID !== playBarPlaylistID &&
+  //     nowPlayingPlaylist.length !== 0
+  //   ) {
+  //     alert("playBar에 있는 재생목록 ID가 다를경우");
+  //     setPlayBarPlaylist(nowPlayingPlaylist);
+  //   }
+  // }, [nowPlayingPlaylistID]);
   // ============== 이전 음악
   const onPrevMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
@@ -211,8 +235,31 @@ const PlayBar = () => {
     let prevMusicUrl;
 
     // 근데 랜덤이 활성화 되어 있다면
+    // if (isRandom) {
+    //   // 현재 재생중인 index
+    //   console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
+    //   const nowIndex = playBarPlaylist.findIndex((music) =>
+    //     music.url.includes(playBarUrl)
+    //   );
+    //   // 재생중인 재생목록에서 재생중인 노래 제외하기
+    //   const filteredPlaylist = playBarPlaylist.filter(
+    //     (_, index) => index !== nowIndex
+    //   );
+    //   // 배열 랜덤
+    //   const shuffleList = shuffle(filteredPlaylist);
+    //   setPlayBarPlaylist(shuffleList);
+    //   prevMusicUrl = shuffleList[0].url;
+    // }
+
     if (isRandom) {
+      if (nowPlayingPlaylistID !== playBarPlaylistID) {
+        alert(
+          "랜덤상태에서 다루는 playlist ID랑 랜덤상태가 아닐떄 다루는 playlist ID랑 다를경우"
+        );
+        setPlayBarPlaylist([...nowPlayingPlaylist]);
+      }
       // 현재 재생중인 index
+      console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
       const nowIndex = playBarPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
@@ -227,6 +274,8 @@ const PlayBar = () => {
     }
 
     if (!isRandom) {
+      console.log("랜덤이 아닐때 playBarPlaylist : ", playBarPlaylist);
+
       // 재생목록에서 현재 음악 index값
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
@@ -248,7 +297,7 @@ const PlayBar = () => {
     if (prevMusicUrl.includes("youtu")) {
       const youtubeId = extractYouTubeId(prevMusicUrl);
       if (youtubeId) {
-        getInfo(youtubeId);
+        setMusicInfo(youtubeId);
         setPlayBarUrl(youtubeId);
       }
     }
@@ -264,6 +313,8 @@ const PlayBar = () => {
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
 
     if (isRandom) {
+      console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
+
       // 재생목록에서 현재 음악 index값
       const nowIndex = playBarPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
@@ -279,6 +330,8 @@ const PlayBar = () => {
     }
 
     if (!isRandom) {
+      console.log("랜덤이 아닐때 playBarPlaylist : ", playBarPlaylist);
+
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
@@ -299,17 +352,17 @@ const PlayBar = () => {
       // 정규식으로 ID 추출
       const youtubeId = extractYouTubeId(prevMusicUrl);
       if (youtubeId) {
-        getInfo(youtubeId);
+        setMusicInfo(youtubeId);
         setPlayBarUrl(youtubeId);
       }
     }
   };
 
   useEffect(() => {
-    if (youtube.vidUrl !== "-") {
-      setPlayBarInfo(youtube);
+    if (infoData.vidUrl !== "-") {
+      setPlayBarInfo(infoData);
     }
-  }, [youtube]);
+  }, [infoData]);
 
   useEffect(() => {
     // URL에 playBarUrl이 포함된 항목이 있는지 확인

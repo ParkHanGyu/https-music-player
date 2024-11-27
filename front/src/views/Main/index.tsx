@@ -1,63 +1,30 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
+import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
 
 const Main = () => {
   const { setUrlId } = useVideoStore();
-
   const [videoUrl, setVideoUrl] = useState<string>("");
-
+  // 정규식을 사용한 ID추출 커스텀Hook
+  const { extractYouTubeId } = useYouTubeIdExtractor();
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
+  };
+  // 키보드 이벤트 핸들러
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      videoSearch();
+    }
   };
 
   const videoSearch = () => {
     // "youtu"을 포함한 경우
-    // if (videoUrl.includes("youtu")) {
-    // // www으로 시작할때
-    // if (videoUrl.includes("www.")) {
-    //   const urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-    //   if (urlMatch) {
-    //     setUrlId(urlMatch[0]);
-    //   } else {
-    //     return;
-    //   }
-    // }
-
-    // // www으로 시작하지 않을때
-    // if (!videoUrl.includes("www.")) {
-    //   const urlMatch = videoUrl.match(
-    //     /(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/
-    //   );
-
-    //   if (urlMatch) {
-    //     setUrlId(urlMatch[0]);
-    //   } else {
-    //     alert("v=이 없을 경우 실행. urlMatch 값 : " + urlMatch);
-    //     return;
-    //   }
-    // }
-
-    // "youtu"을 포함한 경우
     if (videoUrl.includes("youtu")) {
-      let urlMatch; // urlMatch를 조건문 밖에서 선언
-
-      // www이 포함되어 있을때
-      if (videoUrl.includes("www.")) {
-        urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-      }
-
-      // www이 없고 ?si=를 포함할 경우
-      else if (videoUrl.includes("?si=")) {
-        urlMatch = videoUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
-      }
-      // https://youtu.be/로 시작할 때
-      else {
-        urlMatch = videoUrl.match(/(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/);
-      }
-
+      const urlMatch = extractYouTubeId(videoUrl);
       if (urlMatch) {
-        setUrlId(urlMatch[0]);
+        // musicInfo에 있는 음악 정보를 set해주기 위해 urlId에 set
+        setUrlId(urlMatch);
       } else {
         return;
       }
@@ -78,6 +45,7 @@ const Main = () => {
                   placeholder="Please enter the URL."
                   value={videoUrl}
                   onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
                 />
                 <div
                   className={styles["main-search-btn"]}
@@ -92,8 +60,6 @@ const Main = () => {
               </div>
             </div>
           </div>
-
-          {/* <MusicInfo /> */}
         </div>
       </div>
     </>

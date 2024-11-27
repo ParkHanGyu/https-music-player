@@ -56,8 +56,6 @@ const SignIn = () => {
       return;
     }
 
-    console.log("받아온 데이터 : " + JSON.stringify(responseBody));
-
     const { code } = responseBody;
     if (code === "DBE") alert("데이터베이스 오류입니다.");
     if (code === "SF") alert("아이디 또는 비밀번호가 올바르지 않습니다.");

@@ -50,15 +50,7 @@ export const playlistAddMusicReqeust = async (
   const result = await axios
     .post(ADD_MUSIC_TO_PLAYLIST_URL(), requestBody, authorication(accessToken))
     .then((response) => {
-      console.log(
-        "삭제 api 실행. 서버에서 반환한 값 response : " +
-          JSON.stringify(response)
-      );
       const responseBody = response.data;
-      console.log(
-        "삭제 api 실행. 서버에서 반환한 값 responseBody : " +
-          JSON.stringify(responseBody)
-      );
       return responseBody;
     })
     .catch((error) => {
@@ -167,15 +159,7 @@ export const deleteMusic = async (
   const result = await axios
     .delete(DELETE_MUSIC(musicId), authorication(accessToken))
     .then((response) => {
-      console.log(
-        "삭제 api 실행. 서버에서 반환한 값 response : " +
-          JSON.stringify(response)
-      );
       const responseBody: ResponseDto = response.data;
-      console.log(
-        "삭제 api 실행. 서버에서 반환한 값.response.data  : " +
-          JSON.stringify(responseBody)
-      );
       return responseBody;
     })
     .catch((error) => {
