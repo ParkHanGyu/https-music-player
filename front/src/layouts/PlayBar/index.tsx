@@ -186,46 +186,46 @@ const PlayBar = () => {
   };
 
   const testBtn = () => {
-    // alert("현재 nowPlayingPlaylist 값 : " + JSON.stringify(nowPlayingPlaylist));
-    // alert(
-    //   "현재 nowPlayingPlaylist.length 값 : " +
-    //     JSON.stringify(nowPlayingPlaylist.length)
-    // );
+    // console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
+    // console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    // console.log("playBarPlaylist : ", playBarPlaylist);
+    // console.log("playBarPlaylistID : ", playBarPlaylistID);
 
     console.log(
-      "현재 nowPlayingPlaylist 값 : ",
-      nowPlayingPlaylist,
-      "\n",
-      nowPlayingPlaylist.length
+      "nowPlayingPlaylist.length !== 0 : ",
+      nowPlayingPlaylist.length !== 0
     );
+    console.log("playBarPlaylist.length < 2 : ", playBarPlaylist.length < 2);
     console.log(
-      "현재 playBarPlaylist 값 : ",
-      playBarPlaylist,
-      "\n",
-      playBarPlaylist.length
+      "playBarPlaylist !== nowPlayingPlaylist : ",
+      playBarPlaylist !== nowPlayingPlaylist
     );
-
-    console.log(nowPlayingPlaylistID, ", ", playBarPlaylistID);
   };
 
   const [playBarPlaylist, setPlayBarPlaylist] = useState<Music[]>([]);
   const [playBarPlaylistID, setPlayBarPlaylistID] = useState<string>();
   useEffect(() => {
-    if (playBarPlaylist.length < 2 && playBarPlaylist !== nowPlayingPlaylist) {
+    if (
+      nowPlayingPlaylist.length !== 0 &&
+      playBarPlaylist.length < 2 &&
+      playBarPlaylist !== nowPlayingPlaylist
+    ) {
+      console.log("현재 노래리스트와 노래리스트 ID를 playBar에 일치화");
       setPlayBarPlaylist(nowPlayingPlaylist);
       setPlayBarPlaylistID(nowPlayingPlaylistID);
     }
   }, [playBarPlaylist, nowPlayingPlaylist]);
 
-  // useEffect(() => {
-  //   if (
-  //     nowPlayingPlaylistID !== playBarPlaylistID &&
-  //     nowPlayingPlaylist.length !== 0
-  //   ) {
-  //     alert("playBar에 있는 재생목록 ID가 다를경우");
-  //     setPlayBarPlaylist(nowPlayingPlaylist);
-  //   }
-  // }, [nowPlayingPlaylistID]);
+  useEffect(() => {
+    if (
+      nowPlayingPlaylistID !== playBarPlaylistID &&
+      nowPlayingPlaylist.length !== 0
+    ) {
+      console.log("playBar에 있는 재생목록 ID가 다를경우");
+      setPlayBarPlaylist(nowPlayingPlaylist);
+      setPlayBarPlaylistID(nowPlayingPlaylistID);
+    }
+  }, [nowPlayingPlaylistID]);
   // ============== 이전 음악
   const onPrevMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
@@ -234,32 +234,8 @@ const PlayBar = () => {
     }
     let prevMusicUrl;
 
-    // 근데 랜덤이 활성화 되어 있다면
-    // if (isRandom) {
-    //   // 현재 재생중인 index
-    //   console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
-    //   const nowIndex = playBarPlaylist.findIndex((music) =>
-    //     music.url.includes(playBarUrl)
-    //   );
-    //   // 재생중인 재생목록에서 재생중인 노래 제외하기
-    //   const filteredPlaylist = playBarPlaylist.filter(
-    //     (_, index) => index !== nowIndex
-    //   );
-    //   // 배열 랜덤
-    //   const shuffleList = shuffle(filteredPlaylist);
-    //   setPlayBarPlaylist(shuffleList);
-    //   prevMusicUrl = shuffleList[0].url;
-    // }
-
     if (isRandom) {
-      if (nowPlayingPlaylistID !== playBarPlaylistID) {
-        alert(
-          "랜덤상태에서 다루는 playlist ID랑 랜덤상태가 아닐떄 다루는 playlist ID랑 다를경우"
-        );
-        setPlayBarPlaylist([...nowPlayingPlaylist]);
-      }
       // 현재 재생중인 index
-      console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
       const nowIndex = playBarPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
@@ -274,8 +250,6 @@ const PlayBar = () => {
     }
 
     if (!isRandom) {
-      console.log("랜덤이 아닐때 playBarPlaylist : ", playBarPlaylist);
-
       // 재생목록에서 현재 음악 index값
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
