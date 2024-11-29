@@ -70,8 +70,10 @@ public class PlayListServiceImpl implements PlayListService {
 
 
 
-        List<PlayListDto> playLists; // dto 변환할것
-        playLists = PlayListDto.ofList(filteredPlayList);
+        List<PlayListDto> playListLibrary; // dto 변환할것
+        playListLibrary = PlayListDto.ofList(filteredPlayList);
+
+        System.out.println("playListLibrary 값 : "+playListLibrary);
 
 
 //        List<Playlist> filteredPlayList; //
@@ -79,7 +81,7 @@ public class PlayListServiceImpl implements PlayListService {
 //
 //        playLists = PlayListDto.ofList(filteredPlayList);
 //
-        return PlayListResponse.success(playLists);
+        return PlayListResponse.success(playListLibrary);
     }
 
     @Override

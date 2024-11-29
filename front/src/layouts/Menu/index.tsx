@@ -11,13 +11,14 @@ import {
 import { useVideoStore } from "../../store/useVideo.store";
 import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const Menu = () => {
   const [cookies, removeCookie, deleteCookie] = useCookies();
 
   const { loginUser } = useLoginUserStore();
 
-  const { playlists } = useVideoStore();
+  const { playlistLibrary } = usePlaylistStore();
   const navigator = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -132,7 +133,7 @@ const Menu = () => {
           PlayList
           {isPlaylistDrop && (
             <ul>
-              {playlists.map((playlist, index) => (
+              {playlistLibrary.map((playlist, index) => (
                 <li
                   key={index}
                   onClick={(

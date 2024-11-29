@@ -17,18 +17,16 @@ import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import useLoginUserStore from "../../store/login-user.store";
 import { SIGN_IN_PATH } from "../../constant";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const MusicInfo = () => {
-  const {
-    isPlaying,
-    setIsPlaying,
-    urlId,
-    setUrlId,
-    setPlayBarUrl,
-    setPlayBarInfo,
-    setPlaylists,
-    playlists,
-  } = useVideoStore();
+  const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
+
+  const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
+
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+
   const [cookies] = useCookies();
   const formatTime = useFormatTime();
   const navigator = useNavigate();
@@ -156,7 +154,7 @@ const MusicInfo = () => {
 
     const playListResult = responseBody as GetPlayListResponseDto;
 
-    setPlaylists(playListResult.playlists);
+    setPlaylistLibrary(playListResult.playListLibrary);
   };
 
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
@@ -272,7 +270,7 @@ const MusicInfo = () => {
 
             <div className={styles["playlist-popup-center"]}>
               <ul>
-                {playlists.map((playlist, index) => (
+                {playlistLibrary.map((playlist, index) => (
                   <li
                     key={index}
                     onClick={() =>

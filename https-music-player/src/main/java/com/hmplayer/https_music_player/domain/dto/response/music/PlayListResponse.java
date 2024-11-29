@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 public class PlayListResponse extends ResponseDto {
 
-    private List<PlayListDto> playlists = new ArrayList<>();
+    private List<PlayListDto> playListLibrary = new ArrayList<>();
 
     public PlayListResponse() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -29,12 +29,12 @@ public class PlayListResponse extends ResponseDto {
 
 
 
-    public PlayListResponse(List<PlayListDto> playlists) {
+    public PlayListResponse(List<PlayListDto> playListLibrary) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.playlists = playlists;
+        this.playListLibrary = playListLibrary;
     }
-    public static ResponseEntity<PlayListResponse> success(List<PlayListDto> playlists){
-        return ResponseEntity.ok(new PlayListResponse(playlists));
+    public static ResponseEntity<PlayListResponse> success(List<PlayListDto> playListLibrary){
+        return ResponseEntity.ok(new PlayListResponse(playListLibrary));
     }
 
 

@@ -26,9 +26,9 @@ public class PlayListDto {
         return this;
     }
 
-    public static List<PlayListDto> ofList(List<Playlist> playLists){
+    public static List<PlayListDto> ofList(List<Playlist> playListLibrary){
         List<PlayListDto> result = new ArrayList<>();
-        for (Playlist playList : playLists) {
+        for (Playlist playList : playListLibrary) {
             result.add(new PlayListDto().of(playList));
         }
         return result;

@@ -12,21 +12,22 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import useLoginUserStore from "../../store/login-user.store";
 import { MAIN_PATH } from "../../constant";
 import { useCookies } from "react-cookie";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const PlayList = () => {
   const [cookies] = useCookies();
   const { playlistId } = useParams();
+  const { playBarUrl, setPlayBarUrl, setPlayBarInfo, isLoading, setIsLoading } =
+    useVideoStore();
+
   const {
-    playBarUrl,
-    setPlayBarUrl,
-    setPlayBarInfo,
-    setNowPlayingPlaylistID,
-    nowPlayingPlaylistID,
-    isLoading,
-    setIsLoading,
     nowPlayingPlaylist,
     setNowPlayingPlaylist,
-  } = useVideoStore();
+    nowPlayingPlaylistID,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylist,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
   const formatTime = useFormatTime();
 
   const { infoData, setMusicInfo } = useYoutubeInfo("");
@@ -62,19 +63,23 @@ const PlayList = () => {
 
     const playListResult = responseBody as GetMusciResponseDto;
     setMusics(playListResult.musicList);
+
+    // 삭제이후 현재 보고있는 재생목록과 playBar에 재생중인 재생목록의 데이터를 일치화
+    if (playlistId === nowPlayingPlaylistID) {
+      setNowPlayingPlaylist(playListResult.musicList);
+      setNowRandomPlaylist(playListResult.musicList);
+    }
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    console.log(
-      "셋팅된 openDropdownIndex 값 : " + JSON.stringify(openDropdownIndex)
-    );
-    console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
-    console.log(
-      "현재 재생중인 재생목록 음악들 : " + JSON.stringify(nowPlayingPlaylist)
-    );
-    alert(JSON.stringify(musics));
+    // console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
+    // alert(JSON.stringify(musics));
+    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    console.log("playlistId : ", playlistId);
+    console.log("musics : ", musics);
+    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
   };
 
   useEffect(() => {
@@ -91,6 +96,8 @@ const PlayList = () => {
       setPlayBarUrl(itemMusicUrl[0]);
       setNowPlayingPlaylistID(playlistId);
       setNowPlayingPlaylist(musics);
+      setNowRandomPlaylistID(playlistId);
+      setNowRandomPlaylist(musics);
     }
   };
 
@@ -109,16 +116,8 @@ const PlayList = () => {
 
   const onHandleMusicDelete = (musicId: bigint) => {
     setIsLoading(true);
-    alert("api 작동 이전 musics 값 : " + JSON.stringify(musics));
-
-    alert("삭제 실행");
-
-    console.log("셋팅된 index 값 : " + JSON.stringify(musicId));
-    console.log("셋팅된 musics 값 : " + JSON.stringify(musics));
-
     deleteMusic(musicId, cookies.accessToken).then(deleteMusicResponse);
   };
-
   const deleteMusicResponse = (responseBody: ResponseDto | null) => {
     if (!responseBody) {
       alert("데이터 없음");
@@ -133,15 +132,7 @@ const PlayList = () => {
 
     alert("음악 삭제됨");
     setIsLoading(false);
-    alert("api 작동 이후 musics 값 : " + JSON.stringify(musics));
   };
-
-  useEffect(() => {
-    // 현재 플레이리스트 ID와 playBar에 셋팅된 플레이리스트 ID와 같을때
-    if (playlistId === nowPlayingPlaylistID) {
-      setNowPlayingPlaylist(musics);
-    }
-  }, [musics]);
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);

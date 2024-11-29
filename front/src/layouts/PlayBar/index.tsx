@@ -8,22 +8,24 @@ import Music from "../../types/interface/music.interface";
 import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import { useParams } from "react-router-dom";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const PlayBar = () => {
+  const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
+    useVideoStore();
+
   const {
-    isPlaying,
-    setIsPlaying,
-    playBarUrl,
-    setPlayBarUrl,
-    playBarInfo,
-    setPlayBarInfo,
     nowPlayingPlaylist,
-    setNowPlayingPlaylist,
     nowPlayingPlaylistID,
-  } = useVideoStore();
+    nowRandomPlaylist,
+    setNowRandomPlaylist,
+  } = usePlaylistStore();
+
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
   const { playlistId } = useParams();
 
-  const { infoData, setMusicInfo } = useYoutubeInfo("");
+  const { infoData, setMusicInfo, resetYoutubeInfo } = useYoutubeInfo("");
   // 정규식 커스텀 훅
   const { extractYouTubeId } = useYouTubeIdExtractor();
 
@@ -135,12 +137,15 @@ const PlayBar = () => {
       handleVolumeChange(newPlayed); // 볼륨 업데이트
     };
 
+    // mousemove와 mouseup 이벤트 리스너를 제거
     const handleMouseUp = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
 
+    //마우스가 움직일 때 handleMouseMove 함수 호출 (mousemove 이벤트)
     window.addEventListener("mousemove", handleMouseMove);
+    //마우스를 놓았을 때 handleMouseUp 함수 호출 (mouseup 이벤트)
     window.addEventListener("mouseup", handleMouseUp);
   };
 
@@ -186,46 +191,20 @@ const PlayBar = () => {
   };
 
   const testBtn = () => {
-    // console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
-    // console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
-    // console.log("playBarPlaylist : ", playBarPlaylist);
-    // console.log("playBarPlaylistID : ", playBarPlaylistID);
-
-    console.log(
-      "nowPlayingPlaylist.length !== 0 : ",
-      nowPlayingPlaylist.length !== 0
-    );
-    console.log("playBarPlaylist.length < 2 : ", playBarPlaylist.length < 2);
-    console.log(
-      "playBarPlaylist !== nowPlayingPlaylist : ",
-      playBarPlaylist !== nowPlayingPlaylist
-    );
+    console.log("nowRandomPlaylist : ", nowRandomPlaylist);
   };
 
-  const [playBarPlaylist, setPlayBarPlaylist] = useState<Music[]>([]);
-  const [playBarPlaylistID, setPlayBarPlaylistID] = useState<string>();
   useEffect(() => {
     if (
       nowPlayingPlaylist.length !== 0 &&
-      playBarPlaylist.length < 2 &&
-      playBarPlaylist !== nowPlayingPlaylist
+      nowRandomPlaylist.length === 0 &&
+      nowRandomPlaylist !== nowPlayingPlaylist
     ) {
-      console.log("현재 노래리스트와 노래리스트 ID를 playBar에 일치화");
-      setPlayBarPlaylist(nowPlayingPlaylist);
-      setPlayBarPlaylistID(nowPlayingPlaylistID);
+      console.log("랜덤 재생중에 랜덤재생목록의 노래가 다 떨어질 경우");
+      setNowRandomPlaylist(nowPlayingPlaylist);
     }
-  }, [playBarPlaylist, nowPlayingPlaylist]);
+  }, [nowRandomPlaylist]);
 
-  useEffect(() => {
-    if (
-      nowPlayingPlaylistID !== playBarPlaylistID &&
-      nowPlayingPlaylist.length !== 0
-    ) {
-      console.log("playBar에 있는 재생목록 ID가 다를경우");
-      setPlayBarPlaylist(nowPlayingPlaylist);
-      setPlayBarPlaylistID(nowPlayingPlaylistID);
-    }
-  }, [nowPlayingPlaylistID]);
   // ============== 이전 음악
   const onPrevMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
@@ -236,16 +215,22 @@ const PlayBar = () => {
 
     if (isRandom) {
       // 현재 재생중인 index
-      const nowIndex = playBarPlaylist.findIndex((music) =>
+      const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
       // 재생중인 재생목록에서 재생중인 노래 제외하기
-      const filteredPlaylist = playBarPlaylist.filter(
+      const filteredPlaylist = nowRandomPlaylist.filter(
         (_, index) => index !== nowIndex
       );
       // 배열 랜덤
-      const shuffleList = shuffle(filteredPlaylist);
-      setPlayBarPlaylist(shuffleList);
+      let shuffleList = shuffle(filteredPlaylist);
+      console.log("shuffleList : ", shuffleList.length);
+
+      if (shuffleList.length === 0) {
+        shuffleList = nowPlayingPlaylist;
+      }
+
+      setNowRandomPlaylist(shuffleList);
       prevMusicUrl = shuffleList[0].url;
     }
 
@@ -287,25 +272,25 @@ const PlayBar = () => {
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
 
     if (isRandom) {
-      console.log("랜덤일때 playBarPlaylist : ", playBarPlaylist);
-
       // 재생목록에서 현재 음악 index값
-      const nowIndex = playBarPlaylist.findIndex((music) =>
+      const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
 
-      const filteredPlaylist = playBarPlaylist.filter(
+      // 재생중인 재생목록에서 재생중인 노래 제외하기
+      const filteredPlaylist = nowRandomPlaylist.filter(
         (_, index) => index !== nowIndex
       );
 
-      const shuffleList = shuffle(filteredPlaylist);
-      setPlayBarPlaylist(shuffleList);
+      let shuffleList = shuffle(filteredPlaylist);
+      if (shuffleList.length === 0) {
+        shuffleList = nowPlayingPlaylist;
+      }
+      setNowRandomPlaylist(shuffleList);
       prevMusicUrl = shuffleList[0].url;
     }
 
     if (!isRandom) {
-      console.log("랜덤이 아닐때 playBarPlaylist : ", playBarPlaylist);
-
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
@@ -363,14 +348,6 @@ const PlayBar = () => {
     }
   }, [nowPlayingPlaylist]);
 
-  const resetYoutubeInfo = () => {
-    setPlayBarInfo({
-      vidUrl: "-",
-      author: "-",
-      thumb: "-",
-      vidTitle: "-",
-    });
-  };
   return (
     <div className={styles["main-wrap-bottom"]}>
       <div className={styles["main-wrap-bottom-left"]}>

@@ -1,13 +1,8 @@
 import { create } from "zustand";
 import { YoutubeInfo } from "../types/interface/youtube.interface";
-import Playlist from "../types/interface/playList.interface";
-import Music from "../types/interface/music.interface";
 
 // Zustand 상태 정의
 interface VideoState {
-  isPlaying: boolean | false; // 재생 상태
-  setIsPlaying: (playing: boolean) => void; // 재생 상태를 설정하는 함수
-
   // ========================================================================
   urlId: string | ""; // input URL 상태
   setUrlId: (urlId: string | "") => void; // 비디오 URL을 설정하는 함수
@@ -19,30 +14,15 @@ interface VideoState {
   setPlayBarInfo: (info: YoutubeInfo) => void;
 
   // ============================================
-  playlists: Playlist[]; // 재생목록 데이터 추가
-  setPlaylists: (playlists: Playlist[]) => void; // 재생목록 설정 함수
-  // ============================================
 
-  nowPlayingPlaylistID: string | undefined;
-  setNowPlayingPlaylistID: (nowPlayingPlaylistID: string | undefined) => void;
-  // ============================================
   // 로딩상태
 
   isLoading: boolean | true;
   setIsLoading: (isLoading: boolean) => void;
-
-  // ======================== 현재 재생중인 재생목록의 음악들
-  nowPlayingPlaylist: Music[]; // 음악 리스트 상태
-  setNowPlayingPlaylist: (musics: Music[]) => void; // 음악 리스트 설정 함수
-  addMusic: (music: Music) => void; // 음악 추가 함수
-  removeMusic: (id: bigint) => void; // 음악 제거 함수
 }
 
 // Zustand 스토어 생성
 export const useVideoStore = create<VideoState>((set) => ({
-  isPlaying: false, // 초기 재생 상태는 false (재생 중 아님)
-  setIsPlaying: (playing) => set({ isPlaying: playing }), // 재생 상태 설정 함수 정의
-
   // ========================================================================
   urlId: "", // 초기 urlId 값은 ""
   setUrlId: (urlId) => set({ urlId: urlId }), // 비디오 URL을 설정하는 함수 정의
@@ -53,30 +33,9 @@ export const useVideoStore = create<VideoState>((set) => ({
   playBarInfo: null, // 초기값 설정
   setPlayBarInfo: (info) => set({ playBarInfo: info }), // playInfo 상태를 업데이트하는 함수
 
-  // ============================================
-  playlists: [], // 초기 재생목록은 빈 배열
-  setPlaylists: (playlists) => set({ playlists }), // 재생목록 데이터를 설정하는 함수
-
-  // 현재 재생중인 playList ID 설정
-  nowPlayingPlaylistID: "",
-  setNowPlayingPlaylistID: (nowPlayingPlaylistID) =>
-    set({ nowPlayingPlaylistID: nowPlayingPlaylistID }),
-
   // 로딩상태
   isLoading: true,
   setIsLoading: (isLoading) => set({ isLoading: isLoading }),
 
   // 음악 리스트 상태 및 함수들
-  nowPlayingPlaylist: [],
-  setNowPlayingPlaylist: (nowPlayingPlaylist) => set({ nowPlayingPlaylist }),
-  addMusic: (music) =>
-    set((state) => ({
-      nowPlayingPlaylist: [...state.nowPlayingPlaylist, music],
-    })),
-  removeMusic: (id) =>
-    set((state) => ({
-      nowPlayingPlaylist: state.nowPlayingPlaylist.filter(
-        (nowPlayingPlaylist) => nowPlayingPlaylist.musicId !== id
-      ),
-    })),
 }));

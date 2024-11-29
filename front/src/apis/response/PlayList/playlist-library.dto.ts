@@ -2,5 +2,5 @@ import Playlist from "../../../types/interface/playList.interface";
 import ResponseDto from "../response.dto";
 
 export default interface GetPlaylistResponseDto extends ResponseDto {
-  playlists: Playlist[];
+  playListLibrary: Playlist[];
 }
