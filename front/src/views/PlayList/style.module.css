@@ -220,7 +220,7 @@
 }
 
 .music-info-action-btn li:first-child::before {
-  background-image: url("../../assets/modify-icon-hover.png"); /* 수정 아이콘 */
+  background-image: url("../../assets/copy-icon-hover.png"); /* 복사 아이콘 */
 }
 
 /* ============================================= 로딩창  */

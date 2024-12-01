@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,6 +91,14 @@ public class MusicserviceImpl implements Musicservice {
         e.printStackTrace();
         throw new InternalException();
     }
+    }
+
+    @Override
+    public ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email) {
+        log.info("클라이언트에서 받아온 데이터 : musicId = {}, email = {}",musicId,email);
+        System.out.println("musicId = " + musicId);
+        System.out.println("email = " + email);
+        return CopyMusicResponse.success();
     }
 
 

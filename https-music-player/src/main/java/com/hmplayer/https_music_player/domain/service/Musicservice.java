@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.service;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import org.springframework.http.ResponseEntity;
@@ -14,4 +15,6 @@ public interface Musicservice {
 
     ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String token);
 
+
+    ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email);
 }

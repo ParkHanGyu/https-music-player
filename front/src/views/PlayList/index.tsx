@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { deleteMusic, getPlaylistMusicReqeust } from "../../apis";
+import { copyMusic, deleteMusic, getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useNavigate, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
@@ -112,7 +112,26 @@ const PlayList = () => {
     setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
-  const onHandleMusicEdit = () => {};
+  const onHandleMusicCopy = (musicId: bigint) => {
+    if (!musicId) {
+      return;
+    }
+    copyMusic(musicId, cookies.accessToken).then(copyMusicResponse);
+  };
+  const copyMusicResponse = (responseBody: ResponseDto | null) => {
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+
+    alert(code);
+  };
 
   const onHandleMusicDelete = (musicId: bigint) => {
     setIsLoading(true);
@@ -237,7 +256,13 @@ const PlayList = () => {
                   {/* set해준 값과 index가 일치하면 보여줌  */}
                   {openDropdownIndex === index && isOpen && (
                     <ul ref={ref}>
-                      <li onClick={onHandleMusicEdit}>정보수정</li>
+                      <li
+                        onClick={() => {
+                          onHandleMusicCopy(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
+                        }}
+                      >
+                        음악복사
+                      </li>
                       <li
                         onClick={() => {
                           onHandleMusicDelete(musics[index].musicId); // 클릭된 음악의 인덱스를 전달

@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
@@ -32,6 +33,13 @@ public class MusicController {
         return musicservice.deleteMusic(musicId,email);
     }
 
+
+    @PostMapping("/copy/music/{musicId}")
+    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String email) {
+
+        System.out.println("copyMusic 컨트롤러 받음");
+        return musicservice.copyMusic(musicId,email);
+    }
 
 
 }
