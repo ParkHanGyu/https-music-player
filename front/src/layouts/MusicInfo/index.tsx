@@ -19,6 +19,8 @@ import useLoginUserStore from "../../store/login-user.store";
 import { SIGN_IN_PATH } from "../../constant";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import PlayListLibrary from "../PlaylistLibrary";
+import PlaylistLibrary from "../PlaylistLibrary";
 
 const MusicInfo = () => {
   const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
@@ -257,14 +259,23 @@ const MusicInfo = () => {
       )}
 
       {/* =======================================재생목록 팝업 */}
+
+      <PlaylistLibrary
+        playlistPopupOpen={playlistPopupOpen}
+        setPlaylistPopupOpen={setPlaylistPopupOpen}
+      />
+      {/* =======================================재생목록 팝업 */}
+
       {playlistPopupOpen && (
         <div className={styles["playlist-popup"]}>
           <div className={styles["playlist-popup-content"]}>
             <div className={styles["playlist-popup-top"]}>
               <h3>Select Playlist</h3>
+
               <div
                 className={styles["playlist-popup-close"]}
-                onClick={togglePlaylistPopup}
+                // onClick={togglePlaylistPopup}
+                onClick={() => setPlaylistPopupOpen(!playlistPopupOpen)}
               ></div>
             </div>
 

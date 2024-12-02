@@ -35,10 +35,9 @@ public class MusicController {
 
 
     @PostMapping("/copy/music/{musicId}")
-    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String email) {
-
-        System.out.println("copyMusic 컨트롤러 받음");
-        return musicservice.copyMusic(musicId,email);
+    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String token) {
+        log.info("musicId = {}, token = {}", musicId, token);
+        return musicservice.copyMusic(musicId,token);
     }
 
 

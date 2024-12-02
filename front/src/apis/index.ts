@@ -47,6 +47,10 @@ export const playlistAddMusicReqeust = async (
   requestBody: AddPlayListToMusicRequestDto,
   accessToken: string
 ) => {
+  console.log(
+    "노래 추가. 서버로 보내는 토큰 값 : " +
+      JSON.stringify(authorication(accessToken))
+  );
   const result = await axios
     .post(ADD_MUSIC_TO_PLAYLIST_URL(), requestBody, authorication(accessToken))
     .then((response) => {
@@ -176,12 +180,12 @@ export const copyMusic = async (
   musicId: bigint | string,
   accessToken: string
 ) => {
-  console.log("서버로 보내는 musicId 값 : " + musicId);
   console.log(
-    "서버로 보내는 토큰 값 : " + JSON.stringify(authorication(accessToken))
+    "노래 복사. 서버로 보내는 토큰 값 : " +
+      JSON.stringify(authorication(accessToken))
   );
   const result = await axios
-    .post(COPY_MUSIC(musicId), authorication(accessToken))
+    .post(COPY_MUSIC(musicId), {}, authorication(accessToken))
     .then((response) => {
       const responseBody: ResponseDto = response.data;
       return responseBody;
