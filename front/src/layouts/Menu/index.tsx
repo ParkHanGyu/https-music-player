@@ -132,7 +132,7 @@ const Menu = () => {
         >
           PlayList
           {isPlaylistDrop && (
-            <ul>
+            <ul style={{ margin: !cookies.accessToken ? "0px" : undefined }}>
               {playlistLibrary.map((playlist, index) => (
                 <li
                   key={index}

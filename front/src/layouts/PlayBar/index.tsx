@@ -162,6 +162,7 @@ const PlayBar = () => {
   };
 
   const handleReady = () => {
+    alert("playBar - handleReady() - 실행");
     setIsPlaying(true);
   };
   // ================= 반복재생 관련
@@ -195,6 +196,8 @@ const PlayBar = () => {
   };
 
   useEffect(() => {
+    alert("2");
+
     if (
       nowPlayingPlaylist.length !== 0 &&
       nowRandomPlaylist.length === 0 &&
@@ -318,13 +321,16 @@ const PlayBar = () => {
   };
 
   useEffect(() => {
+    alert("1");
     if (infoData.vidUrl !== "-") {
       setPlayBarInfo(infoData);
     }
   }, [infoData]);
 
   useEffect(() => {
-    // URL에 playBarUrl이 포함된 항목이 있는지 확인
+    alert("4");
+
+    // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
     const isUrlPresent = nowPlayingPlaylist.some((music) =>
       music.url.includes(playBarUrl)
     );
@@ -343,8 +349,6 @@ const PlayBar = () => {
         setPlayBarDuration(0);
         return;
       }
-
-      onNextMusic();
     }
   }, [nowPlayingPlaylist]);
 

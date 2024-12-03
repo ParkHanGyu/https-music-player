@@ -13,6 +13,7 @@ import useLoginUserStore from "../../store/login-user.store";
 import { MAIN_PATH } from "../../constant";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -112,11 +113,13 @@ const PlayList = () => {
     setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
-  const onHandleMusicCopy = (musicId: bigint) => {
-    if (!musicId) {
-      return;
+  const onHandleMusicCopy = (index: number) => {
+    setPlaylistPopupOpen(!playlistPopupOpen);
+    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+
+    if (itemMusicUrl) {
+      setMusicInfo(itemMusicUrl[0]);
     }
-    copyMusic(musicId, cookies.accessToken).then(copyMusicResponse);
   };
   const copyMusicResponse = (responseBody: ResponseDto | null) => {
     if (!responseBody) {
@@ -151,6 +154,11 @@ const PlayList = () => {
 
     alert("음악 삭제됨");
     setIsLoading(false);
+  };
+
+  const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
+  const togglePlaylistPopup = () => {
+    setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
@@ -258,13 +266,15 @@ const PlayList = () => {
                     <ul ref={ref}>
                       <li
                         onClick={() => {
-                          onHandleMusicCopy(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
+                          // 복사
+                          onHandleMusicCopy(index); // 클릭된 음악의 인덱스를 전달
                         }}
                       >
                         음악복사
                       </li>
                       <li
                         onClick={() => {
+                          // 삭제
                           onHandleMusicDelete(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
                         }}
                       >
@@ -273,6 +283,14 @@ const PlayList = () => {
                     </ul>
                   )}
                 </div>
+                {playlistPopupOpen && (
+                  <PlaylistLibrary
+                    infoData={infoData}
+                    infoDuration={music.duration}
+                    playlistPopupOpen={playlistPopupOpen}
+                    setPlaylistPopupOpen={setPlaylistPopupOpen}
+                  />
+                )}
               </div>
             ))}
           </div>

@@ -1,31 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
-import {
-  getPlayListLibraryReqeust,
-  playlistAddMusicReqeust,
-  playlistCreateReqeust,
-} from "../../apis";
-import AddPlayListRequestDto from "../../apis/request/create-play-list-request.dto";
+import { getPlayListLibraryReqeust } from "../../apis";
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
-import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import { useCookies } from "react-cookie";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLoginUserStore from "../../store/login-user.store";
 import { SIGN_IN_PATH } from "../../constant";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import PlayListLibrary from "../PlaylistLibrary";
 import PlaylistLibrary from "../PlaylistLibrary";
 
 const MusicInfo = () => {
   const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
 
-  const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
+  const { setPlaylistLibrary } = usePlaylistStore();
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
@@ -84,62 +77,30 @@ const MusicInfo = () => {
   // 재생목록 팝업 상태
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
-    if (!urlId) {
-      alert("음악 검색 후 시도 해주셈");
+    if (!loginUser) {
+      alert("로그인 이후 추가해주세요.");
+      navigator(SIGN_IN_PATH());
       return;
     }
-    if (!loginUser) {
-      alert("로그인해주세요");
-      navigator(SIGN_IN_PATH());
+    if (!urlId) {
+      alert("음악 검색 후 시도 해주셈");
       return;
     }
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
-  // 팝업 관련
-  const [isAddPlaylistPopupOpen, setAddPlaylistPopupOpen] = useState(false); // 추가 팝업 상태 추가
-
-  const craetePlayList = () => {
-    setAddPlaylistPopupOpen(!isAddPlaylistPopupOpen);
-  };
-
-  // add 팝업 관련
-  const addPlayListInputRef = useRef<HTMLInputElement>(null); // input ref 생성
-
-  //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
-  const toggleAddPlaylistPopup = () => {
-    if (addPlayListInputRef.current) {
-      if (!addPlayListInputRef.current.value.trim()) {
-        alert("재생목록의 제목을 입력해주세요.");
-        return;
-      }
-
-      const playListName = addPlayListInputRef.current.value;
-
-      const requestBody: AddPlayListRequestDto = { playListName };
-
-      playlistCreateReqeust(requestBody, cookies.accessToken).then(
-        playListAddResponse
-      );
-    }
-  };
-
-  const playListAddResponse = (responseBody: { code: string }) => {
-    if (!responseBody) {
-      alert("서버로부터 응답이 없습니다.");
-      return;
-    }
-    craetePlayList();
-  };
-
   // =========== 재생목록 셋팅 ===============================
   useEffect(() => {
+    if (!cookies.accessToken) {
+      setPlaylistLibrary([]);
+      return;
+    }
     if (cookies.accessToken) {
       getPlayListLibraryReqeust(cookies.accessToken).then(
         getPlaylistLibraryResponse
       );
     }
-  }, [cookies.accessToken, isAddPlaylistPopupOpen]);
+  }, [cookies.accessToken]);
 
   const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
@@ -157,32 +118,6 @@ const MusicInfo = () => {
     const playListResult = responseBody as GetPlayListResponseDto;
 
     setPlaylistLibrary(playListResult.playListLibrary);
-  };
-
-  //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
-  const toggleAddMusicToPlaylist = (
-    requestBody: AddPlayListToMusicRequestDto
-  ) => {
-    if (!requestBody.youtube) return;
-    playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
-      playlistAddMusicResponse
-    );
-  };
-
-  const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
-    if (!responseBody) {
-      alert("데이터 없음");
-      return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
-    }
-
-    alert("음악 추가됨");
-    setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
   // ==========================
@@ -259,80 +194,13 @@ const MusicInfo = () => {
       )}
 
       {/* =======================================재생목록 팝업 */}
-
-      <PlaylistLibrary
-        playlistPopupOpen={playlistPopupOpen}
-        setPlaylistPopupOpen={setPlaylistPopupOpen}
-      />
-      {/* =======================================재생목록 팝업 */}
-
       {playlistPopupOpen && (
-        <div className={styles["playlist-popup"]}>
-          <div className={styles["playlist-popup-content"]}>
-            <div className={styles["playlist-popup-top"]}>
-              <h3>Select Playlist</h3>
-
-              <div
-                className={styles["playlist-popup-close"]}
-                // onClick={togglePlaylistPopup}
-                onClick={() => setPlaylistPopupOpen(!playlistPopupOpen)}
-              ></div>
-            </div>
-
-            <div className={styles["playlist-popup-center"]}>
-              <ul>
-                {playlistLibrary.map((playlist, index) => (
-                  <li
-                    key={index}
-                    onClick={() =>
-                      toggleAddMusicToPlaylist({
-                        youtube: infoData,
-                        infoDuration: infoDuration,
-                        playlistId: playlist.playlistId,
-                      })
-                    }
-                  >
-                    {playlist.title}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className={styles["playlist-popup-bottom"]}>
-              <div
-                className={styles["playlist-popup-add"]}
-                onClick={craetePlayList}
-              ></div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* 재생목록 add 화면 */}
-      {isAddPlaylistPopupOpen && (
-        <div className={styles["add-playlist-popup"]}>
-          <div className={styles["add-playlist-popup-content"]}>
-            <div className={styles["add-playlist-popup-top"]}>
-              <h3>Create New Playlist</h3>
-              <div
-                className={styles["add-playlist-popup-close-btn"]}
-                onClick={() => setAddPlaylistPopupOpen(false)}
-              ></div>
-            </div>
-
-            <div className={styles["add-playlist-popup-bottom"]}>
-              <input
-                ref={addPlayListInputRef}
-                type="text"
-                placeholder="New playlist name"
-              />
-
-              <div
-                className={styles["add-playlist-popup-add-btn"]}
-                onClick={toggleAddPlaylistPopup}
-              ></div>
-            </div>
-          </div>
-        </div>
+        <PlaylistLibrary
+          infoData={infoData}
+          infoDuration={infoDuration}
+          playlistPopupOpen={playlistPopupOpen}
+          setPlaylistPopupOpen={setPlaylistPopupOpen}
+        />
       )}
     </>
   );

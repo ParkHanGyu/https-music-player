@@ -104,7 +104,7 @@ const SignUp = () => {
     console.log("서버에서 반환해준 데이터 : " + JSON.stringify(responseBody));
     const { code } = responseBody;
     if (code === "DBE") alert("데이터베이스 오류입니다.");
-    if (code === "DM") alert("사용중인 이메일 입니다.");
+    if (code === "DE") alert("사용중인 이메일 입니다.");
     if (code !== "SU") return;
     alert("회원가입 완료");
     navigator(SIGN_IN_PATH());

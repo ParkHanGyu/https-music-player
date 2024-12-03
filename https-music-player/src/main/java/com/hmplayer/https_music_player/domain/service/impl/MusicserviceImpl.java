@@ -5,13 +5,10 @@ import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequ
 import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
@@ -20,18 +17,12 @@ import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.Musicservice;
 import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,7 +36,6 @@ public class MusicserviceImpl implements Musicservice {
     private final PlaylistMusicRepoService playlistMusicRepoService;
 
 
-
     @Override
     public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
         String pureToken = token.replace("Bearer ", "").trim();
@@ -55,8 +45,24 @@ public class MusicserviceImpl implements Musicservice {
         YoutubeDto youtube = request.getYoutube();
         int infoDuration = request.getInfoDuration();
         Long playlistId = request.getPlaylistId();
+        log.info("추가할 노래 제목 = {}, infoDuration = {}, 추가할 플레이리스트 ID = {}", youtube.getVidTitle(),infoDuration,playlistId);
 
+
+        Optional<PlaylistMusic> findExistingMusic = playlistMusicRepoService.findByPlaylistIdAndMusicUrl(playlistId,youtube.getVidUrl());
+
+        log.info("findExistingMusic = {}", findExistingMusic);
+
+        if (findExistingMusic.isPresent()) {
+            // 중복된 경우: 이미 존재하는 음악 데이터
+            System.out.println("중복입니다. return.");
+            return MusicResponse.existingMusic();
+        }
+
+
+        // playlistId의 재생목록의 정보들을 가져옴
         Optional<Playlist> optionalPlaylist = playListRepoService.findById(playlistId);
+        // optionalPlaylist = Optional[Playlist(playlistId=1, user=user정보, title=test1, musics=[..] ... [..]
+        log.info("optionalPlaylist = {}",optionalPlaylist);
         if (optionalPlaylist.isEmpty()) {
             return ResponseEntity.badRequest().body(new MusicResponse());
         }

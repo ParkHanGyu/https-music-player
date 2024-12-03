@@ -65,4 +65,11 @@ public class PlaylistMusicRepoService {
         log.info("db에서 쿼리에 사용할 데이터 : userId = {}, musicId = {}", userId,musicId);
     }
 
+
+
+    @Transactional
+    public Optional<PlaylistMusic> findByPlaylistIdAndMusicUrl(Long playlistId, String vidUrl) {
+        return playlistMusicRepository.findByPlaylistIdAndMusicUrl(playlistId,vidUrl);
+    }
+
 }

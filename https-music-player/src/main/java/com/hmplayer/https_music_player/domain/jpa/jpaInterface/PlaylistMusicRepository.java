@@ -1,5 +1,6 @@
 package com.hmplayer.https_music_player.domain.jpa.jpaInterface;
 
+import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,5 +23,15 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
     @Modifying
     @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.user.id = :userId AND pm.music.id = :musicId")
     void deletePlaylistMusicByUserAndMusicId(@Param("userId") Long userId, @Param("musicId") Long musicId);
+
+
+    @Query("SELECT pm FROM PlaylistMusic pm " +
+            "JOIN pm.playlist p " +
+            "JOIN pm.music m " +
+            "WHERE p.playlistId = :playlistId " +
+            "AND m.url = :musicUrl")
+    Optional<PlaylistMusic> findByPlaylistIdAndMusicUrl(
+            @Param("playlistId") Long playlistId,
+            @Param("musicUrl") String musicUrl);
 
 }

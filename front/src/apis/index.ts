@@ -195,20 +195,3 @@ export const copyMusic = async (
     });
   return result;
 };
-
-// const COPY_MUSIC = () => `${API_DOMAIN}/copy/music`;
-// export const copyMusic = async (
-//   musicId: bigint | string,
-//   accessToken: string
-// ) => {
-//   const result = await axios
-//     .post(COPY_MUSIC(), musicId, authorication(accessToken))
-//     .then((response) => {
-//       const responseBody: ResponseDto = response.data;
-//       return responseBody;
-//     })
-//     .catch((error) => {
-//       return errorResponse(error);
-//     });
-//   return result;
-// };

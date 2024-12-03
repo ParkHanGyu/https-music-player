@@ -22,4 +22,8 @@ public class MusicResponse extends ResponseDto {
     public static ResponseEntity<MusicResponse> success(){ // 성공
         return ResponseEntity.status(HttpStatus.OK).body(new MusicResponse());
     }
+
+    public static ResponseEntity<ResponseDto> existingMusic() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(ResponseCode.DUPLICATE_MUSIC,ResponseMessage.DUPLICATE_MUSIC));
+    }
 }
