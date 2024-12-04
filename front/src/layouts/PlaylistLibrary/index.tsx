@@ -55,11 +55,6 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
   ) => {
-    alert("복사 실행");
-    console.log(
-      "음악 추가 기능 실행. 서버에 보내는 데이터 : " +
-        JSON.stringify(requestBody)
-    );
     if (!requestBody.youtube) return;
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
       playlistAddMusicResponse
@@ -73,7 +68,10 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
     const { code } = responseBody;
     if (code === "DBE") alert("데이터베이스 오류");
-    if (code === "DM") alert(responseBody.message);
+    if (code === "DM") {
+      alert(responseBody.message);
+      setPlaylistPopupOpen(false);
+    }
     if (code !== "SU") {
       return false;
     }
@@ -140,10 +138,15 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   };
   return (
     <>
-      <div className={styles["playlist-popup"]}>
+      <div
+        className={styles["playlist-popup"]}
+        onClick={(event: React.MouseEvent<HTMLDivElement>) =>
+          event.stopPropagation()
+        }
+      >
         <div className={styles["playlist-popup-content"]}>
           <div className={styles["playlist-popup-top"]}>
-            <h3>Select Playlist</h3>
+            <h3>My Playlist</h3>
             <div
               className={styles["playlist-popup-close"]}
               onClick={() => setPlaylistPopupOpen(!playlistPopupOpen)}
@@ -155,13 +158,14 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
               {playlistLibrary.map((playlist, index) => (
                 <li
                   key={index}
-                  onClick={() =>
+                  onClick={(event: React.MouseEvent<HTMLLIElement>) => (
+                    event.stopPropagation(),
                     toggleAddMusicToPlaylist({
                       youtube: infoData,
                       infoDuration: infoDuration,
                       playlistId: playlist.playlistId,
                     })
-                  }
+                  )}
                 >
                   {playlist.title}
                 </li>

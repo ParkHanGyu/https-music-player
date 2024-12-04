@@ -162,7 +162,6 @@ const PlayBar = () => {
   };
 
   const handleReady = () => {
-    alert("playBar - handleReady() - 실행");
     setIsPlaying(true);
   };
   // ================= 반복재생 관련
@@ -193,10 +192,12 @@ const PlayBar = () => {
 
   const testBtn = () => {
     console.log("nowRandomPlaylist : ", nowRandomPlaylist);
+    console.log("playBarUrl : ", playBarUrl);
+    console.log("playBarInfo : ", playBarInfo);
   };
 
   useEffect(() => {
-    alert("2");
+    // alert("PlayBar1");
 
     if (
       nowPlayingPlaylist.length !== 0 &&
@@ -321,14 +322,14 @@ const PlayBar = () => {
   };
 
   useEffect(() => {
-    alert("1");
+    // alert("PlayBar2");
     if (infoData.vidUrl !== "-") {
       setPlayBarInfo(infoData);
     }
   }, [infoData]);
 
   useEffect(() => {
-    alert("4");
+    // alert("PlayBar3");
 
     // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
     const isUrlPresent = nowPlayingPlaylist.some((music) =>
@@ -343,6 +344,8 @@ const PlayBar = () => {
         Array.isArray(nowPlayingPlaylist) &&
         nowPlayingPlaylist.length === 0
       ) {
+        alert("PlayBar3 if문 true로 실행");
+
         setPlayBarUrl("");
         resetYoutubeInfo();
         setIsPlaying(false);
@@ -352,9 +355,18 @@ const PlayBar = () => {
     }
   }, [nowPlayingPlaylist]);
 
+  const handleMusicInfoClick = () => {
+    if (playBarInfo && playBarInfo.vidUrl) {
+      window.open(playBarInfo.vidUrl, "_blank");
+    }
+  };
+
   return (
     <div className={styles["main-wrap-bottom"]}>
-      <div className={styles["main-wrap-bottom-left"]}>
+      <div
+        className={styles["main-wrap-bottom-left"]}
+        onClick={handleMusicInfoClick}
+      >
         <div className={styles["main-wrap-play-img-box"]}>
           <div
             className={styles["main-wrap-play-img"]}

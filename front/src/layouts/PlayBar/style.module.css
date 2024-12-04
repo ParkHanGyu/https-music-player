@@ -140,23 +140,13 @@
   align-items: center;
 }
 .main-wrap-bottom-center {
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;  */
-
   /* + */
   justify-self: center;
 }
 
 .main-wrap-bottom-right {
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
-
   position: relative;
   margin-right: 20px;
-
   /* + */
   justify-self: end;
 }
@@ -167,6 +157,7 @@
 
   /* + */
   justify-self: start;
+  cursor: pointer;
 }
 
 .main-play-box {
@@ -370,14 +361,6 @@
   border-radius: 6px;
 }
 
-#music-progress-bar::-webkit-slider-thumb {
-  transform: scale(0);
-}
-
-#music-progress-bar {
-  accent-color: red;
-}
-
 .main-wrap-top-content {
   width: 100%;
   display: flex;
@@ -391,7 +374,6 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* outline: 1px solid red; */
 }
 
 .main-wrap-play-img-box {

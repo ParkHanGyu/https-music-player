@@ -14,6 +14,7 @@ import { MAIN_PATH } from "../../constant";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
+import { YoutubeInfo } from "../../types/interface/youtube.interface";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -32,10 +33,14 @@ const PlayList = () => {
   const formatTime = useFormatTime();
 
   const { infoData, setMusicInfo } = useYoutubeInfo("");
+  const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
+    useYoutubeInfo("");
   const { loginUser } = useLoginUserStore();
   const navigator = useNavigate();
 
   useEffect(() => {
+    // alert("PlayList1");
+
     if (!isLoading) {
       if (!loginUser) {
         alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
@@ -81,6 +86,8 @@ const PlayList = () => {
     console.log("playlistId : ", playlistId);
     console.log("musics : ", musics);
     console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
+    // console.log("copiedInfoData : ", copiedInfoData);
+    console.log("infoData : ", infoData);
   };
 
   useEffect(() => {
@@ -92,7 +99,7 @@ const PlayList = () => {
   const onPlayMusic = (index: number) => {
     const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
-    if (itemMusicUrl) {
+    if (itemMusicUrl && playBarUrl !== itemMusicUrl[0]) {
       setMusicInfo(itemMusicUrl[0]);
       setPlayBarUrl(itemMusicUrl[0]);
       setNowPlayingPlaylistID(playlistId);
@@ -114,29 +121,17 @@ const PlayList = () => {
   };
 
   const onHandleMusicCopy = (index: number) => {
+    setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
     const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
     if (itemMusicUrl) {
-      setMusicInfo(itemMusicUrl[0]);
+      setAddInfoData(itemMusicUrl[0]);
     }
-  };
-  const copyMusicResponse = (responseBody: ResponseDto | null) => {
-    if (!responseBody) {
-      alert("데이터 없음");
-      return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
-    }
-
-    alert(code);
   };
 
   const onHandleMusicDelete = (musicId: bigint) => {
+    setOpenDropdownIndex(null);
     setIsLoading(true);
     deleteMusic(musicId, cookies.accessToken).then(deleteMusicResponse);
   };
@@ -157,14 +152,13 @@ const PlayList = () => {
   };
 
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
-  const togglePlaylistPopup = () => {
-    setPlaylistPopupOpen(!playlistPopupOpen);
-  };
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
   useEffect(() => {
+    // alert("PlayList3");
+
     if (!isOpen) {
       setOpenDropdownIndex(null);
     }
@@ -215,6 +209,9 @@ const PlayList = () => {
                     ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
                     : styles["main-music-data-info-box"]
                 }
+                style={{
+                  cursor: playlistPopupOpen ? "" : "pointer",
+                }}
                 onClick={() => onPlayMusic(index)}
               >
                 <div className={styles["music-info-number"]}>{index + 1}</div>
@@ -265,8 +262,8 @@ const PlayList = () => {
                   {openDropdownIndex === index && isOpen && (
                     <ul ref={ref}>
                       <li
-                        onClick={() => {
-                          // 복사
+                        onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                          event.stopPropagation();
                           onHandleMusicCopy(index); // 클릭된 음악의 인덱스를 전달
                         }}
                       >
@@ -285,7 +282,7 @@ const PlayList = () => {
                 </div>
                 {playlistPopupOpen && (
                   <PlaylistLibrary
-                    infoData={infoData}
+                    infoData={addInfoData}
                     infoDuration={music.duration}
                     playlistPopupOpen={playlistPopupOpen}
                     setPlaylistPopupOpen={setPlaylistPopupOpen}

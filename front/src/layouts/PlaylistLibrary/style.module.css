@@ -37,7 +37,7 @@
   margin: 15px 0;
 }
 
-.playlist-popup-content ul li {
+.playlist-popup-content li {
   padding: 10px;
   cursor: pointer;
   border-radius: 4px;
@@ -82,12 +82,18 @@
 }
 
 .playlist-popup-center li {
+  width: 280px;
   font-size: 15px;
 }
 
 .playlist-popup-top {
   display: flex;
   justify-content: space-between;
+}
+
+.playlist-popup-top > h3 {
+  padding-left: 10px;
+  font-size: 20px;
 }
 
 .playlist-popup-bottom {
