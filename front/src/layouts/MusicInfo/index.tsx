@@ -14,6 +14,7 @@ import { SIGN_IN_PATH } from "../../constant";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../PlaylistLibrary";
+import useMediaInfo from "../../hooks/testInfo";
 
 const MusicInfo = () => {
   const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
@@ -33,9 +34,23 @@ const MusicInfo = () => {
   const { infoData, setMusicInfo, resetYoutubeInfo } =
     useYoutubeInfo(defaultImage);
 
+  const {
+    testInfoData,
+    setTestInfoData,
+    setMediaInfo,
+    testImage,
+    resetMediaInfo,
+  } = useMediaInfo(defaultImage);
+
+  // useEffect(() => {
+  //   if (urlId) {
+  //     setMusicInfo(urlId);
+  //   }
+  // }, [urlId]);
+
   useEffect(() => {
     if (urlId) {
-      setMusicInfo(urlId);
+      setMediaInfo(urlId);
     }
   }, [urlId]);
 
@@ -61,7 +76,7 @@ const MusicInfo = () => {
       setIsPlaying(!isPlaying);
     }
     // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(infoData);
+    setPlayBarInfo(testInfoData);
   };
 
   // url 시간 상태
@@ -124,24 +139,32 @@ const MusicInfo = () => {
   // info페이지 에러 상태
   const [isInfoError, setIsInfoError] = useState<boolean>(false);
 
+  const testBtn = () => {
+    console.log("urlId 값 : ", JSON.stringify(urlId));
+
+    console.log("testInfoData 값 : ", JSON.stringify(testInfoData));
+  };
+
   return (
     <>
       <div className={styles["main-left"]}>
-        <div className={styles["music-info"]}>Search Music</div>
+        <div className={styles["music-info"]} onClick={() => testBtn()}>
+          Search Music
+        </div>
         <div
           className={styles["music-info-image"]}
           style={{
-            backgroundImage: `url(${infoData.thumb})`,
+            backgroundImage: `url(${testInfoData.thumb})`,
           }}
         ></div>
         <div className={styles["music-info-data"]}>
           <div className={styles["music-info-title-box"]}>
             <div className={styles["title-info"]}>Title</div>
-            <div className={styles["title-data"]}>{infoData.vidTitle}</div>
+            <div className={styles["title-data"]}>{testInfoData.vidTitle}</div>
           </div>
           <div className={styles["music-info-artist-box"]}>
             <div className={styles["artist-info"]}>Artist</div>
-            <div className={styles["artist-data"]}>{infoData.author}</div>
+            <div className={styles["artist-data"]}>{testInfoData.author}</div>
           </div>
           <div className={styles["music-info-genre-box"]}>
             <div className={styles["genre-info"]}>Genre</div>
@@ -175,7 +198,7 @@ const MusicInfo = () => {
       </div>
       {urlId && (
         <ReactPlayer
-          url={`youtu.be/${urlId}`}
+          url={urlId}
           playing={false}
           onDuration={handleDuration}
           style={{ display: "none" }} // 완전히 숨김 처리
@@ -196,7 +219,7 @@ const MusicInfo = () => {
       {/* =======================================재생목록 팝업 */}
       {playlistPopupOpen && (
         <PlaylistLibrary
-          infoData={infoData}
+          infoData={testInfoData}
           infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}

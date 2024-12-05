@@ -34,8 +34,8 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    // navigator(TEST_PATH());
-    alert("셋팅된 loginUser 값 : " + JSON.stringify(loginUser));
+    navigator(TEST_PATH());
+    // alert("셋팅된 loginUser 값 : " + JSON.stringify(loginUser));
   };
 
   useEffect(() => {

@@ -30,7 +30,10 @@ const PlayBar = () => {
   const { extractYouTubeId } = useYouTubeIdExtractor();
 
   const handlePlayPause = () => {
-    if (!isBuffering) {
+    alert("실행");
+    if (isBuffering === false) {
+      alert("실행1");
+
       setIsPlaying(!isPlaying);
     }
   };
@@ -154,10 +157,13 @@ const PlayBar = () => {
   // ==============================================사운드바 끝
   const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
   const handleBuffer = () => {
+    alert("버퍼링 시작");
+
     setIsBuffering(true); // 버퍼링 시작
   };
 
   const handleBufferEnd = () => {
+    alert("버퍼링끝");
     setIsBuffering(false); // 버퍼링 종료
   };
 
@@ -365,6 +371,9 @@ const PlayBar = () => {
     <div className={styles["main-wrap-bottom"]}>
       <div
         className={styles["main-wrap-bottom-left"]}
+        style={{
+          cursor: playBarInfo ? "pointer" : "",
+        }}
         onClick={handleMusicInfoClick}
       >
         <div className={styles["main-wrap-play-img-box"]}>
@@ -451,7 +460,7 @@ const PlayBar = () => {
               ></div>
               <ReactPlayer
                 ref={playerRef}
-                url={`youtu.be/${playBarUrl}`}
+                url={playBarUrl}
                 playing={isPlaying}
                 onBuffer={handleBuffer} // 버퍼링 시작 이벤트
                 onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트

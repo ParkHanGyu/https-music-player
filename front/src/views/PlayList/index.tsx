@@ -124,6 +124,7 @@ const PlayList = () => {
     setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
     const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+    alert(itemMusicUrl);
 
     if (itemMusicUrl) {
       setAddInfoData(itemMusicUrl[0]);

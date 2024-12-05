@@ -38,9 +38,6 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 }) => {
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
 
-  const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
-  const { loginUser } = useLoginUserStore();
-  const navigator = useNavigate();
   const [cookies] = useCookies();
 
   // url 시간 상태
@@ -136,6 +133,11 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
     setPlaylistLibrary(playListResult.playListLibrary);
   };
+
+  const testBtn = () => {
+    console.log("셋팅된 infoData 값 : " + JSON.stringify(infoData));
+    alert(infoData);
+  };
   return (
     <>
       <div
@@ -146,7 +148,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
       >
         <div className={styles["playlist-popup-content"]}>
           <div className={styles["playlist-popup-top"]}>
-            <h3>My Playlist</h3>
+            <h3 onClick={() => testBtn()}>My Playlist</h3>
             <div
               className={styles["playlist-popup-close"]}
               onClick={() => setPlaylistPopupOpen(!playlistPopupOpen)}
