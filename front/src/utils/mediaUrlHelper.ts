@@ -13,8 +13,6 @@ export const getPlatformUrl = (url: string): string | null => {
     }
     return urlMatch ? `https://youtu.be/${urlMatch[1]}` : url;
   } else if (url.includes("soundcloud")) {
-    alert("사클 url 들어옴");
-
     return url;
   }
   // 필요한 경우 다른 플랫폼도 추가 가능

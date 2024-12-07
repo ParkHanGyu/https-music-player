@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { copyMusic, deleteMusic, getPlaylistMusicReqeust } from "../../apis";
+import { deleteMusic, getPlaylistMusicReqeust } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useNavigate, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
@@ -14,7 +14,7 @@ import { MAIN_PATH } from "../../constant";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
-import { YoutubeInfo } from "../../types/interface/youtube.interface";
+import useMediaInfo from "../../hooks/testInfo";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -35,6 +35,13 @@ const PlayList = () => {
   const { infoData, setMusicInfo } = useYoutubeInfo("");
   const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
     useYoutubeInfo("");
+  const {
+    testInfoData,
+    setTestInfoData,
+    setMediaInfo,
+    testImage,
+    resetMediaInfo,
+  } = useMediaInfo("");
   const { loginUser } = useLoginUserStore();
   const navigator = useNavigate();
 
@@ -80,28 +87,29 @@ const PlayList = () => {
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    // console.log("셋팅된 isOpen 값 : " + JSON.stringify(isOpen));
     // alert(JSON.stringify(musics));
     console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
-    console.log("playlistId : ", playlistId);
-    console.log("musics : ", musics);
-    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
-    // console.log("copiedInfoData : ", copiedInfoData);
-    console.log("infoData : ", infoData);
   };
 
   useEffect(() => {
-    if (infoData.vidUrl !== "-") {
-      setPlayBarInfo(infoData);
+    if (testInfoData.vidUrl !== "-") {
+      console.log("setPlayBarInfo실행. set해주는 값 : ", testInfoData);
+      setPlayBarInfo(testInfoData);
     }
-  }, [infoData]);
+  }, [testInfoData]);
 
   const onPlayMusic = (index: number) => {
-    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+    const itemMusicUrl = musics[index].url;
+    // const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
-    if (itemMusicUrl && playBarUrl !== itemMusicUrl[0]) {
-      setMusicInfo(itemMusicUrl[0]);
-      setPlayBarUrl(itemMusicUrl[0]);
+    if (itemMusicUrl && playBarUrl !== itemMusicUrl) {
+      setMediaInfo(itemMusicUrl);
+      // setPlayBarUrl(itemMusicUrl[0]);
+      if (itemMusicUrl) {
+        alert("실행");
+        console.log("itemMusicUrl : ", itemMusicUrl);
+        setPlayBarUrl(itemMusicUrl);
+      }
       setNowPlayingPlaylistID(playlistId);
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);

@@ -10,6 +10,8 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import { useParams } from "react-router-dom";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import useMediaInfo from "../../hooks/testInfo";
+import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 
 const PlayBar = () => {
   const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
@@ -26,14 +28,20 @@ const PlayBar = () => {
   const { playlistId } = useParams();
 
   const { infoData, setMusicInfo, resetYoutubeInfo } = useYoutubeInfo("");
+  const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
+    useYoutubeInfo("");
+  const {
+    testInfoData,
+    setTestInfoData,
+    setMediaInfo,
+    testImage,
+    resetMediaInfo,
+  } = useMediaInfo("");
   // 정규식 커스텀 훅
   const { extractYouTubeId } = useYouTubeIdExtractor();
 
   const handlePlayPause = () => {
-    alert("실행");
     if (isBuffering === false) {
-      alert("실행1");
-
       setIsPlaying(!isPlaying);
     }
   };
@@ -157,13 +165,10 @@ const PlayBar = () => {
   // ==============================================사운드바 끝
   const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
   const handleBuffer = () => {
-    alert("버퍼링 시작");
-
     setIsBuffering(true); // 버퍼링 시작
   };
 
   const handleBufferEnd = () => {
-    alert("버퍼링끝");
     setIsBuffering(false); // 버퍼링 종료
   };
 
@@ -197,14 +202,11 @@ const PlayBar = () => {
   };
 
   const testBtn = () => {
+    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
     console.log("nowRandomPlaylist : ", nowRandomPlaylist);
-    console.log("playBarUrl : ", playBarUrl);
-    console.log("playBarInfo : ", playBarInfo);
   };
 
   useEffect(() => {
-    // alert("PlayBar1");
-
     if (
       nowPlayingPlaylist.length !== 0 &&
       nowRandomPlaylist.length === 0 &&
@@ -259,16 +261,11 @@ const PlayBar = () => {
       }
     }
 
-    if (!prevMusicUrl) {
+    if (prevMusicUrl) {
+      setMediaInfo(prevMusicUrl);
+      setPlayBarUrl(prevMusicUrl);
+    } else {
       return;
-    }
-
-    if (prevMusicUrl.includes("youtu")) {
-      const youtubeId = extractYouTubeId(prevMusicUrl);
-      if (youtubeId) {
-        setMusicInfo(youtubeId);
-        setPlayBarUrl(youtubeId);
-      }
     }
   };
 
@@ -276,7 +273,6 @@ const PlayBar = () => {
   const onNextMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
       alert("노래가 없음");
-
       return;
     }
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
@@ -304,7 +300,6 @@ const PlayBar = () => {
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
-
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
       if (nowPlayingPlaylist.length === nowIndex + 1) {
         prevMusicUrl = nowPlayingPlaylist[0].url;
@@ -319,24 +314,22 @@ const PlayBar = () => {
 
     if (prevMusicUrl.includes("youtu")) {
       // 정규식으로 ID 추출
-      const youtubeId = extractYouTubeId(prevMusicUrl);
-      if (youtubeId) {
-        setMusicInfo(youtubeId);
-        setPlayBarUrl(youtubeId);
+      // const youtubeId = extractYouTubeId(prevMusicUrl);
+      console.log("prevMusicUrl : ", prevMusicUrl);
+      if (prevMusicUrl) {
+        setMediaInfo(prevMusicUrl);
+        setPlayBarUrl(prevMusicUrl);
       }
     }
   };
 
   useEffect(() => {
-    // alert("PlayBar2");
-    if (infoData.vidUrl !== "-") {
-      setPlayBarInfo(infoData);
+    if (testInfoData.vidUrl !== "-") {
+      setPlayBarInfo(testInfoData);
     }
-  }, [infoData]);
+  }, [testInfoData]);
 
   useEffect(() => {
-    // alert("PlayBar3");
-
     // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
     const isUrlPresent = nowPlayingPlaylist.some((music) =>
       music.url.includes(playBarUrl)

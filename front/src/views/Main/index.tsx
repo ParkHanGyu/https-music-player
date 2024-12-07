@@ -58,10 +58,7 @@ const Main = () => {
 
     // setUrlId(videoUrl);
 
-    console.log("main에서 받은 videoUrl 값 : ", videoUrl);
-
     const urlMatch = getPlatformUrl(videoUrl);
-    console.log("main에서 추출한 url값 : ", urlMatch);
 
     if (urlMatch) {
       setUrlId(urlMatch);

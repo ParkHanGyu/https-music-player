@@ -18,11 +18,24 @@ const useMediaInfo = (testImage: string) => {
       .then((res) => res.json())
       .then((data) => {
         const { url, author_name, thumbnail_url, title } = data;
+        let processedTitle = title || "-";
+        if (
+          url.includes("soundcloud") &&
+          title &&
+          author_name &&
+          title.includes(" by ") &&
+          title.includes(author_name)
+        ) {
+          console.log("사클일때 info 폼 바뀜 ", processedTitle);
+          // "by" 기준으로 분리하여 첫 번째 부분만 사용
+          processedTitle = title.split(" by ")[0].trim();
+        }
+
         setTestInfoData({
           vidUrl: url || "-",
           author: author_name || "-",
           thumb: thumbnail_url || testImage,
-          vidTitle: title || "-",
+          vidTitle: processedTitle || "-",
         });
       })
       .catch((error) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   MAIN_PATH,
   PLAY_LIST_PATH,
@@ -14,6 +14,7 @@ import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const Menu = () => {
+  const { playlistId } = useParams();
   const [cookies, removeCookie, deleteCookie] = useCookies();
 
   const { loginUser } = useLoginUserStore();
@@ -132,9 +133,15 @@ const Menu = () => {
         >
           PlayList
           {isPlaylistDrop && (
-            <ul style={{ margin: !cookies.accessToken ? "0px" : undefined }}>
+            <ul style={{ margin: !playlistLibrary.length ? "0px" : undefined }}>
               {playlistLibrary.map((playlist, index) => (
                 <li
+                  style={{
+                    backgroundColor:
+                      playlistId === (index + 1).toString()
+                        ? "#333333"
+                        : undefined,
+                  }}
                   key={index}
                   onClick={(
                     event: React.MouseEvent<HTMLLIElement, MouseEvent>
