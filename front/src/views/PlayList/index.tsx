@@ -99,6 +99,7 @@ const PlayList = () => {
   }, [testInfoData]);
 
   const onPlayMusic = (index: number) => {
+    // setPlayBarUrl("");
     const itemMusicUrl = musics[index].url;
     // const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
 
@@ -106,7 +107,6 @@ const PlayList = () => {
       setMediaInfo(itemMusicUrl);
       // setPlayBarUrl(itemMusicUrl[0]);
       if (itemMusicUrl) {
-        alert("실행");
         console.log("itemMusicUrl : ", itemMusicUrl);
         setPlayBarUrl(itemMusicUrl);
       }
@@ -175,6 +175,7 @@ const PlayList = () => {
   const homeClickHandler = () => {
     navigator(MAIN_PATH());
   };
+
   if (isLoading) {
     return (
       <div className={styles["loading-container"]}>

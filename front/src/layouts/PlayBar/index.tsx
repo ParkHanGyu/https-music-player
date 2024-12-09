@@ -16,7 +16,6 @@ import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 const PlayBar = () => {
   const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
     useVideoStore();
-
   const {
     nowPlayingPlaylist,
     nowPlayingPlaylistID,
@@ -96,7 +95,12 @@ const PlayBar = () => {
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const offsetX = moveEvent.clientX - rect.left;
       const newPlayed = Math.max(0, Math.min(1, offsetX / rect.width));
-      handleSeek(newPlayed);
+
+      // window.requestAnimationFrame(() => handleSeek(newPlayed));
+      // or
+      // handleSeek(newPlayed);
+      setPlayed(newPlayed);
+      playerRef.current?.seekTo(newPlayed);
     };
 
     const handleMouseUp = () => {
@@ -173,6 +177,7 @@ const PlayBar = () => {
   };
 
   const handleReady = () => {
+    setIsLoading(false);
     setIsPlaying(true);
   };
   // ================= 반복재생 관련
@@ -191,7 +196,20 @@ const PlayBar = () => {
 
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
-    if (!isLoop) {
+    alert("ended 실행");
+    if (playerRef.current && isLoop) {
+      alert("loop 실행");
+
+      // url이 soundcloud면 url 다시 넣어줌
+      if (playBarUrl.includes("soundcloud")) {
+        const nowMusic = playBarUrl;
+        setPlayBarUrl(""); // URL을 초기화
+        setTimeout(() => setPlayBarUrl(nowMusic), 0); // 다시 URL 설정
+      } else {
+        // soundcloud가 아닐경우 (유튜브일경우) 동영상 진행도 0으로
+        playerRef.current.seekTo(0);
+      }
+    } else if (!isLoop) {
       onNextMusic();
     }
   };
@@ -300,26 +318,23 @@ const PlayBar = () => {
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
+      console.log("지금 재생중인 노래 index : ", nowIndex);
+
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
       if (nowPlayingPlaylist.length === nowIndex + 1) {
         prevMusicUrl = nowPlayingPlaylist[0].url;
+        console.log("마지막 노래라면 재생시킬 노래: ", prevMusicUrl);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+        console.log("마지막 노래가 아니라면 재생시킬 노래: ", prevMusicUrl);
       }
     }
 
-    if (!prevMusicUrl) {
+    if (prevMusicUrl) {
+      setMediaInfo(prevMusicUrl);
+      setPlayBarUrl(prevMusicUrl);
+    } else {
       return;
-    }
-
-    if (prevMusicUrl.includes("youtu")) {
-      // 정규식으로 ID 추출
-      // const youtubeId = extractYouTubeId(prevMusicUrl);
-      console.log("prevMusicUrl : ", prevMusicUrl);
-      if (prevMusicUrl) {
-        setMediaInfo(prevMusicUrl);
-        setPlayBarUrl(prevMusicUrl);
-      }
     }
   };
 
@@ -360,144 +375,197 @@ const PlayBar = () => {
     }
   };
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const playBarReset = () => {
+    setPlayBarDuration(0);
+    setPlayed(0);
+    setIsLoading(true);
+  };
+
+  useEffect(() => {
+    if (playBarUrl !== "") {
+      playBarReset();
+    }
+  }, [playBarUrl]);
+
+  // ================================= animationFrame 관련해서 알아보기
+  const animationFrameRef = useRef<number | null>(null);
+  // requestAnimationFrame을 사용하여 실시간 업데이트
+  const updateProgress = () => {
+    if (playerRef.current) {
+      const playedSeconds = playerRef.current.getCurrentTime(); // 현재 재생 시간을 가져옴
+      const duration = playerRef.current.getDuration(); // 전체 재생 시간 가져옴
+      const played = duration ? playedSeconds / duration : 0; // 재생 비율 계산
+
+      setCurrentTime(playedSeconds); // 진행된 시간 업데이트
+      setPlayed(played); // 재생 비율 업데이트
+    }
+
+    // 애니메이션 프레임 요청
+    animationFrameRef.current = requestAnimationFrame(updateProgress);
+  };
+
+  useEffect(() => {
+    if (isPlaying) {
+      // 플레이 중일 때, 실시간 진행도를 업데이트
+      updateProgress();
+    } else {
+      // 플레이가 멈추면 애니메이션 프레임을 취소
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    }
+
+    return () => {
+      // 컴포넌트 언마운트 시 애니메이션 프레임 정리
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [isPlaying]);
+  // ================================= animationFrame 관련해서 알아보기
+
   return (
-    <div className={styles["main-wrap-bottom"]}>
+    <>
+      {/* 로딩 화면 */}
+      {isLoading && (
+        <div className={styles["loading-overlay"]}>
+          <div className={styles["loading-spinner"]}></div>
+        </div>
+      )}
+
       <div
-        className={styles["main-wrap-bottom-left"]}
-        style={{
-          cursor: playBarInfo ? "pointer" : "",
-        }}
-        onClick={handleMusicInfoClick}
+        className={`${styles["main-wrap-bottom"]} ${
+          isLoading ? styles["blur"] : ""
+        }`}
       >
-        <div className={styles["main-wrap-play-img-box"]}>
-          <div
-            className={styles["main-wrap-play-img"]}
-            style={{
-              backgroundImage: `url(${playBarInfo?.thumb})`,
-            }}
-          ></div>
-        </div>
-        <div className={styles["main-wrap-play-info-box"]}>
-          <div className={styles["main-wrap-play-title"]}>
-            {playBarInfo?.vidTitle}
-          </div>
-          <div className={styles["main-wrap-play-artist"]}>
-            {playBarInfo?.author}
-          </div>
-        </div>
-      </div>
-      <div className={styles["main-wrap-bottom-center"]}>
-        <div className={styles["main-play-box"]}>
-          <div className={styles["main-play-top"]}>
-            <div className={styles["main-play-top-left"]}>
-              {isLoop ? (
-                <div
-                  className={`${styles["main-play-loop-btn"]} ${styles["loop-active"]}`}
-                  onClick={onLoopchange}
-                ></div>
-              ) : (
-                <div
-                  className={styles["main-play-loop-btn"]}
-                  onClick={onLoopchange}
-                ></div>
-              )}
-            </div>
-
-            <div className={styles["main-play-top-mid"]}>
-              <div
-                className={styles["main-play-prev-btn"]}
-                onClick={onPrevMusic}
-              ></div>
-              <div
-                className={
-                  isPlaying ? styles["main-pause-btn"] : styles["main-play-btn"]
-                }
-                onClick={handlePlayPause}
-              ></div>
-              <div
-                className={styles["main-play-next-btn"]}
-                onClick={onNextMusic}
-              ></div>
-            </div>
-
-            <div className={styles["main-play-top-right"]}>
-              {isRandom ? (
-                <div
-                  className={`${styles["main-play-random-btn"]} ${styles["random-active"]}`}
-                  onClick={onRandomchange}
-                  // onClick={testBtn}
-                ></div>
-              ) : (
-                <div
-                  className={styles["main-play-random-btn"]}
-                  onClick={onRandomchange}
-                  // onClick={testBtn}
-                ></div>
-              )}
-            </div>
-          </div>
-
-          <div className={styles["main-play-bottom"]}>
-            <div className={styles["music-current-time"]}>
-              {formatTime(currentTime)}
-            </div>
-            <div
-              className={styles["music-progress-bar-box"]}
-              onMouseDown={handleMouseDown}
-            >
-              <div
-                className={styles["music-progress-fill"]}
-                style={{
-                  width: `${played * 100}%`,
-                }}
-              ></div>
-              <ReactPlayer
-                ref={playerRef}
-                url={playBarUrl}
-                playing={isPlaying}
-                onBuffer={handleBuffer} // 버퍼링 시작 이벤트
-                onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트
-                onReady={handleReady}
-                onProgress={handleProgress}
-                onDuration={handleDuration}
-                onEnded={handleEnded}
-                loop={isLoop}
-                volume={volume}
-                style={{ display: "none" }} // 완전히 숨김 처리
-              />
-            </div>
-            <div className={styles["music-full-time"]}>
-              {formatTime(playBarDuration)}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles["main-wrap-bottom-right"]}>
-        {isOpen && (
-          <div className={styles["music-sound-bar-container"]} ref={ref}>
-            <div
-              className={styles["music-sound-bar"]}
-              onMouseDown={handleMouseDownVolume}
-            >
-              <div
-                className={styles["music-sound-bar-fill"]}
-                style={{
-                  height: `${volume * 100}%`,
-                }}
-              ></div>
-            </div>
-          </div>
-        )}
-
         <div
-          className={styles["music-sound-icon"]}
-          onClick={onSoundDropDown}
-        ></div>
+          className={styles["main-wrap-bottom-left"]}
+          style={{
+            cursor: playBarInfo ? "pointer" : "",
+          }}
+          onClick={handleMusicInfoClick}
+        >
+          <div className={styles["main-wrap-play-img-box"]}>
+            <div
+              className={styles["main-wrap-play-img"]}
+              style={{
+                backgroundImage: `url(${playBarInfo?.thumb})`,
+              }}
+            ></div>
+          </div>
+          <div className={styles["main-wrap-play-info-box"]}>
+            <div className={styles["main-wrap-play-title"]}>
+              {playBarInfo?.vidTitle}
+            </div>
+            <div className={styles["main-wrap-play-artist"]}>
+              {playBarInfo?.author}
+            </div>
+          </div>
+        </div>
+        <div className={styles["main-wrap-bottom-center"]}>
+          <div className={styles["main-play-box"]}>
+            <div className={styles["main-play-top"]}>
+              <div className={styles["main-play-top-left"]}>
+                <div
+                  className={`${styles["main-play-loop-btn"]} ${
+                    isLoop ? styles["loop-active"] : ""
+                  }`}
+                  onClick={onLoopchange}
+                ></div>
+              </div>
 
-        <div className={styles["music-sound-icon"]} onClick={testBtn}></div>
+              <div className={styles["main-play-top-mid"]}>
+                <div
+                  className={styles["main-play-prev-btn"]}
+                  onClick={onPrevMusic}
+                ></div>
+                <div
+                  className={
+                    isPlaying
+                      ? styles["main-pause-btn"]
+                      : styles["main-play-btn"]
+                  }
+                  onClick={handlePlayPause}
+                ></div>
+                <div
+                  className={styles["main-play-next-btn"]}
+                  onClick={onNextMusic}
+                ></div>
+              </div>
+
+              <div className={styles["main-play-top-right"]}>
+                <div
+                  className={`${styles["main-play-random-btn"]} ${
+                    isRandom ? styles["random-active"] : ""
+                  }`}
+                  onClick={onRandomchange}
+                ></div>
+              </div>
+            </div>
+
+            <div className={styles["main-play-bottom"]}>
+              <div className={styles["music-current-time"]}>
+                {formatTime(currentTime)}
+              </div>
+              <div
+                className={styles["music-progress-bar-box"]}
+                onMouseDown={handleMouseDown}
+              >
+                <div
+                  className={styles["music-progress-fill"]}
+                  style={{
+                    width: `${played * 100}%`,
+                  }}
+                ></div>
+                <ReactPlayer
+                  ref={playerRef}
+                  url={playBarUrl}
+                  playing={isPlaying}
+                  onBuffer={handleBuffer} // 버퍼링 시작 이벤트
+                  onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트
+                  onReady={handleReady}
+                  onProgress={handleProgress}
+                  onDuration={handleDuration}
+                  onEnded={handleEnded}
+                  volume={volume}
+                  style={{ display: "none" }}
+                />
+              </div>
+              <div className={styles["music-full-time"]}>
+                {formatTime(playBarDuration)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles["main-wrap-bottom-right"]}>
+          {isOpen && (
+            <div className={styles["music-sound-bar-container"]} ref={ref}>
+              <div
+                className={styles["music-sound-bar"]}
+                onMouseDown={handleMouseDownVolume}
+              >
+                <div
+                  className={styles["music-sound-bar-fill"]}
+                  style={{
+                    height: `${volume * 100}%`,
+                  }}
+                ></div>
+              </div>
+            </div>
+          )}
+
+          <div
+            className={styles["music-sound-icon"]}
+            onClick={onSoundDropDown}
+          ></div>
+
+          <div className={styles["music-sound-icon"]} onClick={testBtn}></div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

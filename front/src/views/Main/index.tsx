@@ -34,30 +34,6 @@ const Main = () => {
   // };
 
   const videoSearch = () => {
-    // if (videoUrl.includes("youtu")) {
-    //   alert("유튜브 url 들어옴");
-    //   let urlMatch;
-
-    //   // www이 포함되어 있을때
-    //   if (videoUrl.includes("www.")) {
-    //     urlMatch = videoUrl.match(/(?<=\?v=)[\w-]{11}/); // v= 다음의 값을 찾기
-    //   }
-    //   // www이 없고 ?si=를 포함할 경우
-    //   else if (videoUrl.includes("?si=")) {
-    //     urlMatch = videoUrl.match(/(?<=youtu.be\/)([a-zA-Z0-9_-]+)(?=\?)/);
-    //   }
-    //   // https://youtu.be/로 시작할 때
-    //   else {
-    //     urlMatch = videoUrl.match(/(?<=https:\/\/youtu.be\/)[a-zA-Z0-9_-]+/);
-    //   }
-
-    // } else if (videoUrl.includes("soundcloud")) {
-    //   alert("사클 url 들어옴");
-
-    // }
-
-    // setUrlId(videoUrl);
-
     const urlMatch = getPlatformUrl(videoUrl);
 
     if (urlMatch) {
