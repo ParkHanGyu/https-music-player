@@ -12,6 +12,7 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import useMediaInfo from "../../hooks/testInfo";
 import { getPlatformUrl } from "../../utils/mediaUrlHelper";
+import usePlayerProgress from "../../hooks/usePlayerProgress";
 
 const PlayBar = () => {
   const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
@@ -20,6 +21,7 @@ const PlayBar = () => {
     nowPlayingPlaylist,
     nowPlayingPlaylistID,
     nowRandomPlaylist,
+    nowRandomPlaylistID,
     setNowRandomPlaylist,
   } = usePlaylistStore();
 
@@ -47,26 +49,16 @@ const PlayBar = () => {
 
   const formatTime = useFormatTime();
 
-  const [played, setPlayed] = useState<number>(0);
+  // const [played, setPlayed] = useState<number>(0);
 
   // url 시간 상태
   const [playBarDuration, setPlayBarDuration] = useState<number>(0);
 
   const playerRef = useRef<ReactPlayer | null>(null);
-  const handleProgress = (progress: {
-    played: number;
-    playedSeconds: number;
-    loaded: number;
-    loadedSeconds: number;
-  }) => {
-    setPlayed(progress.played);
-    setCurrentTime(progress.playedSeconds); // 현재 재생 시간
-  };
+
   const handleDuration = (playBarDuration: number) => {
     setPlayBarDuration(playBarDuration);
   };
-
-  const [currentTime, setCurrentTime] = useState<number>(0); // 현재 재생 시간
 
   // ============================영상 진행도 조절
   // 사용자에 의한 진행도 수동 이동
@@ -177,8 +169,10 @@ const PlayBar = () => {
   };
 
   const handleReady = () => {
-    setIsLoading(false);
-    setIsPlaying(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsPlaying(true);
+    }, 800);
   };
   // ================= 반복재생 관련
   const [isLoop, setIsLoop] = useState<boolean>(false); // 노래 반복 여부
@@ -222,6 +216,8 @@ const PlayBar = () => {
   const testBtn = () => {
     console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
     console.log("nowRandomPlaylist : ", nowRandomPlaylist);
+    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    console.log("nowRandomPlaylistID : ", nowRandomPlaylistID);
   };
 
   useEffect(() => {
@@ -318,8 +314,6 @@ const PlayBar = () => {
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
-      console.log("지금 재생중인 노래 index : ", nowIndex);
-
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
       if (nowPlayingPlaylist.length === nowIndex + 1) {
         prevMusicUrl = nowPlayingPlaylist[0].url;
@@ -358,8 +352,6 @@ const PlayBar = () => {
         Array.isArray(nowPlayingPlaylist) &&
         nowPlayingPlaylist.length === 0
       ) {
-        alert("PlayBar3 if문 true로 실행");
-
         setPlayBarUrl("");
         resetYoutubeInfo();
         setIsPlaying(false);
@@ -390,41 +382,10 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   // ================================= animationFrame 관련해서 알아보기
-  const animationFrameRef = useRef<number | null>(null);
-  // requestAnimationFrame을 사용하여 실시간 업데이트
-  const updateProgress = () => {
-    if (playerRef.current) {
-      const playedSeconds = playerRef.current.getCurrentTime(); // 현재 재생 시간을 가져옴
-      const duration = playerRef.current.getDuration(); // 전체 재생 시간 가져옴
-      const played = duration ? playedSeconds / duration : 0; // 재생 비율 계산
-
-      setCurrentTime(playedSeconds); // 진행된 시간 업데이트
-      setPlayed(played); // 재생 비율 업데이트
-    }
-
-    // 애니메이션 프레임 요청
-    animationFrameRef.current = requestAnimationFrame(updateProgress);
-  };
-
-  useEffect(() => {
-    if (isPlaying) {
-      // 플레이 중일 때, 실시간 진행도를 업데이트
-      updateProgress();
-    } else {
-      // 플레이가 멈추면 애니메이션 프레임을 취소
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    }
-
-    return () => {
-      // 컴포넌트 언마운트 시 애니메이션 프레임 정리
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isPlaying]);
-  // ================================= animationFrame 관련해서 알아보기
+  const { currentTime, played, setPlayed } = usePlayerProgress(
+    playerRef,
+    isPlaying
+  );
 
   return (
     <>
@@ -526,7 +487,6 @@ const PlayBar = () => {
                   onBuffer={handleBuffer} // 버퍼링 시작 이벤트
                   onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트
                   onReady={handleReady}
-                  onProgress={handleProgress}
                   onDuration={handleDuration}
                   onEnded={handleEnded}
                   volume={volume}

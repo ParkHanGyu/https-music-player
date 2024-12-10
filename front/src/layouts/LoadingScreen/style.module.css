@@ -1,0 +1,30 @@
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 235px;
+  height: 100vh;
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* 기존 콘텐츠 위에 표시되도록 설정 */
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #e66d0b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

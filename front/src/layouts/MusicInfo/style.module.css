@@ -31,14 +31,15 @@
 }
 
 .title-info,
-.genre-info,
 .artist-info,
+.link-info,
 .playtime-info {
   color: #b0b0b0;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .title-data,
-.genre-data,
 .artist-data,
 .playtime-data {
   font-size: 12px;
@@ -74,6 +75,10 @@
 }
 .controller-add-playlist:hover {
   background-image: url("../../assets/add-playlist-icon-hover.png");
+}
+
+.link-data {
+  cursor: pointer;
 }
 
 /* ============================================ 재생목록 */
@@ -245,4 +250,8 @@
 
 .add-playlist-popup-add-btn:hover {
   background-image: url("../../assets/plus-icon-hover.png");
+}
+
+.blur {
+  filter: blur(2px); /* 흐림 효과 */
 }

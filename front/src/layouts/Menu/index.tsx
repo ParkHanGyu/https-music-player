@@ -141,6 +141,11 @@ const Menu = () => {
                       playlistId === (index + 1).toString()
                         ? "#333333"
                         : undefined,
+
+                    color:
+                      playlistId === (index + 1).toString()
+                        ? "#ffffff"
+                        : undefined,
                   }}
                   key={index}
                   onClick={(

@@ -205,7 +205,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0px 17px;
+  margin: 0px 15px;
 }
 
 .main-play-top-mid {
@@ -314,7 +314,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
+  min-width: 45px;
   height: 20px;
   color: rgb(173, 173, 173);
   letter-spacing: 1px;

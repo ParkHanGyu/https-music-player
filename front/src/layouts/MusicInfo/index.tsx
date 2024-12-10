@@ -15,11 +15,18 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../PlaylistLibrary";
 import useMediaInfo from "../../hooks/testInfo";
+import LoadingScreen from "../LoadingScreen";
 
 const MusicInfo = () => {
   const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
 
-  const { setPlaylistLibrary } = usePlaylistStore();
+  const {
+    setPlaylistLibrary,
+    setNowRandomPlaylist,
+    setNowPlayingPlaylist,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
@@ -50,6 +57,7 @@ const MusicInfo = () => {
 
   useEffect(() => {
     if (urlId) {
+      setIsLoading(true);
       setMediaInfo(urlId);
     }
   }, [urlId]);
@@ -72,11 +80,15 @@ const MusicInfo = () => {
       return;
     }
     setPlayBarUrl(urlId);
+    // youtube데이터를 useVideoStore에 셋팅
+    setPlayBarInfo(testInfoData);
+    setNowRandomPlaylist([]);
+    setNowPlayingPlaylist([]);
+    setNowPlayingPlaylistID("");
+    setNowRandomPlaylistID("");
     if (!isPlaying) {
       setIsPlaying(!isPlaying);
     }
-    // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(testInfoData);
   };
 
   // url 시간 상태
@@ -145,9 +157,15 @@ const MusicInfo = () => {
     console.log("testInfoData 값 : ", JSON.stringify(testInfoData));
   };
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   return (
     <>
-      <div className={styles["main-left"]}>
+      {/* 로딩 화면 */}
+      {isLoading && <LoadingScreen />}
+      <div
+        className={`${styles["main-left"]} ${isLoading ? styles["blur"] : ""}`}
+      >
         <div className={styles["music-info"]} onClick={() => testBtn()}>
           Search Music
         </div>
@@ -166,14 +184,16 @@ const MusicInfo = () => {
             <div className={styles["artist-info"]}>Artist</div>
             <div className={styles["artist-data"]}>{testInfoData.author}</div>
           </div>
-          <div className={styles["music-info-genre-box"]}>
-            <div className={styles["genre-info"]}>Genre</div>
-            <div className={styles["genre-data"]}>-</div>
-          </div>
-
-          <div className={styles["music-info-album-box"]}>
-            <div className={styles["album-info"]}>Album</div>
-            <div className={styles["album-data"]}>-</div>
+          <div className={styles["music-info-link-box"]}>
+            <div className={styles["link-info"]}>Link</div>
+            <div
+              className={styles["link-data"]}
+              onClick={() => {
+                window.open(`${testInfoData.vidUrl}`, "_blank");
+              }}
+            >
+              {testInfoData.vidUrl}
+            </div>
           </div>
 
           <div className={styles["music-info-playtime"]}>
@@ -211,6 +231,7 @@ const MusicInfo = () => {
             setUrlId("");
           }}
           onReady={() => {
+            setIsLoading(false);
             setIsInfoError(false);
           }}
         />

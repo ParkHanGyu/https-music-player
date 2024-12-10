@@ -31,10 +31,14 @@ const PlayList = () => {
     setNowRandomPlaylistID,
   } = usePlaylistStore();
   const formatTime = useFormatTime();
+  const [infoDuration, setInfoDuration] = useState<number>(0);
 
-  const { infoData, setMusicInfo } = useYoutubeInfo("");
-  const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
-    useYoutubeInfo("");
+  // const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
+  //   useYoutubeInfo("");
+
+  const { testInfoData: copyInfoData, setMediaInfo: setCopyInfoData } =
+    useMediaInfo("");
+
   const {
     testInfoData,
     setTestInfoData,
@@ -46,8 +50,6 @@ const PlayList = () => {
   const navigator = useNavigate();
 
   useEffect(() => {
-    // alert("PlayList1");
-
     if (!isLoading) {
       if (!loginUser) {
         alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
@@ -87,8 +89,8 @@ const PlayList = () => {
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    // alert(JSON.stringify(musics));
-    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    console.log(JSON.stringify(musics));
+    // console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
   };
 
   useEffect(() => {
@@ -105,7 +107,15 @@ const PlayList = () => {
 
     if (itemMusicUrl && playBarUrl !== itemMusicUrl) {
       setMediaInfo(itemMusicUrl);
-      // setPlayBarUrl(itemMusicUrl[0]);
+      
+
+      // if (itemMusicUrl === playBarUrl) {
+      //   setPlayBarUrl("");
+      //   setPlayBarUrl(itemMusicUrl);
+      // } else if (itemMusicUrl) {
+      //   setPlayBarUrl(itemMusicUrl);
+      // }
+
       if (itemMusicUrl) {
         console.log("itemMusicUrl : ", itemMusicUrl);
         setPlayBarUrl(itemMusicUrl);
@@ -129,13 +139,18 @@ const PlayList = () => {
   };
 
   const onHandleMusicCopy = (index: number) => {
+    console.log(JSON.stringify(musics.length));
+    console.log(JSON.stringify(index));
+    console.log(JSON.stringify(musics[index].url));
+    console.log(JSON.stringify(musics[index]));
+
     setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
-    const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
-    alert(itemMusicUrl);
+    const itemMusicUrl = musics[index].url;
 
     if (itemMusicUrl) {
-      setAddInfoData(itemMusicUrl[0]);
+      setCopyInfoData(itemMusicUrl);
+      setInfoDuration(musics[index].duration);
     }
   };
 
@@ -290,16 +305,17 @@ const PlayList = () => {
                     </ul>
                   )}
                 </div>
-                {playlistPopupOpen && (
-                  <PlaylistLibrary
-                    infoData={addInfoData}
-                    infoDuration={music.duration}
-                    playlistPopupOpen={playlistPopupOpen}
-                    setPlaylistPopupOpen={setPlaylistPopupOpen}
-                  />
-                )}
               </div>
             ))}
+
+            {playlistPopupOpen && (
+              <PlaylistLibrary
+                infoData={copyInfoData}
+                infoDuration={infoDuration}
+                playlistPopupOpen={playlistPopupOpen}
+                setPlaylistPopupOpen={setPlaylistPopupOpen}
+              />
+            )}
           </div>
         </div>
       </div>

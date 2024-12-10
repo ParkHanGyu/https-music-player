@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
-import { useVideoStore } from "../../store/useVideo.store";
-import useLoginUserStore from "../../store/login-user.store";
-import { useNavigate } from "react-router-dom";
-import { SIGN_IN_PATH } from "../../constant";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import {
@@ -13,7 +9,6 @@ import {
 } from "../../apis";
 import { useCookies } from "react-cookie";
 import ResponseDto from "../../apis/response/response.dto";
-import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
@@ -136,6 +131,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
   const testBtn = () => {
     console.log("셋팅된 infoData 값 : " + JSON.stringify(infoData));
+    console.log("셋팅된 infoDuration 값 : " + JSON.stringify(infoDuration));
     alert(infoData);
   };
   return (
