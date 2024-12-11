@@ -4,15 +4,15 @@ import { YoutubeInfo } from "../types/interface/youtube.interface";
 const noEmbed = "https://noembed.com/embed?url=";
 
 // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
-const useMediaInfo = (testImage: string) => {
-  const [testInfoData, setTestInfoData] = useState<YoutubeInfo>({
+const useMediaInfo = (defaultImage: string) => {
+  const [infoData, setInfoData] = useState<YoutubeInfo>({
     vidUrl: "-",
     author: "-",
-    thumb: testImage,
+    thumb: defaultImage,
     vidTitle: "-",
   });
 
-  const setMediaInfo = (url: string) => {
+  const setMusicInfo = (url: string) => {
     const fullUrl = `${noEmbed}${url}`;
     fetch(fullUrl)
       .then((res) => res.json())
@@ -31,34 +31,34 @@ const useMediaInfo = (testImage: string) => {
           processedTitle = title.split(" by ")[0].trim();
         }
 
-        setTestInfoData({
+        setInfoData({
           vidUrl: url || "-",
           author: author_name || "-",
-          thumb: thumbnail_url || testImage,
+          thumb: thumbnail_url || defaultImage,
           vidTitle: processedTitle || "-",
         });
       })
       .catch((error) => {
         console.error("Failed to fetch media info:", error);
-        resetMediaInfo(); // 오류 발생 시 기본값으로 초기화
+        resetInfoData(); // 오류 발생 시 기본값으로 초기화
       });
   };
 
-  const resetMediaInfo = () => {
-    setTestInfoData({
+  const resetInfoData = () => {
+    setInfoData({
       vidUrl: "-",
       author: "-",
-      thumb: testImage,
+      thumb: defaultImage,
       vidTitle: "-",
     });
   };
 
   return {
-    testInfoData,
-    setTestInfoData,
-    setMediaInfo,
-    testImage,
-    resetMediaInfo,
+    infoData,
+    setInfoData,
+    setMusicInfo,
+    defaultImage,
+    resetInfoData,
   };
 };
 

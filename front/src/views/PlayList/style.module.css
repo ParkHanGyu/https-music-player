@@ -24,15 +24,6 @@
   border-radius: 6px;
 }
 
-.main-menu-box {
-  margin-top: 20px;
-}
-
-.main-menu-box > div {
-  cursor: pointer;
-  padding: 10px 20px 10px 20px;
-}
-
 .main-search-input {
   background-color: rgb(25, 25, 25);
   border: none;

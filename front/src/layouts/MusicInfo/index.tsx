@@ -6,7 +6,6 @@ import useFormatTime from "../../hooks/useFormatTime";
 import { getPlayListLibraryReqeust } from "../../apis";
 import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
-import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import useLoginUserStore from "../../store/login-user.store";
@@ -38,33 +37,19 @@ const MusicInfo = () => {
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
   // 커스텀 훅 사용
-  const { infoData, setMusicInfo, resetYoutubeInfo } =
-    useYoutubeInfo(defaultImage);
 
-  const {
-    testInfoData,
-    setTestInfoData,
-    setMediaInfo,
-    testImage,
-    resetMediaInfo,
-  } = useMediaInfo(defaultImage);
-
-  // useEffect(() => {
-  //   if (urlId) {
-  //     setMusicInfo(urlId);
-  //   }
-  // }, [urlId]);
+  const { infoData, setMusicInfo, resetInfoData } = useMediaInfo(defaultImage);
 
   useEffect(() => {
     if (urlId) {
       setIsLoading(true);
-      setMediaInfo(urlId);
+      setMusicInfo(urlId);
     }
   }, [urlId]);
 
   // 정보 초기화
   const resetInfo = () => {
-    resetYoutubeInfo();
+    resetInfoData();
     setInfoDuration(0);
   };
 
@@ -81,7 +66,7 @@ const MusicInfo = () => {
     }
     setPlayBarUrl(urlId);
     // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(testInfoData);
+    setPlayBarInfo(infoData);
     setNowRandomPlaylist([]);
     setNowPlayingPlaylist([]);
     setNowPlayingPlaylistID("");
@@ -152,9 +137,7 @@ const MusicInfo = () => {
   const [isInfoError, setIsInfoError] = useState<boolean>(false);
 
   const testBtn = () => {
-    console.log("urlId 값 : ", JSON.stringify(urlId));
-
-    console.log("testInfoData 값 : ", JSON.stringify(testInfoData));
+    console.log("infoData 값 : ", JSON.stringify(infoData));
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -172,27 +155,27 @@ const MusicInfo = () => {
         <div
           className={styles["music-info-image"]}
           style={{
-            backgroundImage: `url(${testInfoData.thumb})`,
+            backgroundImage: `url(${infoData.thumb})`,
           }}
         ></div>
         <div className={styles["music-info-data"]}>
           <div className={styles["music-info-title-box"]}>
             <div className={styles["title-info"]}>Title</div>
-            <div className={styles["title-data"]}>{testInfoData.vidTitle}</div>
+            <div className={styles["title-data"]}>{infoData.vidTitle}</div>
           </div>
           <div className={styles["music-info-artist-box"]}>
             <div className={styles["artist-info"]}>Artist</div>
-            <div className={styles["artist-data"]}>{testInfoData.author}</div>
+            <div className={styles["artist-data"]}>{infoData.author}</div>
           </div>
           <div className={styles["music-info-link-box"]}>
             <div className={styles["link-info"]}>Link</div>
             <div
               className={styles["link-data"]}
               onClick={() => {
-                window.open(`${testInfoData.vidUrl}`, "_blank");
+                window.open(`${infoData.vidUrl}`, "_blank");
               }}
             >
-              {testInfoData.vidUrl}
+              {infoData.vidUrl}
             </div>
           </div>
 
@@ -240,7 +223,7 @@ const MusicInfo = () => {
       {/* =======================================재생목록 팝업 */}
       {playlistPopupOpen && (
         <PlaylistLibrary
-          infoData={testInfoData}
+          infoData={infoData}
           infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}

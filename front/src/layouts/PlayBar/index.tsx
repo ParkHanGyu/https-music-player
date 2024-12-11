@@ -3,18 +3,17 @@ import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
-import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import Music from "../../types/interface/music.interface";
-import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import { useParams } from "react-router-dom";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import useMediaInfo from "../../hooks/testInfo";
-import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 import usePlayerProgress from "../../hooks/usePlayerProgress";
+import { useCookies } from "react-cookie";
 
 const PlayBar = () => {
+  const [cookies] = useCookies();
   const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
     useVideoStore();
   const {
@@ -23,23 +22,16 @@ const PlayBar = () => {
     nowRandomPlaylist,
     nowRandomPlaylistID,
     setNowRandomPlaylist,
+    setNowPlayingPlaylist,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylistID,
   } = usePlaylistStore();
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
   const { playlistId } = useParams();
 
-  const { infoData, setMusicInfo, resetYoutubeInfo } = useYoutubeInfo("");
-  const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
-    useYoutubeInfo("");
-  const {
-    testInfoData,
-    setTestInfoData,
-    setMediaInfo,
-    testImage,
-    resetMediaInfo,
-  } = useMediaInfo("");
+  const { infoData, setMusicInfo } = useMediaInfo("");
   // 정규식 커스텀 훅
-  const { extractYouTubeId } = useYouTubeIdExtractor();
 
   const handlePlayPause = () => {
     if (isBuffering === false) {
@@ -190,10 +182,7 @@ const PlayBar = () => {
 
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
-    alert("ended 실행");
     if (playerRef.current && isLoop) {
-      alert("loop 실행");
-
       // url이 soundcloud면 url 다시 넣어줌
       if (playBarUrl.includes("soundcloud")) {
         const nowMusic = playBarUrl;
@@ -218,6 +207,8 @@ const PlayBar = () => {
     console.log("nowRandomPlaylist : ", nowRandomPlaylist);
     console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
     console.log("nowRandomPlaylistID : ", nowRandomPlaylistID);
+    console.log("nowRandomPlaylistID : ", nowRandomPlaylistID);
+    console.log("cookies.accessToken : ", cookies.accessToken);
   };
 
   useEffect(() => {
@@ -276,7 +267,7 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl) {
-      setMediaInfo(prevMusicUrl);
+      setMusicInfo(prevMusicUrl);
       setPlayBarUrl(prevMusicUrl);
     } else {
       return;
@@ -325,7 +316,7 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl) {
-      setMediaInfo(prevMusicUrl);
+      setMusicInfo(prevMusicUrl);
       setPlayBarUrl(prevMusicUrl);
     } else {
       return;
@@ -333,10 +324,10 @@ const PlayBar = () => {
   };
 
   useEffect(() => {
-    if (testInfoData.vidUrl !== "-") {
-      setPlayBarInfo(testInfoData);
+    if (infoData.vidUrl !== "-") {
+      setPlayBarInfo(infoData);
     }
-  }, [testInfoData]);
+  }, [infoData]);
 
   useEffect(() => {
     // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
@@ -353,7 +344,6 @@ const PlayBar = () => {
         nowPlayingPlaylist.length === 0
       ) {
         setPlayBarUrl("");
-        resetYoutubeInfo();
         setIsPlaying(false);
         setPlayBarDuration(0);
         return;
@@ -369,15 +359,18 @@ const PlayBar = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const playBarReset = () => {
-    setPlayBarDuration(0);
-    setPlayed(0);
-    setIsLoading(true);
-  };
-
+  // 노래가 바뀌었을때 playBar에 노래 정보들이 set 될때까지 로딩
   useEffect(() => {
+    if (!cookies.accessToken) {
+      setNowRandomPlaylist([]);
+      setNowPlayingPlaylist([]);
+      setNowPlayingPlaylistID("");
+      setNowRandomPlaylistID("");
+      return;
+    }
+
     if (playBarUrl !== "") {
-      playBarReset();
+      setIsLoading(true);
     }
   }, [playBarUrl]);
 

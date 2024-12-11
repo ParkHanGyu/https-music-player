@@ -7,7 +7,6 @@ import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 import Music from "../../types/interface/music.interface";
 import useFormatTime from "../../hooks/useFormatTime";
 import { useVideoStore } from "../../store/useVideo.store";
-import useYoutubeInfo from "../../hooks/useYoutubeInfo";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import useLoginUserStore from "../../store/login-user.store";
 import { MAIN_PATH } from "../../constant";
@@ -33,19 +32,10 @@ const PlayList = () => {
   const formatTime = useFormatTime();
   const [infoDuration, setInfoDuration] = useState<number>(0);
 
-  // const { infoData: addInfoData, setMusicInfo: setAddInfoData } =
-  //   useYoutubeInfo("");
-
-  const { testInfoData: copyInfoData, setMediaInfo: setCopyInfoData } =
+  const { infoData: copyInfoData, setMusicInfo: setCopyInfoData } =
     useMediaInfo("");
+  const { infoData, setMusicInfo } = useMediaInfo("");
 
-  const {
-    testInfoData,
-    setTestInfoData,
-    setMediaInfo,
-    testImage,
-    resetMediaInfo,
-  } = useMediaInfo("");
   const { loginUser } = useLoginUserStore();
   const navigator = useNavigate();
 
@@ -77,12 +67,32 @@ const PlayList = () => {
     }
 
     const playListResult = responseBody as GetMusciResponseDto;
+    // 이전 playlist에서 삭제하는 노래의 index값 (삭제 이후 다음 노래로 바꾸기 위해 구해둠)
+    const deleteMusicIndex = nowPlayingPlaylist.findIndex(
+      (item) => item.url === playBarUrl
+    );
+
     setMusics(playListResult.musicList);
 
     // 삭제이후 현재 보고있는 재생목록과 playBar에 재생중인 재생목록의 데이터를 일치화
-    if (playlistId === nowPlayingPlaylistID) {
+    if (
+      playlistId === nowPlayingPlaylistID &&
+      playListResult.musicList.length !== nowPlayingPlaylist.length
+    ) {
       setNowPlayingPlaylist(playListResult.musicList);
       setNowRandomPlaylist(playListResult.musicList);
+
+      if (playListResult.musicList.length <= deleteMusicIndex) {
+        // 삭제한게 마지막곡이면 첫번째곡으로
+        console.log("마지막곡이므로 처음곡 재생");
+        setMusicInfo(playListResult.musicList[0].url);
+        setPlayBarUrl(playListResult.musicList[0].url);
+      } else {
+        // 다음 노래를 set
+        console.log("다음 노래 재생");
+        setMusicInfo(playListResult.musicList[deleteMusicIndex].url);
+        setPlayBarUrl(playListResult.musicList[deleteMusicIndex].url);
+      }
     }
   };
 
@@ -91,40 +101,44 @@ const PlayList = () => {
   const testBtn = () => {
     console.log(JSON.stringify(musics));
     // console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    console.log("playBarUrl : ", playBarUrl);
+    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
+    console.log("playlistId : ", playlistId);
   };
 
   useEffect(() => {
-    if (testInfoData.vidUrl !== "-") {
-      console.log("setPlayBarInfo실행. set해주는 값 : ", testInfoData);
-      setPlayBarInfo(testInfoData);
+    if (infoData.vidUrl !== "-") {
+      console.log("setPlayBarInfo실행. set해주는 값 : ", infoData);
+      setPlayBarInfo(infoData);
     }
-  }, [testInfoData]);
+  }, [infoData]);
 
   const onPlayMusic = (index: number) => {
-    // setPlayBarUrl("");
+    if (!cookies.accessToken) {
+      alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
+      navigator(MAIN_PATH());
+      return;
+    }
+
     const itemMusicUrl = musics[index].url;
-    // const itemMusicUrl = musics[index].url.match(/(?<=\?v=)[\w-]{11}/);
+    setMusicInfo(itemMusicUrl);
 
-    if (itemMusicUrl && playBarUrl !== itemMusicUrl) {
-      setMediaInfo(itemMusicUrl);
-      
+    // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
+    if (itemMusicUrl === playBarUrl && nowPlayingPlaylistID !== playlistId) {
+      setPlayBarUrl("");
+    }
 
-      // if (itemMusicUrl === playBarUrl) {
-      //   setPlayBarUrl("");
-      //   setPlayBarUrl(itemMusicUrl);
-      // } else if (itemMusicUrl) {
-      //   setPlayBarUrl(itemMusicUrl);
-      // }
-
+    //useEffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
+    // useEffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
+    setTimeout(() => {
       if (itemMusicUrl) {
-        console.log("itemMusicUrl : ", itemMusicUrl);
         setPlayBarUrl(itemMusicUrl);
       }
       setNowPlayingPlaylistID(playlistId);
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
       setNowRandomPlaylist(musics);
-    }
+    }, 100); // 다시 설정
   };
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
@@ -155,9 +169,12 @@ const PlayList = () => {
   };
 
   const onHandleMusicDelete = (musicId: bigint) => {
-    setOpenDropdownIndex(null);
-    setIsLoading(true);
-    deleteMusic(musicId, cookies.accessToken).then(deleteMusicResponse);
+    const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+    if (isConfirmed) {
+      setOpenDropdownIndex(null);
+      setIsLoading(true);
+      deleteMusic(musicId, cookies.accessToken).then(deleteMusicResponse);
+    }
   };
   const deleteMusicResponse = (responseBody: ResponseDto | null) => {
     if (!responseBody) {
@@ -172,6 +189,10 @@ const PlayList = () => {
     }
 
     alert("음악 삭제됨");
+    //
+    // 삭제한 노래가 지금 재생중인 노래면 다음 노래로 넘어가야 함.
+    //
+
     setIsLoading(false);
   };
 

@@ -131,7 +131,7 @@ const Menu = () => {
           className={styles["main-menu-item2"]}
           onClick={playListClickHandler}
         >
-          PlayList
+          <p>PlayList</p>
           {isPlaylistDrop && (
             <ul style={{ margin: !playlistLibrary.length ? "0px" : undefined }}>
               {playlistLibrary.map((playlist, index) => (

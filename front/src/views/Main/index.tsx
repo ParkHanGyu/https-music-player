@@ -35,7 +35,6 @@ const Main = () => {
 
   const videoSearch = () => {
     const urlMatch = getPlatformUrl(videoUrl);
-
     if (urlMatch) {
       setUrlId(urlMatch);
     }
