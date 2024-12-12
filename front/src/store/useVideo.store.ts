@@ -4,8 +4,8 @@ import { YoutubeInfo } from "../types/interface/youtube.interface";
 // Zustand 상태 정의
 interface VideoState {
   // ========================================================================
-  urlId: string | ""; // input URL 상태
-  setUrlId: (urlId: string | "") => void; // 비디오 URL을 설정하는 함수
+  searchUrl: string | ""; // input URL 상태
+  setSearchUrl: (searchUrl: string | "") => void; // 비디오 URL을 설정하는 함수
 
   playBarUrl: string | ""; // playBar에 사용하는 Url 상태
   setPlayBarUrl: (playBarUrl: string | "") => void; // 비디오 URL을 설정하는 함수
@@ -24,8 +24,8 @@ interface VideoState {
 // Zustand 스토어 생성
 export const useVideoStore = create<VideoState>((set) => ({
   // ========================================================================
-  urlId: "", // 초기 urlId 값은 ""
-  setUrlId: (urlId) => set({ urlId: urlId }), // 비디오 URL을 설정하는 함수 정의
+  searchUrl: "", // 초기 searchUrl 값은 ""
+  setSearchUrl: (searchUrl) => set({ searchUrl: searchUrl }), // 비디오 URL을 설정하는 함수 정의
 
   playBarUrl: "", // playBar에 사용하는 Url
   setPlayBarUrl: (playBarUrl) => set({ playBarUrl: playBarUrl }), // 비디오 URL을 설정하는 함수 정의

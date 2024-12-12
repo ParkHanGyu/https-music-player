@@ -17,7 +17,8 @@ import useMediaInfo from "../../hooks/testInfo";
 import LoadingScreen from "../LoadingScreen";
 
 const MusicInfo = () => {
-  const { urlId, setUrlId, setPlayBarUrl, setPlayBarInfo } = useVideoStore();
+  const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
+    useVideoStore();
 
   const {
     setPlaylistLibrary,
@@ -25,6 +26,7 @@ const MusicInfo = () => {
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
+    nowPlayingPlaylistID,
   } = usePlaylistStore();
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
@@ -41,11 +43,11 @@ const MusicInfo = () => {
   const { infoData, setMusicInfo, resetInfoData } = useMediaInfo(defaultImage);
 
   useEffect(() => {
-    if (urlId) {
+    if (searchUrl) {
       setIsLoading(true);
-      setMusicInfo(urlId);
+      setMusicInfo(searchUrl);
     }
-  }, [urlId]);
+  }, [searchUrl]);
 
   // 정보 초기화
   const resetInfo = () => {
@@ -60,19 +62,29 @@ const MusicInfo = () => {
       return;
     }
 
-    if (!urlId) {
+    if (!searchUrl) {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
-    setPlayBarUrl(urlId);
-    // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(infoData);
-    setNowRandomPlaylist([]);
-    setNowPlayingPlaylist([]);
-    setNowPlayingPlaylistID("");
-    setNowRandomPlaylistID("");
+
+    // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
+    if (playBarUrl) {
+      setPlayBarUrl("");
+    }
+
+    //useEffect 대신 setTimeout 사용
+    setTimeout(() => {
+      setPlayBarUrl(searchUrl);
+      // youtube데이터를 useVideoStore에 셋팅
+      setPlayBarInfo(infoData);
+      setNowRandomPlaylist([]);
+      setNowPlayingPlaylist([]);
+      setNowPlayingPlaylistID("");
+      setNowRandomPlaylistID("");
+    }, 100);
+
     if (!isPlaying) {
-      setIsPlaying(!isPlaying);
+      setIsPlaying(true);
     }
   };
 
@@ -94,7 +106,7 @@ const MusicInfo = () => {
       navigator(SIGN_IN_PATH());
       return;
     }
-    if (!urlId) {
+    if (!searchUrl) {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
@@ -199,9 +211,9 @@ const MusicInfo = () => {
           ></div>
         </div>
       </div>
-      {urlId && (
+      {searchUrl && (
         <ReactPlayer
-          url={urlId}
+          url={searchUrl}
           playing={false}
           onDuration={handleDuration}
           style={{ display: "none" }} // 완전히 숨김 처리
@@ -211,7 +223,7 @@ const MusicInfo = () => {
             );
             resetInfo();
             setIsInfoError(true);
-            setUrlId("");
+            setSearchUrl("");
           }}
           onReady={() => {
             setIsLoading(false);

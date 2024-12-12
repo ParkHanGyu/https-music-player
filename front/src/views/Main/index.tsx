@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
-import useYouTubeIdExtractor from "../../hooks/useYouTubeIdExtractor";
 import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 
 const Main = () => {
-  const { setUrlId } = useVideoStore();
+  const { setSearchUrl } = useVideoStore();
   const [videoUrl, setVideoUrl] = useState<string>("");
-  // 정규식을 사용한 ID추출 커스텀Hook
-  const { extractYouTubeId } = useYouTubeIdExtractor();
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
   };
@@ -19,24 +16,10 @@ const Main = () => {
     }
   };
 
-  // const videoSearch = () => {
-  //   // "youtu"을 포함한 경우
-  //   if (videoUrl.includes("youtu")) {
-  //     const urlMatch = extractYouTubeId(videoUrl);
-  //     if (urlMatch) {
-  //       // musicInfo에 있는 음악 정보를 set해주기 위해 urlId에 set
-  //       setUrlId(urlMatch);
-  //     } else {
-  //       alert("추출 실패");
-  //       return;
-  //     }
-  //   }
-  // };
-
   const videoSearch = () => {
     const urlMatch = getPlatformUrl(videoUrl);
     if (urlMatch) {
-      setUrlId(urlMatch);
+      setSearchUrl(urlMatch);
     }
   };
 
