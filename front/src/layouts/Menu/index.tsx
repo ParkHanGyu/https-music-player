@@ -85,6 +85,8 @@ const Menu = () => {
     }
   };
 
+  const onImageModifyHandler = () => {};
+
   return (
     <div className={styles["menu-container"]}>
       {loginUser ? (
@@ -96,6 +98,7 @@ const Menu = () => {
                 ? { backgroundImage: `url(${loginUser.profileImage})` }
                 : {}
             }
+            onClick={onImageModifyHandler}
           ></div>
 
           <div className={styles["menu-user-info-email"]}>

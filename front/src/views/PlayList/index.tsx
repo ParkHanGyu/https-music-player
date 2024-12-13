@@ -69,21 +69,21 @@ const PlayList = () => {
     const playListResult = responseBody as GetMusciResponseDto;
 
     setMusics(playListResult.musicList);
+    // 삭제 이후 다시 api가 작동한 경우 nowPlayingPlaylist도 최신화 시켜줘야함.
+    // if 조건이 없다면 듣는 노래가 nowPlayingPlaylist가 1인데 2를 누르면 nowPlayingPlaylist가 자동으로 1에서 2로 바뀐다. 즉 nowPlayingPlaylistID와 보고있는 재생목록 ID가 같으면 최신화해주는
+    if (nowPlayingPlaylistID === playlistId) {
+      setNowPlayingPlaylist(playListResult.musicList);
+      setNowRandomPlaylist(playListResult.musicList);
+    }
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
 
-  const testBtn = () => {
-    console.log(JSON.stringify(musics));
-    // console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
-    console.log("playBarUrl : ", playBarUrl);
-    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
-    console.log("playlistId : ", playlistId);
-  };
+  const testBtn = () => {};
 
+  // onPlayMusic(), 음악 삭제 이후 음악 변경시 deleteMusicResponse()
   useEffect(() => {
     if (infoData.vidUrl !== "-") {
-      console.log("setPlayBarInfo실행. set해주는 값 : ", infoData);
       setPlayBarInfo(infoData);
     }
   }, [infoData]);
@@ -161,6 +161,10 @@ const PlayList = () => {
       return false;
     }
 
+    // =============================================================
+    // 삭제한 음악이 현재 듣는 음악과 재생목록, 같은 음악이면
+    // 다음 노래로 이동. 하지만 마지막 노래라면 첫번째 노래로 이동
+
     // 이전 playlist에서 삭제하는 노래의 index값 (삭제 이후 다음 노래로 바꾸기 위해 구해둠)
     const deleteMusicIndex = nowPlayingPlaylist.findIndex(
       (item) => item.musicId === musicId
@@ -168,84 +172,36 @@ const PlayList = () => {
 
     // 이전 nowPlayingPlaylist의 개수와 삭제하는 음악의 index + 1 과 같으면 true
     // 마지막 노래인지 true / false
-    const lastIndexBoolean = nowPlayingPlaylist.length === deleteMusicIndex + 1;
+    const lastIndexBoolean = nowPlayingPlaylist.length - 1 === deleteMusicIndex;
 
     // 삭제하는 음악의 url
     const deleteMusicUrl =
       nowPlayingPlaylist.find((item) => item.musicId === musicId)?.url || null;
 
-    // const previounNowPlayingPlaylist = nowPlayingPlaylist
+    // 삭제한 노래가 현재 듣고 있는 노래라면 다음 노래로 넘어가야 함.
+    if (deleteMusicUrl === playBarUrl && playlistId === nowPlayingPlaylistID) {
+      // 하지만 삭제하는 노래가 마지막 노래라면? 첫번쨰 노래로 넘어가야함.
+      //                11 - 1          === 5
+      if (lastIndexBoolean) {
+        setPlayBarUrl(nowPlayingPlaylist[0].url);
+        setMusicInfo(nowPlayingPlaylist[0].url);
+      }
 
-    console.log("1");
-    console.log(musics);
-
-    setIsLoading(false); // 이때 useEffect로 music을 최신화
-    console.log("2");
-    console.log(musics);
-
-    // 삭제이후 현재 보고있는 재생목록과 playBar에 재생중인 재생목록의 데이터를 일치화
-    if (
-      playlistId === nowPlayingPlaylistID &&
-      musics.length !== nowPlayingPlaylist.length
-    ) {
-      console.log("3");
-
-      setNowPlayingPlaylist(musics);
-      setNowRandomPlaylist(musics);
-      //       if (
-      //         // 새로 받아온 음악의 노래개수 <=
-      //         playBarUrl === deleteMusicUrl
-      //  &&
-      //         lastIndexBoolean &&
-      //         !musics.some((item) => item.url === playBarUrl)
-      //       ) {
-      //         // 삭제한게 마지막곡이면 첫번째곡으로
-      //         console.log("마지막곡이므로 처음곡 재생");
-      //         setMusicInfo(musics[0].url);
-      //         setPlayBarUrl(musics[0].url);
-
-      //         // 마지막 노래가 아니고 && 재생중인 노래가 새로 받은 재생목록에 없을 경우
-      //       } else if (
-      //         !lastIndexBoolean &&
-      //         !musics.some((item) => item.url === playBarUrl &&
-      //         playBarUrl === deleteMusicUrl
-      //       )
-      //       ) {
-      //         // 다음 노래를 set
-      //         console.log("다음 노래 재생");
-      //         setMusicInfo(musics[deleteMusicIndex].url);
-      //         setPlayBarUrl(musics[deleteMusicIndex].url);
-      //       }
-
-      if (
-        !musics.some(
-          (item) => item.url === playBarUrl && playBarUrl === deleteMusicUrl
-        )
-      ) {
-        if (lastIndexBoolean) {
-          console.log("마지막곡이므로 처음곡 재생");
-          setMusicInfo(musics[0].url);
-          setPlayBarUrl(musics[0].url);
-        }
-        if (!lastIndexBoolean) {
-          console.log("다음 노래 재생");
-          setMusicInfo(musics[deleteMusicIndex].url);
-          setPlayBarUrl(musics[deleteMusicIndex].url);
-        }
+      // 마지막 노래가 아니라면 다음 노래로 넘어가야함.
+      if (!lastIndexBoolean) {
+        setPlayBarUrl(nowPlayingPlaylist[deleteMusicIndex + 1].url);
+        setMusicInfo(nowPlayingPlaylist[deleteMusicIndex + 1].url);
       }
     }
+
+    setIsLoading(false); // 이때 useEffect로 music을 최신화
   };
-  useEffect(() => {
-    console.log("music 최신화");
-  }, [musics]);
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
   // 마우스 외부 클릭 이벤트 커스텀 hook
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
   useEffect(() => {
-    // alert("PlayList3");
-
     if (!isOpen) {
       setOpenDropdownIndex(null);
     }
@@ -254,12 +210,13 @@ const PlayList = () => {
     navigator(MAIN_PATH());
   };
 
+  // 로딩 중 표시
   if (isLoading) {
     return (
       <div className={styles["loading-container"]}>
         <div className={styles["loading-spinner"]}></div>
       </div>
-    ); // 로딩 중 표시
+    );
   }
 
   return (

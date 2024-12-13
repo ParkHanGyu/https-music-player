@@ -195,3 +195,33 @@ export const copyMusic = async (
     });
   return result;
 };
+
+// 프로필 이미지 업로드 URL
+const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/auth/upload/profile`;
+export const uploadProfileImageRequest = async (
+  file: File,
+  accessToken: string
+) => {
+  // FormData 객체 생성
+  const formData = new FormData();
+  formData.append("file", file); // 서버에서 받을 파라미터 이름과 일치해야 함
+
+  console.log(
+    "프로필 이미지 업로드. 서버로 보내는 토큰 값 : " +
+      JSON.stringify(authorication(accessToken))
+  );
+
+  const result = await axios
+    .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
+    .then((response) => {
+      const responseBody = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response?.data || null;
+      return responseBody;
+    });
+
+  return result;
+};
