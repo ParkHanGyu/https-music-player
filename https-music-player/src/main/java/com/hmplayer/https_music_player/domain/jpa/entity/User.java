@@ -44,4 +44,9 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public void setProfileImage(String imageUrl){
+        this.imageUrl = imageUrl;
+
+    }
 }

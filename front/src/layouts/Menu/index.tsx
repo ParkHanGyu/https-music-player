@@ -85,7 +85,9 @@ const Menu = () => {
     }
   };
 
-  const onImageModifyHandler = () => {};
+  const onImageModifyHandler = () => {
+    console.log("loginUser 값 : ", loginUser);
+  };
 
   return (
     <div className={styles["menu-container"]}>

@@ -44,6 +44,7 @@ function App() {
     ResponseUtil(responseBody);
     if (!responseBody) return;
     const { userDto } = responseBody as GetUserResponseDto;
+    console.log("userDto 값 : ", userDto);
     setLoginUser(userDto);
     setTimeout(() => {
       setIsLoading(false); // 로그인 정보 없으면 1초 뒤 로딩 상태 끝내기

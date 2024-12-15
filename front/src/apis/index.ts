@@ -197,7 +197,7 @@ export const copyMusic = async (
 };
 
 // 프로필 이미지 업로드 URL
-const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/auth/upload/profile`;
+const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/upload/profile`;
 export const uploadProfileImageRequest = async (
   file: File,
   accessToken: string
