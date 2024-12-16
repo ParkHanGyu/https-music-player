@@ -29,20 +29,6 @@ public class UserController {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty");
         }
-
-//        String fileUrl = fileService.saveFile(file);
-
-        // 파일 정보 출력
-        String originalFilename = file.getOriginalFilename();
-        String contentType = file.getContentType();
-        long size = file.getSize();
-
-        System.out.println("파일명: " + originalFilename);
-        System.out.println("MIME 타입: " + contentType);
-        System.out.println("파일 크기: " + size + " bytes");
-        System.out.println("email : " + email );
-
-
         return userService.uploadFile(file, email);
     }
 }
