@@ -29,7 +29,7 @@ public class FileService {
     // 클라이언트에서 접근할 수 있는 URL 생성
     public String getFileUrl(String filePath) {
         // 파일 경로에서 파일명만 추출
-        String fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         return fileUrl + fileName;  // 클라이언트에서 사용할 수 있는 URL 반환
     }
 

@@ -5,9 +5,12 @@ import ReactPlayer from "react-player";
 import { uploadProfileImageRequest } from "../../apis";
 import { useCookies } from "react-cookie";
 import ResponseDto from "../../apis/response/response.dto";
+import useLoginUserStore from "../../store/login-user.store";
 
 const TestView2 = () => {
-  const [cookies, removeCookie, deleteCookie] = useCookies();
+  const [cookies] = useCookies();
+  // 추가
+  const { setLoginUser } = useLoginUserStore();
 
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);

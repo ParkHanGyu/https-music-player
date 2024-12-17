@@ -91,6 +91,7 @@ public class UserRepoService {
         try {
             // 파일 경로 생성 (서버에 저장할 물리적 경로)
             String filePath = fileService.setFilePath(userId, file);
+            System.out.println("filePath : "+ filePath);
 
             // 파일을 실제 디렉토리에 저장
             file.transferTo(new File(filePath));
@@ -101,6 +102,7 @@ public class UserRepoService {
 
             // 클라이언트에서 접근할 수 있는 URL 생성
             String fileUrl = fileService.getFileUrl(filePath);  // 클라이언트용 URL 생성
+            System.out.println("fileUrl : "+ fileUrl);
 
             // 프로필 이미지 경로를 fileUrl로 업데이트 (DB에는 fileUrl만 저장)
             user.setProfileImage(fileUrl); // 파일의 URL을 DB에 저장
