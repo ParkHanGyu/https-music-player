@@ -197,22 +197,17 @@ export const copyMusic = async (
 };
 
 // 프로필 이미지 업로드 URL
-const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/upload/profile`;
-export const uploadProfileImageRequest = async (
-  file: File,
-  accessToken: string
-) => {
+const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;
+// const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/upload/profile`;
+export const uploadProfileImageRequest = async (file: File) => {
   // FormData 객체 생성
   const formData = new FormData();
   formData.append("file", file); // 서버에서 받을 파라미터 이름과 일치해야 함
 
-  console.log(
-    "프로필 이미지 업로드. 서버로 보내는 토큰 값 : " +
-      JSON.stringify(authorication(accessToken))
-  );
+  console.log("api. 서버로 보내는 file 값 : ", file.name, file.size, file.type);
 
   const result = await axios
-    .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
+    .post(UPLOAD_PROFILE_IMAGE_URL(), formData)
     .then((response) => {
       const responseBody = response.data;
       return responseBody;

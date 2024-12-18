@@ -24,11 +24,11 @@ public class UserController {
     }
 
 
-    @PostMapping("/upload/profile") // 프로필 이미지 변경
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal String email) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("File is empty");
-        }
-        return userService.uploadFile(file, email);
-    }
+//    @PostMapping("/upload/profile") // 프로필 이미지 변경
+//    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal String email) {
+//        if (file.isEmpty()) {
+//            return ResponseEntity.badRequest().body("File is empty");
+//        }
+//        return userService.uploadFile(file, email);
+//    }
 }

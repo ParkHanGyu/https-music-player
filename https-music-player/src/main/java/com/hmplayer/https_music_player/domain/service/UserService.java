@@ -8,6 +8,4 @@ public interface UserService {
 
     ResponseEntity<? super GetLoginUserResponse> getLoginUser(String email);
 
-    ResponseEntity<?> uploadFile(MultipartFile file, String email);
-
 }

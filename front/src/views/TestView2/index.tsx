@@ -28,10 +28,9 @@ const TestView2 = () => {
       alert("파일을 선택하세요.");
       return;
     }
+    console.log("TestView2에서 api 호출시 보내는 file 값 : ", file);
 
-    uploadProfileImageRequest(file, cookies.accessToken).then(
-      uploadProfileImageResponse
-    );
+    uploadProfileImageRequest(file).then(uploadProfileImageResponse);
   };
 
   const uploadProfileImageResponse = (responseBody: ResponseDto | null) => {
