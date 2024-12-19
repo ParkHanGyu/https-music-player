@@ -1,9 +1,13 @@
 package com.hmplayer.https_music_player.domain.controller;
 
+import com.hmplayer.https_music_player.domain.dto.response.music.UploadResponse;
+import com.hmplayer.https_music_player.domain.dto.response.user.GetLoginUserResponse;
 import com.hmplayer.https_music_player.domain.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,13 +19,14 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<? super UploadResponse> upload(@RequestParam("file") MultipartFile file , @AuthenticationPrincipal String email) {
         System.out.println("upload 컨트롤러 실행");
 
-        String url = fileService.upload(file);
-        System.out.println("upload 컨트롤러 return 값 : " + url);
+//        String url = fileService.upload(file,email);
+//        System.out.println("upload 컨트롤러 return 값 : " + url);
 
-        return url;
+        return fileService.upload(file,email);
+
     }
 
     @GetMapping(value = "{fileName}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})

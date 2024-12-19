@@ -199,7 +199,10 @@ export const copyMusic = async (
 // 프로필 이미지 업로드 URL
 const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;
 // const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/upload/profile`;
-export const uploadProfileImageRequest = async (file: File) => {
+export const uploadProfileImageRequest = async (
+  file: File,
+  accessToken: string
+) => {
   // FormData 객체 생성
   const formData = new FormData();
   formData.append("file", file); // 서버에서 받을 파라미터 이름과 일치해야 함
@@ -207,8 +210,9 @@ export const uploadProfileImageRequest = async (file: File) => {
   console.log("api. 서버로 보내는 file 값 : ", file.name, file.size, file.type);
 
   const result = await axios
-    .post(UPLOAD_PROFILE_IMAGE_URL(), formData)
+    .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
     .then((response) => {
+      console.log("api.서버에서 받아온 데이터 : ", response);
       const responseBody = response.data;
       return responseBody;
     })
