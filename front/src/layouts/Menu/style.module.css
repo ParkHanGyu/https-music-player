@@ -90,8 +90,8 @@
 }
 .menu-user-info-email {
   display: flex;
-  align-items: center;
   justify-content: center;
+  padding-top: 4px;
 }
 
 .menu-user-info-box {

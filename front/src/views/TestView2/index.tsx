@@ -13,29 +13,32 @@ const TestView2 = () => {
   // 추가
   const { loginUser, setLoginUser } = useLoginUserStore();
 
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  // const [file, setFile] = useState<File | null>(null);
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
-      setPreviewUrl(URL.createObjectURL(selectedFile));
+      // setFile(selectedFile);
+      // 미리기보기 필요시 사용
+      // setPreviewUrl(URL.createObjectURL(selectedFile));
+
+      // 파일이 선택되었을 때 바로 업로드 함수 호출
+      await handleUpload(selectedFile);
     }
   };
 
-  const handleUpload = async () => {
-    if (!file) {
+  const handleUpload = async (selectedFile: File) => {
+    if (!selectedFile) {
       alert("파일을 선택하세요.");
       return;
     }
-    console.log("TestView2에서 api 호출시 보내는 file 값 : ", file);
-
-    uploadProfileImageRequest(file, cookies.accessToken).then(
+    uploadProfileImageRequest(selectedFile, cookies.accessToken).then(
       uploadProfileImageResponse
     );
   };
-
   const uploadProfileImageResponse = (
     responseBody: GetUserImageResponseDto | ResponseDto | null
   ) => {
@@ -50,25 +53,71 @@ const TestView2 = () => {
     if (code !== "SU") {
       return false;
     }
-    console.log("업로드 성공:");
-    alert("업로드 성공: ");
-
-    // if (loginUser) {
-    //   setLoginUser({
-    //     ...loginUser,
-    //     profileImage: profileImage, // 새 URL로 업데이트
-    //   });
-    // }
-
-    // 여기서 uploadProfileImageResponse에서 받아온 값을 LoginUser에 profileImage 부분에 넣어주려함
+    const profileImage = responseBody as GetUserImageResponseDto;
+    if (loginUser) {
+      setLoginUser({
+        ...loginUser,
+        profileImage: profileImage.url, // 새 URL로 업데이트
+      });
+    }
   };
 
+  const handleClick = () => {
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    fileInput?.click(); // 숨겨진 파일 입력창 클릭
+  };
   return (
     <div>
-      <h3>프로필 이미지 변경</h3>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
-      {previewUrl && <img src={previewUrl} alt="미리보기" width={100} />}
-      <button onClick={handleUpload}>업로드</button>
+      {/* <h3>프로필 이미지 변경</h3>
+      <input type="file" accept="image/*" onChange={handleFileChange} /> */}
+      {/* <button onClick={handleUpload}>업로드</button> */}
+
+      {/* <label
+        htmlFor="input-file" // form -> htmlFor로 수정
+        style={{
+          display: "inline-block", // display를 inline-block으로 설정
+          width: "100px",
+          height: "100px",
+          backgroundColor: "#f0f0f0", // 테스트용 배경색 추가
+          textAlign: "center", // 텍스트 중앙 정렬
+          lineHeight: "100px", // 높이에 맞춰 텍스트 세로 중앙 정렬
+          border: "1px solid #ccc", // 테두리 추가
+          cursor: "pointer", // 마우스 커서 변경
+        }}
+      >
+        업로드
+      </label>
+      <input
+        type="file"
+        accept="image/*"
+        id="input-file"
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      /> */}
+
+      <div
+        onClick={handleClick}
+        style={{
+          width: "200px",
+          height: "200px",
+          border: "2px dashed #ccc",
+          borderRadius: "10px",
+          backgroundImage: loginUser?.profileImage
+            ? `url(${loginUser.profileImage})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          cursor: "pointer",
+        }}
+      ></div>
+
+      <input
+        type="file"
+        id="file-input"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
     </div>
   );
 };

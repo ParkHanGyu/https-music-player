@@ -7,6 +7,7 @@ import SignInRequestDto from "./request/auth/sign-in-request.dto";
 import SignInResponseDto from "./response/auth/sign-in.response.dto";
 import GetUserResponseDto from "./response/user/get-user-info-response.dto";
 import CreatePlayListRequestDto from "./request/create-play-list-request.dto";
+import GetUserImageResponseDto from "./response/user/get-user-new-image-url.dto";
 
 const DOMAIN = "http://localhost:8081";
 const API_DOMAIN = `${DOMAIN}/api`;
@@ -212,8 +213,8 @@ export const uploadProfileImageRequest = async (
   const result = await axios
     .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
     .then((response) => {
-      console.log("api.서버에서 받아온 데이터 : ", response);
-      const responseBody = response.data;
+      const responseBody:GetUserImageResponseDto = response.data;
+      console.log("api.서버에서 받아온 데이터 : ", responseBody);
       return responseBody;
     })
     .catch((error) => {

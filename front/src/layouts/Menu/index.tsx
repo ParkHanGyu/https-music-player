@@ -12,12 +12,15 @@ import { useVideoStore } from "../../store/useVideo.store";
 import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import { uploadProfileImageRequest } from "../../apis";
+import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
+import ResponseDto from "../../apis/response/response.dto";
 
 const Menu = () => {
   const { playlistId } = useParams();
   const [cookies, removeCookie, deleteCookie] = useCookies();
 
-  const { loginUser } = useLoginUserStore();
+  const { loginUser, setLoginUser } = useLoginUserStore();
 
   const { playlistLibrary } = usePlaylistStore();
   const navigator = useNavigate();
@@ -85,8 +88,46 @@ const Menu = () => {
     }
   };
 
+  // =============================================================
   const onImageModifyHandler = () => {
-    console.log("loginUser 값 : ", loginUser);
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    fileInput?.click(); // 숨겨진 파일 입력창 클릭
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0];
+    if (!selectedFile) {
+      alert("파일을 선택하세요.");
+      return;
+    }
+    uploadProfileImageRequest(selectedFile, cookies.accessToken).then(
+      uploadProfileImageResponse
+    );
+  };
+
+  const uploadProfileImageResponse = (
+    responseBody: GetUserImageResponseDto | ResponseDto | null
+  ) => {
+    console.log("서버에서 받은 데이터 : ", responseBody);
+    if (!responseBody) {
+      alert("데이터 없음");
+      return;
+    }
+
+    const { code } = responseBody;
+    if (code === "DBE") alert("데이터베이스 오류");
+    if (code !== "SU") {
+      return false;
+    }
+    const profileImage = responseBody as GetUserImageResponseDto;
+    if (loginUser) {
+      setLoginUser({
+        ...loginUser,
+        profileImage: profileImage.url, // 새 URL로 업데이트
+      });
+    }
   };
 
   return (
@@ -96,12 +137,20 @@ const Menu = () => {
           <div
             className={styles["menu-user-info-image"]}
             style={
-              loginUser && loginUser.profileImage
+              loginUser.profileImage
                 ? { backgroundImage: `url(${loginUser.profileImage})` }
                 : {}
             }
             onClick={onImageModifyHandler}
           ></div>
+
+          <input
+            type="file"
+            id="file-input"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
 
           <div className={styles["menu-user-info-email"]}>
             {loginUser?.email}
