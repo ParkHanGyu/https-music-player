@@ -8,7 +8,7 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import { useParams } from "react-router-dom";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import useMediaInfo from "../../hooks/testInfo";
+import useMediaInfo from "../../hooks/useMediaInfo";
 import usePlayerProgress from "../../hooks/usePlayerProgress";
 import { useCookies } from "react-cookie";
 

@@ -8,13 +8,13 @@ import {
   SIGN_UP_PATH,
   TEST_PATH,
 } from "../../constant";
-import { useVideoStore } from "../../store/useVideo.store";
 import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import { uploadProfileImageRequest } from "../../apis";
 import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
 import ResponseDto from "../../apis/response/response.dto";
+import { ResponseUtil } from "../../utils";
 
 const Menu = () => {
   const { playlistId } = useParams();
@@ -110,17 +110,10 @@ const Menu = () => {
   const uploadProfileImageResponse = (
     responseBody: GetUserImageResponseDto | ResponseDto | null
   ) => {
-    console.log("서버에서 받은 데이터 : ", responseBody);
-    if (!responseBody) {
-      alert("데이터 없음");
+    if (!ResponseUtil(responseBody)) {
       return;
     }
 
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
-    }
     const profileImage = responseBody as GetUserImageResponseDto;
     if (loginUser) {
       setLoginUser({

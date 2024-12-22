@@ -41,8 +41,7 @@ function App() {
   const getLoginUserResponse = (
     responseBody: GetUserResponseDto | ResponseDto | null
   ) => {
-    ResponseUtil(responseBody);
-    if (!responseBody) return;
+    if (!ResponseUtil(responseBody)) return;
     const { userDto } = responseBody as GetUserResponseDto;
     console.log("userDto 값 : ", userDto);
     setLoginUser(userDto);

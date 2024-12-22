@@ -48,10 +48,6 @@ export const playlistAddMusicReqeust = async (
   requestBody: AddPlayListToMusicRequestDto,
   accessToken: string
 ) => {
-  console.log(
-    "노래 추가. 서버로 보내는 토큰 값 : " +
-      JSON.stringify(authorication(accessToken))
-  );
   const result = await axios
     .post(ADD_MUSIC_TO_PLAYLIST_URL(), requestBody, authorication(accessToken))
     .then((response) => {
@@ -213,7 +209,7 @@ export const uploadProfileImageRequest = async (
   const result = await axios
     .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
     .then((response) => {
-      const responseBody:GetUserImageResponseDto = response.data;
+      const responseBody: GetUserImageResponseDto = response.data;
       console.log("api.서버에서 받아온 데이터 : ", responseBody);
       return responseBody;
     })

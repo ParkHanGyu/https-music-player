@@ -7,6 +7,7 @@ import { signInRequest } from "../../../apis";
 import SignInResponseDto from "../../../apis/response/auth/sign-in.response.dto";
 import ResponseDto from "../../../apis/response/response.dto";
 import { useCookies } from "react-cookie";
+import { ResponseUtil } from "../../../utils";
 
 const SignIn = () => {
   const navigator = useNavigate();
@@ -19,7 +20,6 @@ const SignIn = () => {
   const [email, setEmail] = useState<string>("");
 
   //      event handler: 이메일 변경 이벤트 처리 함수      //
-  // input에 value가 있을때랑 없을때랑 스타일 변화를 위한
   const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setEmail(value);
@@ -30,7 +30,6 @@ const SignIn = () => {
   //      state: 패스워드 상태      //
   const [password, setPassword] = useState<string>("");
   //      event handler: 비밀번호 변경 이벤트 처리 함수      //
-  // input에 value가 있을때랑 없을때랑 스타일 변화를 위한
   const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setPassword(value);
@@ -51,15 +50,9 @@ const SignIn = () => {
   const signInResponse = (
     responseBody: SignInResponseDto | ResponseDto | null
   ) => {
-    if (!responseBody) {
-      alert("네트워크 이상입니다.");
+    if (!ResponseUtil(responseBody)) {
       return;
     }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류입니다.");
-    if (code === "SF") alert("아이디 또는 비밀번호가 올바르지 않습니다.");
-    if (code !== "SU") return;
 
     const { accessToken, refreshToken, expirationTime } =
       responseBody as SignInResponseDto;
@@ -72,7 +65,7 @@ const SignIn = () => {
     navigator(MAIN_PATH());
   };
 
-  // 키보드 이벤트 핸들러
+  //      event handler:  키보드 이벤트 핸들러       //
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       onSignInBtnClickHandler();
@@ -86,7 +79,7 @@ const SignIn = () => {
             <div className={styles["sign-in-title"]}>SIGN IN</div>
           </div>
           <div className={styles["sign-in-container-mid"]}>
-            <div className={styles["sign-in-email"]}>
+            <div className={styles["sign-in-email"]} onKeyDown={handleKeyDown}>
               email
               <input
                 type="text"

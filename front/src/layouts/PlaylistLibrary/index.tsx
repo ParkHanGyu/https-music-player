@@ -12,11 +12,7 @@ import ResponseDto from "../../apis/response/response.dto";
 import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
-
-interface Playlist {
-  playlistId: string;
-  title: string;
-}
+import { ResponseUtil } from "../../utils";
 
 interface PlaylistLibraryProps {
   infoData: YoutubeInfo;
@@ -39,10 +35,6 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
   // 팝업 관련
   const [isAddPlaylistPopupOpen, setAddPlaylistPopupOpen] = useState(false); // 추가 팝업 상태 추가
-  const craetePlayList = () => {
-    setAddPlaylistPopupOpen(!isAddPlaylistPopupOpen);
-  };
-
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
@@ -53,19 +45,10 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     );
   };
   const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
-    if (!responseBody) {
-      alert("데이터 없음");
-      return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code === "DM") {
-      alert(responseBody.message);
+    if (!ResponseUtil(responseBody)) {
+      alert(responseBody?.message);
       setPlaylistPopupOpen(false);
-    }
-    if (code !== "SU") {
-      return false;
+      return;
     }
 
     alert("음악 추가됨");
@@ -95,8 +78,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   };
 
   const playListAddResponse = (responseBody: { code: string }) => {
-    if (!responseBody) {
-      alert("서버로부터 응답이 없습니다.");
+    if (!ResponseUtil(responseBody)) {
       return;
     }
     setAddPlaylistPopupOpen(!isAddPlaylistPopupOpen);
@@ -114,26 +96,15 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const getPlaylistLibraryResponse = (
     responseBody: GetPlaylistResponseDto | ResponseDto | null
   ) => {
-    if (!responseBody) {
+    if (!ResponseUtil(responseBody)) {
       return;
     }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
-    }
-
     const playListResult = responseBody as GetPlaylistResponseDto;
 
     setPlaylistLibrary(playListResult.playListLibrary);
   };
 
-  const testBtn = () => {
-    console.log("셋팅된 infoData 값 : " + JSON.stringify(infoData));
-    console.log("셋팅된 infoDuration 값 : " + JSON.stringify(infoDuration));
-    alert(infoData);
-  };
+  const testBtn = () => {};
   return (
     <>
       <div

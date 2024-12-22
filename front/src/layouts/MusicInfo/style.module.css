@@ -117,12 +117,6 @@
   margin-bottom: 0px;
 }
 
-.playlist-popup-content ul {
-  list-style: none;
-  padding: 0;
-  margin: 15px 0;
-}
-
 .playlist-popup-content ul li {
   padding: 10px;
   cursor: pointer;

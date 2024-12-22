@@ -13,7 +13,8 @@ import { MAIN_PATH } from "../../constant";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
-import useMediaInfo from "../../hooks/testInfo";
+import useMediaInfo from "../../hooks/useMediaInfo";
+import { ResponseUtil } from "../../utils";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -55,15 +56,8 @@ const PlayList = () => {
   const getPlaylistMusicResponse = (
     responseBody: GetMusciResponseDto | ResponseDto | null
   ) => {
-    if (!responseBody) {
-      alert("데이터 없음");
+    if (!ResponseUtil(responseBody)) {
       return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
     }
 
     const playListResult = responseBody as GetMusciResponseDto;
@@ -150,15 +144,8 @@ const PlayList = () => {
     responseBody: ResponseDto | null,
     musicId: bigint
   ) => {
-    if (!responseBody) {
-      alert("데이터 없음");
+    if (!ResponseUtil(responseBody)) {
       return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
     }
 
     // =============================================================

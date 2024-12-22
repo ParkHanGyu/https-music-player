@@ -13,8 +13,9 @@ import { SIGN_IN_PATH } from "../../constant";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../PlaylistLibrary";
-import useMediaInfo from "../../hooks/testInfo";
+import useMediaInfo from "../../hooks/useMediaInfo";
 import LoadingScreen from "../LoadingScreen";
+import { ResponseUtil } from "../../utils";
 
 const MusicInfo = () => {
   const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
@@ -26,7 +27,6 @@ const MusicInfo = () => {
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
-    nowPlayingPlaylistID,
   } = usePlaylistStore();
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
@@ -129,14 +129,8 @@ const MusicInfo = () => {
   const getPlaylistLibraryResponse = (
     responseBody: GetPlayListResponseDto | ResponseDto | null
   ) => {
-    if (!responseBody) {
+    if (!ResponseUtil(responseBody)) {
       return;
-    }
-
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류");
-    if (code !== "SU") {
-      return false;
     }
 
     const playListResult = responseBody as GetPlayListResponseDto;

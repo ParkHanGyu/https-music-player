@@ -5,7 +5,8 @@ import { signUpRequest } from "../../../apis";
 import SignUpResponseDto from "../../../apis/response/auth/sign-up-response.dto";
 import ResponseDto from "../../../apis/response/response.dto";
 import { useNavigate } from "react-router-dom";
-import { MAIN_PATH, SIGN_IN_PATH } from "../../../constant";
+import { SIGN_IN_PATH } from "../../../constant";
+import { ResponseUtil } from "../../../utils";
 
 const SignUp = () => {
   const navigator = useNavigate();
@@ -87,8 +88,6 @@ const SignUp = () => {
       profileImage: "",
     };
 
-    console.log("api요청할 requestBody 값 : " + JSON.stringify(requestBody));
-
     signUpRequest(requestBody).then(signUpResponse);
   };
 
@@ -96,16 +95,10 @@ const SignUp = () => {
   const signUpResponse = (
     responseBody: SignUpResponseDto | ResponseDto | null
   ) => {
-    if (!responseBody) {
-      alert("네트워크 이상입니다.");
+    if (!ResponseUtil(responseBody)) {
       return;
     }
 
-    console.log("서버에서 반환해준 데이터 : " + JSON.stringify(responseBody));
-    const { code } = responseBody;
-    if (code === "DBE") alert("데이터베이스 오류입니다.");
-    if (code === "DE") alert("사용중인 이메일 입니다.");
-    if (code !== "SU") return;
     alert("회원가입 완료");
     navigator(SIGN_IN_PATH());
   };

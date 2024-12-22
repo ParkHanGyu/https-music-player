@@ -5,17 +5,20 @@ import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 
 const Main = () => {
   const { setSearchUrl } = useVideoStore();
+  //      state: 검색할 url 상태      //
   const [videoUrl, setVideoUrl] = useState<string>("");
+  //      event handler: url input값 변경      //
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideoUrl(event.target.value);
   };
-  // 키보드 이벤트 핸들러
+  //      event handler: url 키보드 enter 이벤트 핸들러     //
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
       videoSearch();
     }
   };
 
+  //      function: 검색 url 변수 할당 함수    //
   const videoSearch = () => {
     const urlMatch = getPlatformUrl(videoUrl);
     if (urlMatch) {
