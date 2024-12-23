@@ -56,13 +56,14 @@
 }
 
 .main-menu-item2 li {
+  height: 20px;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s;
   color: #b7b7b7;
   list-style: none;
   margin-bottom: 5px;
-  padding: 5px 5px 7px 10px;
+  padding: 5px 0px 7px 10px;
 
   display: flex;
   align-items: center;
@@ -111,4 +112,82 @@
   background-position: center;
   background-repeat: no-repeat;
   margin: auto;
+}
+/* ===================== 더보기 ====================== */
+
+.menu-item-action-btn {
+  width: 110px;
+}
+.menu-item-action-btn {
+  position: relative; /* ul 기준 */
+
+  display: none;
+  margin-left: 135px;
+  background-image: url("../../assets/more-button.png");
+  width: 24.5px;
+  height: 24.5px;
+  background-size: 90%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-menu-item-li:hover .menu-item-action-btn {
+  display: block;
+}
+
+.menu-item-action-btn:hover {
+  background-color: rgb(51, 51, 51);
+  border-radius: 50%;
+  background-image: url("../../assets/more-button-hover.png");
+}
+
+.menu-item-action-btn ul {
+  position: absolute; /* 기준인 div로 위치 설정 */
+  border: none;
+  min-width: 120px;
+  min-height: 80px;
+  background-color: rgb(33, 33, 33);
+  border-radius: 5%;
+  z-index: 1000;
+  outline: none;
+  padding-left: 0px;
+  margin: 30px 0px 0px 0px;
+  pointer-events: auto;
+}
+
+.menu-item-action-btn li {
+  font-size: 12px;
+  list-style: none;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #dbdbdb;
+}
+
+.menu-item-action-btn li:hover {
+  background-color: #333333;
+  border-radius: 5%;
+}
+
+.menu-item-action-btn li::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0px 12px 0px 5px;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 삭제하기 아이콘 */
+.menu-item-action-btn li:last-child::before {
+  background-image: url("../../assets/delete-icon.png"); /* 삭제 아이콘 */
+}
+.menu-item-action-btn li:last-child {
+  color: rgb(255, 47, 47);
+}
+
+.menu-item-action-btn li:first-child::before {
+  background-image: url("../../assets/modify-icon-hover.png"); /* 복사 아이콘 */
 }

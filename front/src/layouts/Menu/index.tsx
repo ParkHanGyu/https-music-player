@@ -15,6 +15,7 @@ import { uploadProfileImageRequest } from "../../apis";
 import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 const Menu = () => {
   const { playlistId } = useParams();
@@ -38,8 +39,9 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    navigator(TEST_PATH());
-    // alert("셋팅된 loginUser 값 : " + JSON.stringify(loginUser));
+    // navigator(TEST_PATH());
+    console.log("openDropdownIndex : ", openDropdownIndex);
+    console.log("isOpen : ", isOpen);
   };
 
   useEffect(() => {
@@ -123,6 +125,38 @@ const Menu = () => {
     }
   };
 
+  // ========================================================
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
+    null
+  );
+
+  const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
+
+  const onMenuAction = (index: number) => {
+    // console.log("openDropdownIndex : ", openDropdownIndex);
+    console.log("index : ", index);
+    console.log("openDropdownIndex : ", openDropdownIndex);
+    // console.log("isOpen : ", isOpen);
+    // 현재 선택된 인덱스가 열려있다면 닫고, 아니면 열기
+    // 열어줄 index를 set해줌
+
+    if (openDropdownIndex === index) {
+      setIsOpen(false);
+      setOpenDropdownIndex(null);
+      return;
+    }
+    // setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+
+    setOpenDropdownIndex(index);
+    setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
+  };
+
+  useEffect(() => {
+    if (!isOpen && openDropdownIndex !== null) {
+      setOpenDropdownIndex(null);
+    }
+  }, [isOpen]);
+
   return (
     <div className={styles["menu-container"]}>
       {loginUser ? (
@@ -183,6 +217,7 @@ const Menu = () => {
             <ul style={{ margin: !playlistLibrary.length ? "0px" : undefined }}>
               {playlistLibrary.map((playlist, index) => (
                 <li
+                  className={styles["main-menu-item-li"]}
                   style={{
                     backgroundColor:
                       playlistId === (index + 1).toString()
@@ -200,6 +235,39 @@ const Menu = () => {
                   ) => showPlaylistDetail(playlist.playlistId, event)}
                 >
                   {playlist.title}
+
+                  {/* ========= ==================================*/}
+                  {/* btn */}
+                  <div
+                    className={styles["menu-item-action-btn"]}
+                    onClick={(
+                      event: React.MouseEvent<HTMLDivElement, MouseEvent>
+                    ) => {
+                      event.stopPropagation();
+                      onMenuAction(index); // 클릭된 음악의 인덱스를 전달
+                    }}
+                    style={{
+                      display:
+                        openDropdownIndex === index && isOpen ? "block" : "",
+                    }}
+                  >
+                    {/* 더보기 드롭다운 */}
+                    {/* set해준 값과 index가 일치하면 보여줌  */}
+                    {/* ul, li */}
+                    {openDropdownIndex === index && isOpen && (
+                      <ul ref={ref}>
+                        <li
+                          onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                            event.stopPropagation();
+                          }}
+                        >
+                          이름수정
+                        </li>
+                        <li onClick={() => {}}>삭제</li>
+                      </ul>
+                    )}
+                  </div>
+                  {/* ================================================ */}
                 </li>
               ))}
             </ul>
