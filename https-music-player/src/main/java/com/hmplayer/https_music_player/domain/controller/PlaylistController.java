@@ -1,6 +1,8 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
@@ -39,6 +41,16 @@ public class PlaylistController {
         System.out.println("서버에서 받아온 playlistId : " + playlistId);
         System.out.println("서버에서 받아온 playListService.getPlayList(userName) : " + playListService.getPlayList(playlistId));
         return playListService.getPlayList(playlistId);
+    }
+
+
+    // 재생목록 삭제
+    @DeleteMapping("/delete/playlist/{playlistId}")
+    public ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(@PathVariable("playlistId") Long playlistId, @AuthenticationPrincipal String email) {
+        System.out.println("playlistId : " + playlistId);
+        System.out.println("email : " + email);
+
+        return playListService.deletePlaylist(playlistId,email);
     }
 
 

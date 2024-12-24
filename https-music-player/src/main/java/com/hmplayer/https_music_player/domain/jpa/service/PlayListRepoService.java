@@ -37,9 +37,20 @@ public class PlayListRepoService {
         return playListRepository.findById(playlistId);
     }
 
+    @Transactional
+    public Optional<Playlist> findPlaylistByUserAndPlaylistId(Long userId, Long playlistId){
+        return playListRepository.findPlaylistByUserAndPlaylistId(userId, playlistId);
+    }
 
 
     public List<Playlist> findByUserId(Long userId) {
         return playListRepository.findByUserId(userId);
+    }
+
+
+
+    @Transactional
+    public void deleteByPlaylistId(Long playlistId){
+        playListRepository.deleteByPlaylistId(playlistId);
     }
 }

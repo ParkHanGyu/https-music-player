@@ -11,7 +11,7 @@ import {
 import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import { uploadProfileImageRequest } from "../../apis";
+import { deletePlaylist, uploadProfileImageRequest } from "../../apis";
 import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
@@ -40,8 +40,7 @@ const Menu = () => {
 
   const testValue = () => {
     // navigator(TEST_PATH());
-    console.log("openDropdownIndex : ", openDropdownIndex);
-    console.log("isOpen : ", isOpen);
+    console.log("playlistLibrary : ", playlistLibrary);
   };
 
   useEffect(() => {
@@ -133,10 +132,6 @@ const Menu = () => {
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
   const onMenuAction = (index: number) => {
-    // console.log("openDropdownIndex : ", openDropdownIndex);
-    console.log("index : ", index);
-    console.log("openDropdownIndex : ", openDropdownIndex);
-    // console.log("isOpen : ", isOpen);
     // 현재 선택된 인덱스가 열려있다면 닫고, 아니면 열기
     // 열어줄 index를 set해줌
 
@@ -156,6 +151,29 @@ const Menu = () => {
       setOpenDropdownIndex(null);
     }
   }, [isOpen]);
+
+  const onHandlePlaylistDelete = (playlistId: bigint) => {
+    console.log("playlistId : ", playlistId);
+
+    deletePlaylist(playlistId, cookies.accessToken).then(
+      deletePlaylistResponse
+    );
+
+    // const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+    // if (isConfirmed) {
+    //   setOpenDropdownIndex(null);
+    //   deleteMusic(musicId, cookies.accessToken).then((responseBody) =>
+    //     deleteMusicResponse(responseBody, musicId)
+    //   );
+    // }
+  };
+
+  const deletePlaylistResponse = (responseBody: ResponseDto | null) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+    console.log("responseBody : ", responseBody);
+  };
 
   return (
     <div className={styles["menu-container"]}>
@@ -263,7 +281,16 @@ const Menu = () => {
                         >
                           이름수정
                         </li>
-                        <li onClick={() => {}}>삭제</li>
+                        <li
+                          onClick={() => {
+                            // 삭제
+                            onHandlePlaylistDelete(
+                              playlistLibrary[index].playlistId
+                            ); // 클릭된 음악의 인덱스를 전달
+                          }}
+                        >
+                          삭제
+                        </li>
                       </ul>
                     )}
                   </div>

@@ -15,6 +15,11 @@ public interface MusicRepository extends JpaRepository<Music, Long> {
     @Query("DELETE FROM Music m WHERE m.id = :musicId")
     void deleteByMusicId(@Param("musicId") Long musicId);
 
+
+    @Modifying
+    @Query("DELETE FROM Music m WHERE m.musicId IN (SELECT pm.music.musicId FROM PlaylistMusic pm WHERE pm.playlist.playlistId = :playlistId)")
+    void deleteByPlaylistId(@Param("playlistId") Long playlistId);
+
 }
 
 

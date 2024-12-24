@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.service;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
@@ -18,5 +19,8 @@ public interface PlayListService {
     ResponseEntity<? super PlayListResponse> getPlayListLibrary(String email);
 
     ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId);
+
+    ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(Long playlistId, String email);
+
 
 }

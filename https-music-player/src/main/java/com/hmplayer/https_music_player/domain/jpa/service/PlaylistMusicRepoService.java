@@ -72,4 +72,11 @@ public class PlaylistMusicRepoService {
         return playlistMusicRepository.findByPlaylistIdAndMusicUrl(playlistId,vidUrl);
     }
 
+    @Transactional
+    public void deleteByPlaylistId(Long playlistId) {
+        // music_id로 playlist_music 데이터 삭제
+        playlistMusicRepository.deleteByPlaylistId(playlistId);
+        log.info("db에서 쿼리에 사용할 데이터 : playlistId = {}", playlistId);
+    }
+
 }

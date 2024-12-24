@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -34,4 +35,7 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
             @Param("playlistId") Long playlistId,
             @Param("musicUrl") String musicUrl);
 
+    @Modifying
+    @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.playlistId = :playlistId")
+    void deleteByPlaylistId(@Param("playlistId") Long playlistId);
 }

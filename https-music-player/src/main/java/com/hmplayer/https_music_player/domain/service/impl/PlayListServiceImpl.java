@@ -3,6 +3,8 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.PlayListDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
@@ -10,9 +12,12 @@ import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
+import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
+import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
+import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +34,8 @@ import java.util.stream.Collectors;
 public class PlayListServiceImpl implements PlayListService {
     private final PlayListRepoService playListRepoService;
     private final UserRepoService userRepoService;
+    private final PlaylistMusicRepoService playlistMusicRepoService;
+    private final MusicRepoService musicRepoService;
 
 
 
@@ -56,31 +63,12 @@ public class PlayListServiceImpl implements PlayListService {
 
     @Override
     public ResponseEntity<? super PlayListResponse> getPlayListLibrary(String email) {
-        System.out.println("Impl에서 받은 값 : "+email);
-
         User user = userRepoService.findByEmail(email);
-
-        System.out.println("user 값 : "+user);
 
         List<Playlist> filteredPlayList = playListRepoService.findByUserId(user.getId());
 
-        System.out.println("db에서 가져온 playlists 값 : "+filteredPlayList);
-
-
-
-
-
         List<PlayListDto> playListLibrary; // dto 변환할것
         playListLibrary = PlayListDto.ofList(filteredPlayList);
-
-        System.out.println("playListLibrary 값 : "+playListLibrary);
-
-
-//        List<Playlist> filteredPlayList; //
-//        filteredPlayList = playListRepoService.findListByName(userName);
-//
-//        playLists = PlayListDto.ofList(filteredPlayList);
-//
         return PlayListResponse.success(playListLibrary);
     }
 
@@ -102,15 +90,47 @@ public class PlayListServiceImpl implements PlayListService {
                     .map(MusicDto::new) // 명시적으로 생성자 호출
                     .toList();
 
-
         } catch(Exception e) {
             e.printStackTrace();
             return GetMusicResponse.databaseError();
 
         };
         return GetMusicResponse.success(musicsData);
+    }
 
 
+    @Override
+    public ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(Long playlistId, String email) {
+        try{
+            User user = userRepoService.findByEmail(email);
+
+            // 데이터가 있는지 확인
+            Playlist optionalChack =  playListRepoService.findPlaylistByUserAndPlaylistId(user.getId(), playlistId)
+                    .orElseThrow(() -> new IllegalArgumentException("삭제 권한이 없거나 재생목록이 존재하지 않습니다."));
+            System.out.println("optionalChack 값1 : " + optionalChack);
+
+
+            // 삭제하려는 재생목록에 음악이 있으면 음악들 삭제
+            if(!optionalChack.getMusics().isEmpty()) {
+                System.out.println("1");
+                // playlistMusic 삭제
+                playlistMusicRepoService.deleteByPlaylistId(playlistId);
+                System.out.println("2");
+                // music 삭제
+                musicRepoService.deleteByPlaylistId(playlistId);
+                System.out.println("3");
+            }
+
+            // 재생목록 삭제
+            playListRepoService.deleteByPlaylistId(playlistId);
+
+
+//            return DeletePlaylistResponse.success();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalException();
+        }
     }
 
 }

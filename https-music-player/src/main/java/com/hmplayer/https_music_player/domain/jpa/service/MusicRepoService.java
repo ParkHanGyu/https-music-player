@@ -33,4 +33,10 @@ public class MusicRepoService {
 
 
 
+    @Transactional
+    public void deleteByPlaylistId(Long playlistId) {
+        musicRepository.deleteByPlaylistId(playlistId);
+    }
+
+
 }

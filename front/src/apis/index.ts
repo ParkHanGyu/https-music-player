@@ -169,6 +169,25 @@ export const deleteMusic = async (
   return result;
 };
 
+// 재생목록 삭제
+const DELETE_PLAYLIST = (playlistId: bigint | string) =>
+  `${API_DOMAIN}/delete/playlist/${playlistId}`;
+export const deletePlaylist = async (
+  playlistId: bigint | string,
+  accessToken: string
+) => {
+  const result = await axios
+    .delete(DELETE_PLAYLIST(playlistId), authorication(accessToken))
+    .then((response) => {
+      const responseBody: ResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      return errorResponse(error);
+    });
+  return result;
+};
+
 // ===============
 // 노래 복사
 const COPY_MUSIC = (musicId: bigint | string) =>

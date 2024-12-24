@@ -96,7 +96,7 @@ public class MusicserviceImpl implements Musicservice {
         } catch (Exception e) {
         e.printStackTrace();
         throw new InternalException();
-    }
+        }
     }
 
     @Override
