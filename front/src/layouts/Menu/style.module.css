@@ -191,3 +191,80 @@
 .menu-item-action-btn li:first-child::before {
   background-image: url("../../assets/modify-icon-hover.png"); /* 복사 아이콘 */
 }
+
+/* 재생목록 제목 수정 css */
+/* =================================add 추가 팝업 */
+.add-playlist-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* 어두운 반투명 배경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 팝업이 가장 위에 보이도록 */
+}
+
+.add-playlist-popup-content {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 80%;
+  color: #dddddd;
+
+  margin-bottom: 100px;
+}
+
+.add-playlist-popup-content h3 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #f5f5f5;
+}
+
+.add-playlist-popup-top,
+.add-playlist-popup-bottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-playlist-popup-bottom input {
+  width: 19em;
+  border: 1px solid #cccccc;
+  border-radius: 5px; /* 모서리를 둥글게 */
+}
+
+.add-playlist-popup-bottom input:focus {
+  border: 1px solid #cccccc;
+  outline: none; /* 기본 outline 제거 */
+}
+
+.add-playlist-popup-close-btn {
+  cursor: pointer;
+  background-image: url("../../assets/x-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.add-playlist-popup-close-btn:hover {
+  background-image: url("../../assets/x-icon-hover.png");
+}
+
+.add-playlist-popup-add-btn {
+  cursor: pointer;
+  background-image: url("../../assets/plus-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.add-playlist-popup-add-btn:hover {
+  background-image: url("../../assets/plus-icon-hover.png");
+}

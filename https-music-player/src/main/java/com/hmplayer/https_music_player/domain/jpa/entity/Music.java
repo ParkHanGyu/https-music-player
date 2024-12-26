@@ -54,4 +54,10 @@ public class Music {
 
         this.createdAt = new Date();  // 생성 시 현재 날짜로 초기화
     }
+
+    // Getter for musicId
+    public Long getId() {
+        return musicId;
+    }
+
 }

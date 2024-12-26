@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -11,11 +11,16 @@ import {
 import useLoginUserStore from "../../store/login-user.store";
 import { useCookies } from "react-cookie";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import { deletePlaylist, uploadProfileImageRequest } from "../../apis";
+import {
+  deletePlaylist,
+  getPlayListLibraryReqeust,
+  uploadProfileImageRequest,
+} from "../../apis";
 import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 
 const Menu = () => {
   const { playlistId } = useParams();
@@ -23,7 +28,7 @@ const Menu = () => {
 
   const { loginUser, setLoginUser } = useLoginUserStore();
 
-  const { playlistLibrary } = usePlaylistStore();
+  const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
   const navigator = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -152,27 +157,69 @@ const Menu = () => {
     }
   }, [isOpen]);
 
-  const onHandlePlaylistDelete = (playlistId: bigint) => {
-    console.log("playlistId : ", playlistId);
-
-    deletePlaylist(playlistId, cookies.accessToken).then(
-      deletePlaylistResponse
-    );
-
-    // const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
-    // if (isConfirmed) {
-    //   setOpenDropdownIndex(null);
-    //   deleteMusic(musicId, cookies.accessToken).then((responseBody) =>
-    //     deleteMusicResponse(responseBody, musicId)
-    //   );
-    // }
+  // 시작 ================================= 재생목록 삭제
+  const onHandlePlaylistDelete = (deletePlaylistId: bigint) => {
+    const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+    if (isConfirmed) {
+      deletePlaylist(deletePlaylistId, cookies.accessToken).then(
+        (responseBody) => deletePlaylistResponse(responseBody, deletePlaylistId)
+      );
+    }
   };
 
-  const deletePlaylistResponse = (responseBody: ResponseDto | null) => {
+  const deletePlaylistResponse = (
+    responseBody: ResponseDto | null,
+    deletePlaylistId: bigint
+  ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-    console.log("responseBody : ", responseBody);
+
+    // 재생목록 최신화
+    getPlayListLibraryReqeust(cookies.accessToken).then(
+      getPlaylistLibraryResponse
+    );
+
+    if (deletePlaylistId.toString() === playlistId) {
+      navigator(MAIN_PATH());
+    }
+  };
+
+  const getPlaylistLibraryResponse = (
+    responseBody: GetPlaylistResponseDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+    const playListResult = responseBody as GetPlaylistResponseDto;
+    setPlaylistLibrary(playListResult.playListLibrary);
+  };
+
+  // 끝 ================================= 재생목록 삭제
+
+  // 시작 ================================= 재생목록 이름 수정
+  const [modifyPlaylistId, setModifyPlaylistId] = useState(0);
+
+  const [isModifyPlaylistPopupOpen, setIsModifyPlaylistPopupOpen] =
+    useState(false); // 추가 팝업 상태 추가
+
+  const addPlayListInputRef = useRef<HTMLInputElement>(null); // input ref 생성
+
+  //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
+  const toggleModifyPlaylistPopup = () => {
+    alert("재생목록 추가 실행");
+
+    // 필요한것 : 수정 할 재생목록 id, 수정 할 재생목록 name, 쿠키
+    // 1. 클라이언트에서 바꾸려는 name과 기존 name이 일치한지 확인
+    // 2. 확인후 이상 없으면 수정 할 재생목록 id, 수정 할 재생목록 name,
+    //    쿠키를 가지고 api 요청
+    // 3. 응답값 받고 최신화 해주기 (api로 재생목록 다시 불러오기)
+  };
+
+  const onHandlePlaylistModify = (modifyPlaylistId: bigint) => {
+    // setModifyPlaylistId(modifyPlaylistId);
+    setModifyPlaylistId(Number(modifyPlaylistId)); // bigint를 number로 변환
+    setIsModifyPlaylistPopupOpen(true);
   };
 
   return (
@@ -254,7 +301,7 @@ const Menu = () => {
                 >
                   {playlist.title}
 
-                  {/* ========= ==================================*/}
+                  {/* ===========================================*/}
                   {/* btn */}
                   <div
                     className={styles["menu-item-action-btn"]}
@@ -275,8 +322,11 @@ const Menu = () => {
                     {openDropdownIndex === index && isOpen && (
                       <ul ref={ref}>
                         <li
-                          onClick={(event: React.MouseEvent<HTMLLIElement>) => {
-                            event.stopPropagation();
+                          onClick={() => {
+                            // 이름 수정
+                            onHandlePlaylistModify(
+                              playlistLibrary[index].playlistId
+                            ); // 클릭된 음악의 ID를 전달
                           }}
                         >
                           이름수정
@@ -316,6 +366,35 @@ const Menu = () => {
         <div className={styles["main-menu-item5"]} onClick={testValue}>
           TEST
         </div>
+
+        {/* 재생목록 add 화면 */}
+        {isModifyPlaylistPopupOpen && (
+          <div className={styles["add-playlist-popup"]}>
+            <div className={styles["add-playlist-popup-content"]}>
+              <div className={styles["add-playlist-popup-top"]}>
+                <h3>Modify Playlist Name</h3>
+                <div
+                  className={styles["add-playlist-popup-close-btn"]}
+                  onClick={() => setIsModifyPlaylistPopupOpen(false)}
+                ></div>
+              </div>
+
+              <div className={styles["add-playlist-popup-bottom"]}>
+                <input
+                  value={playlistLibrary[modifyPlaylistId - 1].title}
+                  ref={addPlayListInputRef}
+                  type="text"
+                  placeholder="New playlist name"
+                />
+
+                <div
+                  className={styles["add-playlist-popup-add-btn"]}
+                  onClick={toggleModifyPlaylistPopup}
+                ></div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

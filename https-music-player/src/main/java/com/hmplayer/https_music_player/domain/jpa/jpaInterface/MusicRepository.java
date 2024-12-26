@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MusicRepository extends JpaRepository<Music, Long> {
@@ -15,10 +16,9 @@ public interface MusicRepository extends JpaRepository<Music, Long> {
     @Query("DELETE FROM Music m WHERE m.id = :musicId")
     void deleteByMusicId(@Param("musicId") Long musicId);
 
-
     @Modifying
-    @Query("DELETE FROM Music m WHERE m.musicId IN (SELECT pm.music.musicId FROM PlaylistMusic pm WHERE pm.playlist.playlistId = :playlistId)")
-    void deleteByPlaylistId(@Param("playlistId") Long playlistId);
+    @Query("DELETE FROM Music m WHERE m.musicId IN :musicIds")
+    void deleteMusicsByIds(@Param("musicIds") List<Long> musicIds);
 
 }
 

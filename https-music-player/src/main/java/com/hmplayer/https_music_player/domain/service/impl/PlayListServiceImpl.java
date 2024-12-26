@@ -105,28 +105,35 @@ public class PlayListServiceImpl implements PlayListService {
             User user = userRepoService.findByEmail(email);
 
             // 데이터가 있는지 확인
-            Playlist optionalChack =  playListRepoService.findPlaylistByUserAndPlaylistId(user.getId(), playlistId)
+            Playlist optionalCheck =  playListRepoService.findPlaylistByUserAndPlaylistId(user.getId(), playlistId)
                     .orElseThrow(() -> new IllegalArgumentException("삭제 권한이 없거나 재생목록이 존재하지 않습니다."));
-            System.out.println("optionalChack 값1 : " + optionalChack);
+            System.out.println("optionalChack 값1 : " + optionalCheck);
 
 
             // 삭제하려는 재생목록에 음악이 있으면 음악들 삭제
-            if(!optionalChack.getMusics().isEmpty()) {
-                System.out.println("1");
+            if(!optionalCheck.getMusics().isEmpty()) {
+                // 삭제할 musicId 리스트를 먼저 수집
+                List<Long> musicIds = optionalCheck.getMusics().stream()
+                        .map(PlaylistMusic::getMusic)  // PlaylistMusic 객체에서 Music 객체를 가져옴
+                        .map(Music::getId)             // Music 객체의 getId() 호출
+                        .collect(Collectors.toList());
+
+
+                System.out.println("musicIds 값 : "+musicIds);
+
+
                 // playlistMusic 삭제
                 playlistMusicRepoService.deleteByPlaylistId(playlistId);
-                System.out.println("2");
+
                 // music 삭제
-                musicRepoService.deleteByPlaylistId(playlistId);
-                System.out.println("3");
+                musicRepoService.deleteMusicsByIds(musicIds);
             }
 
             // 재생목록 삭제
             playListRepoService.deleteByPlaylistId(playlistId);
 
 
-//            return DeletePlaylistResponse.success();
-            return null;
+            return DeletePlaylistResponse.success();
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalException();

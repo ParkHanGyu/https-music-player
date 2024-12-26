@@ -16,6 +16,7 @@ import PlaylistLibrary from "../PlaylistLibrary";
 import useMediaInfo from "../../hooks/useMediaInfo";
 import LoadingScreen from "../LoadingScreen";
 import { ResponseUtil } from "../../utils";
+import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 
 const MusicInfo = () => {
   const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
@@ -127,13 +128,13 @@ const MusicInfo = () => {
   }, [cookies.accessToken]);
 
   const getPlaylistLibraryResponse = (
-    responseBody: GetPlayListResponseDto | ResponseDto | null
+    responseBody: GetPlaylistResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
 
-    const playListResult = responseBody as GetPlayListResponseDto;
+    const playListResult = responseBody as GetPlaylistResponseDto;
 
     setPlaylistLibrary(playListResult.playListLibrary);
   };

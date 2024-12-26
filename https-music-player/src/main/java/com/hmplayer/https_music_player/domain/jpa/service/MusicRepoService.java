@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -31,12 +32,9 @@ public class MusicRepoService {
         musicRepository.deleteByMusicId(musicId);
     }
 
-
-
     @Transactional
-    public void deleteByPlaylistId(Long playlistId) {
-        musicRepository.deleteByPlaylistId(playlistId);
+    public void deleteMusicsByIds(List<Long> musicIds) {
+        musicRepository.deleteMusicsByIds(musicIds);
     }
-
 
 }
