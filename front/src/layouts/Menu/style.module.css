@@ -122,7 +122,7 @@
   position: relative; /* ul 기준 */
 
   display: none;
-  margin-left: 135px;
+  /* margin-left: 135px; */
   background-image: url("../../assets/more-button.png");
   width: 24.5px;
   height: 24.5px;
@@ -133,6 +133,11 @@
 
 .main-menu-item-li:hover .menu-item-action-btn {
   display: block;
+}
+
+.main-menu-item-li {
+  display: flex;
+  justify-content: space-between;
 }
 
 .menu-item-action-btn:hover {
@@ -194,7 +199,7 @@
 
 /* 재생목록 제목 수정 css */
 /* =================================add 추가 팝업 */
-.add-playlist-popup {
+.modify-playlist-popup {
   position: fixed;
   top: 0;
   left: 0;
@@ -207,9 +212,9 @@
   z-index: 1000; /* 팝업이 가장 위에 보이도록 */
 }
 
-.add-playlist-popup-content {
+.modify-playlist-popup-content {
   background-color: #1e1e1e;
-  padding: 20px;
+  padding: 25px;
   border-radius: 8px;
   width: 300px;
   max-width: 80%;
@@ -218,30 +223,35 @@
   margin-bottom: 100px;
 }
 
-.add-playlist-popup-content h3 {
+.modify-playlist-popup-content h3 {
   margin-top: 0;
   font-size: 1.2em;
   color: #f5f5f5;
 }
 
-.add-playlist-popup-top,
-.add-playlist-popup-bottom {
+.modify-playlist-popup-top,
+.modify-playlist-popup-bottom {
   display: flex;
   justify-content: space-between;
 }
 
-.add-playlist-popup-bottom input {
+.modify-playlist-popup-bottom {
+  align-items: center;
+}
+
+.modify-playlist-popup-bottom input {
   width: 19em;
+  height: 1.5em;
   border: 1px solid #cccccc;
   border-radius: 5px; /* 모서리를 둥글게 */
 }
 
-.add-playlist-popup-bottom input:focus {
+.modify-playlist-popup-bottom input:focus {
   border: 1px solid #cccccc;
   outline: none; /* 기본 outline 제거 */
 }
 
-.add-playlist-popup-close-btn {
+.modify-playlist-popup-close-btn {
   cursor: pointer;
   background-image: url("../../assets/x-icon.png");
   width: 25px;
@@ -251,20 +261,21 @@
   background-repeat: no-repeat;
 }
 
-.add-playlist-popup-close-btn:hover {
+.modify-playlist-popup-close-btn:hover {
   background-image: url("../../assets/x-icon-hover.png");
 }
 
-.add-playlist-popup-add-btn {
+.modify-playlist-popup-btn {
   cursor: pointer;
-  background-image: url("../../assets/plus-icon.png");
-  width: 25px;
-  height: 25px;
+  background-image: url("../../assets/modify-icon.png");
+  width: 20px;
+  height: 20px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  margin-right: 3px;
 }
 
-.add-playlist-popup-add-btn:hover {
-  background-image: url("../../assets/plus-icon-hover.png");
+.modify-playlist-popup-btn:hover {
+  background-image: url("../../assets/modify-icon-hover.png");
 }

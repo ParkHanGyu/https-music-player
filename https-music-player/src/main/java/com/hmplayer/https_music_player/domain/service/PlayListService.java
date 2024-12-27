@@ -2,10 +2,12 @@ package com.hmplayer.https_music_player.domain.service;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
+import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,5 +24,6 @@ public interface PlayListService {
 
     ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(Long playlistId, String email);
 
+    ResponseEntity<? super UpdatePlaylistNameResponse> updatePlaylistName(Long modifyPlaylistId, UpdatePlaylistNameRequest request, String email);
 
 }

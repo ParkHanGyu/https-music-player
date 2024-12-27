@@ -1,10 +1,10 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
-import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
+import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
+import com.hmplayer.https_music_player.domain.dto.response.music.*;
+import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +47,16 @@ public class PlaylistController {
     // 재생목록 삭제
     @DeleteMapping("/delete/playlist/{playlistId}")
     public ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(@PathVariable("playlistId") Long playlistId, @AuthenticationPrincipal String email) {
-        System.out.println("playlistId : " + playlistId);
-        System.out.println("email : " + email);
-
         return playListService.deletePlaylist(playlistId,email);
     }
 
+
+    // 재생목록 이름 수정
+    @PutMapping("/update/playlist/{modifyPlaylistId}")
+    public ResponseEntity<? super UpdatePlaylistNameResponse> updatePlaylistName(@PathVariable("modifyPlaylistId") Long modifyPlaylistId, @RequestBody UpdatePlaylistNameRequest request, @AuthenticationPrincipal String email) {
+        log.info("musicId = {}, request = {}, token = {}", modifyPlaylistId, request, email);
+        return playListService.updatePlaylistName(modifyPlaylistId, request, email);
+    }
 
 
 }

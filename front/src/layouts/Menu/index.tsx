@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import { usePlaylistStore } from "../../store/usePlaylist.store";
 import {
   deletePlaylist,
   getPlayListLibraryReqeust,
+  updatePlaylistNameRequest,
   uploadProfileImageRequest,
 } from "../../apis";
 import GetUserImageResponseDto from "../../apis/response/user/get-user-new-image-url.dto";
@@ -21,6 +22,8 @@ import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
+import Playlist from "../../types/interface/playList.interface";
+import updatePlaylistNameRequestDto from "../../apis/request/update-playlist-name.dto";
 
 const Menu = () => {
   const { playlistId } = useParams();
@@ -45,7 +48,9 @@ const Menu = () => {
 
   const testValue = () => {
     // navigator(TEST_PATH());
-    console.log("playlistLibrary : ", playlistLibrary);
+    console.log(playlistLibrary);
+
+    console.log(playlistLibrary.find((item) => item.title === modifyName));
   };
 
   useEffect(() => {
@@ -198,28 +203,61 @@ const Menu = () => {
   // 끝 ================================= 재생목록 삭제
 
   // 시작 ================================= 재생목록 이름 수정
-  const [modifyPlaylistId, setModifyPlaylistId] = useState(0);
+  const [modifyPlaylistId, setModifyPlaylistId] = useState<bigint>(BigInt(0));
 
   const [isModifyPlaylistPopupOpen, setIsModifyPlaylistPopupOpen] =
     useState(false); // 추가 팝업 상태 추가
 
-  const addPlayListInputRef = useRef<HTMLInputElement>(null); // input ref 생성
-
   //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
   const toggleModifyPlaylistPopup = () => {
-    alert("재생목록 추가 실행");
-
     // 필요한것 : 수정 할 재생목록 id, 수정 할 재생목록 name, 쿠키
     // 1. 클라이언트에서 바꾸려는 name과 기존 name이 일치한지 확인
     // 2. 확인후 이상 없으면 수정 할 재생목록 id, 수정 할 재생목록 name,
     //    쿠키를 가지고 api 요청
     // 3. 응답값 받고 최신화 해주기 (api로 재생목록 다시 불러오기)
+
+    const playlist = playlistLibrary.find((item) => item.title === modifyName);
+    if (playlist && modifyName === playlist.title) {
+      alert("기존 이름과 동일합니다.");
+      return;
+    }
+
+    const requestBody: updatePlaylistNameRequestDto = {
+      modifyName: modifyName,
+    };
+
+    updatePlaylistNameRequest(
+      requestBody,
+      modifyPlaylistId,
+      cookies.accessToken
+    ).then(modifyPlaylistNameResponse);
   };
 
-  const onHandlePlaylistModify = (modifyPlaylistId: bigint) => {
-    // setModifyPlaylistId(modifyPlaylistId);
-    setModifyPlaylistId(Number(modifyPlaylistId)); // bigint를 number로 변환
+  const modifyPlaylistNameResponse = (responseBody: ResponseDto | null) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+
+    // 재생목록 최신화
+    getPlayListLibraryReqeust(cookies.accessToken).then(
+      getPlaylistLibraryResponse
+    );
+
+    setIsModifyPlaylistPopupOpen(false);
+  };
+
+  const onHandlePlaylistModify = (targetPlaylist: Playlist) => {
+    setModifyName(targetPlaylist.title);
+    setModifyPlaylistId(targetPlaylist.playlistId);
     setIsModifyPlaylistPopupOpen(true);
+  };
+
+  //      state: 변경할 재생목록 name 상태        //
+  const [modifyName, setModifyName] = useState<string>("");
+  //      event handler: 재생목록 name 변경 이벤트 처리 함수      //
+  const onModifyChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setModifyName(value);
   };
 
   return (
@@ -324,9 +362,7 @@ const Menu = () => {
                         <li
                           onClick={() => {
                             // 이름 수정
-                            onHandlePlaylistModify(
-                              playlistLibrary[index].playlistId
-                            ); // 클릭된 음악의 ID를 전달
+                            onHandlePlaylistModify(playlistLibrary[index]); // 클릭된 음악의 ID를 전달
                           }}
                         >
                           이름수정
@@ -369,26 +405,25 @@ const Menu = () => {
 
         {/* 재생목록 add 화면 */}
         {isModifyPlaylistPopupOpen && (
-          <div className={styles["add-playlist-popup"]}>
-            <div className={styles["add-playlist-popup-content"]}>
-              <div className={styles["add-playlist-popup-top"]}>
+          <div className={styles["modify-playlist-popup"]}>
+            <div className={styles["modify-playlist-popup-content"]}>
+              <div className={styles["modify-playlist-popup-top"]}>
                 <h3>Modify Playlist Name</h3>
                 <div
-                  className={styles["add-playlist-popup-close-btn"]}
+                  className={styles["modify-playlist-popup-close-btn"]}
                   onClick={() => setIsModifyPlaylistPopupOpen(false)}
                 ></div>
               </div>
 
-              <div className={styles["add-playlist-popup-bottom"]}>
+              <div className={styles["modify-playlist-popup-bottom"]}>
                 <input
-                  value={playlistLibrary[modifyPlaylistId - 1].title}
-                  ref={addPlayListInputRef}
+                  value={modifyName}
                   type="text"
-                  placeholder="New playlist name"
+                  onChange={onModifyChangeHandler}
                 />
 
                 <div
-                  className={styles["add-playlist-popup-add-btn"]}
+                  className={styles["modify-playlist-popup-btn"]}
                   onClick={toggleModifyPlaylistPopup}
                 ></div>
               </div>

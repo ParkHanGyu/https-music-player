@@ -3,10 +3,12 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.PlayListDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
+import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeletePlaylistResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.GetMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
+import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
@@ -20,9 +22,12 @@ import com.hmplayer.https_music_player.domain.service.PlayListService;
 import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -138,6 +143,29 @@ public class PlayListServiceImpl implements PlayListService {
             e.printStackTrace();
             throw new InternalException();
         }
+    }
+
+
+
+    @Override
+    public ResponseEntity<? super UpdatePlaylistNameResponse> updatePlaylistName(Long modifyPlaylistId, UpdatePlaylistNameRequest request, String email) {
+        // 1. modifyPlaylistId로 Playlist 조회
+        Optional<Playlist> optionalPlaylist = playListRepoService.findById(modifyPlaylistId);
+
+        if (optionalPlaylist.isEmpty()) {
+            // 플레이리스트가 존재하지 않으면 404 Not Found 응답
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Playlist not found");
+        }
+
+        // 2. Playlist가 존재하면 Playlist의 이름을 수정
+        Playlist playlist = optionalPlaylist.get();
+        playlist.setPlaylistName(request.getModifyName()); // modifyName으로 업데이트
+
+        // 3. 수정된 Playlist 저장
+        playListRepoService.save(playlist);
+
+        // 4. 성공적으로 업데이트한 후 200 OK 응답
+        return UpdatePlaylistNameResponse.success();
     }
 
 }

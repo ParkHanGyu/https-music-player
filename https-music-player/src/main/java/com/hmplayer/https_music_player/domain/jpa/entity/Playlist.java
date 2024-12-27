@@ -39,4 +39,8 @@ public class Playlist extends BaseEntity {
         this.user = user;
         this.title = playListName;
     }
+
+    public void setPlaylistName(String modifyName) {
+        this.title = modifyName;
+    }
 }
