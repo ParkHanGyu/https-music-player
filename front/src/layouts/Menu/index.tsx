@@ -47,10 +47,7 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    // navigator(TEST_PATH());
-    console.log(playlistLibrary);
-
-    console.log(playlistLibrary.find((item) => item.title === modifyName));
+    navigator(TEST_PATH());
   };
 
   useEffect(() => {

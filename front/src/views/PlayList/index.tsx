@@ -222,6 +222,7 @@ const PlayList = () => {
               <div className={styles["music-column-action-menu"]}></div>
             </div>
 
+            {/* 노래가 없을경우 */}
             {Array.isArray(musics) && musics.length === 0 && (
               <div
                 className={styles["music-item-undefined"]}
@@ -230,90 +231,91 @@ const PlayList = () => {
                 {"재생목록이 비어있습니다. 음악을 추가해주세요."}
               </div>
             )}
+            <div className={styles["main-music-container"]}>
+              {musics.map((music, index) => (
+                <div
+                  key={index}
+                  className={
+                    nowPlayingPlaylistID === playlistId &&
+                    playBarUrl &&
+                    music.url.includes(playBarUrl)
+                      ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
+                      : styles["main-music-data-info-box"]
+                  }
+                  style={{
+                    cursor: playlistPopupOpen ? "" : "pointer",
+                  }}
+                  onClick={() => onPlayMusic(index)}
+                >
+                  <div className={styles["music-info-number"]}>{index + 1}</div>
 
-            {musics.map((music, index) => (
-              <div
-                key={index}
-                className={
-                  nowPlayingPlaylistID === playlistId &&
-                  playBarUrl &&
-                  music.url.includes(playBarUrl)
-                    ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
-                    : styles["main-music-data-info-box"]
-                }
-                style={{
-                  cursor: playlistPopupOpen ? "" : "pointer",
-                }}
-                onClick={() => onPlayMusic(index)}
-              >
-                <div className={styles["music-info-number"]}>{index + 1}</div>
+                  <div className={styles["music-info-image-title-box"]}>
+                    <div
+                      className={styles["music-info-image"]}
+                      style={{
+                        backgroundImage: `url(${music.imageUrl})`,
+                      }}
+                    ></div>
 
-                <div className={styles["music-info-image-title-box"]}>
+                    {/* 수정을 위해 title div를 input으로 바꿔주기 */}
+                    <div
+                      className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
+                    >
+                      {music.title}
+                    </div>
+                  </div>
+
+                  {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
+                  <div className={styles["music-info-artist"]}>
+                    {music.author}
+                  </div>
+                  <div className={styles["music-info-createdAt"]}>
+                    {music.createdAt.split("T")[0]}
+                  </div>
+                  <div className={styles["music-info-duration"]}>
+                    {formatTime(music.duration)}
+                  </div>
+
+                  {/* ================= 더보기 btn ================ */}
                   <div
-                    className={styles["music-info-image"]}
-                    style={{
-                      backgroundImage: `url(${music.imageUrl})`,
+                    className={styles["music-info-action-btn"]}
+                    onClick={(
+                      event: React.MouseEvent<HTMLDivElement, MouseEvent>
+                    ) => {
+                      event.stopPropagation();
+                      onMusicAction(index); // 클릭된 음악의 인덱스를 전달
                     }}
-                  ></div>
-
-                  {/* 수정을 위해 title div를 input으로 바꿔주기 */}
-                  <div
-                    className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
+                    style={{
+                      display:
+                        openDropdownIndex === index && isOpen ? "block" : "",
+                    }}
                   >
-                    {music.title}
+                    {/* 더보기 드롭다운 */}
+                    {/* set해준 값과 index가 일치하면 보여줌  */}
+                    {openDropdownIndex === index && isOpen && (
+                      <ul ref={ref}>
+                        <li
+                          onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                            event.stopPropagation();
+                            onHandleMusicCopy(index); // 클릭된 음악의 인덱스를 전달
+                          }}
+                        >
+                          음악복사
+                        </li>
+                        <li
+                          onClick={() => {
+                            // 삭제
+                            onHandleMusicDelete(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
+                          }}
+                        >
+                          삭제
+                        </li>
+                      </ul>
+                    )}
                   </div>
                 </div>
-
-                {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
-                <div className={styles["music-info-artist"]}>
-                  {music.author}
-                </div>
-                <div className={styles["music-info-createdAt"]}>
-                  {music.createdAt.split("T")[0]}
-                </div>
-                <div className={styles["music-info-duration"]}>
-                  {formatTime(music.duration)}
-                </div>
-
-                {/* ================= 더보기 btn ================ */}
-                <div
-                  className={styles["music-info-action-btn"]}
-                  onClick={(
-                    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-                  ) => {
-                    event.stopPropagation();
-                    onMusicAction(index); // 클릭된 음악의 인덱스를 전달
-                  }}
-                  style={{
-                    display:
-                      openDropdownIndex === index && isOpen ? "block" : "",
-                  }}
-                >
-                  {/* 더보기 드롭다운 */}
-                  {/* set해준 값과 index가 일치하면 보여줌  */}
-                  {openDropdownIndex === index && isOpen && (
-                    <ul ref={ref}>
-                      <li
-                        onClick={(event: React.MouseEvent<HTMLLIElement>) => {
-                          event.stopPropagation();
-                          onHandleMusicCopy(index); // 클릭된 음악의 인덱스를 전달
-                        }}
-                      >
-                        음악복사
-                      </li>
-                      <li
-                        onClick={() => {
-                          // 삭제
-                          onHandleMusicDelete(musics[index].musicId); // 클릭된 음악의 인덱스를 전달
-                        }}
-                      >
-                        삭제
-                      </li>
-                    </ul>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {playlistPopupOpen && (
               <PlaylistLibrary

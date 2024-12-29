@@ -44,8 +44,8 @@
 
 .main-right {
   width: 100%;
-  /* height: 100%;
-  overflow-y: auto;
+  /* height: 100%; */
+  /* overflow-y: auto;
   overflow-x: hidden; */
 }
 
@@ -96,7 +96,7 @@
   position: relative; /* ul 기준 */
 
   display: none;
-  margin-left: 120px;
+  margin-left: 100px;
   background-image: url("../../assets/more-button.png");
   width: 25px;
   height: 25px;
@@ -255,4 +255,39 @@
   color: #8c8c8c;
   font-size: 17px;
   cursor: pointer;
+}
+
+/* 스크롤바를 위해 추가한 컨테이너 */
+
+.main-music-container {
+  color: #fff;
+  padding: 0 0.5em;
+  /* max-width: 360px; */
+  height: 770px;
+  overflow: auto;
+}
+.main-music-container::-webkit-scrollbar {
+  width: 8px;
+}
+/* 스크롤바 배경 */
+.main-music-container::-webkit-scrollbar-track {
+  background-color: rgb(11, 11, 11);
+}
+.main-music-container::-webkit-scrollbar-thumb {
+  background-color: rgb(33, 33, 33);
+}
+.main-music-container::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* hover 효과 */
+.main-music-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(44, 44, 44);
+  transition: all 0.2s; /* 작동 안 됨 */
+}
+
+/* 코너에 라운드 효과 */
+.main-music-container::-webkit-scrollbar-track,
+.main-music-container::-webkit-scrollbar-thumb {
+  border-radius: 5px;
 }
