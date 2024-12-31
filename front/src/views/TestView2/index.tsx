@@ -21,11 +21,14 @@ const TestView2 = () => {
 
   // 드래그 시작
   const handleDragStart = (index: number) => {
+    console.log("드래그 시작");
     setDraggedIndex(index);
   };
 
   // 드래그 중
   const handleDragEnter = (index: number) => {
+    console.log("드래그 중");
+
     setHoveredIndex(index);
 
     if (draggedIndex !== null && draggedIndex !== index) {
@@ -40,9 +43,13 @@ const TestView2 = () => {
 
   // 드래그 종료
   const handleDragEnd = () => {
+    console.log("드래그 종료");
+
     setDraggedIndex(null);
     setHoveredIndex(null);
   };
+
+  const testBtn = () => {};
 
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
@@ -83,6 +90,8 @@ const TestView2 = () => {
             </div>
           </div>
         ))}
+
+        <div onClick={testBtn}>test btn</div>
       </div>
     </div>
   );

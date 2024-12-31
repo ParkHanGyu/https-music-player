@@ -11,8 +11,6 @@ npm install react-cookie
 
 <!-- playlist 드래그 기능에 사용 -->
 
-npm install react-beautiful-dnd
-
 ## icon color
 
 #5f5f5f

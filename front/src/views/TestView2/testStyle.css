@@ -1,3 +1,19 @@
-.dragging {
-  color: transparent; /* 텍스트 숨기기 */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.item:active {
+  background-color: #dcdcdc;
 }
