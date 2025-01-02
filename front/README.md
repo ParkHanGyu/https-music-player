@@ -9,8 +9,6 @@ npm install zustand
 npm install axios
 npm install react-cookie
 
-<!-- playlist 드래그 기능에 사용 -->
-
 ## icon color
 
 #5f5f5f

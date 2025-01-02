@@ -24,8 +24,12 @@ public class PlaylistMusic {
     @JoinColumn(name = "music_id", nullable = false)
     private Music music;
 
-    public PlaylistMusic(Playlist playlist, Music music) {
+    @Column(name = "order_value", nullable = false)
+    private int orderValue; // 순서 필드 추가
+
+    public PlaylistMusic(Playlist playlist, Music music, int orderValue) {
         this.playlist = playlist;
         this.music = music;
+        this.orderValue = orderValue; // 생성 시 순서 지정
     }
 }

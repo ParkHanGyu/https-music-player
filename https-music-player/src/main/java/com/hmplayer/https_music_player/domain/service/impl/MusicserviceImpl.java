@@ -70,7 +70,17 @@ public class MusicserviceImpl implements Musicservice {
         Playlist playlist = optionalPlaylist.get();
 
         Music addMusicInfo = new Music(youtube, infoDuration);
-        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo);
+
+//
+        // playlist.getMusics()에서 현재 최대 order 값 가져오기
+        int maxOrder = playlist.getMusics()
+                .stream()
+                .mapToInt(PlaylistMusic::getOrderValue)
+                .max()
+                .orElse(-1);
+        System.out.println("maxOrder 값 : " + maxOrder);
+//
+        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo, maxOrder + 1);
 
         addMusicInfo.setPlaylists(Collections.singletonList(playlistMusic));
 
