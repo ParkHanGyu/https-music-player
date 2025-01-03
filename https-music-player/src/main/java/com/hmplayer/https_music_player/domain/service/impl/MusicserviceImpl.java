@@ -77,10 +77,12 @@ public class MusicserviceImpl implements Musicservice {
                 .stream()
                 .mapToInt(PlaylistMusic::getOrderValue)
                 .max()
-                .orElse(-1);
+                .orElse(0);
         System.out.println("maxOrder 값 : " + maxOrder);
+
+        int newOrderValue = maxOrder + 10;
 //
-        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo, maxOrder + 1);
+        PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo, newOrderValue);
 
         addMusicInfo.setPlaylists(Collections.singletonList(playlistMusic));
 
