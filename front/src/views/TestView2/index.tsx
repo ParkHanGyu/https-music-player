@@ -47,6 +47,7 @@ const TestView2 = () => {
 
     setDraggedIndex(null);
     setHoveredIndex(null);
+    console.log("Target Position:", hoveredIndex);
   };
 
   const testBtn = () => {};
@@ -54,34 +55,22 @@ const TestView2 = () => {
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
       <h2>Playlist</h2>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "10px",
-        }}
-      >
+      <div>
         {playlist.map((item, index) => (
           <div
+            className="testDiv1"
             key={item.id}
             draggable
             onDragStart={() => handleDragStart(index)}
             onDragEnter={() => handleDragEnter(index)}
             onDragEnd={handleDragEnd}
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "10px",
-              margin: "5px 0",
               backgroundColor:
                 draggedIndex === index
                   ? "rgb(0, 0, 0)" // 드래그 중 배경색
                   : hoveredIndex !== null && hoveredIndex === index // hoveredIndex가 null이 아닌 경우만 비교
                   ? "#a71919" // 드래그 중인 아이템이 다른 아이템 위로 들어갔을 때 배경색
                   : "#fff", // 기본 배경색
-              borderRadius: "5px",
-              transition: "all 0.2s ease", // 부드러운 효과
             }}
           >
             <div>

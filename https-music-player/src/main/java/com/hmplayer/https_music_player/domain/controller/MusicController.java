@@ -1,9 +1,12 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
+import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
 import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.Musicservice;
 import com.hmplayer.https_music_player.domain.service.PlayListService;
@@ -38,6 +41,13 @@ public class MusicController {
     public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String token) {
         log.info("musicId = {}, token = {}", musicId, token);
         return musicservice.copyMusic(musicId,token);
+    }
+
+    @PutMapping("/update/order/playlist/{playlistId}")
+    public ResponseEntity<?> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {
+        log.info("playlistId = {}, request = {}, token = {}", playlistId, request, email);
+//        return playListService.updatePlaylistName(modifyPlaylistId, request, email);
+        return null;
     }
 
 

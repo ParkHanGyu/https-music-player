@@ -9,6 +9,7 @@ import GetUserResponseDto from "./response/user/get-user-info-response.dto";
 import CreatePlayListRequestDto from "./request/create-play-list-request.dto";
 import GetUserImageResponseDto from "./response/user/get-user-new-image-url.dto";
 import updatePlaylistNameRequestDto from "./request/update-playlist-name.dto";
+import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
 
 const DOMAIN = "http://localhost:8081";
 const API_DOMAIN = `${DOMAIN}/api`;
@@ -242,7 +243,7 @@ export const uploadProfileImageRequest = async (
   return result;
 };
 
-// 재생목록
+// 재생목록 이름 변경
 const UPDATE_PLAYLIST_NAME_URL = (modifyPlaylistId: bigint | string) =>
   `${API_DOMAIN}/update/playlist/${modifyPlaylistId}`;
 export const updatePlaylistNameRequest = async (
@@ -253,6 +254,33 @@ export const updatePlaylistNameRequest = async (
   const result = await axios
     .put(
       UPDATE_PLAYLIST_NAME_URL(modifyPlaylistId),
+      requestBody,
+      authorication(accessToken)
+    )
+    .then((response) => {
+      const responseBody = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 음악 순서 변경
+
+const UPDATE_PLAYLIST_ORDER_URL = (playlistId: string | bigint) =>
+  `${API_DOMAIN}/update/order/playlist/${playlistId}`;
+export const playlistOrderReqeust = async (
+  playlistId: string | bigint,
+  requestBody: updatePlaylistOrderRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .put(
+      UPDATE_PLAYLIST_ORDER_URL(playlistId),
       requestBody,
       authorication(accessToken)
     )

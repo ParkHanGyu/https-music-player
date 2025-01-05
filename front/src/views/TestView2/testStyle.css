@@ -1,19 +1,9 @@
-.list-container {
+.testDiv1 {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  background-color: #f0f0f0;
+  align-items: center;
   padding: 10px;
-  border: 1px solid #ccc;
+  margin: 5px 0px;
   border-radius: 5px;
-}
-
-.item:active {
-  background-color: #dcdcdc;
+  transition: all 0.2s ease;
 }

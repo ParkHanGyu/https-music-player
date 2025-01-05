@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
-import { deleteMusic, getPlaylistMusicReqeust } from "../../apis";
+import {
+  deleteMusic,
+  getPlaylistMusicReqeust,
+  playlistOrderReqeust,
+} from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useNavigate, useParams } from "react-router-dom";
 import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
@@ -15,6 +19,7 @@ import { usePlaylistStore } from "../../store/usePlaylist.store";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 import useMediaInfo from "../../hooks/useMediaInfo";
 import { ResponseUtil } from "../../utils";
+import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-order.dto";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -199,6 +204,52 @@ const PlayList = () => {
     navigator(MAIN_PATH());
   };
 
+  // =================================== 재생목록 순서 드래그
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  // 드래그 시작
+  const handleDragStart = (index: number) => {
+    console.log("드래그 시작");
+    setDraggedIndex(index);
+  };
+
+  // 드래그 중
+  const handleDragEnter = (index: number) => {
+    console.log("드래그 중");
+
+    setHoveredIndex(index);
+
+    if (draggedIndex !== null && draggedIndex !== index) {
+      const updatedPlaylist = [...musics];
+      const [draggedItem] = updatedPlaylist.splice(draggedIndex, 1);
+      updatedPlaylist.splice(index, 0, draggedItem);
+
+      setMusics(updatedPlaylist);
+      setDraggedIndex(index);
+    }
+  };
+
+  // 드래그 종료
+  const handleDragEnd = (musicId: bigint) => {
+    console.log("드래그 종료");
+
+    setDraggedIndex(null);
+    setHoveredIndex(null);
+    console.log("Target Position:", hoveredIndex);
+
+    const requestBody: updatePlaylistOrderRequestDto = {
+      // 몇번쨰로 이동할지
+      hoveredIndex: hoveredIndex,
+      // 이동할 음악 ID
+      musicId: musicId,
+    };
+
+    if (playlistId) {
+      playlistOrderReqeust(playlistId, requestBody, cookies.accessToken);
+    }
+    // .then(playlistOrderResponse);
+  };
+
   // 로딩 중 표시
   if (isLoading) {
     return (
@@ -248,6 +299,10 @@ const PlayList = () => {
                       cursor: playlistPopupOpen ? "" : "pointer",
                     }}
                     onClick={() => onPlayMusic(index)}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragEnter={() => handleDragEnter(index)}
+                    onDragEnd={() => handleDragEnd(music.musicId)}
                   >
                     <div className={styles["music-info-number"]}>
                       {index + 1}
