@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Long> {
@@ -38,4 +39,7 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
     @Modifying
     @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.playlistId = :playlistId")
     void deleteByPlaylistId(@Param("playlistId") Long playlistId);
+
+    @Query("SELECT pm FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId ORDER BY pm.orderValue")
+    List<PlaylistMusic> findByPlaylistIdOrderByOrderValue(@Param("playlistId") Long playlistId);
 }

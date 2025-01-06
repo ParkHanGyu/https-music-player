@@ -43,11 +43,11 @@ public class MusicController {
         return musicservice.copyMusic(musicId,token);
     }
 
+    // 재생목록 순서 변경
     @PutMapping("/update/order/playlist/{playlistId}")
     public ResponseEntity<?> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {
         log.info("playlistId = {}, request = {}, token = {}", playlistId, request, email);
-//        return playListService.updatePlaylistName(modifyPlaylistId, request, email);
-        return null;
+        return musicservice.updatePlaylistOrder(playlistId, request, email);
     }
 
 

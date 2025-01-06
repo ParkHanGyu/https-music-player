@@ -51,7 +51,7 @@ public class PlaylistController {
     }
 
 
-    // 재생목록 순서 변경
+    // 재생목록 이름 변경
     @PutMapping("/update/playlist/{modifyPlaylistId}")
     public ResponseEntity<? super UpdatePlaylistNameResponse> updatePlaylistName(@PathVariable("modifyPlaylistId") Long modifyPlaylistId, @RequestBody UpdatePlaylistNameRequest request, @AuthenticationPrincipal String email) {
         log.info("musicId = {}, request = {}, token = {}", modifyPlaylistId, request, email);

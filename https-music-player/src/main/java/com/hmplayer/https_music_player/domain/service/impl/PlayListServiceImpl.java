@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,6 +92,8 @@ public class PlayListServiceImpl implements PlayListService {
 
             musicsData = playlistAndMusics.getMusics()
                     .stream()
+                    // OrderValue 기준으로 정렬해서 list 만들어줌
+                    .sorted(Comparator.comparing(PlaylistMusic::getOrderValue))
                     .map(PlaylistMusic::getMusic)
                     .map(MusicDto::new) // 명시적으로 생성자 호출
                     .toList();

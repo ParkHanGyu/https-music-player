@@ -32,4 +32,6 @@ public class PlaylistMusic {
         this.music = music;
         this.orderValue = orderValue; // 생성 시 순서 지정
     }
+
+
 }

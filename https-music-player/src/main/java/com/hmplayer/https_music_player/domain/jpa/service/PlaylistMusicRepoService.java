@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -78,5 +79,13 @@ public class PlaylistMusicRepoService {
         playlistMusicRepository.deleteByPlaylistId(playlistId);
         log.info("db에서 쿼리에 사용할 데이터 : playlistId = {}", playlistId);
     }
+
+    @Transactional
+    public List<PlaylistMusic> findByPlaylistIdOrderByOrderValue(Long playlistId) {
+        return playlistMusicRepository.findByPlaylistIdOrderByOrderValue(playlistId);
+    }
+
+
+
 
 }
