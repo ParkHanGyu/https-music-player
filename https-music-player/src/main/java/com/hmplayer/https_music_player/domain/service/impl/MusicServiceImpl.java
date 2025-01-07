@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -131,26 +132,44 @@ public class MusicServiceImpl implements Musicservice {
         List<PlaylistMusic> playlistMusics = playlistMusicRepoService.findByPlaylistIdOrderByOrderValue(playlistId);
 
 //        System.out.println("playlistMusics : " + playlistMusics.get(1));
-//        log.info("playlistMusics: {}", playlistMusics);
+        log.info("playlistMusics 값 : {}", playlistMusics);
         int hoveredIndex = request.getHoveredIndex();
+        int newOrderValue;
 
+        // 이동 위치가 첫번쨰 노래일 경우
         if (hoveredIndex == 0) {
             System.out.println("리스트의 맨 앞에 삽입할 경우");
             // 첫번쨰값 / 2 해서 나오는 값 newOrderValue에 넣어주기
 
+            // 이전 노래의 orderValue값
+            int firstOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            newOrderValue =  (firstOrderValue + 0) / 2;
+            // 근데 계속 2로 나누다보면 값이 0으로 고정됨. 이럴때 재정렬 필요
+
+            System.out.println("newOrderValue : " + newOrderValue);
+
+
+
+        // 이동 위치가 맨끝인 경우
         } else if (hoveredIndex + 1 >= playlistMusics.size()) {
             System.out.println("리스트의 맨 뒤에 삽입할 경우");
             // 이전값 + 10 해서 나오는 값 newOrderValue에 넣어주기
 //            return playlistMusics.get(playlistMusics.size() - 1).getOrderValue() + 10;
+            int lastOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            newOrderValue =  lastOrderValue + 10;
+
+            System.out.println("newOrderValue : " + newOrderValue);
+
 
         } else {
+            // 얘도 하다보면 재정렬 필요
             // 이전/다음 orderValue의 중간값 계산
             // 이전 노래의 orderValue값
             int previousOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
             // 다음 노래의 orderValue값
             int nextOrderValue = playlistMusics.get(hoveredIndex + 1).getOrderValue();
             // (뒤 + 앞) / 2
-            int newOrderValue =  (previousOrderValue + nextOrderValue) / 2;
+            newOrderValue =  (previousOrderValue + nextOrderValue) / 2;
 
             System.out.println("이전 노래 정보!!!!");
             log.info("OrderValue = {}, 노래 정보 = {}", previousOrderValue,playlistMusics.get(hoveredIndex).getMusic());
@@ -158,12 +177,28 @@ public class MusicServiceImpl implements Musicservice {
             System.out.println("다음 노래 정보!!!!");
             log.info("OrderValue = {}, 노래 정보 = {}", nextOrderValue,playlistMusics.get(hoveredIndex+1).getMusic());
 
-
-//            System.out.println(playlistMusics.get(hoveredIndex).getMusic());
-//            System.out.println("previousOrderValue : " + previousOrderValue);
             System.out.println("newOrderValue : " + newOrderValue);
-
         }
+
+        System.out.println("최종 newOrderValue 값 : " + newOrderValue);
+
+
+        System.out.println("request.getMusicId() 값 : " + request.getMusicId());
+
+        int targetIndex = IntStream.range(0, playlistMusics.size())
+                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // 조건: musicId가 1인지 확인
+                .findFirst()
+                .orElse(-1); // 조건을 만족하는 데이터가 없을 경우 -1 반환
+
+        if (targetIndex == -1) {
+            return ResponseEntity.badRequest().body("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
+        }
+
+        log.info("타겟인 음악의 musicId랑 일치한 index : {}, 그 index의 노래 데이터 : {}", targetIndex, playlistMusics.get(targetIndex));
+
+
+        playlistMusics.get(targetIndex).setOrderValue(newOrderValue);
+        playlistMusicRepoService.save(playlistMusics.get(targetIndex));
 
 
 

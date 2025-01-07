@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@ToString(exclude = {"playlist", "music"}) // Lombok 사용
 @Table(name = "playlist_music")
 public class PlaylistMusic {
 
@@ -33,5 +35,9 @@ public class PlaylistMusic {
         this.orderValue = orderValue; // 생성 시 순서 지정
     }
 
+
+    public Long getMusicId() {
+        return (music != null) ? music.getId() : null;
+    }
 
 }

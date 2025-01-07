@@ -207,10 +207,17 @@ const PlayList = () => {
   // =================================== 재생목록 순서 드래그
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [existingHoveredIndex, setExistingHoveredIndex] = useState<
+    number | null
+  >(null);
+  const [targetMusicId, setTargetMusicId] = useState<bigint | null>(null);
+
   // 드래그 시작
   const handleDragStart = (index: number) => {
     console.log("드래그 시작");
     setDraggedIndex(index);
+    setExistingHoveredIndex(index);
+    setTargetMusicId(musics[index].musicId);
   };
 
   // 드래그 중
@@ -230,24 +237,34 @@ const PlayList = () => {
   };
 
   // 드래그 종료
-  const handleDragEnd = (musicId: bigint) => {
+  const handleDragEnd = () => {
     console.log("드래그 종료");
 
-    setDraggedIndex(null);
-    setHoveredIndex(null);
-    console.log("Target Position:", hoveredIndex);
+    console.log("이동할 위치 Position : ", hoveredIndex);
+    console.log("기존 Position 값 :", existingHoveredIndex);
+    console.log("위치를 변경하고 싶은 노래의 testIndex 값 :", targetMusicId);
+
+    // 변한게 없으면 retrun
+    if (hoveredIndex === existingHoveredIndex) {
+      console.log("기존 값과 같기 때문에 api 실행하지 않고 return");
+      return;
+    }
 
     const requestBody: updatePlaylistOrderRequestDto = {
       // 몇번쨰로 이동할지
       hoveredIndex: hoveredIndex,
       // 이동할 음악 ID
-      musicId: musicId,
+      musicId: targetMusicId,
     };
 
     if (playlistId) {
+      console.log(requestBody);
       playlistOrderReqeust(playlistId, requestBody, cookies.accessToken);
     }
     // .then(playlistOrderResponse);
+
+    setDraggedIndex(null);
+    setHoveredIndex(null);
   };
 
   // 로딩 중 표시
@@ -302,7 +319,7 @@ const PlayList = () => {
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragEnter={() => handleDragEnter(index)}
-                    onDragEnd={() => handleDragEnd(music.musicId)}
+                    onDragEnd={() => handleDragEnd()}
                   >
                     <div className={styles["music-info-number"]}>
                       {index + 1}

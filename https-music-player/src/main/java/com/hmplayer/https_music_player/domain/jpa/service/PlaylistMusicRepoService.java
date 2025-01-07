@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.jpa.service;
 
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
+import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlaylistMusicRepository;
@@ -85,7 +86,11 @@ public class PlaylistMusicRepoService {
         return playlistMusicRepository.findByPlaylistIdOrderByOrderValue(playlistId);
     }
 
-
-
-
+    @Transactional
+    public void save(PlaylistMusic playlistMusic) {
+        playlistMusicRepository.save(playlistMusic);
+        log.info("저장된 데이터: getMusicId = {}, getPlaylist = {}, getId = {}, getMusic = {}, getOrderValue = {}",playlistMusic.getMusicId(),
+                playlistMusic.getPlaylist(),playlistMusic.getId(),
+                playlistMusic.getMusic(),playlistMusic.getOrderValue());
+    }
 }
