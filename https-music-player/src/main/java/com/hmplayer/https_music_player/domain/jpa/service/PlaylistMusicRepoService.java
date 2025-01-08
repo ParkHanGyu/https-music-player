@@ -93,4 +93,9 @@ public class PlaylistMusicRepoService {
                 playlistMusic.getPlaylist(),playlistMusic.getId(),
                 playlistMusic.getMusic(),playlistMusic.getOrderValue());
     }
+
+    @Transactional
+    public void saveAll(List<PlaylistMusic> playlistMusics) {
+        playlistMusicRepository.saveAll(playlistMusics);
+    }
 }

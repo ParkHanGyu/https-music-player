@@ -26,8 +26,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -131,7 +133,6 @@ public class MusicServiceImpl implements Musicservice {
         // 1. DB에서 해당 playlistId와 관련된 orderValue 리스트를 가져옴
         List<PlaylistMusic> playlistMusics = playlistMusicRepoService.findByPlaylistIdOrderByOrderValue(playlistId);
 
-//        System.out.println("playlistMusics : " + playlistMusics.get(1));
         log.info("playlistMusics 값 : {}", playlistMusics);
         int hoveredIndex = request.getHoveredIndex();
         int newOrderValue;
@@ -146,9 +147,6 @@ public class MusicServiceImpl implements Musicservice {
             newOrderValue =  (firstOrderValue + 0) / 2;
             // 근데 계속 2로 나누다보면 값이 0으로 고정됨. 이럴때 재정렬 필요
 
-            System.out.println("newOrderValue : " + newOrderValue);
-
-
 
         // 이동 위치가 맨끝인 경우
         } else if (hoveredIndex + 1 >= playlistMusics.size()) {
@@ -158,53 +156,82 @@ public class MusicServiceImpl implements Musicservice {
             int lastOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
             newOrderValue =  lastOrderValue + 10;
 
-            System.out.println("newOrderValue : " + newOrderValue);
-
-
         } else {
-            // 얘도 하다보면 재정렬 필요
-            // 이전/다음 orderValue의 중간값 계산
+            System.out.println("음악과 음악 사이로 순서를 바꿀 경우");
+            // 위에서 아래로 이동할경우
+
+//            if() {
+//                // 이전 노래의 orderValue값
+//                int previousOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+//
+//                // 다음 노래의 orderValue값
+//                int nextOrderValue = playlistMusics.get(hoveredIndex + 1).getOrderValue();
+//
+//            }
+
+            // 아래에서 위로 이동할경우
+
             // 이전 노래의 orderValue값
-            int previousOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            int previousOrderValue = playlistMusics.get(hoveredIndex - 1).getOrderValue();
+
             // 다음 노래의 orderValue값
-            int nextOrderValue = playlistMusics.get(hoveredIndex + 1).getOrderValue();
+            int nextOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
             // (뒤 + 앞) / 2
-            newOrderValue =  (previousOrderValue + nextOrderValue) / 2;
+            log.info("previousOrderValue : {}, nextOrderValue: {}",previousOrderValue,nextOrderValue);
 
-            System.out.println("이전 노래 정보!!!!");
-            log.info("OrderValue = {}, 노래 정보 = {}", previousOrderValue,playlistMusics.get(hoveredIndex).getMusic());
-
-            System.out.println("다음 노래 정보!!!!");
-            log.info("OrderValue = {}, 노래 정보 = {}", nextOrderValue,playlistMusics.get(hoveredIndex+1).getMusic());
-
-            System.out.println("newOrderValue : " + newOrderValue);
+            newOrderValue = (previousOrderValue + nextOrderValue) / 2;
         }
-
         System.out.println("최종 newOrderValue 값 : " + newOrderValue);
 
-
-        System.out.println("request.getMusicId() 값 : " + request.getMusicId());
-
         int targetIndex = IntStream.range(0, playlistMusics.size())
-                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // 조건: musicId가 1인지 확인
+                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // 조건: musicId가 request.getMusicId()인지 확인
                 .findFirst()
                 .orElse(-1); // 조건을 만족하는 데이터가 없을 경우 -1 반환
 
         if (targetIndex == -1) {
-            return ResponseEntity.badRequest().body("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
+//            return ResponseEntity.badRequest().body("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
+            System.out.println("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
+            return null;
         }
 
-        log.info("타겟인 음악의 musicId랑 일치한 index : {}, 그 index의 노래 데이터 : {}", targetIndex, playlistMusics.get(targetIndex));
 
-
+        // 타겟 음악의 orderValue를 newOrderValue로 set해줌
         playlistMusics.get(targetIndex).setOrderValue(newOrderValue);
-        playlistMusicRepoService.save(playlistMusics.get(targetIndex));
 
-
-
+        if (newOrderValue % 10 == 1 || newOrderValue % 10 == 9) {
+            System.out.println("재배치 후 저장");
+            reorderPlaylist(playlistMusics); // 재배치 후 저장
+//            return ResponseEntity.ok("재배치가 완료되었습니다.");
+            return null;
+        } else {
+            System.out.println("재배치가 필요없는 저장");
+            playlistMusicRepoService.save(playlistMusics.get(targetIndex)); // 재배치 없이 저장
+        }
 
 
         return null;
+    }
+
+
+    private void reorderPlaylist(List<PlaylistMusic> playlistMusics) {
+
+        // newOrderValue 적용된 리스트의 orderValue 기준으로 순서 정렬
+        playlistMusics.sort(Comparator.comparingInt(PlaylistMusic::getOrderValue));
+
+        int orderValue = 10; // 초기값
+        log.info("=== 재배치 시작 ===");
+
+        for (PlaylistMusic pm : playlistMusics) {
+            pm.setOrderValue(orderValue);
+            log.info("Music ID: {}, Title: {}, New OrderValue: {}",
+                    pm.getMusicId(),
+                    pm.getMusic().getTitle(),
+                    orderValue);
+            orderValue += 10; // 10단위로 증가
+        }
+
+        playlistMusicRepoService.saveAll(playlistMusics);
+        log.info("=== 재배치 완료 ===");
     }
 
 
