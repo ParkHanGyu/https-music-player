@@ -132,90 +132,93 @@ public class MusicServiceImpl implements Musicservice {
     public ResponseEntity<?> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email) {
         // 1. DB에서 해당 playlistId와 관련된 orderValue 리스트를 가져옴
         List<PlaylistMusic> playlistMusics = playlistMusicRepoService.findByPlaylistIdOrderByOrderValue(playlistId);
-
-        log.info("playlistMusics 값 : {}", playlistMusics);
+        // 이동하고 싶은 위치 index 값
         int hoveredIndex = request.getHoveredIndex();
+        // 바꿔줄 orderValue 값
         int newOrderValue;
+        // hoveredIndex 기준 뒤에 있는 노래의 orderValue 값
+        int previousOrderValue;
+        // hoveredIndex 기준 앞에 있는 노래의 orderValue 값
+        int nextOrderValue;
 
-        // 이동 위치가 첫번쨰 노래일 경우
-        if (hoveredIndex == 0) {
-            System.out.println("리스트의 맨 앞에 삽입할 경우");
-            // 첫번쨰값 / 2 해서 나오는 값 newOrderValue에 넣어주기
-
-            // 이전 노래의 orderValue값
-            int firstOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
-            newOrderValue =  (firstOrderValue + 0) / 2;
-            // 근데 계속 2로 나누다보면 값이 0으로 고정됨. 이럴때 재정렬 필요
-
-
-        // 이동 위치가 맨끝인 경우
-        } else if (hoveredIndex + 1 >= playlistMusics.size()) {
-            System.out.println("리스트의 맨 뒤에 삽입할 경우");
-            // 이전값 + 10 해서 나오는 값 newOrderValue에 넣어주기
-//            return playlistMusics.get(playlistMusics.size() - 1).getOrderValue() + 10;
-            int lastOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
-            newOrderValue =  lastOrderValue + 10;
-
-        } else {
-            System.out.println("음악과 음악 사이로 순서를 바꿀 경우");
-            // 위에서 아래로 이동할경우
-
-//            if() {
-//                // 이전 노래의 orderValue값
-//                int previousOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
-//
-//                // 다음 노래의 orderValue값
-//                int nextOrderValue = playlistMusics.get(hoveredIndex + 1).getOrderValue();
-//
-//            }
-
-            // 아래에서 위로 이동할경우
-
-            // 이전 노래의 orderValue값
-            int previousOrderValue = playlistMusics.get(hoveredIndex - 1).getOrderValue();
-
-            // 다음 노래의 orderValue값
-            int nextOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
-            // (뒤 + 앞) / 2
-            log.info("previousOrderValue : {}, nextOrderValue: {}",previousOrderValue,nextOrderValue);
-
-            newOrderValue = (previousOrderValue + nextOrderValue) / 2;
-        }
-        System.out.println("최종 newOrderValue 값 : " + newOrderValue);
-
-        int targetIndex = IntStream.range(0, playlistMusics.size())
-                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // 조건: musicId가 request.getMusicId()인지 확인
+        // 바꾸려는 노래가 playlistMusics 리스트에 몇번째 index 인지 할당
+        int dragItemIndex = IntStream.range(0, playlistMusics.size())
+                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // musicId가 request.getMusicId()인지 확인
                 .findFirst()
                 .orElse(-1); // 조건을 만족하는 데이터가 없을 경우 -1 반환
-
-        if (targetIndex == -1) {
+        if (dragItemIndex == -1) {
 //            return ResponseEntity.badRequest().body("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
             System.out.println("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
             return null;
         }
 
+        // 2.
+        if (hoveredIndex == 0) { // 이동 위치가 재생목록의 첫번쨰인 경우
+            System.out.println("리스트의 맨 앞에 삽입할 경우");
+            // 첫번쨰값 / 2 해서 나오는 값 newOrderValue에 넣어주기
 
-        // 타겟 음악의 orderValue를 newOrderValue로 set해줌
-        playlistMusics.get(targetIndex).setOrderValue(newOrderValue);
+            // playlistMusics에서 첫번째 노래의 orderValue값
+            int firstOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            newOrderValue = firstOrderValue / 2;
 
+
+        } else if (hoveredIndex + 1 >= playlistMusics.size()) { // 이동 위치가 재생목록의 맨끝인 경우
+            System.out.println("리스트의 맨 뒤에 삽입할 경우");
+            // playlistMusics에서 마지막 노래의 orderValue값
+            int lastOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            newOrderValue = lastOrderValue + 10;
+
+        } else {  // 그 외(이동 위치가 음악과 음악 사이일 경우)
+            System.out.println("음악과 음악 사이로 순서를 바꿀 경우");
+
+            // targetIndex 해당 음악 ID와 일치한 index값을 가져옴
+            // 드래그 중인 음악의 orderValue 값
+            int dragItemOrderValue = playlistMusics.get(dragItemIndex).getOrderValue();
+            // 드래그 중인 노래가 들어갈 자리에 원래 있던 orderValue 값
+            int existingItemOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            log.info("dragItemOrderValue = {}, testValue2 = {}",dragItemOrderValue, existingItemOrderValue);
+
+            if(dragItemOrderValue < existingItemOrderValue) { // 드래그중인 아이템의 orderVlaue가 자리에 원래 있던 아이템의 orderValue가 더 크다면
+                System.out.println("위에서 아래로 이동할 경우");
+                previousOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+                nextOrderValue = playlistMusics.get(hoveredIndex + 1).getOrderValue();
+
+            } else { // 그외 (아래에서 위로 이동할 경우)
+                System.out.println("아래에서 위로 이동할 경우");
+                previousOrderValue = playlistMusics.get(hoveredIndex - 1).getOrderValue();
+                nextOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
+            }
+
+            newOrderValue = (previousOrderValue + nextOrderValue) / 2;
+        }
+        System.out.println("최종 newOrderValue 값 : " + newOrderValue);
+
+        // 드래그한 음악의 orderValue를 newOrderValue로 set해줌
+        playlistMusics.get(dragItemIndex).setOrderValue(newOrderValue);
+
+        // 근데 새로 할당할 orderValue의 값이 1의 자리가 1 또는 9일 경우
         if (newOrderValue % 10 == 1 || newOrderValue % 10 == 9) {
             System.out.println("재배치 후 저장");
             reorderPlaylist(playlistMusics); // 재배치 후 저장
 //            return ResponseEntity.ok("재배치가 완료되었습니다.");
             return null;
-        } else {
+        } else { // 재배치가 필요 없는 경우 그냥 저장
             System.out.println("재배치가 필요없는 저장");
-            playlistMusicRepoService.save(playlistMusics.get(targetIndex)); // 재배치 없이 저장
+            playlistMusicRepoService.save(playlistMusics.get(dragItemIndex)); // 재배치 없이 저장
         }
-
 
         return null;
     }
 
 
     private void reorderPlaylist(List<PlaylistMusic> playlistMusics) {
-
         // newOrderValue 적용된 리스트의 orderValue 기준으로 순서 정렬
+        // 왜 필요한가?
+        // 위에서 newOrderValue로 새로운 값을 set해줬지만 정렬을 해주지 않았다. 즉
+        // orderValue = 10, orderValue = 20, orderValue = 30, orderValue = 40, orderValue = 50, orderValue = 5
+        // 정렬을 하지 않을 경우 이런 순서인데. 이상태로 재배치를 시작하면
+        // orderValue = 10, orderValue = 20, orderValue = 30, orderValue = 40, orderValue = 50, orderValue = 60
+        // orderValue가 5인 친구가 원래 10으로 재배치 되어야 하는데 for으로 재배치 할때 리스트 순서대로 들어가기 때문에 재배치를 해줘야 한다.
         playlistMusics.sort(Comparator.comparingInt(PlaylistMusic::getOrderValue));
 
         int orderValue = 10; // 초기값
