@@ -6,6 +6,7 @@ import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderReq
 import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
 import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.Musicservice;
@@ -45,7 +46,7 @@ public class MusicController {
 
     // 재생목록 순서 변경
     @PutMapping("/update/order/playlist/{playlistId}")
-    public ResponseEntity<?> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {
+    public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {
         log.info("playlistId = {}, request = {}, token = {}", playlistId, request, email);
         return musicservice.updatePlaylistOrder(playlistId, request, email);
     }

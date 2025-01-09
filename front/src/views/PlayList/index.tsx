@@ -204,7 +204,7 @@ const PlayList = () => {
     navigator(MAIN_PATH());
   };
 
-  // =================================== 재생목록 순서 드래그
+  // ========================================== 재생목록 순서 드래그
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [existingHoveredIndex, setExistingHoveredIndex] = useState<
@@ -259,10 +259,16 @@ const PlayList = () => {
 
     if (playlistId) {
       console.log(requestBody);
-      playlistOrderReqeust(playlistId, requestBody, cookies.accessToken);
+      playlistOrderReqeust(playlistId, requestBody, cookies.accessToken).then(
+        playlistOrderResponse
+      );
     }
-    // .then(playlistOrderResponse);
+  };
 
+  const playlistOrderResponse = (responseBody: ResponseDto | null) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
     setDraggedIndex(null);
     setHoveredIndex(null);
   };
@@ -324,6 +330,8 @@ const PlayList = () => {
                     <div className={styles["music-info-number"]}>
                       {index + 1}
                     </div>
+
+                    <div className={styles["music-move-btn"]}></div>
 
                     <div className={styles["music-info-image-title-box"]}>
                       <div

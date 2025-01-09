@@ -50,7 +50,10 @@ const TestView2 = () => {
     console.log("Target Position:", hoveredIndex);
   };
 
-  const testBtn = () => {};
+  // 드래그 중 기본 동작 방지 (y축 제한)
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); // 기본 동작 방지
+  };
 
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
@@ -64,6 +67,7 @@ const TestView2 = () => {
             onDragStart={() => handleDragStart(index)}
             onDragEnter={() => handleDragEnter(index)}
             onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver} // y축 제한 추가
             style={{
               backgroundColor:
                 draggedIndex === index
@@ -79,10 +83,9 @@ const TestView2 = () => {
             </div>
           </div>
         ))}
-
-        <div onClick={testBtn}>test btn</div>
       </div>
     </div>
   );
 };
+
 export default TestView2;

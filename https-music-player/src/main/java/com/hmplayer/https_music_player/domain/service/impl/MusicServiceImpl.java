@@ -7,6 +7,7 @@ import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderReq
 import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
 import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
@@ -129,7 +130,7 @@ public class MusicServiceImpl implements Musicservice {
 
     // 음악 순서 변경
     @Override
-    public ResponseEntity<?> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email) {
+    public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email) {
         // 1. DB에서 해당 playlistId와 관련된 orderValue 리스트를 가져옴
         List<PlaylistMusic> playlistMusics = playlistMusicRepoService.findByPlaylistIdOrderByOrderValue(playlistId);
         // 이동하고 싶은 위치 index 값
@@ -201,19 +202,17 @@ public class MusicServiceImpl implements Musicservice {
             System.out.println("재배치 후 저장");
             reorderPlaylist(playlistMusics); // 재배치 후 저장
 //            return ResponseEntity.ok("재배치가 완료되었습니다.");
-            return null;
         } else { // 재배치가 필요 없는 경우 그냥 저장
             System.out.println("재배치가 필요없는 저장");
             playlistMusicRepoService.save(playlistMusics.get(dragItemIndex)); // 재배치 없이 저장
         }
-
-        return null;
+        return UpdateOrderValueResponse.success();
     }
 
 
     private void reorderPlaylist(List<PlaylistMusic> playlistMusics) {
         // newOrderValue 적용된 리스트의 orderValue 기준으로 순서 정렬
-        // 왜 필요한가?
+        // reorderPlaylist가 왜 필요한가?
         // 위에서 newOrderValue로 새로운 값을 set해줬지만 정렬을 해주지 않았다. 즉
         // orderValue = 10, orderValue = 20, orderValue = 30, orderValue = 40, orderValue = 50, orderValue = 5
         // 정렬을 하지 않을 경우 이런 순서인데. 이상태로 재배치를 시작하면

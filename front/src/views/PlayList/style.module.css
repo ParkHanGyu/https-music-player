@@ -290,3 +290,23 @@
 .main-music-container::-webkit-scrollbar-thumb {
   border-radius: 5px;
 }
+
+/* ============================== */
+
+.music-move-btn {
+  display: none;
+  background-image: url("../../assets/moveBtn-hover.png");
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.main-music-data-info-box:hover .music-move-btn {
+  display: block;
+}
+
+.main-music-data-info-box:hover .music-info-number {
+  display: none;
+}
