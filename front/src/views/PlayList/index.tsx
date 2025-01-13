@@ -80,6 +80,7 @@ const PlayList = () => {
 
   const testBtn = () => {
     console.log("musics : ", musics);
+    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
   };
 
   // onPlayMusic(), 음악 삭제 이후 음악 변경시 deleteMusicResponse()
@@ -271,6 +272,9 @@ const PlayList = () => {
     }
     setDraggedIndex(null);
     setHoveredIndex(null);
+
+    // nowPlaylist 수정
+    setNowPlayingPlaylist(musics);
   };
 
   // 로딩 중 표시

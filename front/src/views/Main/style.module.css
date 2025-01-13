@@ -2,6 +2,7 @@
   font-size: 14px;
   color: #fff;
   width: 100%;
+  min-height: 89vh;
 }
 
 /* 웹 상단 */
@@ -27,6 +28,7 @@
 .main-title-box {
   margin-top: 10px;
   padding: 0px 10px;
+  margin-bottom: 100px;
 }
 
 .main-search-input {
@@ -298,4 +300,5 @@
 .main-wrap-top-content {
   width: 100%;
   display: flex;
+  height: 100vh;
 }

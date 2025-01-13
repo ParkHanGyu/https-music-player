@@ -388,11 +388,6 @@
   border-radius: 6px;
 }
 
-.main-wrap-top-content {
-  width: 100%;
-  display: flex;
-}
-
 /* 하단 현재 재생중인 음악 정보 */
 .main-wrap-play-img {
   background-image: url("../../assets/sum.jpg");
