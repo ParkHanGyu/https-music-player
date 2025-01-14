@@ -79,7 +79,6 @@
 }
 
 .link-data {
-  cursor: pointer;
   word-wrap: break-word; /* 오래된 브라우저에서도 지원 */
   overflow-wrap: break-word; /* 현대 브라우저에서 주로 사용 */
 }

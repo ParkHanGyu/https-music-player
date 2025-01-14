@@ -7,6 +7,7 @@ function useOutsideClick<T extends HTMLElement>(initialState: boolean) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
+        console.log("아웃사이드 훅스 실행");
         setIsOpen(false);
       }
     };

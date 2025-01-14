@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -26,10 +26,12 @@ import Playlist from "../../types/interface/playList.interface";
 import updatePlaylistNameRequestDto from "../../apis/request/update-playlist-name.dto";
 
 const Menu = () => {
+  // url ID
   const { playlistId } = useParams();
+  // 쿠키
   const [cookies, removeCookie, deleteCookie] = useCookies();
-
-  const { loginUser, setLoginUser } = useLoginUserStore();
+  // 로그인 유저 정보
+  const { loginUserInfo, setLoginUserInfo } = useLoginUserStore();
 
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
   const navigator = useNavigate();
@@ -60,8 +62,8 @@ const Menu = () => {
 
   const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
 
-  const showPlaylistDetail = (playlistId: bigint, event: React.MouseEvent) => {
-    event.stopPropagation();
+  const showPlaylistDetail = (playlistId: bigint) => {
+    setIsOpen(false);
     if (currentPath !== `/play-list/${playlistId}`) {
       navigator(PLAY_LIST_PATH(playlistId));
     }
@@ -123,9 +125,9 @@ const Menu = () => {
     }
 
     const profileImage = responseBody as GetUserImageResponseDto;
-    if (loginUser) {
-      setLoginUser({
-        ...loginUser,
+    if (loginUserInfo) {
+      setLoginUserInfo({
+        ...loginUserInfo,
         profileImage: profileImage.url, // 새 URL로 업데이트
       });
     }
@@ -136,25 +138,26 @@ const Menu = () => {
     null
   );
 
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
   const onMenuAction = (index: number) => {
-    // 현재 선택된 인덱스가 열려있다면 닫고, 아니면 열기
-    // 열어줄 index를 set해줌
-
+    // 현재 선택된 인덱스가 열려있다면 닫고,
     if (openDropdownIndex === index) {
       setIsOpen(false);
       setOpenDropdownIndex(null);
       return;
     }
-    // setOpenDropdownIndex(openDropdownIndex === index ? null : index);
 
+    // 아니면 열기.
+    // 열어줄 index를 set해줌
     setOpenDropdownIndex(index);
     setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
   useEffect(() => {
     if (!isOpen && openDropdownIndex !== null) {
+      console.log("isOpen이 바뀌어서 useEffect if문 실행");
       setOpenDropdownIndex(null);
     }
   }, [isOpen]);
@@ -259,13 +262,13 @@ const Menu = () => {
 
   return (
     <div className={styles["menu-container"]}>
-      {loginUser ? (
+      {loginUserInfo ? (
         <div className={styles["menu-user-info-box"]}>
           <div
             className={styles["menu-user-info-image"]}
             style={
-              loginUser.profileImage
-                ? { backgroundImage: `url(${loginUser.profileImage})` }
+              loginUserInfo.profileImage
+                ? { backgroundImage: `url(${loginUserInfo.profileImage})` }
                 : {}
             }
             onClick={onImageModifyHandler}
@@ -280,7 +283,7 @@ const Menu = () => {
           />
 
           <div className={styles["menu-user-info-email"]}>
-            {loginUser?.email}
+            {loginUserInfo?.email}
           </div>
           <div
             className={styles["menu-user-info-logout-btn"]}
@@ -330,14 +333,12 @@ const Menu = () => {
                         : undefined,
                   }}
                   key={index}
-                  onClick={(
-                    event: React.MouseEvent<HTMLLIElement, MouseEvent>
-                  ) => showPlaylistDetail(playlist.playlistId, event)}
+                  onClick={() => showPlaylistDetail(playlist.playlistId)}
                 >
                   {playlist.title}
 
                   {/* ===========================================*/}
-                  {/* btn */}
+                  {/* 더보기 btn */}
                   <div
                     className={styles["menu-item-action-btn"]}
                     onClick={(

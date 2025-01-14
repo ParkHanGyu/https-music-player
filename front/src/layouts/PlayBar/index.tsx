@@ -11,6 +11,7 @@ import { usePlaylistStore } from "../../store/usePlaylist.store";
 import useMediaInfo from "../../hooks/useMediaInfo";
 import usePlayerProgress from "../../hooks/usePlayerProgress";
 import { useCookies } from "react-cookie";
+import LoadingScreen from "../LoadingScreen";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -383,21 +384,17 @@ const PlayBar = () => {
   return (
     <>
       {/* 로딩 화면 */}
-      {isLoading && (
-        <div className={styles["loading-overlay"]}>
-          <div className={styles["loading-spinner"]}></div>
-        </div>
-      )}
+      {isLoading && <LoadingScreen />}
 
       <div
         className={`${styles["main-wrap-bottom"]} ${
-          isLoading ? styles["blur"] : ""
+          isLoading ? styles["blur"] : undefined
         }`}
       >
         <div
           className={styles["main-wrap-bottom-left"]}
           style={{
-            cursor: playBarInfo ? "pointer" : "",
+            cursor: playBarInfo ? "pointer" : undefined,
           }}
           onClick={handleMusicInfoClick}
         >
@@ -424,7 +421,7 @@ const PlayBar = () => {
               <div className={styles["main-play-top-left"]}>
                 <div
                   className={`${styles["main-play-loop-btn"]} ${
-                    isLoop ? styles["loop-active"] : ""
+                    isLoop ? styles["loop-active"] : undefined
                   }`}
                   onClick={onLoopchange}
                 ></div>
@@ -452,7 +449,7 @@ const PlayBar = () => {
               <div className={styles["main-play-top-right"]}>
                 <div
                   className={`${styles["main-play-random-btn"]} ${
-                    isRandom ? styles["random-active"] : ""
+                    isRandom ? styles["random-active"] : undefined
                   }`}
                   onClick={onRandomchange}
                 ></div>

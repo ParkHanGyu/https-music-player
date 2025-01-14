@@ -35,7 +35,7 @@ const MusicInfo = () => {
   const [cookies] = useCookies();
   const formatTime = useFormatTime();
   const navigator = useNavigate();
-  const { loginUser } = useLoginUserStore();
+  const { loginUserInfo } = useLoginUserStore();
 
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
@@ -49,6 +49,14 @@ const MusicInfo = () => {
       setMusicInfo(searchUrl);
     }
   }, [searchUrl]);
+
+  // 링크 클릭시 실행
+  const handleOpenVideo = () => {
+    if (infoData.vidUrl !== "-") {
+      window.open(`${infoData.vidUrl}`, "_blank");
+    }
+    return;
+  };
 
   // 정보 초기화
   const resetInfo = () => {
@@ -102,7 +110,7 @@ const MusicInfo = () => {
   // 재생목록 팝업 상태
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
   const togglePlaylistPopup = () => {
-    if (!loginUser) {
+    if (!loginUserInfo) {
       alert("로그인 이후 추가해주세요.");
       navigator(SIGN_IN_PATH());
       return;
@@ -179,7 +187,10 @@ const MusicInfo = () => {
             <div
               className={styles["link-data"]}
               onClick={() => {
-                window.open(`${infoData.vidUrl}`, "_blank");
+                handleOpenVideo();
+              }}
+              style={{
+                cursor: infoData.vidUrl === "-" ? undefined : "pointer",
               }}
             >
               {infoData.vidUrl}
