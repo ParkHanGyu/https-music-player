@@ -51,6 +51,9 @@ public class AuthServiceImpl implements AuthService {
         System.out.println("클라이언트에서 받은 request.getPassword()값 : "+request.getPassword());
         String accessToken = "";
         String refreshToken = "";
+        int accessTokenExpirationTime = 60; // 1시간
+        int refreshTokenExpirationTime = 7200; // 2시간
+
         try {
             User user = userRepoService.findByEmail(request.getEmail());
 //            if (!user.getActive()) return SignInResponse.loginFail(); // 회원탈퇴 기능 셍기면 추가하기
@@ -72,6 +75,6 @@ public class AuthServiceImpl implements AuthService {
             e.printStackTrace();
             SignInResponse.databaseError();
         }
-        return SignInResponse.success(accessToken, refreshToken);
+        return SignInResponse.success(accessToken, refreshToken, accessTokenExpirationTime, refreshTokenExpirationTime);
     }
 }

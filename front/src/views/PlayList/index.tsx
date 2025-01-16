@@ -48,6 +48,7 @@ const PlayList = () => {
   useEffect(() => {
     if (!isLoading) {
       if (!loginUserInfo) {
+        console.log("playlist.tsx 51");
         alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
         navigator(MAIN_PATH());
         return;
@@ -91,7 +92,11 @@ const PlayList = () => {
   }, [infoData]);
 
   const onPlayMusic = (index: number) => {
-    if (!cookies.accessToken) {
+    console.log("onPlayMusic 실행");
+    console.log("이때 cookies.accessToken : ", cookies.accessToken);
+    console.log("이때 loginUserInfo : ", loginUserInfo);
+    if (!loginUserInfo) {
+      console.log("playlist.tsx 96");
       alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
       navigator(MAIN_PATH());
       return;

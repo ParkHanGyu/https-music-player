@@ -12,18 +12,22 @@ public class SignInResponse extends ResponseDto {
 
     private String accessToken; // front에 넘겨줄 token
     private String refreshToken; // 리프레시 토큰
-    private int expirationTime; // 토큰 만료 시간
+    private int accessTokenExpirationTime; // 토큰 만료 시간
+    private int refreshTokenExpirationTime; // 토큰 만료 시간
 
-    public SignInResponse(String accessToken, String refreshToken) {
+
+
+    public SignInResponse(String accessToken, String refreshToken, int accessTokenExpirationTime, int refreshTokenExpirationTime) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        expirationTime = 3600;
+        this.accessTokenExpirationTime = accessTokenExpirationTime;
+        this.refreshTokenExpirationTime = refreshTokenExpirationTime;
     }
 
 
-    public static ResponseEntity<SignInResponse> success(String accessToken, String refreshToken){ // 로그인 성공 시
-        return ResponseEntity.status(HttpStatus.OK).body(new SignInResponse(accessToken, refreshToken));
+    public static ResponseEntity<SignInResponse> success(String accessToken, String refreshToken, int accessTokenExpirationTime, int refreshTokenExpirationTime){ // 로그인 성공 시
+        return ResponseEntity.status(HttpStatus.OK).body(new SignInResponse(accessToken, refreshToken, accessTokenExpirationTime, refreshTokenExpirationTime));
     }
 
     public static ResponseEntity<ResponseDto> loginFail(){
