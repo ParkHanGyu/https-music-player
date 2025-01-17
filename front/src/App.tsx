@@ -18,7 +18,7 @@ import useLoginUserStore from "./store/login-user.store";
 import GetUserResponseDto from "./apis/response/user/get-user-info-response.dto";
 import ResponseDto from "./apis/response/response.dto";
 import { ResponseUtil } from "./utils";
-import { getUserInfo } from "./apis";
+import { getUserInfo, refreshAccessToken } from "./apis";
 import { useVideoStore } from "./store/useVideo.store";
 import TestView2 from "./views/TestView2";
 
@@ -29,6 +29,10 @@ function App() {
 
   useEffect(() => {
     if (!cookies.accessToken) {
+      // 리프레쉬 토큰으로 재발급 요청
+      refreshAccessToken(cookies.refreshToken);
+
+      //
       resetLoginUser();
 
       setTimeout(() => {

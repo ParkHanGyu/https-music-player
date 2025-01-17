@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Optional;
 @RequiredArgsConstructor
@@ -77,4 +78,15 @@ public class AuthServiceImpl implements AuthService {
         }
         return SignInResponse.success(accessToken, refreshToken, accessTokenExpirationTime, refreshTokenExpirationTime);
     }
+
+
+
+
+    @Override
+    public ResponseEntity<?> refreshAccessToken(String token) {
+
+
+        return null;
+    }
+
 }
