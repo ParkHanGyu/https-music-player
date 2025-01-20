@@ -27,7 +27,7 @@ public class JwtSecurity {
     private String secretKey;
 
 
-    public String create(String email){
+    public String createAccessToken(String email){
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); // 엑세스 토큰 유효시간 1시간
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
@@ -40,7 +40,7 @@ public class JwtSecurity {
 
 
     public String createRefreshToken(String email) {
-        Date expiredDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS)); // 리프레시 토큰 유효시간 7일
+        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS)); // 리프레시 토큰 유효시간 1일
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String refresh = Jwts.builder()
@@ -107,6 +107,23 @@ public class JwtSecurity {
         return claims.getSubject(); // 이메일이 subject로 저장된 경우
     }
 
+
+    // 토큰의 유효시간 추출
+    public int extractExpiration(String token) {
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        long currentTimeMillis = System.currentTimeMillis(); // 현재 시간 밀리초
+        long expirationTimeMillis = claims.getExpiration().getTime(); // JWT에서 추출한 만료 시간 밀리초
+
+        // Expiration을 초 단위 UNIX 타임스탬프로 변환
+        return (int) ((expirationTimeMillis - currentTimeMillis) / 1000);
+    }
 
 
 

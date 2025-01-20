@@ -10,6 +10,7 @@ import CreatePlayListRequestDto from "./request/create-play-list-request.dto";
 import GetUserImageResponseDto from "./response/user/get-user-new-image-url.dto";
 import updatePlaylistNameRequestDto from "./request/update-playlist-name.dto";
 import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
+import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.response.dto";
 
 const DOMAIN = "http://localhost:8081";
 const API_DOMAIN = `${DOMAIN}/api`;
@@ -298,13 +299,15 @@ export const playlistOrderReqeust = async (
 
 // 토큰 만료로 토큰 재발급 요청
 const TOKEN_REFRESH_URL = () => `${API_DOMAIN}/auth/refresh`;
-export const refreshAccessToken = async (refreshToken: string) => {
+export const accessTokenReissue = async (refreshToken: string) => {
   console.log("refreshToken : ", refreshToken);
   // await : 응답이 올 때까지 기다리겠다., requestBody: 어떤 데이터를 넣을 것인지
   const result = await axios
     .post(TOKEN_REFRESH_URL(), {}, authorication(refreshToken)) // 서버에 post요청
     .then((response) => {
-      const responseBody = response.data;
+      const responseBody: accessTokenReissueResponseDto = response.data;
+      console.log("서버에서 받아온 값 : " + JSON.stringify(responseBody));
+
       return responseBody;
     })
     .catch((error) => {

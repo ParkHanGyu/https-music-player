@@ -5,6 +5,7 @@ import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignInResponse;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
+import com.hmplayer.https_music_player.domain.dto.response.auth.accessTokenReissueResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh") // 토큰 재발급 요청
-    public ResponseEntity<?> refreshAccessToken(@RequestHeader("Authorization") String token) {
-//
-        System.out.println("서버에서 받아온 token : " + token);
+    public ResponseEntity<? super accessTokenReissueResponse> refreshAccessToken(@RequestHeader("Authorization") String token) {
         return authService.refreshAccessToken(token);
     }
 

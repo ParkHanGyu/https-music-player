@@ -65,7 +65,8 @@ const SignIn = () => {
     const refreshTokenExpires = new Date(
       now + refreshTokenExpirationTime * 1000
     );
-
+    console.log("accessTokenExpirationTime : ", accessTokenExpirationTime);
+    console.log("refreshTokenExpirationTime : ", refreshTokenExpirationTime);
     console.log("accessTokenExpires : ", accessTokenExpires);
     console.log("refreshTokenExpires : ", refreshTokenExpires);
     // 유효시간 : 현재시간 + 백엔드에서 설정한 시간(60분) * 1000
