@@ -29,6 +29,6 @@ public class accessTokenReissueResponse extends ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> reissueFail(){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(ResponseCode.SIGN_IN_FAIL,ResponseMessage.SIGN_IN_FAIL));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(ResponseCode.REFRESH_TOKEN_EXPIRATION,ResponseMessage.REFRESH_TOKEN_EXPIRATION));
     }
 }

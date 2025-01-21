@@ -15,7 +15,6 @@ const SignIn = () => {
   const [cookies, setCookie] = useCookies();
 
   // ======================== 이메일 =====================
-
   //      state: 이메일 상태        //
   const [email, setEmail] = useState<string>("");
 
@@ -26,7 +25,6 @@ const SignIn = () => {
   };
 
   // ======================== 비밀번호 =====================
-
   //      state: 패스워드 상태      //
   const [password, setPassword] = useState<string>("");
   //      event handler: 비밀번호 변경 이벤트 처리 함수      //
@@ -65,10 +63,6 @@ const SignIn = () => {
     const refreshTokenExpires = new Date(
       now + refreshTokenExpirationTime * 1000
     );
-    console.log("accessTokenExpirationTime : ", accessTokenExpirationTime);
-    console.log("refreshTokenExpirationTime : ", refreshTokenExpirationTime);
-    console.log("accessTokenExpires : ", accessTokenExpires);
-    console.log("refreshTokenExpires : ", refreshTokenExpires);
     // 유효시간 : 현재시간 + 백엔드에서 설정한 시간(60분) * 1000
     setCookie("accessToken", accessToken, {
       expires: accessTokenExpires,

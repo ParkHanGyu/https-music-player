@@ -28,7 +28,7 @@ public class JwtSecurity {
 
 
     public String createAccessToken(String email){
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); // 엑세스 토큰 유효시간 1시간
+        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)); // 엑세스 토큰 유효시간 1시간
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String jwt = Jwts.builder()

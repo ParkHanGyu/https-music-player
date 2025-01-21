@@ -1,5 +1,6 @@
 package com.hmplayer.https_music_player.domain.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,8 +55,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
+        } catch (ExpiredJwtException e) {
+            log.error("만료된 토큰", e);  // 만료된 토큰에 대한 에러 로그
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401 상태 코드 설정
+            response.getWriter().write("만료된 토큰");  // 만료된 토큰 메시지 전송
+            return;  // 이후 필터 체인을 더 이상 진행하지 않음
         } catch (Exception e) {
-            log.error("Error in JWT Authentication Filter", e);  // 예외 발생 시 에러 로그
+            log.error("Error in JWT Authentication Filter", e);  // 일반적인 에러 로그
         }
         filterChain.doFilter(request, response);
     }

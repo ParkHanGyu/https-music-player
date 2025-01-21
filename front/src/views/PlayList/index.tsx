@@ -48,13 +48,14 @@ const PlayList = () => {
   useEffect(() => {
     if (!isLoading) {
       if (!loginUserInfo) {
-        console.log("playlist.tsx 51");
         alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
         navigator(MAIN_PATH());
         return;
       }
       if (playlistId) {
-        getPlaylistMusicReqeust(playlistId).then(getPlaylistMusicResponse);
+        getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
+          getPlaylistMusicResponse
+        );
       }
     }
   }, [playlistId, isLoading]);

@@ -49,7 +49,8 @@ const Menu = () => {
   //==========================================
 
   const testValue = () => {
-    navigator(TEST_PATH());
+    // navigator(TEST_PATH());
+    alert("isPlaylistDrop : " + isPlaylistDrop);
   };
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const Menu = () => {
   const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
 
   const showPlaylistDetail = (playlistId: bigint) => {
+    console.log("showPlaylistDetail 실행");
     setIsOpen(false);
     if (currentPath !== `/play-list/${playlistId}`) {
       navigator(PLAY_LIST_PATH(playlistId));
@@ -333,7 +335,13 @@ const Menu = () => {
                         : undefined,
                   }}
                   key={index}
-                  onClick={() => showPlaylistDetail(playlist.playlistId)}
+                  onClick={(
+                    // li 클릭시 ul에 있는 함수가 실행. 전파 방지
+                    event: React.MouseEvent<HTMLLIElement, MouseEvent>
+                  ) => {
+                    event.stopPropagation();
+                    showPlaylistDetail(playlist.playlistId);
+                  }}
                 >
                   {playlist.title}
 

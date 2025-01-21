@@ -37,9 +37,10 @@ public class PlaylistController {
 
     // 재생목록에 있는 노래 불러오기
     @GetMapping("/playList/{playlistId}")
-    public ResponseEntity<? super GetMusicResponse> getPlayList(@PathVariable("playlistId") Long playlistId) {
+    public ResponseEntity<? super GetMusicResponse> getPlayList(@PathVariable("playlistId") Long playlistId, @RequestHeader("Authorization") String token) {
         System.out.println("서버에서 받아온 playlistId : " + playlistId);
         System.out.println("서버에서 받아온 playListService.getPlayList(userName) : " + playListService.getPlayList(playlistId));
+        System.out.println("서버에서 받아온 token : " + token);
         return playListService.getPlayList(playlistId);
     }
 
