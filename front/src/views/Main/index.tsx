@@ -4,7 +4,8 @@ import { useVideoStore } from "../../store/useVideo.store";
 import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 
 const Main = () => {
-  const { setSearchUrl } = useVideoStore();
+  //    Zustand state : 메인 화면 검색 url 상태    //
+  const { searchUrl, setSearchUrl } = useVideoStore();
   //      state: 검색할 url 상태      //
   const [videoUrl, setVideoUrl] = useState<string>("");
   //      event handler: url input값 변경      //
@@ -24,6 +25,10 @@ const Main = () => {
     if (urlMatch) {
       setSearchUrl(urlMatch);
     }
+  };
+
+  const test1 = () => {
+    console.log(searchUrl);
   };
 
   return (
@@ -48,7 +53,7 @@ const Main = () => {
                 ></div>
               </div>
 
-              <div className={styles["main-title-box"]}>
+              <div className={styles["main-title-box"]} onClick={test1}>
                 To get started, please enter the URL of the video you'd like to
                 play. This will allow us to retrieve and display the video's
                 information so you can begin listening.

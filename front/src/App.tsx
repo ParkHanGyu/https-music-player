@@ -24,11 +24,13 @@ import TestView2 from "./views/TestView2";
 import accessTokenReissueResponseDto from "./apis/response/auth/accessTokenReissue.response.dto";
 
 function App() {
-  const [cookies, setCookie] = useCookies();
-  const { setLoginUserInfo, resetLoginUser } = useLoginUserStore();
-  const { setIsLoading } = useVideoStore();
   //          state: 쿠키 상태        //
-
+  const [cookies, setCookie] = useCookies();
+  //      Zustand state : 로그인 유저 정보 상태      //
+  const { setLoginUserInfo, resetLoginUser } = useLoginUserStore();
+  //      Zustand state : 로딩 상태      //
+  const { setIsLoading } = useVideoStore();
+  //      useEffect : 토큰 변경시(만료, 생성) 엑세스 토큰에 대해서 재발급 또는 엑세스 토큰이 유효하지 않을 경우 유저 정보 초기화     //
   useEffect(() => {
     if (!cookies.accessToken) {
       // 쿠키가 없으면 유저 정보를 reset
@@ -77,8 +79,6 @@ function App() {
       responseBody as accessTokenReissueResponseDto;
     const now = new Date().getTime();
     const accessTokenExpires = new Date(now + accessTokenExpirationTime * 1000);
-    console.log("accessTokenExpirationTime : ", accessTokenExpirationTime);
-    console.log("accessTokenExpires : ", accessTokenExpires);
     // 유효시간 : 현재시간 + 백엔드에서 설정한 시간(60분) * 1000
     setCookie("accessToken", accessToken, {
       expires: accessTokenExpires,

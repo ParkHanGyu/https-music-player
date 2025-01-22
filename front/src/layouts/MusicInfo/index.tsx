@@ -44,9 +44,13 @@ const MusicInfo = () => {
   const { infoData, setMusicInfo, resetInfoData } = useMediaInfo(defaultImage);
 
   useEffect(() => {
-    if (searchUrl) {
+    // 메인에서 검색한 url이 youtube 또는 soundcloud이 포함되어 있는지 확인
+    if (searchUrl.includes("youtube") || searchUrl.includes("soundcloud")) {
+      // 포함되어 있다면 MusicInfo 컴포넌트에 사용할 데이터 set
       setIsLoading(true);
       setMusicInfo(searchUrl);
+    } else {
+      return;
     }
   }, [searchUrl]);
 

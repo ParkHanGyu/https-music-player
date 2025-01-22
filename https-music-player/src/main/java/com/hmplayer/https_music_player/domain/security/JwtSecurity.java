@@ -40,7 +40,7 @@ public class JwtSecurity {
 
 
     public String createRefreshToken(String email) {
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS)); // 리프레시 토큰 유효시간 1일
+        Date expiredDate = Date.from(Instant.now().plus(4, ChronoUnit.HOURS)); // 리프레시 토큰 유효시간 1시간
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String refresh = Jwts.builder()

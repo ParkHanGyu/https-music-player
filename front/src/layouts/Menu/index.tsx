@@ -46,23 +46,30 @@ const Menu = () => {
     navigator(MAIN_PATH());
   };
 
-  //==========================================
-
   const testValue = () => {
     // navigator(TEST_PATH());
     alert("isPlaylistDrop : " + isPlaylistDrop);
   };
 
+  //========================================== playlist 드롭박스
+  //      state: playlist 드롭 상태        //
+  const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
+  // url이 play-list을 포함할때. 즉 사용자가 재생목록을 보고 있다면
   useEffect(() => {
-    if (currentPath.includes("play-list")) {
+    // url이 "play-list"를 포함하고 재생목록 드롭박스가 열려있지 않으면
+    if (currentPath.includes("play-list") && !isPlaylistDrop) {
+      // 열어주기
       setIsPlaylistDrop(true);
-    } else {
+
+      // url이 "play-list"를 포함하지 않고 재생목록 드롭박스가 열려있으면
+    } else if (!currentPath.includes("play-list") && isPlaylistDrop) {
       setIsPlaylistDrop(false);
+    } else {
+      return;
     }
   }, [currentPath]);
 
-  const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
-
+  // ++ ====== playlist item
   const showPlaylistDetail = (playlistId: bigint) => {
     console.log("showPlaylistDetail 실행");
     setIsOpen(false);
@@ -72,7 +79,8 @@ const Menu = () => {
     return;
   };
 
-  const onYoutubeUrl = (pageName: string) => {
+  // ============================================ menu item
+  const openPlatformPage = (pageName: string) => {
     if (pageName === "youtube") {
       window.open(`https://www.${pageName}.com`);
     }
@@ -91,6 +99,7 @@ const Menu = () => {
     navigator(SIGN_UP_PATH());
   };
 
+  //      event handler: 로그아웃 클릭 이벤트 처리 함수       //
   const onSignOutBtnClickHandler = () => {
     if (cookies.accessToken) {
       deleteCookie("accessToken");
@@ -100,7 +109,7 @@ const Menu = () => {
     }
   };
 
-  // =============================================================
+  // ===================================================== 프로필 이미지 관련
   const onImageModifyHandler = () => {
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
     fileInput?.click(); // 숨겨진 파일 입력창 클릭
@@ -118,14 +127,12 @@ const Menu = () => {
       uploadProfileImageResponse
     );
   };
-
   const uploadProfileImageResponse = (
     responseBody: GetUserImageResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-
     const profileImage = responseBody as GetUserImageResponseDto;
     if (loginUserInfo) {
       setLoginUserInfo({
@@ -135,26 +142,28 @@ const Menu = () => {
     }
   };
 
-  // ========================================================
+  // ======================================= playlist item별 더보기 버튼 관련
+  //      state: playlist item action btn 드롭 상태        //
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
     null
   );
 
-  // const [isOpen, setIsOpen] = useState<boolean>(false);
+  //      hook: 외부 클릭 커스텀 훅       //
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
+  //      event handler: >> : << 버튼 클릭시 동작 이벤트 처리 함수       //
   const onMenuAction = (index: number) => {
     // 현재 선택된 인덱스가 열려있다면 닫고,
     if (openDropdownIndex === index) {
       setIsOpen(false);
       setOpenDropdownIndex(null);
       return;
+    } else {
+      // 아니면 열기.
+      // 열어줄 index를 set해줌
+      setOpenDropdownIndex(index);
+      setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
     }
-
-    // 아니면 열기.
-    // 열어줄 index를 set해줌
-    setOpenDropdownIndex(index);
-    setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
   useEffect(() => {
@@ -164,7 +173,7 @@ const Menu = () => {
     }
   }, [isOpen]);
 
-  // 시작 ================================= 재생목록 삭제
+  // 시작 ====================================== 재생목록 삭제 기능
   const onHandlePlaylistDelete = (deletePlaylistId: bigint) => {
     const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
     if (isConfirmed) {
@@ -173,7 +182,6 @@ const Menu = () => {
       );
     }
   };
-
   const deletePlaylistResponse = (
     responseBody: ResponseDto | null,
     deletePlaylistId: bigint
@@ -191,7 +199,6 @@ const Menu = () => {
       navigator(MAIN_PATH());
     }
   };
-
   const getPlaylistLibraryResponse = (
     responseBody: GetPlaylistResponseDto | ResponseDto | null
   ) => {
@@ -202,15 +209,23 @@ const Menu = () => {
     setPlaylistLibrary(playListResult.playListLibrary);
   };
 
-  // 끝 ================================= 재생목록 삭제
-
+  // 끝 =================================== 재생목록 삭제
   // 시작 ================================= 재생목록 이름 수정
+  //      state: 수정할 재생목록 ID 상태        //
   const [modifyPlaylistId, setModifyPlaylistId] = useState<bigint>(BigInt(0));
-
+  //      state: 변경할 재생목록 name 상태        //
+  const [modifyName, setModifyName] = useState<string>("");
+  //      state: add 팝업 상태        //
   const [isModifyPlaylistPopupOpen, setIsModifyPlaylistPopupOpen] =
-    useState(false); // 추가 팝업 상태 추가
+    useState(false);
 
-  //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
+  //      event handler: 재생목록 name 변경 이벤트 처리 함수      //
+  const onModifyChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setModifyName(value);
+  };
+
+  //      event handler: 재생목록 수정 버튼 클릭 이벤트 처리 함수      //
   const toggleModifyPlaylistPopup = () => {
     // 필요한것 : 수정 할 재생목록 id, 수정 할 재생목록 name, 쿠키
     // 1. 클라이언트에서 바꾸려는 name과 기존 name이 일치한지 확인
@@ -234,7 +249,6 @@ const Menu = () => {
       cookies.accessToken
     ).then(modifyPlaylistNameResponse);
   };
-
   const modifyPlaylistNameResponse = (responseBody: ResponseDto | null) => {
     if (!ResponseUtil(responseBody)) {
       return;
@@ -248,18 +262,11 @@ const Menu = () => {
     setIsModifyPlaylistPopupOpen(false);
   };
 
+  //      event handler: 더보기 btn에서 수정 버튼 클릭 이벤트 처리 함수      //
   const onHandlePlaylistModify = (targetPlaylist: Playlist) => {
     setModifyName(targetPlaylist.title);
     setModifyPlaylistId(targetPlaylist.playlistId);
     setIsModifyPlaylistPopupOpen(true);
-  };
-
-  //      state: 변경할 재생목록 name 상태        //
-  const [modifyName, setModifyName] = useState<string>("");
-  //      event handler: 재생목록 name 변경 이벤트 처리 함수      //
-  const onModifyChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setModifyName(value);
   };
 
   return (
@@ -346,7 +353,7 @@ const Menu = () => {
                   {playlist.title}
 
                   {/* ===========================================*/}
-                  {/* 더보기 btn */}
+                  {/* 더보기 btn >> : << */}
                   <div
                     className={styles["menu-item-action-btn"]}
                     onClick={(
@@ -360,7 +367,7 @@ const Menu = () => {
                         openDropdownIndex === index && isOpen ? "block" : "",
                     }}
                   >
-                    {/* 더보기 드롭다운 */}
+                    {/* 더보기 드롭다운. >> : << 클릭시 보이는 드롭다운 */}
                     {/* set해준 값과 index가 일치하면 보여줌  */}
                     {/* ul, li */}
                     {openDropdownIndex === index && isOpen && (
@@ -394,13 +401,13 @@ const Menu = () => {
         </div>
         <div
           className={styles["main-menu-item3"]}
-          onClick={() => onYoutubeUrl("youtube")}
+          onClick={() => openPlatformPage("youtube")}
         >
           Youtube
         </div>
         <div
           className={styles["main-menu-item4"]}
-          onClick={() => onYoutubeUrl("soundcloud")}
+          onClick={() => openPlatformPage("soundcloud")}
         >
           SoundCloud
         </div>
