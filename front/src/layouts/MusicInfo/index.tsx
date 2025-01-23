@@ -4,7 +4,6 @@ import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import { getPlayListLibraryReqeust } from "../../apis";
-import GetPlayListResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +21,7 @@ const MusicInfo = () => {
   const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
     useVideoStore();
 
+  //    Zustand state : playBar.tsx 관련 상태    //
   const {
     setPlaylistLibrary,
     setNowRandomPlaylist,
@@ -30,22 +30,34 @@ const MusicInfo = () => {
     setNowRandomPlaylistID,
   } = usePlaylistStore();
 
+  //    Zustand state : playBar.tsx 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
   const [cookies] = useCookies();
   const formatTime = useFormatTime();
   const navigator = useNavigate();
+  //    Zustand state :유저 정보 상태    //
   const { loginUserInfo } = useLoginUserStore();
 
   const defaultImage =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
-  // 커스텀 훅 사용
 
+  //    hook (커스텀) : 음악 정보들 set    //
   const { infoData, setMusicInfo, resetInfoData } = useMediaInfo(defaultImage);
 
+  //      state:  로딩 상태        //
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  //      useEffect : main.tsx에서 검색한 url을 useMediaInfo에 set     //
   useEffect(() => {
     // 메인에서 검색한 url이 youtube 또는 soundcloud이 포함되어 있는지 확인
-    if (searchUrl.includes("youtube") || searchUrl.includes("soundcloud")) {
+    if (
+      searchUrl.includes("youtube") ||
+      searchUrl.includes("youtu.be") ||
+      searchUrl.includes("soundcloud")
+    ) {
+      console.log("musicInfo.tsx 51줄 useEffect 실행 -> if 문 true");
+
       // 포함되어 있다면 MusicInfo 컴포넌트에 사용할 데이터 set
       setIsLoading(true);
       setMusicInfo(searchUrl);
@@ -54,7 +66,7 @@ const MusicInfo = () => {
     }
   }, [searchUrl]);
 
-  // 링크 클릭시 실행
+  //      event handler: 링크 클릭 이벤트 처리 함수       //
   const handleOpenVideo = () => {
     if (infoData.vidUrl !== "-") {
       window.open(`${infoData.vidUrl}`, "_blank");
@@ -62,13 +74,7 @@ const MusicInfo = () => {
     return;
   };
 
-  // 정보 초기화
-  const resetInfo = () => {
-    resetInfoData();
-    setInfoDuration(0);
-  };
-
-  // 재생버튼
+  //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
   const playHandleClick = () => {
     if (isInfoError) {
       alert("error");
@@ -85,11 +91,11 @@ const MusicInfo = () => {
       setPlayBarUrl("");
     }
 
-    //useEffect 대신 setTimeout 사용
     setTimeout(() => {
       setPlayBarUrl(searchUrl);
       // youtube데이터를 useVideoStore에 셋팅
       setPlayBarInfo(infoData);
+      // 비회원도 가능한 기능이기 때문에 현재 노래를 제외한 노래재생목록을 비워주기
       setNowRandomPlaylist([]);
       setNowPlayingPlaylist([]);
       setNowPlayingPlaylistID("");
@@ -101,18 +107,22 @@ const MusicInfo = () => {
     }
   };
 
-  // url 시간 상태
+  // ================================================== 음악 재생시간 관련
+
+  //      state:  url 시간 상태        //
   const [infoDuration, setInfoDuration] = useState<number>(0);
 
-  // url 시간 셋팅
+  //      event handler:  url 시간 셋팅 이벤트 함수       //
   const handleDuration = (infoDuration: number) => {
     setInfoDuration(infoDuration);
   };
 
-  // ===========재생목록 관련
+  // ====================================================== 재생목록 관련
 
-  // 재생목록 팝업 상태
+  //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
+
+  //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
   const togglePlaylistPopup = () => {
     if (!loginUserInfo) {
       alert("로그인 이후 추가해주세요.");
@@ -126,7 +136,7 @@ const MusicInfo = () => {
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
-  // =========== 재생목록 셋팅 ===============================
+  //      useEffect : 쿠키가 없을때 set되어 있던 재생목록 초기화     //
   useEffect(() => {
     if (!cookies.accessToken) {
       setPlaylistLibrary([]);
@@ -138,28 +148,29 @@ const MusicInfo = () => {
       );
     }
   }, [cookies.accessToken]);
-
   const getPlaylistLibraryResponse = (
     responseBody: GetPlaylistResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-
     const playListResult = responseBody as GetPlaylistResponseDto;
-
     setPlaylistLibrary(playListResult.playListLibrary);
   };
 
-  // ==========================
-  // info페이지 에러 상태
+  // ====================================================== 에러 관련
+  //      state:  info페이지 에러 상태        //
   const [isInfoError, setIsInfoError] = useState<boolean>(false);
+
+  //      event handler: 에러 발생시 이벤트 처리 함수       //
+  const resetInfo = () => {
+    resetInfoData();
+    setInfoDuration(0);
+  };
 
   const testBtn = () => {
     console.log("infoData 값 : ", JSON.stringify(infoData));
   };
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>

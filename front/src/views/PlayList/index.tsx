@@ -20,6 +20,7 @@ import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 import useMediaInfo from "../../hooks/useMediaInfo";
 import { ResponseUtil } from "../../utils";
 import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-order.dto";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -162,7 +163,14 @@ const PlayList = () => {
       return;
     }
 
-    // =============================================================
+    // ++
+
+    setPlayBarUrl("");
+    setIsPlaying(false);
+    // setPlayBarDuration(0);
+
+    // ++
+
     // 삭제한 음악이 현재 듣는 음악과 재생목록, 같은 음악이면
     // 다음 노래로 이동. 하지만 마지막 노래라면 첫번째 노래로 이동
 
@@ -197,6 +205,12 @@ const PlayList = () => {
 
     setIsLoading(false); // 이때 useEffect로 music을 최신화
   };
+
+  // ++
+
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  // ++
+
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
   // 마우스 외부 클릭 이벤트 커스텀 hook

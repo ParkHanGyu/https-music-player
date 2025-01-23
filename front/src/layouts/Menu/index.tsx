@@ -72,6 +72,13 @@ const Menu = () => {
   // ++ ====== playlist item
   const showPlaylistDetail = (playlistId: bigint) => {
     console.log("showPlaylistDetail 실행");
+
+    if (!cookies.accessToken) {
+      alert("로그인 만료");
+      navigator(MAIN_PATH());
+      return;
+    }
+
     setIsOpen(false);
     if (currentPath !== `/play-list/${playlistId}`) {
       navigator(PLAY_LIST_PATH(playlistId));

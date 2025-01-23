@@ -28,12 +28,14 @@ const PlayBar = () => {
     setNowRandomPlaylistID,
   } = usePlaylistStore();
 
+  //      hook (커스텀) : PlayBar 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
   const { playlistId } = useParams();
 
+  //      hook (커스텀) : musicInfo.tsx에서 set한 음악 정보     //
   const { infoData, setMusicInfo } = useMediaInfo("");
-  // 정규식 커스텀 훅
 
+  //      event handler: 재생, 일시정지 이벤트 처리 함수       //
   const handlePlayPause = () => {
     if (isBuffering === false) {
       setIsPlaying(!isPlaying);
@@ -42,18 +44,18 @@ const PlayBar = () => {
 
   const formatTime = useFormatTime();
 
-  // const [played, setPlayed] = useState<number>(0);
-
-  // url 시간 상태
+  //      state:  playBar 동영상 시간 상태        //
   const [playBarDuration, setPlayBarDuration] = useState<number>(0);
 
+  // 동영상 ref
   const playerRef = useRef<ReactPlayer | null>(null);
 
+  //      event handler : playBar 동영상 시간 set 이벤트 처리 함수       //
   const handleDuration = (playBarDuration: number) => {
     setPlayBarDuration(playBarDuration);
   };
 
-  // ============================영상 진행도 조절
+  // ======================================= 영상 진행도 조절
   // 사용자에 의한 진행도 수동 이동
   const handleSeek = (newPlayed: number) => {
     setPlayed(newPlayed);
@@ -97,19 +99,20 @@ const PlayBar = () => {
     window.addEventListener("mouseup", handleMouseUp);
   };
 
-  // ============================ 영상 볼륨 진행도 조절
-  // 사운드바 드롭 상태
-  // const [soundDropdownOpen, setSoundDropdownOpen] = useState<boolean>(false);
-  // const soundDropdownRef = useRef<HTMLDivElement | null>(null); // 드롭다운 영역을 참조하기 위한 ref
+  // ============================================= 영상 볼륨 진행도 조절
+  //      state :  사운드바 드롭 상태        //
+  const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLDivElement>(false);
 
+  //      state :  볼륨 상태        //
+  const [volume, setVolume] = useState<number>(1); // 초기 볼륨을 최대값으로 설정
+
+  //      event handler : 스피커 아이콘 클릭 이벤트 함수       //
   const onSoundDropDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     event.stopPropagation();
     setIsOpen(!isOpen);
   };
-
-  const [volume, setVolume] = useState<number>(1); // 초기 볼륨을 최대값으로 설정
 
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
@@ -149,9 +152,8 @@ const PlayBar = () => {
     window.addEventListener("mouseup", handleMouseUp);
   };
 
-  const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLDivElement>(false);
-
-  // ==============================================사운드바 끝
+  // ============================================== 버퍼링 관련
+  //      state :  버퍼링 상태        //
   const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
   const handleBuffer = () => {
     setIsBuffering(true); // 버퍼링 시작
@@ -167,16 +169,19 @@ const PlayBar = () => {
       setIsPlaying(true);
     }, 800);
   };
-  // ================= 반복재생 관련
-  const [isLoop, setIsLoop] = useState<boolean>(false); // 노래 반복 여부
+  // ===================================================== 반복재생 관련
+  //      state :  반복재생 상태        //
+  const [isLoop, setIsLoop] = useState<boolean>(false);
 
   const onLoopchange = () => {
     setIsLoop(!isLoop);
   };
 
-  // ================= 랜덤재생 관련
-  const [isRandom, setIsRandom] = useState<boolean>(false); // 노래 랜덤 여부
+  // ====================================================== 랜덤재생 관련
+  //      state :  랜덤재생 상태        //
+  const [isRandom, setIsRandom] = useState<boolean>(false);
 
+  //      event handler : 반복재생 클릭 이벤트 처리 함수       //
   const onRandomchange = () => {
     setIsRandom(!isRandom);
   };
@@ -198,17 +203,7 @@ const PlayBar = () => {
     }
   };
 
-  const shuffle = (playlist: Music[]) => {
-    const copiedPlaylist = [...playlist]; // 배열 복사
-    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
-  };
-
   const testBtn = () => {
-    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
-    console.log("nowRandomPlaylist : ", nowRandomPlaylist);
-    console.log("nowPlayingPlaylistID : ", nowPlayingPlaylistID);
-    console.log("nowRandomPlaylistID : ", nowRandomPlaylistID);
-    console.log("nowRandomPlaylistID : ", nowRandomPlaylistID);
     console.log("cookies.accessToken : ", cookies.accessToken);
   };
 
@@ -223,7 +218,13 @@ const PlayBar = () => {
     }
   }, [nowRandomPlaylist]);
 
-  // ============== 이전 음악
+  // ===================================================== 일반적인 재생 관련
+  //      event handler : 음악 셔플 이벤트 처리 함수       //
+  const shuffle = (playlist: Music[]) => {
+    const copiedPlaylist = [...playlist]; // 배열 복사
+    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
+  };
+  // ============== < 이전 음악
   const onPrevMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
       alert("노래가 없음");
@@ -275,7 +276,7 @@ const PlayBar = () => {
     }
   };
 
-  // ============== 다음 음악
+  // ============== 다음 음악 >
   const onNextMusic = () => {
     if (Array.isArray(nowPlayingPlaylist) && nowPlayingPlaylist.length === 0) {
       alert("노래가 없음");
@@ -324,34 +325,37 @@ const PlayBar = () => {
     }
   };
 
+  //      useEffect : playBar.tsx에 사용하는 음악 정보 set     //
   useEffect(() => {
     if (infoData.vidUrl !== "-") {
       setPlayBarInfo(infoData);
     }
   }, [infoData]);
 
-  useEffect(() => {
-    // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
-    const isUrlPresent = nowPlayingPlaylist.some((music) =>
-      music.url.includes(playBarUrl)
-    );
+  //      useEffect : playBar.tsx에 사용하는 음악 정보 set     //
+  // useEffect(() => {
+  //   // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
+  //   const isUrlPresent = nowPlayingPlaylist.some((music) =>
+  //     music.url.includes(playBarUrl)
+  //   );
 
-    // Playlist 컴포넌트에서 음악을 삭제했을때
-    // 어떤 조건하에 nowPlayingPlaylist가 변경.
-    // 현재 듣는 음악이 내가 제외한 playlist의 음악일경우 다음 음악으로.
-    if (playlistId === nowPlayingPlaylistID && !isUrlPresent) {
-      if (
-        Array.isArray(nowPlayingPlaylist) &&
-        nowPlayingPlaylist.length === 0
-      ) {
-        setPlayBarUrl("");
-        setIsPlaying(false);
-        setPlayBarDuration(0);
-        return;
-      }
-    }
-  }, [nowPlayingPlaylist]);
+  //   // Playlist 컴포넌트에서 음악을 삭제했을때
+  //   // 어떤 조건하에 nowPlayingPlaylist가 변경.
+  //   // 현재 듣는 음악이 내가 제외한 playlist의 음악일경우 다음 음악으로.
+  //   if (playlistId === nowPlayingPlaylistID && !isUrlPresent) {
+  //     if (
+  //       Array.isArray(nowPlayingPlaylist) &&
+  //       nowPlayingPlaylist.length === 0
+  //     ) {
+  //       setPlayBarUrl("");
+  //       setIsPlaying(false);
+  //       setPlayBarDuration(0);
+  //       return;
+  //     }
+  //   }
+  // }, [nowPlayingPlaylist]);
 
+  //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = () => {
     if (playBarInfo && playBarInfo.vidUrl) {
       window.open(playBarInfo.vidUrl, "_blank");
@@ -360,7 +364,7 @@ const PlayBar = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // 노래가 바뀌었을때 playBar에 노래 정보들이 set 될때까지 로딩
+  //  useEffect : playBarUrl 변경시 playBar에 노래 정보들이 set 될때까지 로딩 //
   useEffect(() => {
     if (!cookies.accessToken) {
       setNowRandomPlaylist([]);
@@ -371,6 +375,7 @@ const PlayBar = () => {
     }
 
     if (playBarUrl !== "") {
+      // true로 해준 뒤 정보들을 set해주고 false해주기
       setIsLoading(true);
     }
   }, [playBarUrl]);
