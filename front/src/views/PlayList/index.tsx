@@ -25,9 +25,12 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 const PlayList = () => {
   const [cookies] = useCookies();
   const { playlistId } = useParams();
+
+  //      Zustand state : playBar url, info, 로딩 상태      //
   const { playBarUrl, setPlayBarUrl, setPlayBarInfo, isLoading, setIsLoading } =
     useVideoStore();
 
+  //      Zustand state : playBar 재생목록 상태      //
   const {
     nowPlayingPlaylist,
     setNowPlayingPlaylist,
@@ -37,10 +40,15 @@ const PlayList = () => {
     setNowRandomPlaylistID,
   } = usePlaylistStore();
   const formatTime = useFormatTime();
+
+  //      state :  playBar 재생 시간 상태        //
   const [infoDuration, setInfoDuration] = useState<number>(0);
 
+  //      hook (커스텀) : 음악 정보 커스텀 hook   //
   const { infoData: copyInfoData, setMusicInfo: setCopyInfoData } =
     useMediaInfo("");
+
+  //      hook (커스텀) : 음악 정보 커스텀 hook   //
   const { infoData, setMusicInfo } = useMediaInfo("");
 
   const { loginUserInfo } = useLoginUserStore();
@@ -87,11 +95,12 @@ const PlayList = () => {
   };
 
   // onPlayMusic(), 음악 삭제 이후 음악 변경시 deleteMusicResponse()
-  useEffect(() => {
-    if (infoData.vidUrl !== "-") {
-      setPlayBarInfo(infoData);
-    }
-  }, [infoData]);
+  // + 1월 24일 삭제 기능에서 직접 콜백으로 정보를 set해줬음
+  // useEffect(() => {
+  //   if (infoData.vidUrl !== "-") {
+  //     setPlayBarInfo(infoData);
+  //   }
+  // }, [infoData]);
 
   const onPlayMusic = (index: number) => {
     console.log("onPlayMusic 실행");
@@ -105,7 +114,9 @@ const PlayList = () => {
     }
 
     const itemMusicUrl = musics[index].url;
-    setMusicInfo(itemMusicUrl);
+    setMusicInfo(itemMusicUrl, (newInfoData) => {
+      setPlayBarInfo(newInfoData);
+    });
 
     // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
     if (itemMusicUrl === playBarUrl && nowPlayingPlaylistID !== playlistId) {
@@ -192,14 +203,21 @@ const PlayList = () => {
       // 하지만 삭제하는 노래가 마지막 노래라면? 첫번쨰 노래로 넘어가야함.
       //                11 - 1          === 5
       if (lastIndexBoolean) {
-        setPlayBarUrl(nowPlayingPlaylist[0].url);
-        setMusicInfo(nowPlayingPlaylist[0].url);
+        const newMusicUrl = nowPlayingPlaylist[0].url;
+        setPlayBarUrl(newMusicUrl);
+        setMusicInfo(newMusicUrl, (newInfoData) => {
+          setPlayBarInfo(newInfoData);
+        });
       }
 
       // 마지막 노래가 아니라면 다음 노래로 넘어가야함.
       if (!lastIndexBoolean) {
-        setPlayBarUrl(nowPlayingPlaylist[deleteMusicIndex + 1].url);
-        setMusicInfo(nowPlayingPlaylist[deleteMusicIndex + 1].url);
+        const newMusicUrl = nowPlayingPlaylist[deleteMusicIndex + 1].url;
+        setPlayBarUrl(newMusicUrl);
+        // 콜백
+        setMusicInfo(newMusicUrl, (newInfoData) => {
+          setPlayBarInfo(newInfoData);
+        });
       }
     }
 

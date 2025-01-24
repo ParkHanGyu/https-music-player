@@ -19,9 +19,7 @@ const PlayBar = () => {
     useVideoStore();
   const {
     nowPlayingPlaylist,
-    nowPlayingPlaylistID,
     nowRandomPlaylist,
-    nowRandomPlaylistID,
     setNowRandomPlaylist,
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
@@ -30,7 +28,6 @@ const PlayBar = () => {
 
   //      hook (커스텀) : PlayBar 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
-  const { playlistId } = useParams();
 
   //      hook (커스텀) : musicInfo.tsx에서 set한 음악 정보     //
   const { infoData, setMusicInfo } = useMediaInfo("");
