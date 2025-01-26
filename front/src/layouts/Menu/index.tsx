@@ -71,7 +71,8 @@ const Menu = () => {
 
   // ++ ====== playlist item
   const showPlaylistDetail = (playlistId: bigint) => {
-    console.log("showPlaylistDetail 실행");
+    console.log("cookies.accessToken : " + cookies.accessToken);
+    console.log("loginUserInfo : " + JSON.stringify(loginUserInfo));
 
     if (!cookies.accessToken) {
       alert("로그인 만료");
