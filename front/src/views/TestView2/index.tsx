@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "./style.module.css";
 import "../TestView2/testStyle.css";
+import { jwtDecode } from "jwt-decode";
+import { useCookies } from "react-cookie";
 
 type PlaylistItem = {
   id: number;
@@ -54,7 +56,36 @@ const TestView2 = () => {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault(); // 기본 동작 방지
   };
+  // // =====================================================
+  // // 먼저 isValidJWT 함수를 선언합니다.
+  // const isValidJWT = (token: string | null) => {
+  //   return token && token.split(".").length === 3;
+  // };
 
+  // const [cookies, removeCookie, deleteCookie] = useCookies();
+
+  // const checkTokenExpiration = (token: string) => {
+  //   if (!token || !isValidJWT(token)) {
+  //     console.error("올바르지 않은 JWT 형식의 토큰입니다.");
+  //     return false;
+  //   }
+
+  //   try {
+  //     const decoded: { exp: number } = jwtDecode(token); // cookies.accessToken 대신 파라미터 token 사용
+  //     return decoded.exp > Math.floor(Date.now() / 1000);
+  //   } catch (error) {
+  //     console.error("유효하지 않은 토큰입니다.", error);
+  //     return false;
+  //   }
+  // };
+
+  // // 예제
+  // const isValid = checkTokenExpiration(cookies.accessToken);
+
+  // console.log("토큰 유효 여부:", isValid ? "유효함" : "만료됨");
+  // console.log("토큰 유효 여부:", isValid);
+
+  // // =====================================================
   return (
     <div style={{ width: "400px", margin: "0 auto" }}>
       <h2>Playlist</h2>

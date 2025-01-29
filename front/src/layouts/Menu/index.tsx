@@ -24,6 +24,7 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import Playlist from "../../types/interface/playList.interface";
 import updatePlaylistNameRequestDto from "../../apis/request/update-playlist-name.dto";
+import useTokenExpiration from "../../hooks/useTokenExpiration";
 
 const Menu = () => {
   // url ID
@@ -37,6 +38,7 @@ const Menu = () => {
   const navigator = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const tokenExp = useTokenExpiration(cookies.accessToken);
 
   const playListClickHandler = () => {
     setIsPlaylistDrop(!isPlaylistDrop);
@@ -47,8 +49,8 @@ const Menu = () => {
   };
 
   const testValue = () => {
-    // navigator(TEST_PATH());
-    alert("isPlaylistDrop : " + isPlaylistDrop);
+    navigator(TEST_PATH());
+    // alert("isPlaylistDrop : " + isPlaylistDrop);
   };
 
   //========================================== playlist 드롭박스
@@ -71,10 +73,11 @@ const Menu = () => {
 
   // ++ ====== playlist item
   const showPlaylistDetail = (playlistId: bigint) => {
+    console.log("tokenExp : ", tokenExp);
     console.log("cookies.accessToken : " + cookies.accessToken);
     console.log("loginUserInfo : " + JSON.stringify(loginUserInfo));
 
-    if (!cookies.accessToken) {
+    if (!tokenExp) {
       alert("로그인 만료");
       navigator(MAIN_PATH());
       return;
