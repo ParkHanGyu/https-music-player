@@ -51,11 +51,9 @@ const PlayList = () => {
   //      hook (커스텀) : 음악 정보 커스텀 hook   //
   const { infoData, setMusicInfo } = useMediaInfo("");
 
-
   //      Zustand state : 로그인 유저 정보 상태      //
   const { loginUserInfo } = useLoginUserStore();
   const navigator = useNavigate();
-
 
   //      useEffect :  재생목록 클릭 또는 로딩이 끝났을때 실행.             쿠키가 없을 경우 로그인 요청. 그게 아니라면 해당 재생목록 음악 받아오기       //
   useEffect(() => {
@@ -91,12 +89,12 @@ const PlayList = () => {
   const [musics, setMusics] = useState<Music[]>([]);
 
   const testBtn = () => {
-    alert("엑세스 토큰 : "+ cookies.accessToken)
+    alert("엑세스 토큰 : " + cookies.accessToken);
   };
 
   // onPlayMusic(), 음악 삭제 이후 음악 변경시 deleteMusicResponse()
   // + 1월 24일 삭제 기능에서 직접 콜백으로 정보를 set해줬음
-  // useEffect(() => {
+  // useE!ffect(() => {
   //   if (infoData.vidUrl !== "-") {
   //     setPlayBarInfo(infoData);
   //   }
