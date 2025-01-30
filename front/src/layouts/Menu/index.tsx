@@ -38,7 +38,7 @@ const Menu = () => {
   const navigator = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-  const tokenExp = useTokenExpiration(cookies.accessToken);
+  // const tokenExp = useTokenExpiration(cookies.accessToken);
 
   const playListClickHandler = () => {
     setIsPlaylistDrop(!isPlaylistDrop);
@@ -73,11 +73,11 @@ const Menu = () => {
 
   // ++ ====== playlist item
   const showPlaylistDetail = (playlistId: bigint) => {
-    console.log("tokenExp : ", tokenExp);
+    // console.log("tokenExp : ", tokenExp);
     console.log("cookies.accessToken : " + cookies.accessToken);
     console.log("loginUserInfo : " + JSON.stringify(loginUserInfo));
 
-    if (!tokenExp) {
+    if (!loginUserInfo) {
       alert("로그인 만료");
       navigator(MAIN_PATH());
       return;
