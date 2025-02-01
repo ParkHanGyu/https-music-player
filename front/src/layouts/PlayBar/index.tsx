@@ -162,7 +162,7 @@ const PlayBar = () => {
 
   const handleReady = () => {
     setTimeout(() => {
-      setIsLoading(false);
+      // setIsLoading(false);
       setIsPlaying(true);
     }, 800);
   };

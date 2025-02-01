@@ -63,6 +63,7 @@ const SignIn = () => {
     const refreshTokenExpires = new Date(
       now + refreshTokenExpirationTime * 1000
     );
+
     // 유효시간 : 현재시간 + 백엔드에서 설정한 시간(60분) * 1000
     setCookie("accessToken", accessToken, {
       expires: accessTokenExpires,
@@ -73,6 +74,7 @@ const SignIn = () => {
       path: MAIN_PATH(),
     });
     // 'accessToken' : 이름, token 설정, path : 유효경로(MAIN_PATH() 이하의 모든 경로에서 유효함)
+
     navigator(MAIN_PATH());
   };
 

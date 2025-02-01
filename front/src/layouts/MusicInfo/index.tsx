@@ -50,6 +50,7 @@ const MusicInfo = () => {
 
   //      useEffect : main.tsx에서 검색한 url을 useMediaInfo에 set     //
   useEffect(() => {
+    console.log("musicInfo.tsx useEffect 실행. 53줄");
     // 메인에서 검색한 url이 youtube 또는 soundcloud이 포함되어 있는지 확인
     if (
       searchUrl.includes("youtube") ||

@@ -124,7 +124,7 @@ const PlayList = () => {
     //useEffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
     // useEffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
     setTimeout(() => {
-      setPlayBarUrl(itemMusicUrl);
+      setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
       setNowPlayingPlaylistID(playlistId);
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
