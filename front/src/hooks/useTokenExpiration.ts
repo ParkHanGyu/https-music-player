@@ -22,10 +22,6 @@ const useTokenExpiration = (token: string) => {
       const currentTime = Math.floor(Date.now() / 1000);
       const expiresIn = decoded.exp - currentTime; // 만료까지 남은 시간(초)
 
-      console.log("decoded : ", decoded);
-      console.log("currentTime : ", currentTime);
-      console.log("만료까지 남은 시간 : ", expiresIn);
-
       if (expiresIn <= 0) {
         setIsValid(false); // 만료되었으면 false
       } else {

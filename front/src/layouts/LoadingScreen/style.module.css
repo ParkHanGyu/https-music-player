@@ -1,14 +1,14 @@
-.loading-overlay {
+/* ==========================  musicInfo  ========================= */
+.musicInfo-loading-overlay {
   position: absolute;
   top: 0;
   right: 0;
   width: 235px;
   height: 100vh;
-  /* background-color: rgba(255, 255, 255, 0.8); */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10; /* 기존 콘텐츠 위에 표시되도록 설정 */
+  z-index: 10;
 }
 
 .loading-spinner {
@@ -27,4 +27,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ==========================  playBar  ========================= */
+.playBar-loading-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }

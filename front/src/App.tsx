@@ -36,10 +36,6 @@ function App() {
   const tokenExp = useTokenExpiration(cookies.accessToken);
 
   useEffect(() => {
-    console.log("===============================");
-    console.log("cookies.refreshToken : ", cookies.refreshToken);
-    console.log("tokenExp : ", tokenExp);
-    console.log("===============================");
     // 로그인 이후 유저 정보 set
     if (cookies.accessToken && tokenExp) {
       console.log("로그인 이후 유저 정보 set");

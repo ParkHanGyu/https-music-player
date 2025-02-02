@@ -176,7 +176,7 @@ const MusicInfo = () => {
   return (
     <>
       {/* 로딩 화면 */}
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen loadingType="musicInfo" />}
       <div
         className={`${styles["main-left"]} ${isLoading ? styles["blur"] : ""}`}
       >

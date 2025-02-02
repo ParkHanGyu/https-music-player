@@ -26,7 +26,7 @@ const PlayBar = () => {
     setNowRandomPlaylistID,
   } = usePlaylistStore();
 
-  //      hook (커스텀) : PlayBar 재생 상태    //
+  //    Zustand state : PlayBar 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
   //      hook (커스텀) : musicInfo.tsx에서 set한 음악 정보     //
@@ -34,7 +34,7 @@ const PlayBar = () => {
 
   //      event handler: 재생, 일시정지 이벤트 처리 함수       //
   const handlePlayPause = () => {
-    if (isBuffering === false) {
+    if (isLoading === false) {
       setIsPlaying(!isPlaying);
     }
   };
@@ -149,23 +149,14 @@ const PlayBar = () => {
     window.addEventListener("mouseup", handleMouseUp);
   };
 
-  // ============================================== 버퍼링 관련
-  //      state :  버퍼링 상태        //
-  const [isBuffering, setIsBuffering] = useState<boolean>(true); // 버퍼링 상태
-  const handleBuffer = () => {
-    setIsBuffering(true); // 버퍼링 시작
-  };
-
-  const handleBufferEnd = () => {
-    setIsBuffering(false); // 버퍼링 종료
-  };
-
+  // ============================================== ReactPlayer 옵션 관련
   const handleReady = () => {
     setTimeout(() => {
-      // setIsLoading(false);
+      setIsLoading(false);
       setIsPlaying(true);
     }, 800);
   };
+
   // ===================================================== 반복재생 관련
   //      state :  반복재생 상태        //
   const [isLoop, setIsLoop] = useState<boolean>(false);
@@ -198,10 +189,6 @@ const PlayBar = () => {
     } else if (!isLoop) {
       onNextMusic();
     }
-  };
-
-  const testBtn = () => {
-    console.log("cookies.accessToken : ", cookies.accessToken);
   };
 
   useEffect(() => {
@@ -266,7 +253,10 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl) {
-      setMusicInfo(prevMusicUrl);
+      // 콜백 함수 실행
+      setMusicInfo(prevMusicUrl, (data) => {
+        setPlayBarInfo(data);
+      });
       setPlayBarUrl(prevMusicUrl);
     } else {
       return;
@@ -315,42 +305,15 @@ const PlayBar = () => {
     }
 
     if (prevMusicUrl) {
-      setMusicInfo(prevMusicUrl);
+      // 콜백 함수 실행
+      setMusicInfo(prevMusicUrl, (data) => {
+        setPlayBarInfo(data);
+      });
       setPlayBarUrl(prevMusicUrl);
     } else {
       return;
     }
   };
-
-  //      useEffect : playBar.tsx에 사용하는 음악 정보 set     //
-  useEffect(() => {
-    if (infoData.vidUrl !== "-") {
-      setPlayBarInfo(infoData);
-    }
-  }, [infoData]);
-
-  //      useEffect : playBar.tsx에 사용하는 음악 정보 set     //
-  // useEffect(() => {
-  //   // nowPlayingPlaylist에 playBarUrl이 포함된 항목이 있으면 true
-  //   const isUrlPresent = nowPlayingPlaylist.some((music) =>
-  //     music.url.includes(playBarUrl)
-  //   );
-
-  //   // Playlist 컴포넌트에서 음악을 삭제했을때
-  //   // 어떤 조건하에 nowPlayingPlaylist가 변경.
-  //   // 현재 듣는 음악이 내가 제외한 playlist의 음악일경우 다음 음악으로.
-  //   if (playlistId === nowPlayingPlaylistID && !isUrlPresent) {
-  //     if (
-  //       Array.isArray(nowPlayingPlaylist) &&
-  //       nowPlayingPlaylist.length === 0
-  //     ) {
-  //       setPlayBarUrl("");
-  //       setIsPlaying(false);
-  //       setPlayBarDuration(0);
-  //       return;
-  //     }
-  //   }
-  // }, [nowPlayingPlaylist]);
 
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = () => {
@@ -363,6 +326,8 @@ const PlayBar = () => {
 
   //  useEffect : playBarUrl 변경시 playBar에 노래 정보들이 set 될때까지 로딩 //
   useEffect(() => {
+    // 노래를 듣는중에 로그인이 만료될 경우 현재 듣는 노래를 제외한 노래 순서를 초기화.
+    // 로그인 하지 않으면 다음 노래부터 못들음
     if (!cookies.accessToken) {
       setNowRandomPlaylist([]);
       setNowPlayingPlaylist([]);
@@ -373,6 +338,7 @@ const PlayBar = () => {
 
     if (playBarUrl !== "") {
       // true로 해준 뒤 정보들을 set해주고 false해주기
+      console.log("setIsLoading(true)실행");
       setIsLoading(true);
     }
   }, [playBarUrl]);
@@ -383,11 +349,14 @@ const PlayBar = () => {
     isPlaying
   );
 
+  const testBtn = () => {
+    console.log("cookies.accessToken : ", cookies.accessToken);
+  };
+
   return (
     <>
       {/* 로딩 화면 */}
-      {isLoading && <LoadingScreen />}
-
+      {isLoading && <LoadingScreen loadingType="playBar" />}
       <div
         className={`${styles["main-wrap-bottom"]} ${
           isLoading ? styles["blur"] : undefined
@@ -476,8 +445,7 @@ const PlayBar = () => {
                   ref={playerRef}
                   url={playBarUrl}
                   playing={isPlaying}
-                  onBuffer={handleBuffer} // 버퍼링 시작 이벤트
-                  onBufferEnd={handleBufferEnd} // 버퍼링 종료 이벤트
+                  // onBuffer, onBufferEnd 는 url이 set되고 onReady가 실행될때쯤 onBuffer가 실행되서 원하는 타이밍에 로딩을 못걸어줌. 그래서 제외
                   onReady={handleReady}
                   onDuration={handleDuration}
                   onEnded={handleEnded}
