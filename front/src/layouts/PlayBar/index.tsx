@@ -12,6 +12,7 @@ import useMediaInfo from "../../hooks/useMediaInfo";
 import usePlayerProgress from "../../hooks/usePlayerProgress";
 import { useCookies } from "react-cookie";
 import LoadingScreen from "../LoadingScreen";
+import useLoginUserStore from "../../store/login-user.store";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -28,6 +29,8 @@ const PlayBar = () => {
 
   //    Zustand state : PlayBar 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  //      Zustand state : 로그인 유저 정보 상태      //
+  const { loginUserInfo } = useLoginUserStore();
 
   //      hook (커스텀) : musicInfo.tsx에서 set한 음악 정보     //
   const { infoData, setMusicInfo } = useMediaInfo("");
@@ -191,17 +194,6 @@ const PlayBar = () => {
     }
   };
 
-  useEffect(() => {
-    if (
-      nowPlayingPlaylist.length !== 0 &&
-      nowRandomPlaylist.length === 0 &&
-      nowRandomPlaylist !== nowPlayingPlaylist
-    ) {
-      console.log("랜덤 재생중에 랜덤재생목록의 노래가 다 떨어질 경우");
-      setNowRandomPlaylist(nowPlayingPlaylist);
-    }
-  }, [nowRandomPlaylist]);
-
   // ===================================================== 일반적인 재생 관련
   //      event handler : 음악 셔플 이벤트 처리 함수       //
   const shuffle = (playlist: Music[]) => {
@@ -225,12 +217,17 @@ const PlayBar = () => {
       const filteredPlaylist = nowRandomPlaylist.filter(
         (_, index) => index !== nowIndex
       );
-      // 배열 랜덤
-      let shuffleList = shuffle(filteredPlaylist);
-      console.log("shuffleList : ", shuffleList.length);
 
-      if (shuffleList.length === 0) {
+      // 배열 랜덤
+      let shuffleList: Music[] = [];
+
+      // 제외 이후
+      if (filteredPlaylist.length === 0) {
+        // 값이 없으면 다시 채워주기
         shuffleList = nowPlayingPlaylist;
+      } else if (filteredPlaylist.length) {
+        // 값이 있으면 섞어주기
+        shuffleList = shuffle(filteredPlaylist);
       }
 
       setNowRandomPlaylist(shuffleList);
@@ -282,9 +279,12 @@ const PlayBar = () => {
         (_, index) => index !== nowIndex
       );
 
-      let shuffleList = shuffle(filteredPlaylist);
+      let shuffleList: Music[] = [];
+
       if (shuffleList.length === 0) {
         shuffleList = nowPlayingPlaylist;
+      } else if (shuffleList.length) {
+        shuffleList = shuffle(filteredPlaylist);
       }
       setNowRandomPlaylist(shuffleList);
       prevMusicUrl = shuffleList[0].url;
@@ -325,10 +325,12 @@ const PlayBar = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   //  useEffect : playBarUrl 변경시 playBar에 노래 정보들이 set 될때까지 로딩 //
+  // playBar변경시 버퍼링 대신 useEffect로 setIsLoading(true)로 로딩창 보여줌.
+  // 이후 동영상 컴포넌트에서 handleReady() 함수로 setIsLoading(false)를 해줄꺼임.
   useEffect(() => {
     // 노래를 듣는중에 로그인이 만료될 경우 현재 듣는 노래를 제외한 노래 순서를 초기화.
     // 로그인 하지 않으면 다음 노래부터 못들음
-    if (!cookies.accessToken) {
+    if (!cookies.accessToken || loginUserInfo) {
       setNowRandomPlaylist([]);
       setNowPlayingPlaylist([]);
       setNowPlayingPlaylistID("");
@@ -337,7 +339,7 @@ const PlayBar = () => {
     }
 
     if (playBarUrl !== "") {
-      // true로 해준 뒤 정보들을 set해주고 false해주기
+      // true로 해준 뒤 ReactPlayer컴포넌트에서 준비 완료시 setIsLoading(false)를 해줌
       console.log("setIsLoading(true)실행");
       setIsLoading(true);
     }

@@ -13,6 +13,7 @@ import { YoutubeInfo } from "../../types/interface/youtube.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
+import { useVideoStore } from "../../store/useVideo.store";
 
 interface PlaylistLibraryProps {
   infoData: YoutubeInfo;
@@ -27,6 +28,8 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   playlistPopupOpen,
   setPlaylistPopupOpen,
 }) => {
+  //      Zustand state : playBar url, info, 로딩 상태      //
+  const { isLoading, setIsLoading } = useVideoStore();
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
 
   const [cookies] = useCookies();
@@ -39,6 +42,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
   ) => {
+    setIsLoading(true);
     if (!requestBody.youtube) return;
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
       playlistAddMusicResponse
@@ -48,9 +52,11 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     if (!ResponseUtil(responseBody)) {
       alert(responseBody?.message);
       setPlaylistPopupOpen(false);
+
       return;
     }
 
+    setIsLoading(false);
     alert("음악 추가됨");
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
