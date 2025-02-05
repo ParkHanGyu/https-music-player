@@ -33,46 +33,43 @@ function App() {
   const { setIsLoading } = useVideoStore();
   //      useEffect : 토큰 변경시(만료, 생성) 엑세스 토큰에 대해서 재발급 또는 엑세스 토큰이 유효하지 않을 경우 유저 정보 초기화     //
 
+  //      hook (커스텀) : 토큰 유효 시간   //
   const tokenExp = useTokenExpiration(cookies.accessToken);
 
   useEffect(() => {
     // 로그인 이후 유저 정보 set
+    setIsLoading(true);
+
+    // 토큰이 있으면 유저 정보를 set
     if (cookies.accessToken && tokenExp) {
       console.log("로그인 이후 유저 정보 set");
-      // 토큰이 있으면 유저 정보를 set
       getUserInfo(cookies.accessToken).then(getLoginUserResponse);
-    }
 
-    // 만료시 -> 엑세스 토큰 재발급
-    if (cookies.refreshToken && !tokenExp) {
+      // 만료시 -> 엑세스 토큰 재발급
+    } else if (cookies.refreshToken && !tokenExp) {
       console.log("만료시 -> 엑세스 토큰 재발급");
-
       // 근데 리프레쉬 토큰이 있으면 -> 리프레쉬 토큰으로 재발급 요청
       console.log("리프레쉬 토큰으로 엑세스 토큰 재발급 요청");
       accessTokenReissue(cookies.refreshToken).then(accessTokenReissueResponse);
-    }
 
-    // 리프레쉬 토큰이 없으면 -> 유저 정보 초기화
-    if (!cookies.refreshToken) {
+      // 리프레쉬 토큰이 없으면 -> 유저 정보 초기화
+    } else if (!cookies.refreshToken) {
       console.log("리프레쉬 토큰이 없으면 -> 유저 정보 초기화");
-
       // 리프레쉬 토큰이 없으면
       resetLoginUser();
-
-      setTimeout(() => {
-        setIsLoading(false); // 로그인 정보 없으면 1초 뒤 로딩 상태 끝내기
-      }, 1000);
     }
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, [cookies.accessToken, tokenExp]);
+  // 로그인 할때 유저정보 불러옴
   const getLoginUserResponse = (
     responseBody: GetUserResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) return;
     const { userDto } = responseBody as GetUserResponseDto;
     setLoginUserInfo(userDto);
-    setTimeout(() => {
-      setIsLoading(false); // 1초 뒤 로딩 상태 끝내기
-    }, 1000);
   };
 
   //      function: accessTokenReissueResponse 처리 함수    //

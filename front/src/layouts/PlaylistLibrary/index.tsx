@@ -4,6 +4,7 @@ import { usePlaylistStore } from "../../store/usePlaylist.store";
 import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import {
   getPlayListLibraryReqeust,
+  getPlaylistMusicReqeust,
   playlistAddMusicReqeust,
   playlistCreateReqeust,
 } from "../../apis";
@@ -14,6 +15,8 @@ import CreatePlayListRequestDto from "../../apis/request/create-play-list-reques
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
 import { useVideoStore } from "../../store/useVideo.store";
+import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
+import { useParams } from "react-router-dom";
 
 interface PlaylistLibraryProps {
   infoData: YoutubeInfo;
@@ -29,12 +32,22 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   setPlaylistPopupOpen,
 }) => {
   //      Zustand state : playBar url, info, 로딩 상태      //
-  const { isLoading, setIsLoading } = useVideoStore();
+  const { setIsLoading } = useVideoStore();
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
-
   const [cookies] = useCookies();
 
-  // url 시간 상태
+  //      Zustand state : playBar 재생목록 상태      //
+  const {
+    nowPlayingPlaylist,
+    setNowPlayingPlaylist,
+    nowPlayingPlaylistID,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylist,
+    nowRandomPlaylist,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
+
+  const { playlistId } = useParams();
 
   // 팝업 관련
   const [isAddPlaylistPopupOpen, setAddPlaylistPopupOpen] = useState(false); // 추가 팝업 상태 추가
@@ -42,27 +55,57 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
   ) => {
+    if (!requestBody.youtube) {
+      return;
+    }
     setIsLoading(true);
-    if (!requestBody.youtube) return;
+
+    const addPlaylistID = String(requestBody.playlistId);
+
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
-      playlistAddMusicResponse
+      (responseBody) => playlistAddMusicResponse(responseBody, addPlaylistID)
     );
   };
-  const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
+  const playlistAddMusicResponse = (
+    responseBody: ResponseDto | null,
+    addPlaylistID: string
+  ) => {
     if (!ResponseUtil(responseBody)) {
       alert(responseBody?.message);
       setPlaylistPopupOpen(false);
-
+      setIsLoading(false);
       return;
     }
 
     setIsLoading(false);
     alert("음악 추가됨");
     setPlaylistPopupOpen(!playlistPopupOpen);
+    console.log("addPlaylistID : ", addPlaylistID);
+
+    getPlaylistMusicReqeust(addPlaylistID, cookies.accessToken).then(
+      getPlaylistMusicResponse
+    );
+  };
+
+  const getPlaylistMusicResponse = (
+    responseBody: GetMusicResponseDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+    const playListResult = responseBody as GetMusicResponseDto;
+
+    if (nowPlayingPlaylistID !== playlistId) {
+      const lastIndex = playListResult.musicList.length - 1;
+      setNowPlayingPlaylist(playListResult.musicList);
+      setNowRandomPlaylist([
+        ...nowRandomPlaylist,
+        playListResult.musicList[lastIndex],
+      ]);
+    }
   };
 
   //================================= add 팝업 관련
-
   const addPlayListInputRef = useRef<HTMLInputElement>(null); // input ref 생성
 
   //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //

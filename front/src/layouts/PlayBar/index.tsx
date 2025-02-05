@@ -330,7 +330,7 @@ const PlayBar = () => {
   useEffect(() => {
     // 노래를 듣는중에 로그인이 만료될 경우 현재 듣는 노래를 제외한 노래 순서를 초기화.
     // 로그인 하지 않으면 다음 노래부터 못들음
-    if (!cookies.accessToken || loginUserInfo) {
+    if (!cookies.accessToken || !loginUserInfo) {
       setNowRandomPlaylist([]);
       setNowPlayingPlaylist([]);
       setNowPlayingPlaylistID("");

@@ -7,7 +7,6 @@ import {
 } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useNavigate, useParams } from "react-router-dom";
-import GetMusciResponseDto from "../../apis/response/Music/get-music.dto";
 import Music from "../../types/interface/music.interface";
 import useFormatTime from "../../hooks/useFormatTime";
 import { useVideoStore } from "../../store/useVideo.store";
@@ -21,6 +20,7 @@ import useMediaInfo from "../../hooks/useMediaInfo";
 import { ResponseUtil } from "../../utils";
 import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-order.dto";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -37,16 +37,13 @@ const PlayList = () => {
     nowPlayingPlaylistID,
     setNowPlayingPlaylistID,
     setNowRandomPlaylist,
+    nowRandomPlaylist,
     setNowRandomPlaylistID,
   } = usePlaylistStore();
   const formatTime = useFormatTime();
 
   //      state :  playBar 재생 시간 상태        //
   const [infoDuration, setInfoDuration] = useState<number>(0);
-
-  //      hook (커스텀) : 음악 정보 커스텀 hook   //
-  const { infoData: copyInfoData, setMusicInfo: setCopyInfoData } =
-    useMediaInfo("");
 
   //      hook (커스텀) : 음악 정보 커스텀 hook   //
   const { infoData, setMusicInfo } = useMediaInfo("");
@@ -71,34 +68,23 @@ const PlayList = () => {
     }
   }, [playlistId, isLoading]);
   const getPlaylistMusicResponse = (
-    responseBody: GetMusciResponseDto | ResponseDto | null
+    responseBody: GetMusicResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-    const playListResult = responseBody as GetMusciResponseDto;
+    const playListResult = responseBody as GetMusicResponseDto;
     setMusics(playListResult.musicList);
     // 삭제 이후 다시 api가 작동한 경우 nowPlayingPlaylist도 최신화 시켜줘야함.
     // if 조건이 없다면 듣는 노래가 nowPlayingPlaylist가 1인데 2를 누르면 nowPlayingPlaylist가 자동으로 1에서 2로 바뀐다. 즉 nowPlayingPlaylistID와 보고있는 재생목록 ID가 같으면 최신화해주는
     if (nowPlayingPlaylistID === playlistId) {
+      console.log("nowPlayingPlaylistID === playlistId if문 실행");
       setNowPlayingPlaylist(playListResult.musicList);
       setNowRandomPlaylist(playListResult.musicList);
     }
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
-
-  const testBtn = () => {
-    alert("엑세스 토큰 : " + cookies.accessToken);
-  };
-
-  // onPlayMusic(), 음악 삭제 이후 음악 변경시 deleteMusicResponse()
-  // + 1월 24일 삭제 기능에서 직접 콜백으로 정보를 set해줬음
-  // useE!ffect(() => {
-  //   if (infoData.vidUrl !== "-") {
-  //     setPlayBarInfo(infoData);
-  //   }
-  // }, [infoData]);
 
   const onPlayMusic = (index: number) => {
     console.log("onPlayMusic 실행");
@@ -121,11 +107,13 @@ const PlayList = () => {
       setPlayBarUrl("");
     }
 
-    //useEffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
-    // useEffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
+    // useE!ffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
+    // useE!ffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
     setTimeout(() => {
       setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
       setNowPlayingPlaylistID(playlistId);
+      console.log("이때 musics : ", musics);
+
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
       setNowRandomPlaylist(musics);
@@ -321,6 +309,17 @@ const PlayList = () => {
       </div>
     );
   }
+
+  const testBtn = () => {
+    // alert("엑세스 토큰 : " + cookies.accessToken);
+    console.log(
+      "PlayList.tsx - nowPlayingPlaylist : " +
+        JSON.stringify(nowPlayingPlaylist)
+    );
+    console.log(
+      "PlayList.tsx - nowRandomPlaylist : " + JSON.stringify(nowRandomPlaylist)
+    );
+  };
 
   return (
     <>
