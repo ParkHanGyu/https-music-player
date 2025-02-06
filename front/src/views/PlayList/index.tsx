@@ -160,14 +160,6 @@ const PlayList = () => {
       return;
     }
 
-    // ++
-
-    setPlayBarUrl("");
-    setIsPlaying(false);
-    // setPlayBarDuration(0);
-
-    // ++
-
     // 삭제한 음악이 현재 듣는 음악과 재생목록, 같은 음악이면
     // 다음 노래로 이동. 하지만 마지막 노래라면 첫번째 노래로 이동
 
@@ -312,13 +304,19 @@ const PlayList = () => {
 
   const testBtn = () => {
     // alert("엑세스 토큰 : " + cookies.accessToken);
+    console.log("===================================================");
+
+    console.log("nowPlayingPlaylist.length : ", nowPlayingPlaylist.length);
     console.log(
       "PlayList.tsx - nowPlayingPlaylist : " +
         JSON.stringify(nowPlayingPlaylist)
     );
+    console.log("===================================================");
+    console.log("nowPlayingPlaylist.length : ", nowRandomPlaylist.length);
     console.log(
       "PlayList.tsx - nowRandomPlaylist : " + JSON.stringify(nowRandomPlaylist)
     );
+    console.log("===================================================");
   };
 
   return (

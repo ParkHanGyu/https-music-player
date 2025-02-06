@@ -269,6 +269,7 @@ const PlayBar = () => {
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
 
     if (isRandom) {
+      console.log("onNextMusic() -> isRandom true if문 실행");
       // 재생목록에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
@@ -281,13 +282,14 @@ const PlayBar = () => {
 
       let shuffleList: Music[] = [];
 
-      if (shuffleList.length === 0) {
+      if (filteredPlaylist.length === 0) {
         shuffleList = nowPlayingPlaylist;
-      } else if (shuffleList.length) {
+      } else if (filteredPlaylist.length) {
         shuffleList = shuffle(filteredPlaylist);
       }
       setNowRandomPlaylist(shuffleList);
       prevMusicUrl = shuffleList[0].url;
+      console.log("prevMusicUrl : ", prevMusicUrl);
     }
 
     if (!isRandom) {
