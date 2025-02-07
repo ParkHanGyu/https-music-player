@@ -77,10 +77,35 @@ const PlayList = () => {
     setMusics(playListResult.musicList);
     // 삭제 이후 다시 api가 작동한 경우 nowPlayingPlaylist도 최신화 시켜줘야함.
     // if 조건이 없다면 듣는 노래가 nowPlayingPlaylist가 1인데 2를 누르면 nowPlayingPlaylist가 자동으로 1에서 2로 바뀐다. 즉 nowPlayingPlaylistID와 보고있는 재생목록 ID가 같으면 최신화해주는
+    //2월 2일 추가 수정
+    // nowRandomPlaylist,nowPlayingPlaylist 두가지 값을 최신화해줘야 하는 상황은 add, delete 이후. 각각 기능에서 해줄 예정. 고로 필요없는 기능. 주석처리해줌.
+
     if (nowPlayingPlaylistID === playlistId) {
       console.log("nowPlayingPlaylistID === playlistId if문 실행");
       setNowPlayingPlaylist(playListResult.musicList);
-      setNowRandomPlaylist(playListResult.musicList);
+
+      // 랜덤재생을 했을 경우는 기존 nowPlayingPlaylist.length > nowRandomPlaylist.length 다.
+
+      // 이미 랜덤재생을 이용했을 경우
+      if (nowPlayingPlaylist.length > nowRandomPlaylist.length) {
+        console.log("이미 랜덤재생을 이용했을 경우");
+        // 지금 삭제한 노래 nowRandomPlaylist에서 삭제
+        const updatedNowRandomPlaylist = nowRandomPlaylist.filter(
+          (randomMusic) =>
+            playListResult.musicList.some(
+              (playingMusic) => playingMusic.musicId === randomMusic.musicId
+            )
+        );
+        console.log("updatedNowRandomPlaylist : ", updatedNowRandomPlaylist);
+        setNowRandomPlaylist(updatedNowRandomPlaylist);
+      }
+
+      // 랜덤재생을 이용하지 않았을 경우
+      if (nowPlayingPlaylist.length === nowRandomPlaylist.length) {
+        console.log("랜덤재생을 이용하지 않았을 경우");
+
+        setNowRandomPlaylist(playListResult.musicList);
+      }
     }
   };
 

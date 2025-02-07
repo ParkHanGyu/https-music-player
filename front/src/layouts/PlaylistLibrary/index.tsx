@@ -17,6 +17,7 @@ import { ResponseUtil } from "../../utils";
 import { useVideoStore } from "../../store/useVideo.store";
 import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 import { useParams } from "react-router-dom";
+import Music from "../../types/interface/music.interface";
 
 interface PlaylistLibraryProps {
   infoData: YoutubeInfo;
@@ -98,11 +99,24 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     if (nowPlayingPlaylistID !== playlistId) {
       const lastIndex = playListResult.musicList.length - 1;
       setNowPlayingPlaylist(playListResult.musicList);
-      setNowRandomPlaylist([
+
+      console.log(
+        "원래 nowRandomPlaylist : ",
+        JSON.stringify(nowRandomPlaylist)
+      );
+      const addShuffle = shuffle([
         ...nowRandomPlaylist,
         playListResult.musicList[lastIndex],
       ]);
+      console.log("셔플 이후 nowRandomPlaylist : ", JSON.stringify(addShuffle));
+
+      setNowRandomPlaylist(addShuffle);
     }
+  };
+
+  const shuffle = (playlist: Music[]) => {
+    const copiedPlaylist = [...playlist]; // 배열 복사
+    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
   };
 
   //================================= add 팝업 관련
