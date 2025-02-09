@@ -223,11 +223,11 @@ const PlayBar = () => {
 
       // 제외 이후
       if (filteredPlaylist.length === 0) {
-        // 값이 없으면 다시 채워주기
-        shuffleList = nowPlayingPlaylist;
+        // 값이 없으면 셔플해서 다시 채워주기
+        shuffleList = shuffle(nowPlayingPlaylist);
       } else if (filteredPlaylist.length) {
-        // 값이 있으면 섞어주기
-        shuffleList = shuffle(filteredPlaylist);
+        // 값이 있으면
+        shuffleList = filteredPlaylist;
       }
 
       setNowRandomPlaylist(shuffleList);
@@ -275,21 +275,37 @@ const PlayBar = () => {
         music.url.includes(playBarUrl)
       );
 
+      console.log("현재 노래의 index값 nowIndex : ", nowIndex);
+
+      //++
+      // 2월9일 추가중 .
+      // .filter()로 삭제할 필요가 없으러 같음. 다음날 이걸로 로직 바꿔보기
+      // if (nowRandomPlaylist[nowIndex + 1]) {
+      //   // nowIndex+1 값이 있다면 다음노래의 index로
+      //   prevMusicUrl = nowRandomPlaylist[nowIndex + 1].url;
+      // } else if (!nowRandomPlaylist[nowIndex + 1]) {
+      //   // nowIndex+1 값이 없다면 처음으로
+      //   prevMusicUrl = nowRandomPlaylist[0].url;
+      // }
+
+      //++
+
       // 재생중인 재생목록에서 재생중인 노래 제외하기
       const filteredPlaylist = nowRandomPlaylist.filter(
         (_, index) => index !== nowIndex
       );
-
       let shuffleList: Music[] = [];
 
       if (filteredPlaylist.length === 0) {
-        shuffleList = nowPlayingPlaylist;
+        // shuffleList은 랜덤 리스트에 들어가기 때문에 셔플을 해줌.
+        shuffleList = shuffle(nowPlayingPlaylist);
       } else if (filteredPlaylist.length) {
-        shuffleList = shuffle(filteredPlaylist);
+        // filteredPlaylist는 이미 셔플을 한 상태.
+        shuffleList = filteredPlaylist;
       }
       setNowRandomPlaylist(shuffleList);
+
       prevMusicUrl = shuffleList[0].url;
-      console.log("prevMusicUrl : ", prevMusicUrl);
     }
 
     if (!isRandom) {

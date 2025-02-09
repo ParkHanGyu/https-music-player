@@ -111,6 +111,12 @@ const PlayList = () => {
 
   const [musics, setMusics] = useState<Music[]>([]);
 
+    //      event handler : 음악 셔플 이벤트 처리 함수       //
+    const shuffle = (playlist: Music[]) => {
+      const copiedPlaylist = [...playlist]; // 배열 복사
+      return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
+    };
+
   const onPlayMusic = (index: number) => {
     console.log("onPlayMusic 실행");
     console.log("이때 cookies.accessToken : ", cookies.accessToken);
@@ -141,7 +147,7 @@ const PlayList = () => {
 
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
-      setNowRandomPlaylist(musics);
+      setNowRandomPlaylist(shuffle(musics));
     }, 100); // 다시 설정
   };
 
