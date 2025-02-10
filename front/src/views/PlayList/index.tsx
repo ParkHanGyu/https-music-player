@@ -84,38 +84,52 @@ const PlayList = () => {
       console.log("nowPlayingPlaylistID === playlistId if문 실행");
       setNowPlayingPlaylist(playListResult.musicList);
 
-      // 랜덤재생을 했을 경우는 기존 nowPlayingPlaylist.length > nowRandomPlaylist.length 다.
+      // ===============
+      // 2월 10일 추가. 다음날 수정하기.
+      // 현재 노래가 중복추가되는 상황임
 
-      // 이미 랜덤재생을 이용했을 경우
-      if (nowPlayingPlaylist.length > nowRandomPlaylist.length) {
-        console.log("이미 랜덤재생을 이용했을 경우");
-        // 지금 삭제한 노래 nowRandomPlaylist에서 삭제
-        const updatedNowRandomPlaylist = nowRandomPlaylist.filter(
-          (randomMusic) =>
-            playListResult.musicList.some(
-              (playingMusic) => playingMusic.musicId === randomMusic.musicId
-            )
-        );
-        console.log("updatedNowRandomPlaylist : ", updatedNowRandomPlaylist);
-        setNowRandomPlaylist(updatedNowRandomPlaylist);
-      }
+      // const differentIndexes = nowPlayingPlaylist
+      //   .map((item, index) =>
+      //     item !== playListResult.musicList[index] ? index : -1
+      //   )
+      //   .filter((index) => index !== -1);
 
-      // 랜덤재생을 이용하지 않았을 경우
-      if (nowPlayingPlaylist.length === nowRandomPlaylist.length) {
-        console.log("랜덤재생을 이용하지 않았을 경우");
+      // // 기준 찾기
+      // const nowIndex = nowRandomPlaylist.findIndex((music) =>
+      //   music.url.includes(playBarUrl)
+      // );
 
-        setNowRandomPlaylist(playListResult.musicList);
-      }
+      // if (nowIndex !== -1) {
+      //   // 2. 기준 이후의 배열 부분 추출
+      //   const before33 = nowRandomPlaylist.slice(0, nowIndex + 1);
+      //   const after33 = nowRandomPlaylist.slice(nowIndex + 1);
+
+      //   // 3. 랜덤한 위치 선택
+      //   const randomIndex = Math.floor(Math.random() * (after33.length + 1));
+
+      //   // 4. 새로운 배열 생성 (랜덤한 위치에 삽입)
+      //   after33.splice(randomIndex, 0, nowRandomPlaylist[differentIndexes[0]]);
+
+      //   // 5. 최종 배열 합치기
+      //   const updatedPlaylist = [...before33, ...after33];
+
+      //   console.log("updatedPlaylist : ", updatedPlaylist);
+      //   setNowRandomPlaylist(updatedPlaylist);
+      // } else {
+      //   console.log("error");
+      // }
+
+      //==============
     }
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
 
-    //      event handler : 음악 셔플 이벤트 처리 함수       //
-    const shuffle = (playlist: Music[]) => {
-      const copiedPlaylist = [...playlist]; // 배열 복사
-      return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
-    };
+  //      event handler : 음악 셔플 이벤트 처리 함수       //
+  const shuffle = (playlist: Music[]) => {
+    const copiedPlaylist = [...playlist]; // 배열 복사
+    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
+  };
 
   const onPlayMusic = (index: number) => {
     console.log("onPlayMusic 실행");
@@ -145,9 +159,29 @@ const PlayList = () => {
       setNowPlayingPlaylistID(playlistId);
       console.log("이때 musics : ", musics);
 
+      const shufflePlaylist = shuffle(musics);
+      console.log("이때 shufflePlaylist : ", shufflePlaylist);
+
+      // 옮길 배열
+      const targetItem = shufflePlaylist.find(
+        (item) => item.url === itemMusicUrl
+      );
+
+      // 이외 배열
+      const filteredList = shufflePlaylist.filter(
+        (item) => item.url !== itemMusicUrl
+      );
+
+      // 최종 결과 (targetItem을 맨 앞에 추가)
+      const updatedNowRandomPlaylist = targetItem
+        ? [targetItem, ...filteredList]
+        : shufflePlaylist;
+
+      console.log("updatedNowRandomPlaylist : ", updatedNowRandomPlaylist);
+
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
-      setNowRandomPlaylist(shuffle(musics));
+      setNowRandomPlaylist(updatedNowRandomPlaylist);
     }, 100); // 다시 설정
   };
 

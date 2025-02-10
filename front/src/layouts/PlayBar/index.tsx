@@ -37,6 +37,9 @@ const PlayBar = () => {
 
   //      event handler: 재생, 일시정지 이벤트 처리 함수       //
   const handlePlayPause = () => {
+    if (!nowPlayingPlaylist.length) {
+      return;
+    }
     if (isLoading === false) {
       setIsPlaying(!isPlaying);
     }
@@ -209,33 +212,25 @@ const PlayBar = () => {
     let prevMusicUrl;
 
     if (isRandom) {
-      // 현재 재생중인 index
+      // nowRandomPlaylist에서 현재 음악 index
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
-      // 재생중인 재생목록에서 재생중인 노래 제외하기
-      const filteredPlaylist = nowRandomPlaylist.filter(
-        (_, index) => index !== nowIndex
-      );
 
-      // 배열 랜덤
-      let shuffleList: Music[] = [];
+      if (nowRandomPlaylist[nowIndex - 1]) {
+        // nowIndex - 1 값이 있다면 이전노래의 index로
+        prevMusicUrl = nowRandomPlaylist[nowIndex - 1].url;
+      } else if (!nowRandomPlaylist[nowIndex - 1]) {
+        // nowIndex - 1 값이 없다면 마지막으로
 
-      // 제외 이후
-      if (filteredPlaylist.length === 0) {
-        // 값이 없으면 셔플해서 다시 채워주기
-        shuffleList = shuffle(nowPlayingPlaylist);
-      } else if (filteredPlaylist.length) {
-        // 값이 있으면
-        shuffleList = filteredPlaylist;
+        const randomPlaylistLength = nowRandomPlaylist.length;
+
+        prevMusicUrl = nowRandomPlaylist[randomPlaylistLength - 1].url;
       }
-
-      setNowRandomPlaylist(shuffleList);
-      prevMusicUrl = shuffleList[0].url;
     }
 
     if (!isRandom) {
-      // 재생목록에서 현재 음악 index값
+      // nowPlayingPlaylist에서 현재 음악 index값
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
@@ -270,42 +265,40 @@ const PlayBar = () => {
 
     if (isRandom) {
       console.log("onNextMusic() -> isRandom true if문 실행");
-      // 재생목록에서 현재 음악 index값
+      // nowRandomPlaylist에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
       );
 
       console.log("현재 노래의 index값 nowIndex : ", nowIndex);
 
-      //++
       // 2월9일 추가중 .
       // .filter()로 삭제할 필요가 없으러 같음. 다음날 이걸로 로직 바꿔보기
-      // if (nowRandomPlaylist[nowIndex + 1]) {
-      //   // nowIndex+1 값이 있다면 다음노래의 index로
-      //   prevMusicUrl = nowRandomPlaylist[nowIndex + 1].url;
-      // } else if (!nowRandomPlaylist[nowIndex + 1]) {
-      //   // nowIndex+1 값이 없다면 처음으로
-      //   prevMusicUrl = nowRandomPlaylist[0].url;
-      // }
+      if (nowRandomPlaylist[nowIndex + 1]) {
+        // nowIndex+1 값이 있다면 다음노래의 index로
+        prevMusicUrl = nowRandomPlaylist[nowIndex + 1].url;
+      } else if (!nowRandomPlaylist[nowIndex + 1]) {
+        // nowIndex+1 값이 없다면 처음으로
 
-      //++
+        const resetRandomPlaylist = shuffle(nowPlayingPlaylist);
+        // 옮길 배열
+        const targetItem = resetRandomPlaylist.find(
+          (item) => item.url === playBarUrl
+        );
 
-      // 재생중인 재생목록에서 재생중인 노래 제외하기
-      const filteredPlaylist = nowRandomPlaylist.filter(
-        (_, index) => index !== nowIndex
-      );
-      let shuffleList: Music[] = [];
+        // 이외 배열
+        const filteredList = resetRandomPlaylist.filter(
+          (item) => item.url !== playBarUrl
+        );
 
-      if (filteredPlaylist.length === 0) {
-        // shuffleList은 랜덤 리스트에 들어가기 때문에 셔플을 해줌.
-        shuffleList = shuffle(nowPlayingPlaylist);
-      } else if (filteredPlaylist.length) {
-        // filteredPlaylist는 이미 셔플을 한 상태.
-        shuffleList = filteredPlaylist;
+        // 최종 결과 (targetItem을 맨 앞에 추가)
+        const updatedNowRandomPlaylist = targetItem
+          ? [...filteredList, targetItem]
+          : nowRandomPlaylist;
+
+        prevMusicUrl = updatedNowRandomPlaylist[0].url;
+        setNowRandomPlaylist(updatedNowRandomPlaylist);
       }
-      setNowRandomPlaylist(shuffleList);
-
-      prevMusicUrl = shuffleList[0].url;
     }
 
     if (!isRandom) {
