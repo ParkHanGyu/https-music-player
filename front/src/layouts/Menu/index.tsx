@@ -49,8 +49,7 @@ const Menu = () => {
   };
 
   const testValue = () => {
-    navigator(TEST_PATH());
-    // alert("isPlaylistDrop : " + isPlaylistDrop);
+    console.log("playlistLibrary", JSON.stringify(playlistLibrary));
   };
 
   //========================================== playlist 드롭박스

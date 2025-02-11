@@ -80,47 +80,85 @@ const PlayList = () => {
     //2월 2일 추가 수정
     // nowRandomPlaylist,nowPlayingPlaylist 두가지 값을 최신화해줘야 하는 상황은 add, delete 이후. 각각 기능에서 해줄 예정. 고로 필요없는 기능. 주석처리해줌.
 
-    if (nowPlayingPlaylistID === playlistId) {
-      console.log("nowPlayingPlaylistID === playlistId if문 실행");
-      setNowPlayingPlaylist(playListResult.musicList);
+    // if (nowPlayingPlaylistID === playlistId) {
+    //   console.log("nowPlayingPlaylistID === playlistId if문 실행");
+    //   setNowPlayingPlaylist(playListResult.musicList);
 
-      // ===============
-      // 2월 10일 추가. 다음날 수정하기.
-      // 현재 노래가 중복추가되는 상황임
+    //   // ===============
+    //   // 2월 10일 추가. 다음날 수정하기.
+    //   // 현재 노래가 중복추가되는 상황임
 
-      // const differentIndexes = nowPlayingPlaylist
-      //   .map((item, index) =>
-      //     item !== playListResult.musicList[index] ? index : -1
-      //   )
-      //   .filter((index) => index !== -1);
+    //   console.log(
+    //     "playListResult.musicList.length : ",
+    //     playListResult.musicList.length
+    //   );
+    //   console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
 
-      // // 기준 찾기
-      // const nowIndex = nowRandomPlaylist.findIndex((music) =>
-      //   music.url.includes(playBarUrl)
-      // );
+    //   // 최신 데이터와 현재 사용중인 데이터가 다른 데이터일 경우
+    //   if (playListResult.musicList.length !== nowRandomPlaylist.length) {
+    //     // nowRandomPlaylist와 playListResult.musicList 비교해서 playListResult.musicList
+    //     // 배열에서 다른 값의 index
 
-      // if (nowIndex !== -1) {
-      //   // 2. 기준 이후의 배열 부분 추출
-      //   const before33 = nowRandomPlaylist.slice(0, nowIndex + 1);
-      //   const after33 = nowRandomPlaylist.slice(nowIndex + 1);
+    //     const additionalItems = nowRandomPlaylist.filter(
+    //       (item) =>
+    //         !playListResult.musicList.some(
+    //           (existingItem) => existingItem.musicId === item.musicId
+    //         )
+    //     );
 
-      //   // 3. 랜덤한 위치 선택
-      //   const randomIndex = Math.floor(Math.random() * (after33.length + 1));
+    //     console.log("additionalItems:", additionalItems);
 
-      //   // 4. 새로운 배열 생성 (랜덤한 위치에 삽입)
-      //   after33.splice(randomIndex, 0, nowRandomPlaylist[differentIndexes[0]]);
+    //     const indexValues = nowRandomPlaylist
+    //       .map((item, index) => {
+    //         // playListResult.musicList 배열에 해당 musicId가 존재하지 않으면 해당 index를 반환
+    //         if (
+    //           !playListResult.musicList.some(
+    //             (existingItem) => existingItem.musicId === item.musicId
+    //           )
+    //         ) {
+    //           return index;
+    //         }
+    //         return -1;
+    //       })
+    //       .filter((index) => index !== -1); // -1을 제외하고 실제 index 값만 필터링
 
-      //   // 5. 최종 배열 합치기
-      //   const updatedPlaylist = [...before33, ...after33];
+    //     console.log("indexValues", indexValues);
+    //     console.log("indexValues[0]", indexValues[0]);
 
-      //   console.log("updatedPlaylist : ", updatedPlaylist);
-      //   setNowRandomPlaylist(updatedPlaylist);
-      // } else {
-      //   console.log("error");
-      // }
+    //     console.log(
+    //       "playListResult.musicList : ",
+    //       JSON.stringify(playListResult.musicList)
+    //     );
+    //     console.log("nowRandomPlaylist : ", JSON.stringify(nowRandomPlaylist));
 
-      //==============
-    }
+    //     // 기준 찾기
+    //     const nowIndex = nowRandomPlaylist.findIndex((music) =>
+    //       music.url.includes(playBarUrl)
+    //     );
+
+    //     if (nowIndex !== -1) {
+    //       // 2. 기준 이후의 배열 부분 추출
+    //       const before33 = nowRandomPlaylist.slice(0, nowIndex + 1);
+    //       const after33 = nowRandomPlaylist.slice(nowIndex + 1);
+
+    //       // 3. 랜덤한 위치 선택
+    //       const randomIndex = Math.floor(Math.random() * (after33.length + 1));
+
+    //       // 4. 새로운 배열 생성 (랜덤한 위치에 삽입)
+    //       after33.splice(randomIndex, 0, nowRandomPlaylist[indexValues[0]]);
+
+    //       // 5. 최종 배열 합치기
+    //       const updatedPlaylist = [...before33, ...after33];
+
+    //       console.log("updatedPlaylist : ", updatedPlaylist);
+    //       setNowRandomPlaylist(updatedPlaylist);
+    //     } else {
+    //       console.log("error");
+    //     }
+    //   }
+
+    //   //==============
+    // }
   };
 
   const [musics, setMusics] = useState<Music[]>([]);
@@ -157,10 +195,7 @@ const PlayList = () => {
     setTimeout(() => {
       setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
       setNowPlayingPlaylistID(playlistId);
-      console.log("이때 musics : ", musics);
-
       const shufflePlaylist = shuffle(musics);
-      console.log("이때 shufflePlaylist : ", shufflePlaylist);
 
       // 옮길 배열
       const targetItem = shufflePlaylist.find(
@@ -176,8 +211,6 @@ const PlayList = () => {
       const updatedNowRandomPlaylist = targetItem
         ? [targetItem, ...filteredList]
         : shufflePlaylist;
-
-      console.log("updatedNowRandomPlaylist : ", updatedNowRandomPlaylist);
 
       setNowPlayingPlaylist(musics);
       setNowRandomPlaylistID(playlistId);
@@ -251,10 +284,7 @@ const PlayList = () => {
         setMusicInfo(newMusicUrl, (newInfoData) => {
           setPlayBarInfo(newInfoData);
         });
-      }
-
-      // 마지막 노래가 아니라면 다음 노래로 넘어가야함.
-      if (!lastIndexBoolean) {
+      } else {
         const newMusicUrl = nowPlayingPlaylist[deleteMusicIndex + 1].url;
         setPlayBarUrl(newMusicUrl);
         // 콜백
@@ -262,12 +292,48 @@ const PlayList = () => {
           setPlayBarInfo(newInfoData);
         });
       }
+
+      if (playlistId) {
+        getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
+          deleteGetPlaylistMusicResponse
+        );
+      }
     }
 
-    setIsLoading(false); // 이때 useEffect로 music을 최신화
+    // 이전에는 로딩으로 최신화 시켜줌. 현재 수정중 . 최신화 기능으로 사용x
+    setIsLoading(false);
   };
 
-  // ++
+  const deleteGetPlaylistMusicResponse = (
+    responseBody: GetMusicResponseDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+    const playListResult = responseBody as GetMusicResponseDto;
+
+    // 삭제한 노래
+    const additionalItems = playListResult.musicList.filter(
+      (item) =>
+        !nowRandomPlaylist.some(
+          (existingItem) => existingItem.musicId === item.musicId
+        )
+    );
+    console.log("additionalItems[0] : ", additionalItems[0]);
+
+    // 삭제할 노래의 ID를 기준으로 nowRandomPlaylist에서 일치하는 노래 삭제
+    const updatedPlaylist = nowRandomPlaylist.filter(
+      (item) => item.musicId !== additionalItems[0].musicId
+    );
+
+    console.log(
+      "삭제시 최종적으로 setNowRandomPlaylist 해주는 데이터  : ",
+      JSON.stringify(updatedPlaylist)
+    );
+
+    setNowRandomPlaylist(updatedPlaylist);
+    setNowPlayingPlaylist(playListResult.musicList);
+  };
 
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
   // ++
@@ -369,19 +435,22 @@ const PlayList = () => {
 
   const testBtn = () => {
     // alert("엑세스 토큰 : " + cookies.accessToken);
-    console.log("===================================================");
+    // console.log("===================================================");
 
-    console.log("nowPlayingPlaylist.length : ", nowPlayingPlaylist.length);
-    console.log(
-      "PlayList.tsx - nowPlayingPlaylist : " +
-        JSON.stringify(nowPlayingPlaylist)
-    );
+    // console.log("nowPlayingPlaylist.length : ", nowPlayingPlaylist.length);
+    // console.log(
+    //   "PlayList.tsx - nowPlayingPlaylist : " +
+    //     JSON.stringify(nowPlayingPlaylist)
+    // );
     console.log("===================================================");
-    console.log("nowPlayingPlaylist.length : ", nowRandomPlaylist.length);
+    console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
     console.log(
       "PlayList.tsx - nowRandomPlaylist : " + JSON.stringify(nowRandomPlaylist)
     );
     console.log("===================================================");
+
+    // console.log("musics : ", JSON.stringify(musics));
+    // console.log("===================================================");
   };
 
   return (

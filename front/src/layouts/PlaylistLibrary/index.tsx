@@ -33,7 +33,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   setPlaylistPopupOpen,
 }) => {
   //      Zustand state : playBar url, info, 로딩 상태      //
-  const { setIsLoading } = useVideoStore();
+  const { setIsLoading, playBarUrl } = useVideoStore();
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
   const [cookies] = useCookies();
 
@@ -84,33 +84,64 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     console.log("addPlaylistID : ", addPlaylistID);
 
     getPlaylistMusicReqeust(addPlaylistID, cookies.accessToken).then(
-      getPlaylistMusicResponse
+      (responseBody) => getPlaylistMusicResponse(responseBody, addPlaylistID)
     );
   };
 
   const getPlaylistMusicResponse = (
-    responseBody: GetMusicResponseDto | ResponseDto | null
+    responseBody: GetMusicResponseDto | ResponseDto | null,
+    addPlaylistID: string
   ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
     const playListResult = responseBody as GetMusicResponseDto;
 
-    if (nowPlayingPlaylistID !== playlistId) {
-      const lastIndex = playListResult.musicList.length - 1;
-      setNowPlayingPlaylist(playListResult.musicList);
+    // 현재 듣고 있는 노래의 재생목록이면 방금 추가한 노래 떄문에 최신화 해줘야 하는 상황
+    if (nowPlayingPlaylistID === addPlaylistID) {
+      // ========================
 
-      console.log(
-        "원래 nowRandomPlaylist : ",
-        JSON.stringify(nowRandomPlaylist)
+      // nowRandomPlaylist에서 지금 듣는 노래의 index. 기준 찾기
+      const nowIndex = nowRandomPlaylist.findIndex((music) =>
+        music.url.includes(playBarUrl)
       );
-      const addShuffle = shuffle([
-        ...nowRandomPlaylist,
-        playListResult.musicList[lastIndex],
-      ]);
-      console.log("셔플 이후 nowRandomPlaylist : ", JSON.stringify(addShuffle));
 
-      setNowRandomPlaylist(addShuffle);
+      if (nowIndex !== -1) {
+        // 2. 기준 이전,이후의 배열 부분 추출
+        const beforeArray = nowRandomPlaylist.slice(0, nowIndex + 1);
+        const afterArray = nowRandomPlaylist.slice(nowIndex + 1);
+
+        // 3. 랜덤한 위치 선택
+        const randomIndex = Math.floor(Math.random() * (afterArray.length + 1));
+
+        // 3 - 1. nowRandomPlaylist와 playListResult.musicList을 비교해서 추가된 곡 찾기
+        const additionalItems = playListResult.musicList.filter(
+          (item) =>
+            !nowRandomPlaylist.some(
+              (existingItem) => existingItem.musicId === item.musicId
+            )
+        );
+
+        // 4. 새로운 배열 생성 (additionalItems[0]을 랜덤한 위치에 삽입)
+        // 4. afterArray 배열에서 랜덤한 위치로 추가한 노래(additionalItems[0])를 삽입
+        afterArray.splice(randomIndex, 0, additionalItems[0]);
+
+        // 5. 최종 배열 합치기
+        const updatedPlaylist = [...beforeArray, ...afterArray];
+
+        setNowRandomPlaylist(updatedPlaylist);
+      }
+
+      // =======================
+      // const lastIndex = playListResult.musicList.length - 1;
+      // setNowPlayingPlaylist(playListResult.musicList);
+
+      // const addShuffle = shuffle([
+      //   ...nowRandomPlaylist,
+      //   playListResult.musicList[lastIndex],
+      // ]);
+
+      // setNowRandomPlaylist(addShuffle);
     }
   };
 

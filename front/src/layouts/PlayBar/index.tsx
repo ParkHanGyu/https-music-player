@@ -265,6 +265,7 @@ const PlayBar = () => {
 
     if (isRandom) {
       console.log("onNextMusic() -> isRandom true if문 실행");
+      console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
       // nowRandomPlaylist에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.url.includes(playBarUrl)
