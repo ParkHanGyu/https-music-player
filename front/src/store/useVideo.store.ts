@@ -17,11 +17,11 @@ interface VideoState {
 
   // 로딩상태
 
-  isLoading: boolean | true;
-  setIsLoading: (isLoading: boolean) => void;
+  playlistLoading: boolean;
+  setPlaylistLoading: (isLoading: boolean) => void;
 }
 
-// Zustand 스토어 생성
+// Zustand 스토어 생성  - 초기값
 export const useVideoStore = create<VideoState>((set) => ({
   // ========================================================================
   searchUrl: "", // 초기 searchUrl 값은 ""
@@ -34,8 +34,9 @@ export const useVideoStore = create<VideoState>((set) => ({
   setPlayBarInfo: (info) => set({ playBarInfo: info }), // playInfo 상태를 업데이트하는 함수
 
   // 로딩상태
-  isLoading: true,
-  setIsLoading: (isLoading) => set({ isLoading: isLoading }),
+  playlistLoading: false,
+  setPlaylistLoading: (playlistLoading) =>
+    set({ playlistLoading: playlistLoading }),
 
   // 음악 리스트 상태 및 함수들
 }));

@@ -30,15 +30,14 @@ function App() {
   //      Zustand state : 로그인 유저 정보 상태      //
   const { setLoginUserInfo, resetLoginUser } = useLoginUserStore();
   //      Zustand state : 로딩 상태      //
-  const { setIsLoading } = useVideoStore();
+  const { setPlaylistLoading } = useVideoStore();
   //      useEffect : 토큰 변경시(만료, 생성) 엑세스 토큰에 대해서 재발급 또는 엑세스 토큰이 유효하지 않을 경우 유저 정보 초기화     //
 
   //      hook (커스텀) : 토큰 유효 시간   //
   const tokenExp = useTokenExpiration(cookies.accessToken);
 
   useEffect(() => {
-    // 로그인 이후 유저 정보 set
-    setIsLoading(true);
+    // setPlaylistLoading(true);
 
     // 토큰이 있으면 유저 정보를 set
     if (cookies.accessToken && tokenExp) {
@@ -59,9 +58,9 @@ function App() {
       resetLoginUser();
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    // setTimeout(() => {
+    //   setPlaylistLoading(false);
+    // }, 1000);
   }, [cookies.accessToken, tokenExp]);
   // 로그인 할때 유저정보 불러옴
   const getLoginUserResponse = (
