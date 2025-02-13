@@ -212,15 +212,19 @@ const PlayList = () => {
           setPlayBarInfo(newInfoData);
         });
       }
-
-      if (playlistId) {
-        getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
-          deleteGetPlaylistMusicResponse
-        );
-      }
     }
 
-    // 이전에는 로딩으로 최신화 시켜줌. 현재 수정중 . 최신화 기능으로 사용x
+    if (
+      playlistId !== undefined &&
+      nowPlayingPlaylist.length &&
+      playlistId === nowPlayingPlaylistID
+    ) {
+      console.log("222줄 if 실행");
+      getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
+        deleteGetPlaylistMusicResponse
+      );
+    }
+
     console.log("로딩 false");
     setPlaylistLoading(false);
   };
@@ -228,15 +232,17 @@ const PlayList = () => {
   const deleteGetPlaylistMusicResponse = (
     responseBody: GetMusicResponseDto | ResponseDto | null
   ) => {
+    console.log("deleteGetPlaylistMusicResponse 실행");
+
     if (!ResponseUtil(responseBody)) {
       return;
     }
     const playListResult = responseBody as GetMusicResponseDto;
 
     // 삭제한 노래
-    const additionalItems = playListResult.musicList.filter(
+    const additionalItems = nowRandomPlaylist.filter(
       (item) =>
-        !nowRandomPlaylist.some(
+        !playListResult.musicList.some(
           (existingItem) => existingItem.musicId === item.musicId
         )
     );
@@ -350,11 +356,12 @@ const PlayList = () => {
         JSON.stringify(nowPlayingPlaylist, null, 2)
     );
     console.log("===================================================");
-    // console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
-    // console.log(
-    //   "PlayList.tsx - nowRandomPlaylist : " + JSON.stringify(nowRandomPlaylist)
-    // );
-    // console.log("===================================================");
+    console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
+    console.log(
+      "PlayList.tsx - nowRandomPlaylist : " +
+        JSON.stringify(nowRandomPlaylist, null, 2)
+    );
+    console.log("===================================================");
 
     // console.log("musics : ", JSON.stringify(musics));
     // console.log("===================================================");

@@ -1,0 +1,336 @@
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 회원 관련
+sign-in(로그인)
+ - request 
+ {
+  *email : String,
+  *password : String
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success"
+    accessToken : "jwt..."
+    refreshToken : "jwt..."
+    accessTokenExpirationTime : Number
+    refreshTokenExpirationTime : Number
+  }
+
+  실패 
+    1. 로그인 실패 => Http Status - 401 (Unauthorized)
+    {
+      code : "SF",
+      message : "Sign In Failed."
+    }
+
+    2. 데이터베이스 에러 => Http Status - 500 (Internal Server Error)
+    {
+      code : "DE",
+      message : "Database Error."
+    }
+======================================================================
+
+sign-up(회원가입)
+ - request 
+ {
+  *email : String,
+  *password : String,
+  *profileImage : String
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success"
+  }
+
+  실패 
+    1. 이메일 중복 => Http Status - 400 (Bad Request)
+    {
+      code : "EE",
+      message : "Existed Email."
+    }
+
+    2. 데이터베이스 에러 => Http Status - 500 (Internal Server Error)
+    {
+      code : "DE",
+      message : "Database Error."
+    }
+======================================================================
+userInfoData(회원정보 가져오기)
+ - request 
+ {
+  *accessToken : "jwt..."
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success"
+    email: String;
+    profileImage: String;
+    admin: String;
+  }
+
+  실패 
+    1. 토큰 누락 => Http Status - 400 (Missing Token)
+    {
+      code : "MT",
+      message : "Refresh token is required."
+    }
+
+    2. accessToken 토큰 만료 => Http Status - 401 (Bad Request)
+    {
+      code : "TE",
+      message : "Token Expired."
+    }
+
+    2. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+
+======================================================================
+
+accessTokenReissue(accessToken 재발급)
+ - request 
+ {
+  *refreshToken : "jwt..."
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success"
+    accessToken : "jwt..."
+    accessTokenExpirationTime : Number
+  }
+
+  실패 
+    1. 토큰 누락 => Http Status - 400 (Missing Token)
+    {
+      code : "MT",
+      message : "Refresh token is required."
+    }
+
+    2. refreshToken 토큰 만료 => Http Status - 401 (Unauthorized)
+    {
+      code : "IR",
+      message : "Invalid or expired refresh token."
+    }
+
+    3. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+======================================================================
+
+uploadImage(이미지 변경)
+ - request 
+ {
+  *File : File,
+  *accessToken : "jwt..."
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success",
+    url : String
+  }
+
+  실패 
+    1. 파일 누락 => Http Status - 400 (Empty File)
+    {
+      code : "EF",
+      message : "File is empty."
+    }
+
+    2. 파일 저장 경로 오류 => Http Status - 500 (Internal Server Error)
+    {
+      code : "FP",
+      message : "Failed to save file."
+    }
+
+    3. 파일 이름 확장자 오류 => Http Status - 500 (File Extension Error)
+    {
+      code : "FE",
+      message : "Invalid file name."
+    }
+
+    4. accessToken 토큰 만료 => Http Status - 401 (Bad Request)
+    {
+      code : "TE",
+      message : "Token Expired."
+    }
+
+    5. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+======================================================================
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 음악 관련
+addMusic(음악 추가)
+ - request 
+ {
+  *vidUrl: Sring,
+  *author: String,
+  *thumb: String,
+  *vidTitle: String,
+  *infoDuration: Number,
+  *playlistId: Long
+ }
+
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success",
+  }
+
+  실패 
+    1. accessToken 토큰 만료 => Http Status - 401 (Unauthorized)
+    {
+      code : "TE",
+      message : "Token Expired."
+    }
+
+    2. 중복된 음악 => Http Status - 400 (Bad Request)
+    {
+      code: "EM",
+      message : "Existing Music."
+    }
+
+    3. 존재하지 않는 플레이리스트 ID => Http Status - 400 (Bad Request)
+    {
+      code: "PE",
+      message : "Playlist Not Found."
+    }
+
+    4. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+
+======================================================================
+
+deleteMusic(음악 삭제)
+ - request 
+ {
+  *musicId : Long,
+  *accessToken : "jwt..."
+ }
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success",
+  }
+
+  실패 
+    1. accessToken 토큰 만료 => Http Status - 401 (Unauthorized)
+    {
+      code : "TE",
+      message : "Token Expired."
+    }
+
+    2. 사용자 정보 조회 실패 => Http Status - 404 (Not Found)
+    {
+      code : "UE",
+      message : "User not found."
+    }
+
+    3. 삭제 권한 없음 또는 음악이 존재하지 않음 => Http Status - 400 (Bad Request)
+    {
+      code : "NA",
+      message : "No access or music not found."
+    }
+
+    4. 음악 삭제 실패 => Http Status - 500 (Internal Server Error)
+    {
+      code : "SE",
+      message : "Failed to delete music."
+    }
+
+    5. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+======================================================================
+
+copyMusic(음악 복사)
+ - request 
+ {
+  *musicId : Long,
+  *accessToken : "jwt..."
+ }
+
+
+ - response
+  성공 => Http Status - 200 (OK)
+  {
+    code : "SU",
+    message : "Success",
+  }
+
+  실패 
+    1. accessToken 토큰 만료 => Http Status - 401 (Unauthorized)
+    {
+      code : "TE",
+      message : "Token Expired."
+    }
+
+    2. 사용자 정보 조회 실패 => Http Status - 404 (Not Found)
+    {
+      code : "UE",
+      message : "User not found."
+    }
+
+    3. 삭제 권한 없음 또는 음악이 존재하지 않음 => Http Status - 400 (Bad Request)
+    {
+      code : "NA",
+      message : "No access or music not found."
+    }
+
+    4. 음악 삭제 실패 => Http Status - 500 (Internal Server Error)
+    {
+      code : "SE",
+      message : "Failed to delete music."
+    }
+
+    5. 예상치 못한 서버 에러 => Http Status - 500 (Server Errorr)
+    {
+      code : "SE",
+      message : "Internal server error. Please try again later."
+    }
+
+
+
+======================================================================
+
+updateOrderValue(음악 순서 변경)
+======================================================================
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 재생목록 관련
+createPlaylist(재생목록 생성)
+
+playlistLibrary(재생목록 모음 불러오기)
+
+playlistDetail(재생목록 노래 불러오기)
+
+deletePlaylist(재생목록 삭제)
+
+updatePlaylistName(재생목록 이름 변경)
+
+

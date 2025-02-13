@@ -49,7 +49,8 @@ const Menu = () => {
   };
 
   const testValue = () => {
-    console.log("playlistLibrary", JSON.stringify(playlistLibrary));
+    navigator(TEST_PATH());
+    // console.log("playlistLibrary", JSON.stringify(playlistLibrary));
   };
 
   //========================================== playlist 드롭박스

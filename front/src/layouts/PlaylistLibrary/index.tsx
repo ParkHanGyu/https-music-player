@@ -123,9 +123,9 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
         setNowRandomPlaylist(updatedPlaylist);
         setNowPlayingPlaylist(playListResult.musicList);
       }
-      console.log("로딩 false");
-      setPlaylistLoading(false);
     }
+    console.log("로딩 false");
+    setPlaylistLoading(false);
   };
 
   const shuffle = (playlist: Music[]) => {

@@ -32,17 +32,18 @@ public class MusicController {
     }
 
 
+    // 음악 삭제
     @DeleteMapping("/delete/music/{musicId}")
     public ResponseEntity<? super DeleteMusicResponse> deleteMusic(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
         return musicservice.deleteMusic(musicId,email);
     }
 
 
-    @PostMapping("/copy/music/{musicId}")
-    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String token) {
-        log.info("musicId = {}, token = {}", musicId, token);
-        return musicservice.copyMusic(musicId,token);
-    }
+//    @PostMapping("/copy/music/{musicId}")
+//    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String token) {
+//        log.info("musicId = {}, token = {}", musicId, token);
+//        return musicservice.copyMusic(musicId,token);
+//    }
 
     // 재생목록 순서 변경
     @PutMapping("/update/order/playlist/{playlistId}")

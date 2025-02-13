@@ -196,27 +196,27 @@ export const deletePlaylist = async (
 
 // ===============
 // 노래 복사
-const COPY_MUSIC = (musicId: bigint | string) =>
-  `${API_DOMAIN}/copy/music/${musicId}`;
-export const copyMusic = async (
-  musicId: bigint | string,
-  accessToken: string
-) => {
-  console.log(
-    "노래 복사. 서버로 보내는 토큰 값 : " +
-      JSON.stringify(authorication(accessToken))
-  );
-  const result = await axios
-    .post(COPY_MUSIC(musicId), {}, authorication(accessToken))
-    .then((response) => {
-      const responseBody: ResponseDto = response.data;
-      return responseBody;
-    })
-    .catch((error) => {
-      return errorResponse(error);
-    });
-  return result;
-};
+// const COPY_MUSIC = (musicId: bigint | string) =>
+//   `${API_DOMAIN}/copy/music/${musicId}`;
+// export const copyMusic = async (
+//   musicId: bigint | string,
+//   accessToken: string
+// ) => {
+//   console.log(
+//     "노래 복사. 서버로 보내는 토큰 값 : " +
+//       JSON.stringify(authorication(accessToken))
+//   );
+//   const result = await axios
+//     .post(COPY_MUSIC(musicId), {}, authorication(accessToken))
+//     .then((response) => {
+//       const responseBody: ResponseDto = response.data;
+//       return responseBody;
+//     })
+//     .catch((error) => {
+//       return errorResponse(error);
+//     });
+//   return result;
+// };
 
 // 프로필 이미지 업로드 URL
 const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;

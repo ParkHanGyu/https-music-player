@@ -44,6 +44,7 @@ public class MusicServiceImpl implements Musicservice {
     private final PlaylistMusicRepoService playlistMusicRepoService;
 
 
+    // 음악 추가
     @Override
     public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
         String pureToken = token.replace("Bearer ", "").trim();
@@ -119,13 +120,13 @@ public class MusicServiceImpl implements Musicservice {
         }
     }
 
-    @Override
-    public ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email) {
-        log.info("클라이언트에서 받아온 데이터 : musicId = {}, email = {}",musicId,email);
-        System.out.println("musicId = " + musicId);
-        System.out.println("email = " + email);
-        return CopyMusicResponse.success();
-    }
+//    @Override
+//    public ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email) {
+//        log.info("클라이언트에서 받아온 데이터 : musicId = {}, email = {}",musicId,email);
+//        System.out.println("musicId = " + musicId);
+//        System.out.println("email = " + email);
+//        return CopyMusicResponse.success();
+//    }
 
 
     // 음악 순서 변경
