@@ -138,7 +138,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
   //      event handler: 재생목록 추가 버튼 클릭 이벤트 처리 함수      //
   const toggleAddPlaylistPopup = () => {
-    alert("재생목록 추가 실행");
+    console.log("재생목록 추가 실행");
     if (addPlayListInputRef.current) {
       if (!addPlayListInputRef.current.value.trim()) {
         alert("재생목록의 제목을 입력해주세요.");

@@ -222,7 +222,7 @@ const Menu = () => {
   const [modifyPlaylistId, setModifyPlaylistId] = useState<bigint>(BigInt(0));
   //      state: 변경할 재생목록 name 상태        //
   const [modifyName, setModifyName] = useState<string>("");
-  //      state: add 팝업 상태        //
+  //      state: modify 팝업 상태        //
   const [isModifyPlaylistPopupOpen, setIsModifyPlaylistPopupOpen] =
     useState(false);
 
