@@ -32,3 +32,9 @@
 </br>
 
 ## 3. ERD 설계
+
+![image](https://github.com/user-attachments/assets/8cd6a3db-e5a0-41a6-b563-507eaea6d5d8)
+
+
+## 4. 핵심 기능
+
