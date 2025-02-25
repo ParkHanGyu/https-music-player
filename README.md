@@ -43,7 +43,7 @@
 <div markdown="1">
 
 ### 4.1. 전체 흐름
-![]([https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow1.png](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/basic_flow.PNG?raw=true))
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/basic_flow.PNG?raw=true)
 
 
 </div>
