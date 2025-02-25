@@ -50,5 +50,30 @@
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/basic_flow.PNG?raw=true)
 
 
+### 4.2. 사용자 요청
+- **URL 정규식 체크** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/1_getPlatformUrl.png?raw=true)
+
+- **Noembed를 사용한 음악 정보 얻어오기** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/2_setMusicInfo.png?raw=true)
+
+- **Axios 비동기 요청** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/3-1_API_playlistCreateRequest.png?raw=true)
+
+
+### 4.3. JWT Authentication Filter
+- **JWT 토큰 형태 확인** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/4_JWT_parseBearerToken.png?raw=true)
+
+- **JWT 토큰 유효한 토큰인지 확인** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/5_JWT_doFilterInternal.png?raw=true)
+
+
+### 4.4. Controller
+- **재생목록 생성 Controller** :pushpin: [코드 확인]()
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/6-1_controller_createPlayList.png?raw=true)
+
+
+
 </div>
 </details>
