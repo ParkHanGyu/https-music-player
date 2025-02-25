@@ -2,7 +2,6 @@ import { useState } from "react";
 import { YoutubeInfo } from "../types/interface/youtube.interface";
 
 const noEmbed = "https://noembed.com/embed?url=";
-
 // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
 const useMediaInfo = (defaultImage: string) => {
   const [infoData, setInfoData] = useState<YoutubeInfo>({

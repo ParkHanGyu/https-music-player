@@ -39,12 +39,6 @@ public class MusicController {
     }
 
 
-//    @PostMapping("/copy/music/{musicId}")
-//    public ResponseEntity<? super CopyMusicResponse> copyMusic(@PathVariable("musicId") Long musicId, @RequestHeader("Authorization") String token) {
-//        log.info("musicId = {}, token = {}", musicId, token);
-//        return musicservice.copyMusic(musicId,token);
-//    }
-
     // 재생목록 순서 변경
     @PutMapping("/update/order/playlist/{playlistId}")
     public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {

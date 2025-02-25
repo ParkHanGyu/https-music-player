@@ -17,8 +17,6 @@ public interface Musicservice {
 
     ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String token);
 
-//    ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email);
-
     ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email);
 
     }

@@ -1,4 +1,4 @@
-export const getPlatformUrl = (url: string): string | null => {
+export const getPlatformUrl = (url: string): string => {
   if (url.includes("youtu")) {
     let urlId;
 

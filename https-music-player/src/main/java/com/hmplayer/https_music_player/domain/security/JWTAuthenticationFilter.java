@@ -30,7 +30,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("JWTAuthenticationFilter is processing the request");  // 필터가 실행되는지 확인
+        log.info("JWTAuthenticationFilter - doFilterInternal() 실행");
 
         try {
             String token = parseBearerToken(request);
@@ -47,7 +47,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            log.info("JWT token validated successfully for email: {}", email);  // 로그가 출력되지 않으면 여기까지 오지 않음
+            log.info("JWT token validated successfully for email: {}", email);
 
             AbstractAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
