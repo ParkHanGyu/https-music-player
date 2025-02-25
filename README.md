@@ -36,5 +36,15 @@
 ![image](https://github.com/user-attachments/assets/8cd6a3db-e5a0-41a6-b563-507eaea6d5d8)
 
 
-## 4. 핵심 기능
+## 4. 기능
 
+<details>
+<summary><b>기능 설명</b></summary>
+<div markdown="1">
+
+### 4.1. 전체 흐름
+![](https://zuminternet.github.io/images/portal/post/2019-04-22-ZUM-Pilot-integer/flow1.png)
+
+
+</div>
+</details>
