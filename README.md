@@ -36,10 +36,14 @@
 ![image](https://github.com/user-attachments/assets/8cd6a3db-e5a0-41a6-b563-507eaea6d5d8)
 
 
-## 4. 기능
+## 4. 핵심 기능
+이번 프로젝트의 핵심 기능은 음악 검색과 추가 입니다.</br>
+사용자는 원하는 음악의 URL을 입력하고, 유효한 URL이면 재생을 통해 음악을 듣거나 원하는 본인만에 재생목록에 추가 할 수 있습니다.</br>
+서비스가 어떻게 동작하는지 알 수 있게 흐름도를 참고해주세요.</br>
+
 
 <details>
-<summary><b>기능 설명</b></summary>
+<summary><b>핵심 기능 설명</b></summary>
 <div markdown="1">
 
 ### 4.1. 전체 흐름
