@@ -19,14 +19,24 @@ const Main = () => {
     }
   };
 
-  //      function: 검색 url 변수 할당 함수    //
+  //      function: 검색 URL 정규화 + 변수 할당 함수    //
   const videoSearch = () => {
-    const urlMatch = getPlatformUrl(videoUrl);
+    let urlMatch;
+    if (videoUrl.includes("youtu")) {
+      const youTubeIdMatch = videoUrl.match(
+        /(?:youtu\.be\/|(?:v=|.*[?&]v=))([a-zA-Z0-9_-]{11})/
+      );
+      if (youTubeIdMatch) {
+        urlMatch = `https://youtu.be/${youTubeIdMatch[1]}`;
+      }
+    } else if (videoUrl.includes("soundcloud")) {
+      urlMatch = videoUrl;
+    }
+
     if (urlMatch) {
       setSearchUrl(urlMatch);
-    }
-    if (!urlMatch) {
-      alert("형식에 맞는 url을 입력해주세요.");
+    } else {
+      alert("형식에 맞는 URL을 입력해주세요.");
       return;
     }
   };
