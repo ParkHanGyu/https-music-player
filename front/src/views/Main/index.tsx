@@ -25,6 +25,10 @@ const Main = () => {
     if (urlMatch) {
       setSearchUrl(urlMatch);
     }
+    if (!urlMatch) {
+      alert("형식에 맞는 url을 입력해주세요.");
+      return;
+    }
   };
 
   return (
