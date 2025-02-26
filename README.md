@@ -49,31 +49,90 @@
 ### 4.1. 전체 흐름
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/basic_flow.PNG?raw=true)
 
+</br>
+
 
 ### 4.2. 사용자 요청
-- **URL 정규식 체크** :pushpin: [코드 확인]()
+<details>
+<summary><b>URL 정규식 체크</b></summary>
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/1_getPlatformUrl.png?raw=true)
+</details>
 
-- **Noembed를 사용한 음악 정보 얻어오기** :pushpin: [코드 확인]()
+
+<details>
+<summary><b>Noembed를 사용한 음악 정보 얻어오기</b></summary>
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/2_setMusicInfo.png?raw=true)
+</details>
 
-- **Axios 비동기 요청** :pushpin: [코드 확인]()
+<details>
+<summary><b>Axios 비동기 요청</b></summary>
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/3-1_API_playlistCreateRequest.png?raw=true)
+</details>
+
+
+</br>
 
 
 ### 4.3. JWT Authentication Filter
-- **JWT 토큰 형태 확인** :pushpin: [코드 확인]()
+<details>
+<summary><b>JWT 토큰 형태 확인</b></summary>
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/4_JWT_parseBearerToken.png?raw=true)
+  
+</details>
 
-- **JWT 토큰 유효한 토큰인지 확인** :pushpin: [코드 확인]()
+<details>
+<summary><b>JWT 토큰 유효한 토큰인지 확인</b></summary>
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/5_JWT_doFilterInternal.png?raw=true)
+</details>
 
+</br>
 
 ### 4.4. Controller
-- **재생목록 생성 Controller** :pushpin: [코드 확인]()
+<details>
+<summary><b>재생목록 생성 Controller</b></summary> 
+  
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/6-1_controller_createPlayList.png?raw=true)
+</details>
+
+</br>
 
 
+### 4.5. Service
+<details>
+<summary><b>재생목록 생성 Service 기능 정의</b></summary> 
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/7_service_interface.png?raw=true)
+</details>
+
+</br>
+
+
+### 4.6. Service Implementation
+<details>
+<summary><b>재생목록 생성 Service 기능 구현</b></summary> 
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/8_service_impl.png?raw=true)
+</details>
+
+
+</br>
+
+
+### 4.7. Repository
+<details>
+<summary><b>재생목록 생성 Repository</b></summary> 
+RepoSerivce에서 DB에 접근할 수 있는 로직들을 작성해주고 
+실제로 DB에 접근하는 부분은 Repository에 작성해줬다. 
+</br>
+
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/9_repository_DB.png?raw=true)
+</details>
 
 </div>
 </details>
