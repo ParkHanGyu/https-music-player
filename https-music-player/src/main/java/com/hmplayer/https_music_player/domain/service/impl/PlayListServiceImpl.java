@@ -43,22 +43,11 @@ public class PlayListServiceImpl implements PlayListService {
 
     @Override
     public ResponseEntity<? super PlayListResponse> createPlayList(AddPlayListRequest request, String email){
-
         User user = userRepoService.findByEmail(email);
-
-        System.out.println("findByEmail해서 찾은 User값 : " + user);
-
         String playListName = request.getPlayListName();
-        System.out.println("클라이언트에서 받은 request.getPlayListName() 값 : " + playListName);
-
         Playlist playlist = new Playlist(user,playListName);
-        System.out.println("값들을 셋팅한 playList 값 : " + playlist);
-
-
         playListRepoService.save(playlist);
-
         return PlayListResponse.success();
-//        return null;
     }
 
 

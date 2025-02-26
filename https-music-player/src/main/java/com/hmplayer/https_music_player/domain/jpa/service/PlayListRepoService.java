@@ -21,16 +21,8 @@ public class PlayListRepoService {
     @Transactional
     public void save(Playlist playlist) {
         playListRepository.save(playlist);
-        log.info("저장된 데이터: 생성일 = {}, ID = {}, 제목 = {}, 사용자 = {}",
-                playlist.getCreateDate(), playlist.getPlaylistId(),
-                playlist.getTitle(), playlist.getUser());
     }
 
-//    public List<Playlist> findListByName(String userName) {
-//        log.info("찾는 데이터 : 이름 = {}",
-//                userName);
-//        return playListRepository.findListByName(userName);
-//    }
 
     @Transactional
     public Optional<Playlist> findById(Long playlistId) {
