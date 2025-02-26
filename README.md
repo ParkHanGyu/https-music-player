@@ -56,20 +56,37 @@
 <details>
 <summary><b>URL 정규식 체크</b></summary>
   
-![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/1_getPlatformUrl.png?raw=true)
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/1_videoSearch.png?raw=true)
+  - React로 렌더링된 화면에서 사용자가 검색을 시도한 URL이 Youtube인지, SoundCloud인지 정규식으로 확인합니다.
+  - URL이 Youtube 또는 SoundCloud인 경우 이후 Noembed을 사용해서 노래 정보를 받아와야 하기 때문에 Noembed에서 사용하는 형식에 맞게 URL을 정규화 시켜줍니다.
+  - 정규화 시켜준 URL을 다른 컴포넌트에서 사용 할 수 있게 Zustand를 사용해 정규화한 URL를 set해줍니다.
+  - Youtube 또는 SoundCloud 아닌 URL인 경우, 에러 메세지를 띄웁니다.
+
+</br>
 </details>
 
 
 <details>
 <summary><b>Noembed를 사용한 음악 정보 얻어오기</b></summary>
-  
+
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/2_setMusicInfo.png?raw=true)
+  - useState를 사용해 infoData라는 상태를 관리합니다.
+  - SoundCloud일 경우 제목에 포함된 불필요한 "by"(아티스트명)를 제거합니다.
+  - setMusicInfo(url)을 호출하면 해당 URL의 미디어 정보를 가져와 infoData에 저장합니다.
+  - 데이터를 가져올 때 noembed API를 이용하여 URL의 미디어 정보를 가져옵니다.
+  - 실패하면 resetInfoData()를 호출해 기본값으로 초기화합니다.
+  
+
+
 </details>
 
 <details>
 <summary><b>Axios 비동기 요청</b></summary>
   
-![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/3-1_API_playlistCreateRequest.png?raw=true)
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/3-2_API_playlistAddMusicRequest.png?raw=true)
+  - Noembed를 통해 가져온 미디어 데이터를 비동기로 POST 요청해줍니다.
+  - 이때 POST 요청으로 같이 보내줄 데이터는 미디어 데이터들을 담아둔 requestBody와 보안과 사용자를 구별하기 위해 accessToken을 포함해 서버로 보내줍니다.
+  - 성공 시 응답 데이터 반환, 실패 시 에러 응답을 반환 해줍니다.
 </details>
 
 
