@@ -56,66 +56,98 @@ const TestView2 = () => {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault(); // 기본 동작 방지
   };
-  // // =====================================================
-  // // 먼저 isValidJWT 함수를 선언합니다.
-  // const isValidJWT = (token: string | null) => {
-  //   return token && token.split(".").length === 3;
-  // };
 
-  // const [cookies, removeCookie, deleteCookie] = useCookies();
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const [afterVideoUrl, setAfterVideoUrl] = useState<string>("");
+  //      event handler: url input값 변경      //
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVideoUrl(event.target.value);
+  };
 
-  // const checkTokenExpiration = (token: string) => {
-  //   if (!token || !isValidJWT(token)) {
-  //     console.error("올바르지 않은 JWT 형식의 토큰입니다.");
-  //     return false;
-  //   }
+  const getPlatformUrl = (url: string): string => {
+    // 유튜브 URL에서 ID 추출하는 정규식
+    const youTubeIdMatch = url.match(
+      /(?:youtu\.be\/|(?:v=|.*[?&]v=))([a-zA-Z0-9_-]{11})/
+    );
 
-  //   try {
-  //     const decoded: { exp: number } = jwtDecode(token); // cookies.accessToken 대신 파라미터 token 사용
-  //     return decoded.exp > Math.floor(Date.now() / 1000);
-  //   } catch (error) {
-  //     console.error("유효하지 않은 토큰입니다.", error);
-  //     return false;
-  //   }
-  // };
+    if (youTubeIdMatch) {
+      return `https://youtu.be/${youTubeIdMatch[1]}`;
+    } else if (url.includes("soundcloud")) {
+      return url;
+    }
 
-  // // 예제
-  // const isValid = checkTokenExpiration(cookies.accessToken);
+    // 필요한 경우 다른 플랫폼도 추가 가능
+    return url;
+  };
 
-  // console.log("토큰 유효 여부:", isValid ? "유효함" : "만료됨");
-  // console.log("토큰 유효 여부:", isValid);
+  //      function: 검색 url 변수 할당 함수    //
+  const videoSearch = () => {
+    console.log("정규식 이전 : ", videoUrl);
 
-  // // =====================================================
+    const testValue = getPlatformUrl(videoUrl);
+    setAfterVideoUrl(testValue);
+  };
+
+  const testBTN = () => {
+    console.log("정규식 이후 : ", afterVideoUrl);
+  };
   return (
-    <div style={{ width: "400px", margin: "0 auto" }}>
-      <h2>Playlist</h2>
-      <div>
-        {playlist.map((item, index) => (
-          <div
-            className="testDiv1"
-            key={item.id}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragEnter={() => handleDragEnter(index)}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver} // y축 제한 추가
-            style={{
-              backgroundColor:
-                draggedIndex === index
-                  ? "rgb(0, 0, 0)" // 드래그 중 배경색
-                  : hoveredIndex !== null && hoveredIndex === index // hoveredIndex가 null이 아닌 경우만 비교
-                  ? "#a71919" // 드래그 중인 아이템이 다른 아이템 위로 들어갔을 때 배경색
-                  : "#fff", // 기본 배경색
-            }}
-          >
-            <div>
-              <strong>{item.title}</strong>
-              <p style={{ margin: 0 }}>{item.description}</p>
+    <>
+      <div style={{ width: "400px", margin: "0 auto" }}>
+        <h2>Playlist</h2>
+        <div>
+          {playlist.map((item, index) => (
+            <div
+              className="testDiv1"
+              key={item.id}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragEnter={() => handleDragEnter(index)}
+              onDragEnd={handleDragEnd}
+              onDragOver={handleDragOver} // y축 제한 추가
+              style={{
+                backgroundColor:
+                  draggedIndex === index
+                    ? "rgb(0, 0, 0)" // 드래그 중 배경색
+                    : hoveredIndex !== null && hoveredIndex === index // hoveredIndex가 null이 아닌 경우만 비교
+                    ? "#a71919" // 드래그 중인 아이템이 다른 아이템 위로 들어갔을 때 배경색
+                    : "#fff", // 기본 배경색
+              }}
+            >
+              <div>
+                <strong>{item.title}</strong>
+                <p style={{ margin: 0 }}>{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles["main-wrap"]}>
+        <div className={styles["main-wrap-top"]}>
+          <div className={styles["main-wrap-top-content"]}>
+            <div className={styles["main-center"]}>
+              <div className={styles["main-search-box"]}>
+                <input
+                  className={styles["main-search-input"]}
+                  type="text"
+                  placeholder="Please enter the URL."
+                  value={videoUrl}
+                  onChange={handleInputChange}
+                />
+                <div className={"main-search-btn"} onClick={videoSearch}></div>
+              </div>
+
+              <div className={"main-title-box"} onClick={testBTN}>
+                To get started, please enter the URL of the video you'd like to
+                play. This will allow us to retrieve and display the video's
+                information so you can begin listening.
+              </div>
             </div>
           </div>
-        ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -37,9 +37,6 @@ const PlayBar = () => {
 
   //      event handler: 재생, 일시정지 이벤트 처리 함수       //
   const handlePlayPause = () => {
-    if (!nowPlayingPlaylist.length) {
-      return;
-    }
     if (isLoading === false) {
       setIsPlaying(!isPlaying);
     }
@@ -364,7 +361,7 @@ const PlayBar = () => {
   );
 
   const testBtn = () => {
-    console.log("cookies.accessToken : ", cookies.accessToken);
+    console.log("isPlaying : ", isPlaying);
   };
 
   return (
