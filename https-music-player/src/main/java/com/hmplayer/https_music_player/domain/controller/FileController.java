@@ -29,7 +29,7 @@ public class FileController {
 
     }
 
-    @GetMapping(value = "{fileName}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(value = "/image/{fileName}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
     public Resource getImage(@PathVariable("fileName") String fileName) {
         System.out.println("getImage 컨트롤러 실행");
 

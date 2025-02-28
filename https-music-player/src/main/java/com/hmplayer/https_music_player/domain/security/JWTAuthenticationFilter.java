@@ -34,20 +34,22 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String token = parseBearerToken(request);
+            log.info("검증 이후 token값 : " + token);
+
             if (token == null) {
-                log.info("No Bearer token found, continuing filter chain");
+                log.info("토큰 없음");
                 filterChain.doFilter(request, response);
                 return;
             }
 
             String email = jwtSecurity.validate(token);
             if (email == null) {
-                log.info("Invalid token, continuing filter chain");
+                log.info("잘못된 토큰");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            log.info("JWT token validated successfully for email: {}", email);
+            log.info("JWT token에서 얻은 email: {}", email);
 
             AbstractAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(email, null, AuthorityUtils.NO_AUTHORITIES);
@@ -67,21 +69,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String parseBearerToken(HttpServletRequest request){
-        log.info("검증할 토큰 값 request : {}", request.toString());
-
+        log.info("parseBearerToken() 토큰 검증 실행");
         String authorization = request.getHeader("Authorization");
-        log.info("검증할 토큰 값 authorization : {}", authorization);
 
         boolean hasAuthorization = StringUtils.hasText(authorization);
-        log.info("검증할 토큰 값 hasAuthorization : {}", hasAuthorization);
-
         if(!hasAuthorization) return null;
 
         boolean isBearer = authorization.startsWith("Bearer "); // "Bearer " 로 시작하느냐?
         if(!isBearer) return null;
+
         String token = authorization.substring(7);
         log.info("검증할 토큰 값 : {}", token);
-
         return token;
     }
 }
