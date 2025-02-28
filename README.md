@@ -95,21 +95,27 @@
 
 ### 4.3. JWT Authentication Filter
 <details>
+<summary><b>유효한 JWT토큰인지 확인</b></summary>
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/4_JWT_doFilterInternal.png?raw=true)
+  - parseBearerToken() 메서드를 사용해 토큰이 올바른 형태인지 확인합니다. (parseBearerToken() 메서드에 대한 내용은 아래 "JWT 토큰 추출" 참고)
+  - 정상적인 형태의 토큰이면 parseBearerToken() 메서드의 return 값으로 추출한 토큰값을 받습니다.
+  - 추출한 토큰의 정보를 Spring Security가 이해할 수 있도록 UsernamePasswordAuthenticationToken을 생성해서 SecurityContext에 저장합니다.
+    
+</details>
+
+
+
+<details>
 <summary><b>JWT 토큰 추출</b></summary>
   
-![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/4_JWT_parseBearerToken.png?raw=true)
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/5_JWT_parseBearerToken.png?raw=true)
  - 클라이언트에서 보낸 HTTP 요청 헤더에서 "Authorization" 필드가 존재하는지 확인합니다.
  - "Authorization" 필드가 존재하지 않는다면, parseBearerToken 메서드를 호출한곳에 null을 반환합니다.
  - "Authorization" 필드가 존재하는 경우, 해당 값이 "Bearer "로 시작하는지 확인합니다.
  - "Bearer "로 시작하지 않는다면 parseBearerToken 메서드를 호출한곳에 null을 반환합니다.
  - "Bearer "로 시작하는 경우, "Bearer " 이후의 문자열(토큰 값)만 추출하여 반환합니다. 
   
-</details>
-
-<details>
-<summary><b>JWT 토큰 유효한 토큰인지 확인</b></summary>
-  
-![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/5_JWT_doFilterInternal.png?raw=true)
 </details>
 
 </br>
