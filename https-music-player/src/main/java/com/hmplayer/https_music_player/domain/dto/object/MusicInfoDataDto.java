@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class YoutubeDto {
+public class MusicInfoDataDto {
     private String vidUrl;
     private String author;
     private String thumb;

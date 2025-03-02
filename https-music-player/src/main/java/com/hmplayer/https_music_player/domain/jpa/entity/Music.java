@@ -1,6 +1,6 @@
 package com.hmplayer.https_music_player.domain.jpa.entity;
 
-import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +45,7 @@ public class Music {
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PlaylistMusic> playlists;  // 연결된 재생 목록들
 
-    public Music(YoutubeDto youtube, int duration) {
+    public Music(MusicInfoDataDto youtube, int duration) {
         this.title = youtube.getVidTitle();
         this.author = youtube.getAuthor();
         this.imageUrl = youtube.getThumb();

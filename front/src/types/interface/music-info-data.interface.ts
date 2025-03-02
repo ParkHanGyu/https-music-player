@@ -1,5 +1,4 @@
-// src/dto/YoutubeInfo.ts
-export interface YoutubeInfo {
+export interface MusicInfoData {
   vidUrl: string | null;
   author: string | null;
   thumb: string | null;

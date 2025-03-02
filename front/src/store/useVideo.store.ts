@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { YoutubeInfo } from "../types/interface/youtube.interface";
+import { MusicInfoData } from "../types/interface/music-info-data.interface";
 
 // Zustand 상태 정의
 interface VideoState {
@@ -10,8 +10,8 @@ interface VideoState {
   playBarUrl: string | ""; // playBar에 사용하는 Url 상태
   setPlayBarUrl: (playBarUrl: string | "") => void; // 비디오 URL을 설정하는 함수
 
-  playBarInfo: YoutubeInfo | null;
-  setPlayBarInfo: (info: YoutubeInfo) => void;
+  playBarInfo: MusicInfoData | null;
+  setPlayBarInfo: (info: MusicInfoData) => void;
 
   // ============================================
 

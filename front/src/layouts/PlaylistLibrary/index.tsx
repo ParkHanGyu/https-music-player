@@ -10,7 +10,7 @@ import {
 } from "../../apis";
 import { useCookies } from "react-cookie";
 import ResponseDto from "../../apis/response/response.dto";
-import { YoutubeInfo } from "../../types/interface/youtube.interface";
+import { MusicInfoData } from "../../types/interface/music-info-data.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
 
 interface PlaylistLibraryProps {
-  infoData: YoutubeInfo;
+  infoData: MusicInfoData;
   infoDuration: number;
   playlistPopupOpen: boolean;
   setPlaylistPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,7 +53,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
   ) => {
-    if (!requestBody.youtube) {
+    if (!requestBody.musicInfoData) {
       return;
     }
     console.log("로딩 true");
@@ -210,7 +210,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
                   onClick={(event: React.MouseEvent<HTMLLIElement>) => (
                     event.stopPropagation(),
                     toggleAddMusicToPlaylist({
-                      youtube: infoData,
+                      musicInfoData: infoData,
                       infoDuration: infoDuration,
                       playlistId: playlist.playlistId,
                     })

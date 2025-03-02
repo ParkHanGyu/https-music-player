@@ -1,14 +1,11 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
-import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
-import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
-import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
-import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
@@ -22,7 +19,6 @@ import com.hmplayer.https_music_player.domain.service.Musicservice;
 import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -47,17 +42,13 @@ public class MusicServiceImpl implements Musicservice {
     // 음악 추가
     @Override
     public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
-        String pureToken = token.replace("Bearer ", "").trim();
-
-        jwtSecurity.isValid(pureToken); // 엑세스 토큰 유효하니?
-
-        YoutubeDto youtube = request.getYoutube();
+        MusicInfoDataDto musicInfoData = request.getMusicInfoData();
         int infoDuration = request.getInfoDuration();
         Long playlistId = request.getPlaylistId();
-        log.info("추가할 노래 제목 = {}, infoDuration = {}, 추가할 플레이리스트 ID = {}", youtube.getVidTitle(),infoDuration,playlistId);
+        log.info("추가할 노래 제목 = {}, infoDuration = {}, 추가할 플레이리스트 ID = {}", musicInfoData.getVidTitle(),infoDuration,playlistId);
 
 
-        Optional<PlaylistMusic> findExistingMusic = playlistMusicRepoService.findByPlaylistIdAndMusicUrl(playlistId,youtube.getVidUrl());
+        Optional<PlaylistMusic> findExistingMusic = playlistMusicRepoService.findByPlaylistIdAndMusicUrl(playlistId,musicInfoData.getVidUrl());
 
         log.info("findExistingMusic = {}", findExistingMusic);
 
@@ -78,7 +69,7 @@ public class MusicServiceImpl implements Musicservice {
 
         Playlist playlist = optionalPlaylist.get();
 
-        Music addMusicInfo = new Music(youtube, infoDuration);
+        Music addMusicInfo = new Music(musicInfoData, infoDuration);
 
 //
         // playlist.getMusics()에서 현재 최대 order 값 가져오기
@@ -119,15 +110,6 @@ public class MusicServiceImpl implements Musicservice {
         throw new InternalException();
         }
     }
-
-//    @Override
-//    public ResponseEntity<? super CopyMusicResponse> copyMusic(Long musicId, String email) {
-//        log.info("클라이언트에서 받아온 데이터 : musicId = {}, email = {}",musicId,email);
-//        System.out.println("musicId = " + musicId);
-//        System.out.println("email = " + email);
-//        return CopyMusicResponse.success();
-//    }
-
 
     // 음악 순서 변경
     @Override

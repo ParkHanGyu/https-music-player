@@ -17,16 +17,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class MusicRepoService {
-
     private final MusicRepository musicRepository;
 
     @Transactional
     public void save(Music playlist) {
         musicRepository.save(playlist);
-//        log.info("저장된 데이터: 생성일 = {}, ID = {}, 제목 = {}, 사용자 = {}",
-//                playlist.getCreateDate(), playlist.getPlaylistId(),
-//                playlist.getTitle(), playlist.getUserName());
     }
+
     @Transactional
     public void deleteByMusicId(Long musicId) {
         musicRepository.deleteByMusicId(musicId);

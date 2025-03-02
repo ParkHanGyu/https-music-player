@@ -1,7 +1,7 @@
-import { YoutubeInfo } from "../../types/interface/youtube.interface";
+import { MusicInfoData } from "../../types/interface/music-info-data.interface";
 
 export default interface AddPlayListToMusicRequestDto {
-  youtube: YoutubeInfo;
+  musicInfoData: MusicInfoData;
   infoDuration: number;
   playlistId: bigint;
 }

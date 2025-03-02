@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { YoutubeInfo } from "../types/interface/youtube.interface";
+import { MusicInfoData } from "../types/interface/music-info-data.interface";
 
 const noEmbed = "https://noembed.com/embed?url=";
 // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
 const useMediaInfo = (defaultImage: string) => {
-  const [infoData, setInfoData] = useState<YoutubeInfo>({
+  const [infoData, setInfoData] = useState<MusicInfoData>({
     vidUrl: "-",
     author: "-",
     thumb: defaultImage,
@@ -13,7 +13,7 @@ const useMediaInfo = (defaultImage: string) => {
 
   const setMusicInfo = (
     url: string,
-    callback?: (data: YoutubeInfo) => void
+    callback?: (data: MusicInfoData) => void
   ) => {
     const fullUrl = `${noEmbed}${url}`;
     fetch(fullUrl)

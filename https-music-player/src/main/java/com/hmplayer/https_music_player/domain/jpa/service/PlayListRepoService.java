@@ -19,15 +19,17 @@ public class PlayListRepoService {
     private final PlayListRepository playListRepository;
 
     @Transactional
+    public Optional<Playlist> findById(Long playlistId) {
+        return playListRepository.findById(playlistId);
+    }
+
+    @Transactional
     public void save(Playlist playlist) {
         playListRepository.save(playlist);
     }
 
 
-    @Transactional
-    public Optional<Playlist> findById(Long playlistId) {
-        return playListRepository.findById(playlistId);
-    }
+
 
     @Transactional
     public Optional<Playlist> findPlaylistByUserAndPlaylistId(Long userId, Long playlistId){

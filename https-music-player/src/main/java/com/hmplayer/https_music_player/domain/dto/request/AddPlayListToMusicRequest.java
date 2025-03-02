@@ -1,15 +1,13 @@
 package com.hmplayer.https_music_player.domain.dto.request;
 
-import com.hmplayer.https_music_player.domain.dto.object.YoutubeDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 @Getter
 public class AddPlayListToMusicRequest {
-    private YoutubeDto youtube;
+    private MusicInfoDataDto musicInfoData;
     private int infoDuration;
     private Long playlistId;
 
