@@ -100,14 +100,14 @@
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/4_JWT_doFilterInternal.png?raw=true)
   - parseBearerToken() 메서드를 사용해 토큰이 올바른 형태인지 확인합니다. (parseBearerToken() 메서드에 대한 내용은 아래 "JWT 토큰 추출" 참고)
   - 정상적인 형태의 토큰이면 parseBearerToken() 메서드의 return 값으로 추출한 토큰값을 받습니다.
-  - 추출한 토큰의 정보를 Spring Security가 이해할 수 있도록 UsernamePasswordAuthenticationToken을 생성해서 SecurityContext에 저장합니다.
+  - 추출한 토큰의 정보를 Spring Security가 알 수 있도록 UsernamePasswordAuthenticationToken을 생성해서 SecurityContext에 저장합니다.
     
 </details>
 
 
 
 <details>
-<summary><b>JWT 토큰 추출</b></summary>
+<summary><b>JWT 토큰 추출(parseBearerToken메서드)</b></summary>
   
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/5_JWT_parseBearerToken.png?raw=true)
  - 클라이언트에서 보낸 HTTP 요청 헤더에서 "Authorization" 필드가 존재하는지 확인합니다.
@@ -122,17 +122,25 @@
 
 ### 4.4. Controller
 <details>
-<summary><b>재생목록 생성 Controller</b></summary> 
+<summary><b>음악 추가 Controller</b></summary> 
   
-![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/6-1_controller_createPlayList.png?raw=true)
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/6-2_controller_addPlaylistToMusic.png?raw=true)
+  
+  - **요청 처리** 
+    - Controller에서는 Spring Security가 허용한 요청을 받고 Service 계층으로 전달합니다.
+
+
+  - **결과 응답** 
+    - Service 계층에서 처리된 결과를 받아 MusicResponse 형태의 응답값을 클라이언트에 반환해줍니다.
+    - 여기서 MusicResponse는 성공/실패의 여부를 알 수 있는 code와 message를 담고 있습니다.
+
 </details>
 
 </br>
 
-
-### 4.5. Service
+### 4.5. Service(Service interface 기능 모음)
 <details>
-<summary><b>재생목록 생성 Service 기능 정의</b></summary> 
+<summary><b>음악 추가 Service interface</b></summary> 
   
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/7_service_interface.png?raw=true)
 </details>
@@ -140,7 +148,7 @@
 </br>
 
 
-### 4.6. Service Implementation
+### 4.6. Service Implementation(Service 구현체)
 <details>
 <summary><b>재생목록 생성 Service 기능 구현</b></summary> 
   
@@ -164,3 +172,4 @@ RepoSerivce에서 DB에 접근할 수 있는 로직들을 작성해주고
 
 </div>
 </details>
+
