@@ -139,4 +139,37 @@
 </br>
 
 
+### 4.5. Service(Service interface 기능 모음)
+<details>
+<summary><b>음악 추가 Service interface</b></summary> 
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/7_service_interface.png?raw=true)
+</details>
 
+</br>
+
+
+### 4.6. Service Implementation(Service 구현체)
+<details>
+<summary><b>재생목록 생성 Service 기능 구현</b></summary> 
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/8_service_impl.png?raw=true)
+</details>
+
+
+</br>
+
+
+### 4.7. Repository
+<details>
+<summary><b>재생목록 생성 Repository</b></summary> 
+RepoSerivce에서 DB에 접근할 수 있는 로직들을 작성해주고 
+실제로 DB에 접근하는 부분은 Repository에 작성해줬다. 
+</br>
+
+  
+![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/9_repository_DB.png?raw=true)
+</details>
+
+</div>
+</details>
