@@ -144,15 +144,25 @@
 <summary><b>음악 추가 Service interface</b></summary> 
   
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/7-2_addPlayListToMusic_service_interface.png?raw=true)
+
+ - service interface는 비즈니스 로직을 처리하는 서비스 계층의 인터페이스입니다.
+ - 기능을 정의하는 역할을 하며, 실제 기능 구현은 serviceImpl클래스에서 수행됩니다.
 </details>
 
 </br>
 
 
-### 4.6. Service Implementation(Service 구현체)
+### 4.6. Service implement(Service 구현체)
 <details>
 <summary><b>재생목록 생성 Service 기능 구현</b></summary> 
-  
+
+  - 클라이언트에서 받아온 데이터를 파싱합니다.
+  - 추가할 음악이 중복인지 체크합니다.
+  - 중복이라면 MusicResponse 형태의 응답값인 MusicResponse.existingMusic()을 반환합니다.
+  - 추가하려는 음악의 재생목록이 존재하는지 확인하고 존재하다면 해당 재생목록의 리스트를 가져옵니다.
+  - 존재하지 않다면 클라이언트에 400 Bad Request 응답을 반환해줍니다.
+  - 가져온 음악 리스트에 추가하려는 음악을 포함하여 재생순서를 계산해 할당해줍니다.
+  - 재생순서를 할당해주고 데이터베이스에 저장해줍니다.
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/8-2_addPlayListToMusic_service_impl.png?raw=true)
 </details>
 
@@ -163,8 +173,9 @@
 ### 4.7. Repository
 <details>
 <summary><b>재생목록 생성 Repository</b></summary> 
-RepoSerivce에서 DB에 접근할 수 있는 로직들을 작성해주고 
-실제로 DB에 접근하는 부분은 Repository에 작성해줬다. 
+- MusicRepoSerivce는 비즈니스 로직을 담당하며, MusicRepository를 통해 데이터베이스와 상호작용합니다
+- MusicRepository는 JpaRepository를 상속받아 기본적인 CRUD 작업을 수행할 수 있도록 해줍니다.
+- JpaRepository의 save 메서드를 실행합니다.
 </br>
 
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/9-2_addPlayListToMusic_repository_DB.png?raw=true)
