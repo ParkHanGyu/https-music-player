@@ -173,13 +173,16 @@
 ### 4.7. Repository
 <details>
 <summary><b>재생목록 생성 Repository</b></summary> 
-- MusicRepoSerivce는 비즈니스 로직을 담당하며, MusicRepository를 통해 데이터베이스와 상호작용합니다
-- MusicRepository는 JpaRepository를 상속받아 기본적인 CRUD 작업을 수행할 수 있도록 해줍니다.
-- JpaRepository의 save 메서드를 실행합니다.
-</br>
+  
+  - MusicRepoSerivce는 비즈니스 로직을 담당하며, MusicRepository를 통해 데이터베이스와 상호작용합니다
+  - MusicRepository는 JpaRepository를 상속받아 기본적인 CRUD 작업을 수행할 수 있도록 해줍니다.
+  - JpaRepository의 save 메서드를 실행합니다.
+
 
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/9-2_addPlayListToMusic_repository_DB.png?raw=true)
 </details>
+
+</br>
 
 </div>
 </details>
