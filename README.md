@@ -176,7 +176,7 @@
   
   - MusicRepoSerivce는 비즈니스 로직을 담당하며, MusicRepository를 통해 데이터베이스와 상호작용합니다
   - MusicRepository는 JpaRepository를 상속받아 기본적인 CRUD 작업을 수행할 수 있도록 해줍니다.
-  - JpaRepository의 save 메서드를 실행합니다.
+  - 상속 받은 JpaRepository의 save 메서드를 실행합니다.
 
 
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/9-2_addPlayListToMusic_repository_DB.png?raw=true)
@@ -186,3 +186,76 @@
 
 </div>
 </details>
+
+</br>
+
+
+## 5. 트러블 슈팅
+<details>
+  <summary><b>5.1. 페이지 렌더링시 회원 프로필 사진 문제</b></summary>
+
+  - 웹서비스에 회원기능이 있으면 회원의 프로필 사진도 본인이 원하는 사진으로 바꾸면 좋을거 같아서 프로필 사진을 변경 할 수 있는 기능을 추가했습니다.
+  
+  - 하지만 사용자가 업로드한 이미지를 원하는 경로에 저장도 했고 DB에 프로필 사진 데이터도 저장해줬지만 비어있는 사진으로 렌더링되는 상황이였습니다. 
+  
+  - 확인해보니 브라우저에서 프로필 사진 부분 div의 backgroundImage가 브라우저에서 자동으로 리소스를 요청했습니다.
+  
+  - Spring Security는 기본적으로 .requestMatchers("도메인").permitAll()에 작성한 도메인을 제외한 모든 요청을 보호합니다.
+  
+  - 즉, 브라우저는 background-image: url(...)에서 url(...) 내부의 리소스를 네트워크 요청(GET)을 통해 가져오기 때문에 해당 경로도 HTTP 요청 인증/인가를 설정을 해줘야 했습니다.
+  
+  <details>
+  <summary><b>기존 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~java
+  /**
+    SecurityConfig.java
+   */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable()) 
+                .authorizeRequests(authz -> authz
+                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
+                        .anyRequest().authenticated()  // 그 외 요청은 인증 필요
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터
+  
+        return http.build();
+    }
+  ~~~
+  
+  </div>
+  </details>
+  
+  <details>
+  <summary><b>개선된 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~java
+  /**
+    SecurityConfig.java
+   */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeRequests(authz -> authz
+                        .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll() // 인증 없이 접근할 수 있도록 허용한 GET요청추가
+                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
+                        .anyRequest().authenticated()  // 그 외 요청은 인증 필요
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터 등록
+  
+        return http.build();
+    }
+  ~~~
+  
+  </div>
+  </details>
+</details>
+</br>
+
