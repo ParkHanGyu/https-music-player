@@ -21,12 +21,7 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<? super UploadResponse> upload(@RequestParam("file") MultipartFile file , @AuthenticationPrincipal String email) {
         System.out.println("upload 컨트롤러 실행");
-
-//        String url = fileService.upload(file,email);
-//        System.out.println("upload 컨트롤러 return 값 : " + url);
-
         return fileService.upload(file,email);
-
     }
 
     @GetMapping(value = "/image/{fileName}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
