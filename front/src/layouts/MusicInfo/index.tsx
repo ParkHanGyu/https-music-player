@@ -98,7 +98,7 @@ const MusicInfo = () => {
       setNowPlayingPlaylist([]);
       setNowPlayingPlaylistID("");
       setNowRandomPlaylistID("");
-    }, 100);
+    }, 1000);
 
     if (!isPlaying) {
       setIsPlaying(true);

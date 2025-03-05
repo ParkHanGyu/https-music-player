@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import "../TestView2/testStyle.css";
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "react-cookie";
+import ReactPlayer from "react-player";
 
 type PlaylistItem = {
   id: number;
@@ -91,63 +92,78 @@ const TestView2 = () => {
   const testBTN = () => {
     console.log("정규식 이후 : ", afterVideoUrl);
   };
+
+  const [url, setUrl] = useState<string>("");
+
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(event.target.value);
+  };
+
+  const playerRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    const loadWidget = () => {
+      if (
+        playerRef.current &&
+        (window as any).SC &&
+        (window as any).SC.Widget
+      ) {
+        const widget = (window as any).SC.Widget(playerRef.current);
+        widget.bind((window as any).SC.Widget.Events.FINISH, () => {
+          console.log("사운드클라우드 트랙 재생 완료");
+        });
+      }
+    };
+
+    // SoundCloud API가 없으면 추가
+    if (!(window as any).SC) {
+      const script = document.createElement("script");
+      script.src = "https://w.soundcloud.com/player/api.js";
+      script.onload = loadWidget;
+      document.body.appendChild(script);
+    } else {
+      loadWidget();
+    }
+  }, []);
+
   return (
-    <>
-      <div style={{ width: "400px", margin: "0 auto" }}>
-        <h2>Playlist</h2>
-        <div>
-          {playlist.map((item, index) => (
-            <div
-              className="testDiv1"
-              key={item.id}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragEnter={() => handleDragEnter(index)}
-              onDragEnd={handleDragEnd}
-              onDragOver={handleDragOver} // y축 제한 추가
-              style={{
-                backgroundColor:
-                  draggedIndex === index
-                    ? "rgb(0, 0, 0)" // 드래그 중 배경색
-                    : hoveredIndex !== null && hoveredIndex === index // hoveredIndex가 null이 아닌 경우만 비교
-                    ? "#a71919" // 드래그 중인 아이템이 다른 아이템 위로 들어갔을 때 배경색
-                    : "#fff", // 기본 배경색
-              }}
-            >
-              <div>
-                <strong>{item.title}</strong>
-                <p style={{ margin: 0 }}>{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div>
+      <iframe
+        ref={playerRef}
+        title="SoundCloud Player" // title 추가 (ESLint 경고 해결)
+        width="100%"
+        height="166"
+        scrolling="no"
+        frameBorder="no"
+        allow="autoplay"
+        // src={url} // 유효한 트랙 ID 사용
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1991575247&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true
+"
+      ></iframe>
 
-      <div className={styles["main-wrap"]}>
-        <div className={styles["main-wrap-top"]}>
-          <div className={styles["main-wrap-top-content"]}>
-            <div className={styles["main-center"]}>
-              <div className={styles["main-search-box"]}>
-                <input
-                  className={styles["main-search-input"]}
-                  type="text"
-                  placeholder="Please enter the URL."
-                  value={videoUrl}
-                  onChange={handleInputChange}
-                />
-                <div className={"main-search-btn"} onClick={videoSearch}></div>
-              </div>
-
-              <div className={"main-title-box"} onClick={testBTN}>
-                To get started, please enter the URL of the video you'd like to
-                play. This will allow us to retrieve and display the video's
-                information so you can begin listening.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+      <input
+        type="text"
+        value={url}
+        onChange={handleUrlChange}
+        placeholder="Enter media URL (YouTube, SoundCloud, etc.)"
+        style={{ width: "100%", padding: "10px" }}
+      />
+      {/* <div style={{ marginTop: "20px" }}>
+        {url && (
+          <ReactPlayer
+            url={url}
+            loop={true}
+            config={{
+              soundcloud: {
+                options: {
+                  loop: true,
+                },
+              },
+            }}
+          />
+        )}
+      </div> */}
+    </div>
   );
 };
 
