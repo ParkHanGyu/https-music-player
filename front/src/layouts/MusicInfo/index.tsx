@@ -167,7 +167,7 @@ const MusicInfo = () => {
   };
 
   const testBtn = () => {
-    console.log("infoData 값 : ", JSON.stringify(infoData));
+    console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
   };
 
   return (

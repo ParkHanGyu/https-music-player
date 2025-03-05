@@ -20,22 +20,12 @@ const useMediaInfo = (defaultImage: string) => {
       .then((res) => res.json())
       .then((data) => {
         const { url, author_name, thumbnail_url, title } = data;
-        let processedTitle = title || "-";
-        if (
-          url.includes("soundcloud") &&
-          title &&
-          author_name &&
-          title.includes(" by ") &&
-          title.includes(author_name)
-        ) {
-          processedTitle = title.split(" by ")[0].trim();
-        }
 
         const newInfoData = {
           vidUrl: url || "-",
           author: author_name || "-",
           thumb: thumbnail_url || defaultImage,
-          vidTitle: processedTitle || "-",
+          vidTitle: title || "-",
         };
 
         setInfoData(newInfoData);
