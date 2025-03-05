@@ -244,7 +244,7 @@
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll() // 인증 없이 접근할 수 있도록 허용한 GET요청추가
+                        .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll() // 이미지 경로 인증 없이 접근할 수 있도록 허용
                         .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
@@ -255,7 +255,194 @@
   ~~~
   
   </div>
+
+
+
+  
   </details>
 </details>
+
+<details>
+  <summary><b>5.2. React Noembed을 사용한 미디어 데이터</b></summary>
+
+  - 사용자는 음악을 듣기 전, 누구의 어떤 음악인지 확인하고 듣기 때문에 미디어 정보가 필요합니다.
+  - URL을 입력하면 해당 미디어 정보를 어떻게 가져올지 방식에 대해 고민했습니다.
+  - YouTube Data API를 고려했지만, 제가 사용자일 경우 youtube만 사용하는게 너무 제한적이라 다양한 플랫폼을 지원하는 React Noembed를 사용했습니다.
+  - React Noembed은 다양한 미디어 플랫폼(YouTube, SoundCloud, Vimeo 등) 지원하고 JSON 형식으로 썸네일, 제목, 작성자 등의 정보 제공해줍니다.
+  - 하지만 문제는 여기서 Noembed을 썻을때 YouTube와 SoundCloud가 조금 다른게 있습니다.
+  - 가져온 데이터에 title를 확인하면 Youtube는 정확히 "title"만 가져오고 SoundCloud 같은 경우 "title by 작성자" 형태로 가져옵니다.
+    - 기존 Noembed을 통한 SoundCloud URL의 정보를 가져온 경우(vidTitle의 값을 보면 "by" 뒤에 오는 문자열은 author에 있는 글과 같다.)
+    ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/SoundCloud_by_before%20.PNG?raw=true)
+    
+  - 그러므로 SoundCloud에 대한 title 데이터는 "by 작성자"를 제외한 문자열을 가져오게 수정했습니다.
+
+
+  
+  <details>
+  <summary><b>기존 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript 
+  /**
+    useMediaInfo.ts
+   */
+  const noEmbed = "https://noembed.com/embed?url=";
+  // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
+  const useMediaInfo = (defaultImage: string) => {
+    const [infoData, setInfoData] = useState<MusicInfoData>({
+      vidUrl: "-",
+      author: "-",
+      thumb: defaultImage,
+      vidTitle: "-",
+    });
+  
+    const setMusicInfo = (
+      url: string,
+      callback?: (data: MusicInfoData) => void
+    ) => {
+      const fullUrl = `${noEmbed}${url}`;
+      fetch(fullUrl)
+        .then((res) => res.json())
+        .then((data) => {
+          const { url, author_name, thumbnail_url, title } = data;
+          const newInfoData = {
+            vidUrl: url || "-",
+            author: author_name || "-",
+            thumb: thumbnail_url || defaultImage,
+            vidTitle: title || "-",
+          };
+  
+          setInfoData(newInfoData);
+          if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
+        })
+        .catch((error) => {
+          console.error("Failed to fetch media info:", error);
+          resetInfoData();
+        });
+    };
+  
+    const resetInfoData = () => {
+      setInfoData({
+        vidUrl: "-",
+        author: "-",
+        thumb: defaultImage,
+        vidTitle: "-",
+      });
+    };
+  
+    return {
+      infoData,
+      setInfoData,
+      setMusicInfo,
+      defaultImage,
+      resetInfoData,
+    };
+  };
+  
+  export default useMediaInfo;
+  ~~~
+  
+  </div>
+  </details>
+
+  - SoundCloud의 경우 제목(title)이 "곡명 by 아티스트명" 형식이기 때문에 " by "를 기준으로 잘라서 "곡명"만 남겼습니다. 예를 들어, title = "제목 by 작성자" 라면 → "제목"만 저장됩니다.
+  - 만약 SoundCloud의 제목에 by가 없을수도 있기 때문에 if문 조건으로 title의 문자열 값에 " by " 가 있는지 확인하고 " by "가 없는 SoundCloud URL이라면 title이 그대로 사용됩니다.
+  - YouTube일 경우 title이 그대로 사용됩니다.
+  
+  <details>
+  <summary><b>개선된 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript
+  /**
+    useMediaInfo.ts
+   */
+    const noEmbed = "https://noembed.com/embed?url=";
+  // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
+  const useMediaInfo = (defaultImage: string) => {
+    const [infoData, setInfoData] = useState<MusicInfoData>({
+      vidUrl: "-",
+      author: "-",
+      thumb: defaultImage,
+      vidTitle: "-",
+    });
+  
+    const setMusicInfo = (
+      url: string,
+      callback?: (data: MusicInfoData) => void
+    ) => {
+      const fullUrl = `${noEmbed}${url}`;
+      fetch(fullUrl)
+        .then((res) => res.json())
+        .then((data) => {
+          const { url, author_name, thumbnail_url, title } = data;
+          let processedTitle = title || "-";
+          if (
+            url.includes("soundcloud") &&
+            title &&
+            author_name &&
+            title.includes(" by ") &&
+            title.includes(author_name)
+          ) {
+            processedTitle = title.split(" by ")[0].trim();
+          }
+  
+          const newInfoData = {
+            vidUrl: url || "-",
+            author: author_name || "-",
+            thumb: thumbnail_url || defaultImage,
+            vidTitle: processedTitle || "-",
+          };
+  
+          setInfoData(newInfoData);
+          if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
+        })
+        .catch((error) => {
+          console.error("Failed to fetch media info:", error);
+          resetInfoData();
+        });
+    };
+  
+    const resetInfoData = () => {
+      setInfoData({
+        vidUrl: "-",
+        author: "-",
+        thumb: defaultImage,
+        vidTitle: "-",
+      });
+    };
+  
+    return {
+      infoData,
+      setInfoData,
+      setMusicInfo,
+      defaultImage,
+      resetInfoData,
+    };
+  };
+  
+  export default useMediaInfo;
+
+  ~~~
+  
+  </div>
+  </details>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+  
+  </details>
+</details>
+
+
 </br>
 
