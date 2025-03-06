@@ -262,6 +262,7 @@
   </details>
 </details>
 
+<!--  5.2 시작 -->
 <details>
   <summary><b>5.2. React Noembed을 사용한 미디어 데이터</b></summary>
 
@@ -341,13 +342,11 @@
   
   export default useMediaInfo;
   ~~~
-  
+
+    
   </div>
   </details>
 
-  - SoundCloud의 경우 제목(title)이 "곡명 by 아티스트명" 형식이기 때문에 " by "를 기준으로 잘라서 "곡명"만 남겼습니다. 예를 들어, title = "제목 by 작성자" 라면 → "제목"만 저장됩니다.
-  - 만약 SoundCloud의 제목에 by가 없을수도 있기 때문에 if문 조건으로 title의 문자열 값에 " by " 가 있는지 확인하고 " by "가 없는 SoundCloud URL이라면 title이 그대로 사용됩니다.
-  - YouTube일 경우 title이 그대로 사용됩니다.
   
   <details>
   <summary><b>개선된 코드</b></summary>
@@ -422,26 +421,114 @@
   };
   
   export default useMediaInfo;
-
   ~~~
+  - SoundCloud의 경우 제목(title)이 "곡명 by 아티스트명" 형식이기 때문에 " by "를 기준으로 잘라서 "곡명"만 남겼습니다. 예를 들어, title = "제목 by 작성자" 라면 → "제목"만 저장됩니다.
+  - 만약 SoundCloud의 제목에 by가 없을수도 있기 때문에 if문 조건으로 title의 문자열 값에 " by " 가 있는지 확인하고 " by "가 없는 SoundCloud URL이라면 title이 그대로 사용됩니다.
+  - YouTube일 경우 title이 그대로 사용됩니다.
   
   </div>
   </details>
 </details>
 
+<!--  5.2 끝 -->
 
+<!--  5.3 시작 -->
+<details>
+  <summary><b>5.3. 미디어 플랫폼별 반복재생 문제</b></summary>
 
-
-
-
-
-
-
-
+  - 대부분의 모든 스트리밍 웹사이트는 반복재생 기능이 있습니다.
+  - 해당 프로젝트에서는 ReactPlayer을 사용해 URL을 입력하면 Youtube 또는 SoundCloud에 미디어를 가져와서 재생하는 형식입니다.
+  - ReactPlayer에 옵션을 보면 playing, onReady, onDuration, onEnded, loop, .. 등을 통해 미디어를 제어 할 수 있습니다. loop 옵션을 통해 반복재생을 구현했습니다.
+  - 하지만 여기서 문제는 Youtube같은 경우 반복재생에 대한 기능을 지원하지만 SoundCloud에서는 반복재생에 대한 기능을 제공하지 않기 때문입니다.
+  - SoundCloud는 반복재생에 대한 기능이 없기 때문에 Youtube에서도, SoundCloud에서도 공통적으로 작동하는 옵션인 ReactPlayer의 onEnded 옵션을 사용해서 반복재생 기능을 구현하기로 했습니다.
 
   
+  <details>
+  <summary><b>기존 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript 
+  /**
+    PlayBar.tsx
+   */
+  const handleEnded = () => {
+    onNextMusic();
+  };
+
+  return(
+    <ReactPlayer
+      ref={playerRef}
+      url={playBarUrl}
+      playing={isPlaying}
+      onReady={handleReady}
+      onDuration={handleDuration}
+      loop={isLoop}
+      onEnded={handleEnded}
+      volume={volume}
+      style={{ display: "none" }}
+    />
+  )
+  ~~~
+
+    
+  </div>
+  </details>
+
+  
+  <details>
+  <summary><b>개선된 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript
+  /**
+    PlayBar.tsx
+  */
+  const handleEnded = () => {
+    if (playerRef.current && isLoop) {
+      if (playBarUrl.includes("soundcloud")) {
+        setPlayBarUrl(""); 
+        setTimeout(() => setPlayBarUrl(playBarUrl), 10);
+      } else {
+        playerRef.current.seekTo(0);
+      }
+    } else if (!isLoop) {
+      onNextMusic();
+    }
+  };
+
+  return(
+    <ReactPlayer
+      ref={playerRef}
+      url={playBarUrl}
+      playing={isPlaying}
+      onReady={handleReady}
+      onDuration={handleDuration}
+      onEnded={handleEnded}
+      volume={volume}
+      style={{ display: "none" }}
+    />
+  )
+  ~~~
+  - 기존 ReactPlayer에서 사용하던 loop 옵션을 제거하고 반복재생 여부에 따른 동작을 handleEnded() 메서드에서 처리하도록 수정
+  - 만약 isLoop가 true이고 URL이 "soundcloud"인 경우 ReactPlayer의 URL값을 초기화해주고 setTimeout 콜백 함수를 호출하여 일정 시간 후에 URL을 업데이트합니다.
+  - 만약 isLoop가 true이고 URL이 "soundcloud"가 아닌 경우(해당 프로젝트에서는 youtube인 경우) 해당 미디어의 진행도를 0으로 수정해줍니다.
+  - 마지막 else if 조건문을 보면 기존 코드인 ReactPlayer의 옵션인 loop가 ture일경우 onEnded 옵션이 실행되지 않습니다. 결국 기존 코드에서 onEnded가 실행되려면 기본적으로 loop 값이 false입니다.
+  - 하지만 수정 코드인 ReactPlayer을 보면 loop옵션을 사용하고 있지 않기 때문에 항상 onEnded가 실행되고 isLoop값에 따른 반복재생 또는 다음 음악으로 넘어가는 흐름으로 작성해줬습니다. 
+  </div>
   </details>
 </details>
+
+<!--  5.3 끝 -->
+
+
+
+
+
+
+
+
+
+
 
 
 </br>
