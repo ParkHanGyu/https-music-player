@@ -99,36 +99,36 @@ const TestView2 = () => {
     setUrl(event.target.value);
   };
 
-  const playerRef = useRef<HTMLIFrameElement | null>(null);
+  const playerRef = useRef<ReactPlayer | null>(null);
 
-  useEffect(() => {
-    const loadWidget = () => {
-      if (
-        playerRef.current &&
-        (window as any).SC &&
-        (window as any).SC.Widget
-      ) {
-        const widget = (window as any).SC.Widget(playerRef.current);
-        widget.bind((window as any).SC.Widget.Events.FINISH, () => {
-          console.log("사운드클라우드 트랙 재생 완료");
-        });
-      }
-    };
+  // useEffect(() => {
+  //   const loadWidget = () => {
+  //     if (
+  //       playerRef.current &&
+  //       (window as any).SC &&
+  //       (window as any).SC.Widget
+  //     ) {
+  //       const widget = (window as any).SC.Widget(playerRef.current);
+  //       widget.bind((window as any).SC.Widget.Events.FINISH, () => {
+  //         console.log("사운드클라우드 트랙 재생 완료");
+  //       });
+  //     }
+  //   };
 
-    // SoundCloud API가 없으면 추가
-    if (!(window as any).SC) {
-      const script = document.createElement("script");
-      script.src = "https://w.soundcloud.com/player/api.js";
-      script.onload = loadWidget;
-      document.body.appendChild(script);
-    } else {
-      loadWidget();
-    }
-  }, []);
+  //   // SoundCloud API가 없으면 추가
+  //   if (!(window as any).SC) {
+  //     const script = document.createElement("script");
+  //     script.src = "https://w.soundcloud.com/player/api.js";
+  //     script.onload = loadWidget;
+  //     document.body.appendChild(script);
+  //   } else {
+  //     loadWidget();
+  //   }
+  // }, []);
 
   return (
     <div>
-      <iframe
+      {/* <iframe
         ref={playerRef}
         title="SoundCloud Player" // title 추가 (ESLint 경고 해결)
         width="100%"
@@ -147,7 +147,28 @@ const TestView2 = () => {
         onChange={handleUrlChange}
         placeholder="Enter media URL (YouTube, SoundCloud, etc.)"
         style={{ width: "100%", padding: "10px" }}
+      /> */}
+
+      <ReactPlayer
+        ref={playerRef}
+        url="https://soundcloud.com/cthruriooo/a-million-prod-1jackpott-x"
+        // url="https://www.youtube.com/watch?v=9A_HyE4XsSM"
+        playing={true}
+        // onBuffer, onBufferEnd 는 url이 set되고 onReady가 실행될때쯤 onBuffer가 실행되서 원하는 타이밍에 로딩을 못걸어줌. 그래서 제외
+        // onReady={handleReady}
+        // onDuration={handleDuration}
+        onEnded={() => {
+          console.log("재생 끝");
+          console.log("playerRef.current : ", playerRef.current);
+
+          if (playerRef.current) {
+            playerRef.current.seekTo(0);
+          }
+        }}
+        // volume={volume}
+        // style={{ display: "none" }}
       />
+
       {/* <div style={{ marginTop: "20px" }}>
         {url && (
           <ReactPlayer

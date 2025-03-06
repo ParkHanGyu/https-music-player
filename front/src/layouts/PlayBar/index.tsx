@@ -182,9 +182,8 @@ const PlayBar = () => {
     if (playerRef.current && isLoop) {
       // url이 soundcloud면 url 다시 넣어줌
       if (playBarUrl.includes("soundcloud")) {
-        const nowMusic = playBarUrl;
         setPlayBarUrl(""); // URL을 초기화
-        setTimeout(() => setPlayBarUrl(nowMusic), 0); // 다시 URL 설정
+        setTimeout(() => setPlayBarUrl(playBarUrl), 10); // 다시 URL 설정
       } else {
         // soundcloud가 아닐경우 (유튜브일경우) 동영상 진행도 0으로
         playerRef.current.seekTo(0);
@@ -452,11 +451,11 @@ const PlayBar = () => {
                     width: `${played * 100}%`,
                   }}
                 ></div>
+
                 <ReactPlayer
                   ref={playerRef}
                   url={playBarUrl}
                   playing={isPlaying}
-                  // onBuffer, onBufferEnd 는 url이 set되고 onReady가 실행될때쯤 onBuffer가 실행되서 원하는 타이밍에 로딩을 못걸어줌. 그래서 제외
                   onReady={handleReady}
                   onDuration={handleDuration}
                   onEnded={handleEnded}
