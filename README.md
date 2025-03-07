@@ -521,6 +521,43 @@
 <!--  5.3 끝 -->
 
 
+<!--  5.4 시작 -->
+<details>
+  <summary><b>5.4. 재생목록 순서 변경</b></summary>
+
+  -
+
+
+  
+  <details>
+  <summary><b>기존 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript 
+  
+  ~~~
+
+    
+  </div>
+  </details>
+
+  
+  <details>
+  <summary><b>개선된 코드</b></summary>
+  <div markdown="1">
+  
+  ~~~typescript
+  /**
+
+   */
+
+  ~~~
+  -  
+  </div>
+  </details>
+</details>
+
+<!--  5.4 끝 -->
 
 
 
