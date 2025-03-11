@@ -139,7 +139,7 @@
 </br>
 
 
-### 4.5. Service(Service interface 기능 모음)
+### 4.5. Service(기능모음 interface)
 <details>
 <summary><b>음악 추가 Service interface</b></summary> 
   
@@ -152,9 +152,9 @@
 </br>
 
 
-### 4.6. Service implement(Service 구현체)
+### 4.6. Service implement(기능구현 Service)
 <details>
-<summary><b>재생목록 생성 Service 기능 구현</b></summary> 
+<summary><b>재생목록 생성 Service 기능구현</b></summary> 
 
   - 클라이언트에서 받아온 데이터를 파싱합니다.
   - 추가할 음악이 중복인지 체크합니다.
