@@ -37,6 +37,8 @@
 
 
 ## 4. 핵심 기능
+프로젝트의 핵심 기능은 사용자가 원하는 음악을 원하는 재생목록에 추가하는 기능입니다.
+
 이번 프로젝트의 핵심 기능은 음악 검색과 추가 입니다.</br>
 사용자는 원하는 음악의 URL을 입력하고, 유효한 URL이면 재생을 통해 음악을 듣거나 원하는 본인만에 재생목록에 추가 할 수 있습니다.</br>
 서비스가 어떻게 동작하는지 알 수 있게 흐름도를 참고해주세요.</br>
@@ -161,8 +163,8 @@
   - 중복이라면 MusicResponse 형태의 응답값인 MusicResponse.existingMusic()을 반환합니다.
   - 추가하려는 음악의 재생목록이 존재하는지 확인하고 존재하다면 해당 재생목록의 리스트를 가져옵니다.
   - 존재하지 않다면 클라이언트에 400 Bad Request 응답을 반환해줍니다.
-  - 가져온 음악 리스트에 추가하려는 음악을 포함하여 재생순서를 계산해 할당해줍니다.
-  - 재생순서를 할당해주고 데이터베이스에 저장해줍니다.
+  - 가져온 음악 리스트에 추가하려는 음악을 포함하여 재생순서를 모두 재할당합니다.
+  - 이후 MusicRepoSerivce를 통해 데이터베이스에 저장하기 위한 .save()를 실행해줍니다.
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/8-2_addPlayListToMusic_service_impl.png?raw=true)
 </details>
 
@@ -204,62 +206,62 @@
   
   - 즉, 브라우저는 background-image: url(...)에서 url(...) 내부의 리소스를 네트워크 요청(GET)을 통해 가져오기 때문에 해당 경로도 HTTP 요청 인증/인가를 설정을 해줘야 했습니다.
   
-  <details>
-  <summary><b>기존 코드</b></summary>
-  <div markdown="1">
+    <details>
+    <summary><b>기존 코드</b></summary>
+    <div markdown="1">
+    
+    ~~~java
+    /**
+      SecurityConfig.java
+     */
+      @Bean
+      public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+          http
+                  .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                  .csrf(csrf -> csrf.disable()) 
+                  .authorizeRequests(authz -> authz
+                          .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
+                          .anyRequest().authenticated()  // 그 외 요청은 인증 필요
+                  )
+                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터
+    
+          return http.build();
+      }
+    ~~~
+    
+    </div>
+    </details>
   
-  ~~~java
-  /**
-    SecurityConfig.java
-   */
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) 
-                .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
-                        .anyRequest().authenticated()  // 그 외 요청은 인증 필요
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터
+    <details>
+    <summary><b>개선된 코드</b></summary>
+    <div markdown="1">
+    
+    ~~~java
+    /**
+      SecurityConfig.java
+     */
+      @Bean
+      public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+          http
+                  .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                  .csrf(csrf -> csrf.disable())
+                  .authorizeRequests(authz -> authz
+                          .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll() // 이미지 경로 인증 없이 접근할 수 있도록 허용
+                          .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
+                          .anyRequest().authenticated()  // 그 외 요청은 인증 필요
+                  )
+                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터 등록
+    
+          return http.build();
+      }
+    ~~~
+    
+    </div>
   
-        return http.build();
-    }
-  ~~~
   
-  </div>
-  </details>
   
-  <details>
-  <summary><b>개선된 코드</b></summary>
-  <div markdown="1">
-  
-  ~~~java
-  /**
-    SecurityConfig.java
-   */
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll() // 이미지 경로 인증 없이 접근할 수 있도록 허용
-                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
-                        .anyRequest().authenticated()  // 그 외 요청은 인증 필요
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터 등록
-  
-        return http.build();
-    }
-  ~~~
-  
-  </div>
-
-
-
-  
-  </details>
+    
+    </details>
 </details>
 
 <!--  5.2 시작 -->
@@ -279,155 +281,155 @@
 
 
   
-  <details>
-  <summary><b>기존 코드</b></summary>
-  <div markdown="1">
-  
-  ~~~typescript 
-  /**
-    useMediaInfo.ts
-   */
-  const noEmbed = "https://noembed.com/embed?url=";
-  // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
-  const useMediaInfo = (defaultImage: string) => {
-    const [infoData, setInfoData] = useState<MusicInfoData>({
-      vidUrl: "-",
-      author: "-",
-      thumb: defaultImage,
-      vidTitle: "-",
-    });
-  
-    const setMusicInfo = (
-      url: string,
-      callback?: (data: MusicInfoData) => void
-    ) => {
-      const fullUrl = `${noEmbed}${url}`;
-      fetch(fullUrl)
-        .then((res) => res.json())
-        .then((data) => {
-          const { url, author_name, thumbnail_url, title } = data;
-          const newInfoData = {
-            vidUrl: url || "-",
-            author: author_name || "-",
-            thumb: thumbnail_url || defaultImage,
-            vidTitle: title || "-",
-          };
-  
-          setInfoData(newInfoData);
-          if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
-        })
-        .catch((error) => {
-          console.error("Failed to fetch media info:", error);
-          resetInfoData();
-        });
-    };
-  
-    const resetInfoData = () => {
-      setInfoData({
-        vidUrl: "-",
-        author: "-",
-        thumb: defaultImage,
-        vidTitle: "-",
-      });
-    };
-  
-    return {
-      infoData,
-      setInfoData,
-      setMusicInfo,
-      defaultImage,
-      resetInfoData,
-    };
-  };
-  
-  export default useMediaInfo;
-  ~~~
-
+    <details>
+    <summary><b>기존 코드</b></summary>
+    <div markdown="1">
     
-  </div>
-  </details>
-
-  
-  <details>
-  <summary><b>개선된 코드</b></summary>
-  <div markdown="1">
-  
-  ~~~typescript
-  /**
-    useMediaInfo.ts
-   */
+    ~~~typescript 
+    /**
+      useMediaInfo.ts
+     */
     const noEmbed = "https://noembed.com/embed?url=";
-  // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
-  const useMediaInfo = (defaultImage: string) => {
-    const [infoData, setInfoData] = useState<MusicInfoData>({
-      vidUrl: "-",
-      author: "-",
-      thumb: defaultImage,
-      vidTitle: "-",
-    });
-  
-    const setMusicInfo = (
-      url: string,
-      callback?: (data: MusicInfoData) => void
-    ) => {
-      const fullUrl = `${noEmbed}${url}`;
-      fetch(fullUrl)
-        .then((res) => res.json())
-        .then((data) => {
-          const { url, author_name, thumbnail_url, title } = data;
-          let processedTitle = title || "-";
-          if (
-            url.includes("soundcloud") &&
-            title &&
-            author_name &&
-            title.includes(" by ") &&
-            title.includes(author_name)
-          ) {
-            processedTitle = title.split(" by ")[0].trim();
-          }
-  
-          const newInfoData = {
-            vidUrl: url || "-",
-            author: author_name || "-",
-            thumb: thumbnail_url || defaultImage,
-            vidTitle: processedTitle || "-",
-          };
-  
-          setInfoData(newInfoData);
-          if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
-        })
-        .catch((error) => {
-          console.error("Failed to fetch media info:", error);
-          resetInfoData();
-        });
-    };
-  
-    const resetInfoData = () => {
-      setInfoData({
+    // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
+    const useMediaInfo = (defaultImage: string) => {
+      const [infoData, setInfoData] = useState<MusicInfoData>({
         vidUrl: "-",
         author: "-",
         thumb: defaultImage,
         vidTitle: "-",
       });
+    
+      const setMusicInfo = (
+        url: string,
+        callback?: (data: MusicInfoData) => void
+      ) => {
+        const fullUrl = `${noEmbed}${url}`;
+        fetch(fullUrl)
+          .then((res) => res.json())
+          .then((data) => {
+            const { url, author_name, thumbnail_url, title } = data;
+            const newInfoData = {
+              vidUrl: url || "-",
+              author: author_name || "-",
+              thumb: thumbnail_url || defaultImage,
+              vidTitle: title || "-",
+            };
+    
+            setInfoData(newInfoData);
+            if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
+          })
+          .catch((error) => {
+            console.error("Failed to fetch media info:", error);
+            resetInfoData();
+          });
+      };
+    
+      const resetInfoData = () => {
+        setInfoData({
+          vidUrl: "-",
+          author: "-",
+          thumb: defaultImage,
+          vidTitle: "-",
+        });
+      };
+    
+      return {
+        infoData,
+        setInfoData,
+        setMusicInfo,
+        defaultImage,
+        resetInfoData,
+      };
     };
+    
+    export default useMediaInfo;
+    ~~~
   
-    return {
-      infoData,
-      setInfoData,
-      setMusicInfo,
-      defaultImage,
-      resetInfoData,
+      
+    </div>
+    </details>
+
+  
+    <details>
+    <summary><b>개선된 코드</b></summary>
+    <div markdown="1">
+    
+    ~~~typescript
+    /**
+      useMediaInfo.ts
+     */
+      const noEmbed = "https://noembed.com/embed?url=";
+    // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
+    const useMediaInfo = (defaultImage: string) => {
+      const [infoData, setInfoData] = useState<MusicInfoData>({
+        vidUrl: "-",
+        author: "-",
+        thumb: defaultImage,
+        vidTitle: "-",
+      });
+    
+      const setMusicInfo = (
+        url: string,
+        callback?: (data: MusicInfoData) => void
+      ) => {
+        const fullUrl = `${noEmbed}${url}`;
+        fetch(fullUrl)
+          .then((res) => res.json())
+          .then((data) => {
+            const { url, author_name, thumbnail_url, title } = data;
+            let processedTitle = title || "-";
+            if (
+              url.includes("soundcloud") &&
+              title &&
+              author_name &&
+              title.includes(" by ") &&
+              title.includes(author_name)
+            ) {
+              processedTitle = title.split(" by ")[0].trim();
+            }
+    
+            const newInfoData = {
+              vidUrl: url || "-",
+              author: author_name || "-",
+              thumb: thumbnail_url || defaultImage,
+              vidTitle: processedTitle || "-",
+            };
+    
+            setInfoData(newInfoData);
+            if (callback) callback(newInfoData); // 데이터 준비 후 콜백 호출
+          })
+          .catch((error) => {
+            console.error("Failed to fetch media info:", error);
+            resetInfoData();
+          });
+      };
+    
+      const resetInfoData = () => {
+        setInfoData({
+          vidUrl: "-",
+          author: "-",
+          thumb: defaultImage,
+          vidTitle: "-",
+        });
+      };
+    
+      return {
+        infoData,
+        setInfoData,
+        setMusicInfo,
+        defaultImage,
+        resetInfoData,
+      };
     };
-  };
-  
-  export default useMediaInfo;
-  ~~~
-  - SoundCloud의 경우 제목(title)이 "곡명 by 아티스트명" 형식이기 때문에 " by "를 기준으로 잘라서 "곡명"만 남겼습니다. 예를 들어, title = "제목 by 작성자" 라면 → "제목"만 저장됩니다.
-  - 만약 SoundCloud의 제목에 by가 없을수도 있기 때문에 if문 조건으로 title의 문자열 값에 " by " 가 있는지 확인하고 " by "가 없는 SoundCloud URL이라면 title이 그대로 사용됩니다.
-  - YouTube일 경우 title이 그대로 사용됩니다.
-  
-  </div>
-  </details>
+    
+    export default useMediaInfo;
+    ~~~
+    - SoundCloud의 경우 제목(title)이 "곡명 by 아티스트명" 형식이기 때문에 " by "를 기준으로 잘라서 "곡명"만 남겼습니다. 예를 들어, title = "제목 by 작성자" 라면 → "제목"만 저장됩니다.
+    - 만약 SoundCloud의 제목에 by가 없을수도 있기 때문에 if문 조건으로 title의 문자열 값에 " by " 가 있는지 확인하고 " by "가 없는 SoundCloud URL이라면 title이 그대로 사용됩니다.
+    - YouTube일 경우 title이 그대로 사용됩니다.
+    
+    </div>
+    </details>
 </details>
 
 <!--  5.2 끝 -->
@@ -443,79 +445,79 @@
   - SoundCloud는 반복재생에 대한 기능이 없기 때문에 Youtube에서도, SoundCloud에서도 공통적으로 작동하는 옵션인 ReactPlayer의 onEnded 옵션을 사용해서 반복재생 기능을 구현하기로 했습니다.
 
   
-  <details>
-  <summary><b>기존 코드</b></summary>
-  <div markdown="1">
-  
-  ~~~typescript 
-  /**
-    PlayBar.tsx
-   */
-  const handleEnded = () => {
-    onNextMusic();
-  };
-
-  return(
-    <ReactPlayer
-      ref={playerRef}
-      url={playBarUrl}
-      playing={isPlaying}
-      onReady={handleReady}
-      onDuration={handleDuration}
-      loop={isLoop}
-      onEnded={handleEnded}
-      volume={volume}
-      style={{ display: "none" }}
-    />
-  )
-  ~~~
-
+    <details>
+    <summary><b>기존 코드</b></summary>
+    <div markdown="1">
     
-  </div>
-  </details>
-
-  
-  <details>
-  <summary><b>개선된 코드</b></summary>
-  <div markdown="1">
-  
-  ~~~typescript
-  /**
-    PlayBar.tsx
-  */
-  const handleEnded = () => {
-    if (playerRef.current && isLoop) {
-      if (playBarUrl.includes("soundcloud")) {
-        setPlayBarUrl(""); 
-        setTimeout(() => setPlayBarUrl(playBarUrl), 10);
-      } else {
-        playerRef.current.seekTo(0);
-      }
-    } else if (!isLoop) {
+    ~~~typescript 
+    /**
+      PlayBar.tsx
+     */
+    const handleEnded = () => {
       onNextMusic();
-    }
-  };
+    };
+  
+    return(
+      <ReactPlayer
+        ref={playerRef}
+        url={playBarUrl}
+        playing={isPlaying}
+        onReady={handleReady}
+        onDuration={handleDuration}
+        loop={isLoop}
+        onEnded={handleEnded}
+        volume={volume}
+        style={{ display: "none" }}
+      />
+    )
+    ~~~
+  
+      
+    </div>
+    </details>
 
-  return(
-    <ReactPlayer
-      ref={playerRef}
-      url={playBarUrl}
-      playing={isPlaying}
-      onReady={handleReady}
-      onDuration={handleDuration}
-      onEnded={handleEnded}
-      volume={volume}
-      style={{ display: "none" }}
-    />
-  )
-  ~~~
-  - 기존 ReactPlayer에서 사용하던 loop 옵션을 제거하고 반복재생 여부에 따른 동작을 handleEnded() 메서드에서 처리하도록 수정
-  - 만약 isLoop가 true이고 URL이 "soundcloud"인 경우 ReactPlayer의 URL값을 초기화해주고 setTimeout 콜백 함수를 호출하여 일정 시간 후에 URL을 업데이트합니다.
-  - 만약 isLoop가 true이고 URL이 "soundcloud"가 아닌 경우(해당 프로젝트에서는 youtube인 경우) 해당 미디어의 진행도를 0으로 수정해줍니다.
-  - 마지막 else if 조건문을 보면 기존 코드인 ReactPlayer의 옵션인 loop가 ture일경우 onEnded 옵션이 실행되지 않습니다. 결국 기존 코드에서 onEnded가 실행되려면 기본적으로 loop 값이 false입니다.
-  - 하지만 수정 코드인 ReactPlayer을 보면 loop옵션을 사용하고 있지 않기 때문에 항상 onEnded가 실행되고 isLoop값에 따른 반복재생 또는 다음 음악으로 넘어가는 흐름으로 작성해줬습니다. 
-  </div>
-  </details>
+  
+    <details>
+    <summary><b>개선된 코드</b></summary>
+    <div markdown="1">
+    
+    ~~~typescript
+    /**
+      PlayBar.tsx
+    */
+    const handleEnded = () => {
+      if (playerRef.current && isLoop) {
+        if (playBarUrl.includes("soundcloud")) {
+          setPlayBarUrl(""); 
+          setTimeout(() => setPlayBarUrl(playBarUrl), 10);
+        } else {
+          playerRef.current.seekTo(0);
+        }
+      } else if (!isLoop) {
+        onNextMusic();
+      }
+    };
+  
+    return(
+      <ReactPlayer
+        ref={playerRef}
+        url={playBarUrl}
+        playing={isPlaying}
+        onReady={handleReady}
+        onDuration={handleDuration}
+        onEnded={handleEnded}
+        volume={volume}
+        style={{ display: "none" }}
+      />
+    )
+    ~~~
+    - 기존 ReactPlayer에서 사용하던 loop 옵션을 제거하고 반복재생 여부에 따른 동작을 handleEnded() 메서드에서 처리하도록 수정
+    - 만약 isLoop가 true이고 URL이 "soundcloud"인 경우 ReactPlayer의 URL값을 초기화해주고 setTimeout 콜백 함수를 호출하여 일정 시간 후에 URL을 업데이트합니다.
+    - 만약 isLoop가 true이고 URL이 "soundcloud"가 아닌 경우(해당 프로젝트에서는 youtube인 경우) 해당 미디어의 진행도를 0으로 수정해줍니다.
+    - 마지막 else if 조건문을 보면 기존 코드인 ReactPlayer의 옵션인 loop가 ture일경우 onEnded 옵션이 실행되지 않습니다. 결국 기존 코드에서 onEnded가 실행되려면 기본적으로 loop 값이 false입니다.
+    - 하지만 수정 코드인 ReactPlayer을 보면 loop옵션을 사용하고 있지 않기 때문에 항상 onEnded가 실행되고 isLoop값에 따른 반복재생 또는 다음 음악으로 넘어가는 흐름으로 작성해줬습니다. 
+    </div>
+    </details>
 </details>
 
 <!--  5.3 끝 -->
