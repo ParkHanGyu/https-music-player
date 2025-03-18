@@ -64,6 +64,10 @@
   - 정규화 시켜준 URL을 다른 컴포넌트에서 사용 할 수 있게 Zustand를 사용해 정규화한 URL를 set해줍니다.
   - Youtube 또는 SoundCloud 아닌 URL인 경우, 에러 메세지를 띄웁니다.
 
+    => noembed API를 통해서 음악 정보를 가져옴. 이 정보를 가지는 데이터는 infoData에 저장되어 있습니다.
+
+
+
 </br>
 </details>
 
@@ -72,11 +76,14 @@
 <summary><b>Noembed를 사용한 음악 정보 얻어오기</b></summary>
 
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/2_setMusicInfo.png?raw=true)
-  - useState를 사용해 infoData라는 상태를 관리합니다.
-  - SoundCloud일 경우 제목에 포함된 불필요한 "by"(아티스트명)를 제거합니다.
-  - setMusicInfo(url)을 호출하면 해당 URL의 미디어 정보를 가져와 infoData에 저장합니다.
-  - 데이터를 가져올 때 noembed API를 이용하여 URL의 미디어 정보를 가져옵니다.
-  - 실패하면 resetInfoData()를 호출해 기본값으로 초기화합니다.
+  - 직전 정규식에서 searchUrl값이 변경되는데, MusicInfo 컴포넌트의 useEffect가 이를 감지해 useMediaInfo 커스텀훅의 setMusicInfo을 호출합니다. 이때 setMusicInfo은 매개변수 값으로 Zustand를 사용해 상태관리중인 searchUrl을 받습니다.
+  - searchUrl의 값으로 noembed API를 통해 음악의 정보를 받아옵니다.
+  - 실패할경우 resetInfoData()를 호출해 기본값으로 초기화합니다.
+  - 가져온 정보중 vidTitle값이 "soundcloud"를 포함하는 경우 제목에 포함된 불필요한 " by "(아티스트명)를 제거합니다.
+  - 정보를 담은 값은 커스텀훅에 useState로 선언한 infoData로 저장하여 상태 관리 됩니다.
+
+    => noembed API를 통해서 음악 정보를 가져옴. 이 정보를 가지는 데이터는 infoData에 저장되어 있습니다.
+
   
 
 
@@ -86,9 +93,13 @@
 <summary><b>Axios 비동기 요청</b></summary>
   
 ![](https://github.com/ParkHanGyu/https-music-player/blob/master/assets/3-2_API_playlistAddMusicRequest.png?raw=true)
-  - Noembed를 통해 가져온 미디어 데이터를 비동기로 POST 요청해줍니다.
+  - 직전 커스텀훅을 통해 저장한 미디어 데이터를 비동기 POST 요청을 해줍니다.
   - 이때 POST 요청으로 같이 보내줄 데이터는 미디어 데이터들을 담아둔 requestBody와 보안과 사용자를 구별하기 위해 accessToken을 포함해 서버로 보내줍니다.
   - 성공 시 응답 데이터 반환, 실패 시 에러 응답을 반환 해줍니다.
+
+    => URL의 음악 정보를 가지고 클라이언트에서 서버로 비동기 POST 요청을 합니다.
+
+
 </details>
 
 
@@ -103,6 +114,9 @@
   - parseBearerToken() 메서드를 사용해 토큰이 올바른 형태인지 확인합니다. (parseBearerToken() 메서드에 대한 내용은 아래 "JWT 토큰 추출" 참고)
   - 정상적인 형태의 토큰이면 parseBearerToken() 메서드의 return 값으로 추출한 토큰값을 받습니다.
   - 추출한 토큰의 정보를 Spring Security가 알 수 있도록 UsernamePasswordAuthenticationToken을 생성해서 SecurityContext에 저장합니다.
+  - 서버에서 클라이언트이 요청을 받기 전에 해당 요청이 보안 측면에서 허용하는 요청인지 Spring Security에서 확인합니다. 이때 우리 프로젝트는 몇몇 요청을 제외한 모든 요청에는 토큰을 같이 데이터를 보내줘야 하기 때문에 이번 예시에서는 토큰을 검증해줍니다.
+   
+    => Spring Security 는 SecurityContext에 저장된걸 확인하여 보안적으로 정상적인 요청인걸 확인합니다.
     
 </details>
 
@@ -116,7 +130,12 @@
  - "Authorization" 필드가 존재하지 않는다면, parseBearerToken 메서드를 호출한곳에 null을 반환합니다.
  - "Authorization" 필드가 존재하는 경우, 해당 값이 "Bearer "로 시작하는지 확인합니다.
  - "Bearer "로 시작하지 않는다면 parseBearerToken 메서드를 호출한곳에 null을 반환합니다.
- - "Bearer "로 시작하는 경우, "Bearer " 이후의 문자열(토큰 값)만 추출하여 반환합니다. 
+ - "Bearer "로 시작하는 경우, "Bearer " 이후의 문자열(토큰 값)만 추출하여 반환합니다.
+
+
+=> 1차적으로  parseBearerToken에서 토큰의 유무와 형태를 확인해주고 정상적이라면 2차적으로 doFilterInternal에서 SecurityContext에 정보를 저장해주는 흐름입니다.
+
+
   
 </details>
 
