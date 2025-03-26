@@ -37,8 +37,6 @@ function App() {
   const tokenExp = useTokenExpiration(cookies.accessToken);
 
   useEffect(() => {
-    // setPlaylistLoading(true);
-
     // 토큰이 있으면 유저 정보를 set
     if (cookies.accessToken && tokenExp) {
       console.log("로그인 이후 유저 정보 set");
@@ -57,10 +55,6 @@ function App() {
       // 리프레쉬 토큰이 없으면
       resetLoginUser();
     }
-
-    // setTimeout(() => {
-    //   setPlaylistLoading(false);
-    // }, 1000);
   }, [cookies.accessToken, tokenExp]);
   // 로그인 할때 유저정보 불러옴
   const getLoginUserResponse = (

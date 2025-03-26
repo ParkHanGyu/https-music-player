@@ -271,18 +271,15 @@ const PlayList = () => {
   };
 
   // ========================================== 재생목록 순서 드래그
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [existingHoveredIndex, setExistingHoveredIndex] = useState<
-    number | null
-  >(null);
+  const [startIndex, setStartIndex] = useState<number | null>(null);
+  const [hoveringIndex, setHoveringIndex] = useState<number | null>(null);
+  const [endIndex, setEndIndex] = useState<number | null>(null);
   const [targetMusicId, setTargetMusicId] = useState<bigint | null>(null);
 
   // 드래그 시작
   const handleDragStart = (index: number) => {
-    console.log("드래그 시작");
-    setDraggedIndex(index);
-    setExistingHoveredIndex(index);
+    setStartIndex(index);
+    setHoveringIndex(index);
     setTargetMusicId(musics[index].musicId);
   };
 
@@ -290,29 +287,30 @@ const PlayList = () => {
   const handleDragEnter = (index: number) => {
     console.log("드래그 중");
 
-    setHoveredIndex(index);
-
-    if (draggedIndex !== null && draggedIndex !== index) {
+    if (hoveringIndex !== null && hoveringIndex !== index) {
       const updatedPlaylist = [...musics];
-      const [draggedItem] = updatedPlaylist.splice(draggedIndex, 1);
+      const [draggedItem] = updatedPlaylist.splice(hoveringIndex, 1);
       updatedPlaylist.splice(index, 0, draggedItem);
 
       setMusics(updatedPlaylist);
-      setDraggedIndex(index);
+      setHoveringIndex(index);
     }
+    setEndIndex(index);
   };
 
   // 드래그 종료
   const handleDragEnd = () => {
     // 변한게 없으면 retrun
-    if (hoveredIndex === existingHoveredIndex) {
+    console.log("드래그 종료");
+
+    if (endIndex === startIndex) {
       console.log("기존 값과 같기 때문에 api 실행하지 않고 return");
       return;
     }
 
     const requestBody: updatePlaylistOrderRequestDto = {
       // 몇번쨰로 이동할지
-      hoveredIndex: hoveredIndex,
+      hoveredIndex: endIndex,
       // 이동할 음악 ID
       musicId: targetMusicId,
     };
@@ -328,8 +326,8 @@ const PlayList = () => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-    setDraggedIndex(null);
-    setHoveredIndex(null);
+    setHoveringIndex(null);
+    setEndIndex(null);
 
     // nowPlaylist 수정
     setNowPlayingPlaylist(musics);

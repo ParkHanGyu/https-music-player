@@ -127,7 +127,7 @@ public class MusicServiceImpl implements Musicservice {
 
         // 바꾸려는 노래가 playlistMusics 리스트에 몇번째 index 인지 할당
         int dragItemIndex = IntStream.range(0, playlistMusics.size())
-                .filter(i -> playlistMusics.get(i).getMusicId() == request.getMusicId()) // musicId가 request.getMusicId()인지 확인
+                .filter(i -> playlistMusics.get(i).getMusicId().equals(request.getMusicId())) // playlistMusics 테이블에 request.getMusicId()인 musicId가 있는지 확인
                 .findFirst()
                 .orElse(-1); // 조건을 만족하는 데이터가 없을 경우 -1 반환
         if (dragItemIndex == -1) {
