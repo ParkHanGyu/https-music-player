@@ -273,7 +273,6 @@ const PlayList = () => {
   // ========================================== 재생목록 순서 드래그
   const [startIndex, setStartIndex] = useState<number | null>(null);
   const [hoveringIndex, setHoveringIndex] = useState<number | null>(null);
-  const [endIndex, setEndIndex] = useState<number | null>(null);
   const [targetMusicId, setTargetMusicId] = useState<bigint | null>(null);
 
   // 드래그 시작
@@ -295,7 +294,6 @@ const PlayList = () => {
       setMusics(updatedPlaylist);
       setHoveringIndex(index);
     }
-    setEndIndex(index);
   };
 
   // 드래그 종료
@@ -303,14 +301,14 @@ const PlayList = () => {
     // 변한게 없으면 retrun
     console.log("드래그 종료");
 
-    if (endIndex === startIndex) {
+    if (hoveringIndex === startIndex) {
       console.log("기존 값과 같기 때문에 api 실행하지 않고 return");
       return;
     }
 
     const requestBody: updatePlaylistOrderRequestDto = {
       // 몇번쨰로 이동할지
-      hoveredIndex: endIndex,
+      hoveredIndex: hoveringIndex,
       // 이동할 음악 ID
       musicId: targetMusicId,
     };
@@ -327,7 +325,6 @@ const PlayList = () => {
       return;
     }
     setHoveringIndex(null);
-    setEndIndex(null);
 
     // nowPlaylist 수정
     setNowPlayingPlaylist(musics);
