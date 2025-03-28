@@ -180,15 +180,20 @@ public class MusicServiceImpl implements Musicservice {
         // 드래그한 음악의 orderValue를 newOrderValue로 set해줌
         playlistMusics.get(dragItemIndex).setOrderValue(newOrderValue);
 
+        reorderPlaylist(playlistMusics); // 재배치 후 저장
+
+        playlistMusicRepoService.saveAll(playlistMusics);
+        log.info("=== 재배치 완료 ===");
+
         // 근데 새로 할당할 orderValue의 값이 1의 자리가 1 또는 9일 경우
-        if (newOrderValue % 10 == 1 || newOrderValue % 10 == 9) {
-            System.out.println("재배치 후 저장");
-            reorderPlaylist(playlistMusics); // 재배치 후 저장
-//            return ResponseEntity.ok("재배치가 완료되었습니다.");
-        } else { // 재배치가 필요 없는 경우 그냥 저장
-            System.out.println("재배치가 필요없는 저장");
-            playlistMusicRepoService.save(playlistMusics.get(dragItemIndex)); // 재배치 없이 저장
-        }
+//        if (newOrderValue % 10 == 1 || newOrderValue % 10 == 9) {
+//            System.out.println("재배치 후 저장");
+//            reorderPlaylist(playlistMusics); // 재배치 후 저장
+////            return ResponseEntity.ok("재배치가 완료되었습니다.");
+//        } else { // 재배치가 필요 없는 경우 그냥 저장
+//            System.out.println("재배치가 필요없는 저장");
+//            playlistMusicRepoService.save(playlistMusics.get(dragItemIndex)); // 재배치 없이 저장
+//        }
         return UpdateOrderValueResponse.success();
     }
 
@@ -215,8 +220,8 @@ public class MusicServiceImpl implements Musicservice {
             orderValue += 10; // 10단위로 증가
         }
 
-        playlistMusicRepoService.saveAll(playlistMusics);
-        log.info("=== 재배치 완료 ===");
+//        playlistMusicRepoService.saveAll(playlistMusics);
+//        log.info("=== 재배치 완료 ===");
     }
 
 

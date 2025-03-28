@@ -324,10 +324,13 @@ const PlayList = () => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
+    setStartIndex(null);
     setHoveringIndex(null);
 
-    // nowPlaylist 수정
-    setNowPlayingPlaylist(musics);
+    if (playlistId === nowPlayingPlaylistID) {
+      // nowPlaylist 수정
+      setNowPlayingPlaylist(musics);
+    }
   };
 
   // ========================================== 재생목록 순서 드래그 끝
@@ -342,24 +345,15 @@ const PlayList = () => {
   }
 
   const testBtn = () => {
-    // alert("엑세스 토큰 : " + cookies.accessToken);
-    console.log("===================================================");
-
-    console.log("nowPlayingPlaylist.length : ", nowPlayingPlaylist.length);
     console.log(
       "PlayList.tsx - nowPlayingPlaylist : " +
         JSON.stringify(nowPlayingPlaylist, null, 2)
     );
-    console.log("===================================================");
-    console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
+
     console.log(
       "PlayList.tsx - nowRandomPlaylist : " +
         JSON.stringify(nowRandomPlaylist, null, 2)
     );
-    console.log("===================================================");
-
-    // console.log("musics : ", JSON.stringify(musics));
-    // console.log("===================================================");
   };
 
   return (

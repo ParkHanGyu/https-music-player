@@ -5,7 +5,6 @@ import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
 import Music from "../../types/interface/music.interface";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import { useParams } from "react-router-dom";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import useMediaInfo from "../../hooks/useMediaInfo";
@@ -52,6 +51,7 @@ const PlayBar = () => {
 
   //      event handler : playBar 동영상 시간 set 이벤트 처리 함수       //
   const handleDuration = (playBarDuration: number) => {
+    console.log("동영상 길이 가져오는 옵션 실행");
     setPlayBarDuration(playBarDuration);
   };
 

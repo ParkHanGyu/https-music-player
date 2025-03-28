@@ -26,7 +26,7 @@ const errorResponse = (error: null | any) => {
 
 // 재생목록 추가
 // + (누가 추가하는지 유저 정보 같이 보내기)
-const ADD_PLAYLIST_URL = () => `${API_DOMAIN}/create/playList`;
+const ADD_PLAYLIST_URL = () => `${API_DOMAIN}/playlist/create`;
 export const playlistCreateReqeust = async (
   requestBody: CreatePlayListRequestDto,
   accessToken: string
@@ -46,7 +46,7 @@ export const playlistCreateReqeust = async (
 };
 
 // 재생목록에 음악 추가
-const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/add/playList_to_music`;
+const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/music/add`;
 export const playlistAddMusicReqeust = async (
   requestBody: AddPlayListToMusicRequestDto,
   accessToken: string
@@ -66,7 +66,7 @@ export const playlistAddMusicReqeust = async (
 };
 
 // 재생목록 라이브러리 불러오기
-const GET_PLAYLIST_LIBRARY_URL = () => `${API_DOMAIN}/get/playList`;
+const GET_PLAYLIST_LIBRARY_URL = () => `${API_DOMAIN}/playlist/get`;
 export const getPlayListLibraryReqeust = async (accessToken: string) => {
   const result = await axios
     .get(GET_PLAYLIST_LIBRARY_URL(), authorication(accessToken))
@@ -158,7 +158,7 @@ export const getUserInfo = async (accessToken: string) => {
 // =============== delete
 // 노래 삭제
 const DELETE_MUSIC = (musicId: bigint | string) =>
-  `${API_DOMAIN}/delete/music/${musicId}`;
+  `${API_DOMAIN}/music/delete/${musicId}`;
 export const deleteMusic = async (
   musicId: bigint | string,
   accessToken: string
@@ -177,7 +177,7 @@ export const deleteMusic = async (
 
 // 재생목록 삭제
 const DELETE_PLAYLIST = (playlistId: bigint | string) =>
-  `${API_DOMAIN}/delete/playlist/${playlistId}`;
+  `${API_DOMAIN}/playlist/delete/${playlistId}`;
 export const deletePlaylist = async (
   playlistId: bigint | string,
   accessToken: string
@@ -219,8 +219,8 @@ export const deletePlaylist = async (
 // };
 
 // 프로필 이미지 업로드 URL
-const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;
-// const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/upload/profile`;
+// const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;
+const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/file/upload/profile`;
 export const uploadProfileImageRequest = async (
   file: File,
   accessToken: string
@@ -274,9 +274,8 @@ export const updatePlaylistNameRequest = async (
 };
 
 // 음악 순서 변경
-
 const UPDATE_PLAYLIST_ORDER_URL = (playlistId: string | bigint) =>
-  `${API_DOMAIN}/update/order/playlist/${playlistId}`;
+  `${API_DOMAIN}/music/update/order/${playlistId}`;
 export const playlistOrderReqeust = async (
   playlistId: string | bigint,
   requestBody: updatePlaylistOrderRequestDto,

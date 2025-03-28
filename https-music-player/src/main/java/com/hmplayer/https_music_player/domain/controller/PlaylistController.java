@@ -20,19 +20,16 @@ import org.springframework.web.bind.annotation.*;
 public class PlaylistController {
     private final PlayListService playListService;
 
-    // 재생목록 생성(add에서 create로 바꾸기)
-    @PostMapping("/create/playList")
+    // 재생목록 생성
+    @PostMapping("/playlist/create")
     public ResponseEntity<? super PlayListResponse> createPlayList(@RequestBody AddPlayListRequest request, @AuthenticationPrincipal String email) {
-        System.out.println("createPlayList 서버에서 받아온 playListName : " + request.getPlayListName());
-        System.out.println("서버에서 받아온 user : " + email);
         return playListService.createPlayList(request, email);
     }
 
-    // 재생목록 라이브러리 불러오기
-    @GetMapping("/get/playList")
+    // 재생목록들 불러오기
+    @GetMapping("/playlist/get")
     public ResponseEntity<? super PlayListResponse> getPlayListLibrary(@AuthenticationPrincipal String email) {
-            System.out.println("getPlayListLibrary 서버에서 받아온 playListName : " + email);
-            return playListService.getPlayListLibrary(email);
+        return playListService.getPlayListLibrary(email);
     }
 
     // 재생목록에 있는 노래 불러오기
@@ -46,7 +43,7 @@ public class PlaylistController {
 
 
     // 재생목록 삭제
-    @DeleteMapping("/delete/playlist/{playlistId}")
+    @DeleteMapping("/playlist/delete/{playlistId}")
     public ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(@PathVariable("playlistId") Long playlistId, @AuthenticationPrincipal String email) {
         return playListService.deletePlaylist(playlistId,email);
     }

@@ -12,11 +12,10 @@ interface VideoState {
 
   playBarInfo: MusicInfoData | null;
   setPlayBarInfo: (info: MusicInfoData) => void;
+  resetPlayBarInfo: () => void; // playBarInfo 초기화 함수
 
   // ============================================
-
   // 로딩상태
-
   playlistLoading: boolean;
   setPlaylistLoading: (isLoading: boolean) => void;
 }
@@ -32,6 +31,7 @@ export const useVideoStore = create<VideoState>((set) => ({
 
   playBarInfo: null, // 초기값 설정
   setPlayBarInfo: (info) => set({ playBarInfo: info }), // playInfo 상태를 업데이트하는 함수
+  resetPlayBarInfo: () => set({ playBarInfo: null }), // playBarInfo 초기화 함수
 
   // 로딩상태
   playlistLoading: false,

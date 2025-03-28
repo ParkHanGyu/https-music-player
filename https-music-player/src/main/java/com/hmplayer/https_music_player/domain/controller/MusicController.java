@@ -19,28 +19,28 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/music")
 @RequiredArgsConstructor
 public class MusicController {
 
     private final Musicservice musicservice;
 
-    // 재생목록에 음악 추가
-    @PostMapping("/add/playList_to_music")
+    // 음악 추가
+    @PostMapping("/add")
     public ResponseEntity<? super MusicResponse> addPlayListToMusic(@RequestBody AddPlayListToMusicRequest request, @RequestHeader("Authorization") String token) {
         return musicservice.addPlayListToMusic(request,token);
     }
 
 
     // 음악 삭제
-    @DeleteMapping("/delete/music/{musicId}")
+    @DeleteMapping("/delete/{musicId}")
     public ResponseEntity<? super DeleteMusicResponse> deleteMusic(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
         return musicservice.deleteMusic(musicId,email);
     }
 
 
-    // 재생목록 순서 변경
-    @PutMapping("/update/order/playlist/{playlistId}")
+    // 음악 순서 변경
+    @PutMapping("/update/order/{playlistId}")
     public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(@PathVariable("playlistId") Long playlistId, @RequestBody UpdatePlaylistOrderRequest request, @AuthenticationPrincipal String email) {
         log.info("playlistId = {}, request = {}, token = {}", playlistId, request, email);
         return musicservice.updatePlaylistOrder(playlistId, request, email);

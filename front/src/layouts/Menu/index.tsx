@@ -24,14 +24,31 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import Playlist from "../../types/interface/playList.interface";
 import updatePlaylistNameRequestDto from "../../apis/request/update-playlist-name.dto";
-import useTokenExpiration from "../../hooks/useTokenExpiration";
+import { useVideoStore } from "../../store/useVideo.store";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 
 const Menu = () => {
+  //      Zustand state : playBar 재생목록 상태      //
+  const {
+    setNowPlayingPlaylist,
+    nowPlayingPlaylistID,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylist,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
+
+  //      Zustand state : playBar url, info, 로딩 상태      //
+  const { setPlayBarUrl, resetPlayBarInfo } = useVideoStore();
+
+    //    Zustand state : PlayBar 재생 상태    //
+    const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+
   // url ID
   const { playlistId } = useParams();
   // 쿠키
   const [cookies, removeCookie, deleteCookie] = useCookies();
-  // 로그인 유저 정보
+
+  //      Zustand state : 로그인 유저 정보 상태      //
   const { loginUserInfo, setLoginUserInfo } = useLoginUserStore();
 
   const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
@@ -202,6 +219,18 @@ const Menu = () => {
       getPlaylistLibraryResponse
     );
 
+    // 현재 듣는 재생목록이라면 초기화
+    if (deletePlaylistId.toString() === nowPlayingPlaylistID) {
+      setNowPlayingPlaylist([]);
+      setNowRandomPlaylist([]);
+      setNowPlayingPlaylistID("");
+      setNowRandomPlaylistID("");
+      setPlayBarUrl("");
+      resetPlayBarInfo();
+      setIsPlaying(false);
+    }
+
+    // 삭제한 재생목록과 현재 보고있는 재생목록이 같다면 메인으로
     if (deletePlaylistId.toString() === playlistId) {
       navigator(MAIN_PATH());
     }

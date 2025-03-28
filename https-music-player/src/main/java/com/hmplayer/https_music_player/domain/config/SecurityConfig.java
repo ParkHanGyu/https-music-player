@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
                 .authorizeRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET,"/file/image/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/file/image/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )

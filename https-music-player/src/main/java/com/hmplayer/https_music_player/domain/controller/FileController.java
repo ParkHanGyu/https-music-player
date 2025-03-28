@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/file")
 @RequiredArgsConstructor
+@RequestMapping("/api/file")
 public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping("/upload")
+    @PostMapping("/upload/profile")
     public ResponseEntity<? super UploadResponse> upload(@RequestParam("file") MultipartFile file , @AuthenticationPrincipal String email) {
         System.out.println("upload 컨트롤러 실행");
         return fileService.upload(file,email);
