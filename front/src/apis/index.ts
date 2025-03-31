@@ -84,7 +84,7 @@ export const getPlayListLibraryReqeust = async (accessToken: string) => {
 
 // 메뉴에 재생목록 클릭시 음악 리스트 보여주기
 const GET_PLAYLIS_URL = (playlistId: string | bigint) =>
-  `${API_DOMAIN}/playList/${playlistId}`;
+  `${API_DOMAIN}/playlist/${playlistId}/musics`;
 export const getPlaylistMusicReqeust = async (
   playlistId: string | bigint,
   accessToken: string
@@ -249,7 +249,7 @@ export const uploadProfileImageRequest = async (
 
 // 재생목록 이름 변경
 const UPDATE_PLAYLIST_NAME_URL = (modifyPlaylistId: bigint | string) =>
-  `${API_DOMAIN}/update/playlist/${modifyPlaylistId}`;
+  `${API_DOMAIN}/playlist/update/${modifyPlaylistId}`;
 export const updatePlaylistNameRequest = async (
   requestBody: updatePlaylistNameRequestDto,
   modifyPlaylistId: bigint | string,

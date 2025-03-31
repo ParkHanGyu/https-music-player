@@ -15,44 +15,40 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/playlist")
 @RequiredArgsConstructor
 public class PlaylistController {
     private final PlayListService playListService;
 
     // 재생목록 생성
-    @PostMapping("/playlist/create")
+    @PostMapping("/create")
     public ResponseEntity<? super PlayListResponse> createPlayList(@RequestBody AddPlayListRequest request, @AuthenticationPrincipal String email) {
         return playListService.createPlayList(request, email);
     }
 
     // 재생목록들 불러오기
-    @GetMapping("/playlist/get")
+    @GetMapping("/get")
     public ResponseEntity<? super PlayListResponse> getPlayListLibrary(@AuthenticationPrincipal String email) {
         return playListService.getPlayListLibrary(email);
     }
 
     // 재생목록에 있는 노래 불러오기
-    @GetMapping("/playList/{playlistId}")
+    @GetMapping("/{playlistId}/musics")
     public ResponseEntity<? super GetMusicResponse> getPlayList(@PathVariable("playlistId") Long playlistId, @RequestHeader("Authorization") String token) {
-        System.out.println("서버에서 받아온 playlistId : " + playlistId);
-        System.out.println("서버에서 받아온 playListService.getPlayList(userName) : " + playListService.getPlayList(playlistId));
-        System.out.println("서버에서 받아온 token : " + token);
         return playListService.getPlayList(playlistId);
     }
 
 
     // 재생목록 삭제
-    @DeleteMapping("/playlist/delete/{playlistId}")
+    @DeleteMapping("/delete/{playlistId}")
     public ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(@PathVariable("playlistId") Long playlistId, @AuthenticationPrincipal String email) {
         return playListService.deletePlaylist(playlistId,email);
     }
 
 
     // 재생목록 이름 변경
-    @PutMapping("/update/playlist/{modifyPlaylistId}")
+    @PutMapping("/update/{modifyPlaylistId}")
     public ResponseEntity<? super UpdatePlaylistNameResponse> updatePlaylistName(@PathVariable("modifyPlaylistId") Long modifyPlaylistId, @RequestBody UpdatePlaylistNameRequest request, @AuthenticationPrincipal String email) {
-        log.info("musicId = {}, request = {}, token = {}", modifyPlaylistId, request, email);
         return playListService.updatePlaylistName(modifyPlaylistId, request, email);
     }
 
