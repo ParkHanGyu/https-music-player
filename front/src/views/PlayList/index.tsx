@@ -321,6 +321,7 @@ const PlayList = () => {
     }
   };
   const playlistOrderResponse = (responseBody: ResponseDto | null) => {
+    console.log(JSON.stringify(responseBody, null, 2));
     if (!ResponseUtil(responseBody)) {
       return;
     }

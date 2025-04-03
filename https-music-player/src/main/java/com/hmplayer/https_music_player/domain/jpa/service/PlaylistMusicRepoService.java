@@ -95,7 +95,7 @@ public class PlaylistMusicRepoService {
     }
 
     @Transactional
-    public void saveAll(List<PlaylistMusic> playlistMusics) {
+    public void updatePlaylist(List<PlaylistMusic> playlistMusics) {
         playlistMusicRepository.saveAll(playlistMusics);
     }
 }

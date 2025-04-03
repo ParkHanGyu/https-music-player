@@ -182,7 +182,8 @@ public class MusicServiceImpl implements Musicservice {
 
         reorderPlaylist(playlistMusics); // 재배치 후 저장
 
-        playlistMusicRepoService.saveAll(playlistMusics);
+        playlistMusicRepoService.updatePlaylist(playlistMusics);
+
         log.info("=== 재배치 완료 ===");
 
         // 근데 새로 할당할 orderValue의 값이 1의 자리가 1 또는 9일 경우

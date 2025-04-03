@@ -14,7 +14,11 @@ public class UpdateOrderValueResponse extends ResponseDto {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
-    public static ResponseEntity<UpdateOrderValueResponse> success(){ // 성공
-        return ResponseEntity.status(HttpStatus.OK).body(new UpdateOrderValueResponse());
+//    public static ResponseEntity<UpdateOrderValueResponse> success(){ // 성공
+//        return ResponseEntity.status(HttpStatus.OK).body(new UpdateOrderValueResponse());
+//    }
+
+    public static ResponseEntity<ResponseDto> success() { // 성공 응답
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS));
     }
 }
