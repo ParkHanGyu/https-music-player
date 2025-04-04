@@ -1,5 +1,7 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
+import com.hmplayer.https_music_player.domain.common.customexception.MusicIdNotFoundException;
+import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMusicNotFoundException;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
@@ -15,7 +17,7 @@ import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
-import com.hmplayer.https_music_player.domain.service.Musicservice;
+import com.hmplayer.https_music_player.domain.service.MusicService;
 import com.sun.jdi.InternalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MusicServiceImpl implements Musicservice {
+public class MusicServiceImpl implements MusicService {
     private final MusicRepoService musicRepoService;
     private final PlayListRepoService playListRepoService;
     private final UserRepoService userRepoService;
@@ -116,6 +118,9 @@ public class MusicServiceImpl implements Musicservice {
     public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email) {
         // 1. DB에서 해당 playlistId와 관련된 orderValue 리스트를 가져옴
         List<PlaylistMusic> playlistMusics = playlistMusicRepoService.findByPlaylistIdOrderByOrderValue(playlistId);
+        if (playlistMusics.isEmpty()) {
+            throw new PlaylistMusicNotFoundException();
+        }
         // 이동하고 싶은 위치 index 값
         int hoveredIndex = request.getHoveredIndex();
         // 바꿔줄 orderValue 값
@@ -131,9 +136,7 @@ public class MusicServiceImpl implements Musicservice {
                 .findFirst()
                 .orElse(-1); // 조건을 만족하는 데이터가 없을 경우 -1 반환
         if (dragItemIndex == -1) {
-//            return ResponseEntity.badRequest().body("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
-            System.out.println("해당 musicId에 해당하는 음악을 찾을 수 없습니다.");
-            return null;
+            throw new MusicIdNotFoundException();
         }
 
         // 2.
@@ -144,8 +147,6 @@ public class MusicServiceImpl implements Musicservice {
             // playlistMusics에서 첫번째 노래의 orderValue값
             int firstOrderValue = playlistMusics.get(hoveredIndex).getOrderValue();
             newOrderValue = firstOrderValue / 2;
-
-
         } else if (hoveredIndex + 1 >= playlistMusics.size()) { // 이동 위치가 재생목록의 맨끝인 경우
             System.out.println("리스트의 맨 뒤에 삽입할 경우");
             // playlistMusics에서 마지막 노래의 orderValue값
@@ -186,15 +187,6 @@ public class MusicServiceImpl implements Musicservice {
 
         log.info("=== 재배치 완료 ===");
 
-        // 근데 새로 할당할 orderValue의 값이 1의 자리가 1 또는 9일 경우
-//        if (newOrderValue % 10 == 1 || newOrderValue % 10 == 9) {
-//            System.out.println("재배치 후 저장");
-//            reorderPlaylist(playlistMusics); // 재배치 후 저장
-////            return ResponseEntity.ok("재배치가 완료되었습니다.");
-//        } else { // 재배치가 필요 없는 경우 그냥 저장
-//            System.out.println("재배치가 필요없는 저장");
-//            playlistMusicRepoService.save(playlistMusics.get(dragItemIndex)); // 재배치 없이 저장
-//        }
         return UpdateOrderValueResponse.success();
     }
 

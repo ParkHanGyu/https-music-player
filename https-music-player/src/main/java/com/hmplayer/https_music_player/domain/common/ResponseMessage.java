@@ -11,6 +11,9 @@ public interface ResponseMessage {
     String SIGN_IN_FAIL = "Login information mismatch.";
     String REFRESH_TOKEN_EXPIRATION = "리프레쉬 토큰 만료";
 
+    String NON_EXISTED_MUSIC = "존재하지 않는 음악입니다.";
+
+    String PLAYLIST_MUSIC_EMPTY = "특정 플레이리스트에 음악이 없습니다.";
 
 
 

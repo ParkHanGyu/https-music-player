@@ -1,16 +1,11 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
-import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistNameRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
-import com.hmplayer.https_music_player.domain.dto.response.music.CopyMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
-import com.hmplayer.https_music_player.domain.dto.response.playlist.UpdatePlaylistNameResponse;
-import com.hmplayer.https_music_player.domain.security.JwtSecurity;
-import com.hmplayer.https_music_player.domain.service.Musicservice;
-import com.hmplayer.https_music_player.domain.service.PlayListService;
+import com.hmplayer.https_music_player.domain.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MusicController {
 
-    private final Musicservice musicservice;
+    private final MusicService musicservice;
 
     // 음악 추가
     @PostMapping("/add")

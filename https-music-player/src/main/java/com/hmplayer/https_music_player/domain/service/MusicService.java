@@ -7,7 +7,7 @@ import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
 import org.springframework.http.ResponseEntity;
 
-public interface Musicservice {
+public interface MusicService {
     ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String email);
 
     ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String token);
