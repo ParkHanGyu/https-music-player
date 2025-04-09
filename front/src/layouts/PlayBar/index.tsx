@@ -180,14 +180,18 @@ const PlayBar = () => {
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
     if (playerRef.current && isLoop) {
-      // url이 soundcloud면 url 다시 넣어줌
-      if (playBarUrl.includes("soundcloud")) {
-        setPlayBarUrl(""); // URL을 초기화
-        setTimeout(() => setPlayBarUrl(playBarUrl), 10); // 다시 URL 설정
-      } else {
-        // soundcloud가 아닐경우 (유튜브일경우) 동영상 진행도 0으로
-        playerRef.current.seekTo(0);
-      }
+      // // url이 soundcloud면 url 다시 넣어줌
+      // if (playBarUrl.includes("soundcloud")) {
+      //   setPlayBarUrl(""); // URL을 초기화
+      //   setTimeout(() => setPlayBarUrl(playBarUrl), 10); // 다시 URL 설정
+      // } else {
+      //   // soundcloud가 아닐경우 (유튜브일경우) 동영상 진행도 0으로
+      //   playerRef.current.seekTo(0);
+      // }
+
+      playerRef.current.seekTo(0);
+      setIsPlaying(false);
+      setTimeout(() => setIsPlaying(true), 200);
     } else if (!isLoop) {
       onNextMusic();
     }
@@ -491,6 +495,7 @@ const PlayBar = () => {
             className={styles["music-sound-icon"]}
             onClick={onSoundDropDown}
           ></div>
+          <div className={styles["music-sound-icon"]} onClick={testBtn}></div>
         </div>
       </div>
     </>
