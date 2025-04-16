@@ -725,6 +725,13 @@ public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long
 
 <!--  5.4 끝 -->
 
+</br>
+
+## 6. 회고 / 느낀점
+>프로젝트 회고 : https://qkrgksrl0033.tistory.com/23
+
+</br>
+>프로젝트 일정 : https://quasar-cast-348.notion.site/https-music-player-1ce592ef3df880d8a77dede5a5cdecb8
 
 
 
