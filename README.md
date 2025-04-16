@@ -213,7 +213,7 @@
 ## 5. 트러블 슈팅
 <details>
   <summary><b>5.1. 페이지 렌더링시 회원 프로필 사진 문제</b></summary>
-
+<br>
 웹서비스에 회원기능이 있으면 회원의 프로필 사진도 본인이 원하는 사진으로 바꾸면 좋을거 같아서 프로필 사진을 변경 할 수 있는 기능을 추가했습니다.
 
 하지만 페이지 렌더링시 회원마다 가지고 있는 고유 프로필 이미지가 렌더링 되지 못하는 상황입니다.
@@ -286,11 +286,14 @@
   
     
     </details>
+<br>
+    
 </details>
 
 <!--  5.2 시작 -->
 <details>
   <summary><b>5.2. React Noembed을 사용한 미디어 데이터</b></summary>
+  <br>
   사용자는 음악을 듣기 전, 누구의 어떤 음악인지 확인하고 듣기 때문에 미디어 정보가 필요합니다. URL을 입력하면 해당 미디어 정보를 어떻게 가져올지 방식에 대해 고민했습니다.
   YouTube Data API를 고려했지만, 제가 사용자일 경우 youtube만 사용하는게 너무 제한적이라 다양한 플랫폼을 지원하는 React Noembed를 사용했습니다.
   음악 정보를 얻기 위해 URL을 기반으로 외부 API(Noembed)를 사용해 해당 미디어의 데이터들을 가져오도록 작성했습니다.
@@ -461,6 +464,7 @@
     
     </div>
     </details>
+      <br>
 </details>
 
 <!--  5.2 끝 -->
@@ -468,6 +472,7 @@
 <!--  5.3 시작 -->
 <details>
   <summary><b>5.3. 미디어 플랫폼별 반복재생 문제</b></summary>
+  <br>
   해당 프로젝트는 미디어 소스를 재생할 수 있는 React용 미디어 플레이어 컴포넌트인 ReactPlayer를 사용해 미디어를 재생하고 ReactPlayer의 옵션을 사용해 제어 할 수 있습니다.
   
   ReactPlayer에 옵션을 보면 playing, onReady, onDuration, onEnded, loop, .. 등을 통해 미디어를 제어 할 수 있는데 반복재생에 대한 옵션은 loop 옵션을 통해 구현했습니다.
@@ -556,6 +561,7 @@
     - 하지만 수정 코드인 ReactPlayer을 보면 loop옵션을 사용하고 있지 않기 때문에 항상 onEnded가 실행되고 isLoop값에 따른 반복재생 또는 다음 음악으로 넘어가는 흐름으로 작성해줬습니다. 
     </div>
     </details>
+      <br>
 </details>
 
 <!--  5.3 끝 -->
@@ -564,13 +570,16 @@
 <!--  5.4 시작 -->
 <details>
   <summary><b>5.4. 재생목록 순서 변경</b></summary>
-
+  <br>
 음악 순서를 어떤 기준으로 정렬할까라는 의문에 orderValue라는 컬럼을 만들어 orderValue 기준으로 정렬해주었습니다. 그리고 사용자가 음악 순서를 변경하면 변경하려는 음악 위치에 전,후 노래의 orderValue값을 추출해 새로운 orderValue 값을 생성하고 DB에 업데이트 해주는 형식으로 진행하였습니다. 
 
 하지만 순서를 변경하다 보면 언젠가 orderValue값이 중복인 경우가 생기는데 그럴때 해당 재생목록의 모든 음악이 가지고 있는 orderValue값을 10단위로 다시 정렬해주고 저장해주는 로직을 작성했었습니다. 매번 다시 orderValue값을 정렬을 해주면 소소한 기능 저하가 있을것 같아 orderValue 값의 10의 자리가 1 또는 9일때만 정렬해주는식으로 작성했었습니다.
 
 하지만 재정렬 기준이 1 또는 9로 해뒀던게 문제가 있었습니다.  1 또는 9 말고 이외에도 중복되는 확률이 있고 결국 orderValue값의 중복이 생겼습니다. 그렇기 때문에 이에 대한 수정이 필요 했습니다.
 
+1. 음악 순서를 정해주기 위해 DB에 orderValue 컬럼을 추가
+2. 음악 순서를 수정하다 보면 orderValue가 중복되어 순서가 바뀌지 않는 상황 발생
+3. 음악 순서를 변경할때 orderValue 값을 재배치 해주는 로직 추가
 
   
   <details>
@@ -708,9 +717,10 @@ public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long
 }
 
   ~~~
-  -  
+
   </div>
   </details>
+    <br>
 </details>
 
 <!--  5.4 끝 -->
