@@ -730,8 +730,12 @@ public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long
 ## 6. 회고 / 느낀점
 <!--tistory-->
 >프로젝트 회고 </br>
-	<img src="https://img.shields.io/badge/Tistory-000000?style=flat-square&logo=tistory&logoColor=FC4C02"/>  </br>
+	<a href="https://qkrgksrl0033.tistory.com/23" target="_blank" rel="noopener noreferrer">
+	  <img src="https://img.shields.io/badge/Tistory-000000?style=flat-square&logo=tistory&logoColor=FC4C02"/>
+	</a> </br>
   
+
+
 
 <!--Notion-->
 >프로젝트 현황판 </br>
