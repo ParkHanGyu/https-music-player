@@ -728,18 +728,16 @@ public ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long
 </br>
 
 ## 6. 회고 / 느낀점
->프로젝트 회고 : https://qkrgksrl0033.tistory.com/23 </br>
->프로젝트 현황판 : https://quasar-cast-348.notion.site/https-music-player-1ce592ef3df880d8a77dede5a5cdecb8
-
-
-  <!--GitHub-->
-  <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white"/>
-
+<!--tistory-->
+>프로젝트 회고 </br>
+	<img src="https://img.shields.io/badge/Tistory-000000?style=flat-square&logo=tistory&logoColor=FC4C02"/>  </br>
+  
 
 <!--Notion-->
-<a href="https://quasar-cast-348.notion.site/https-music-player-1ce592ef3df880d8a77dede5a5cdecb8" target="_blank" rel="noopener noreferrer">
-  <img src="https://img.shields.io/badge/Notion-000000?style=flat-square&logo=Notion&logoColor=white"/>
-</a>
+>프로젝트 현황판 </br>
+	<a href="https://quasar-cast-348.notion.site/https-music-player-1ce592ef3df880d8a77dede5a5cdecb8" target="_blank" rel="noopener noreferrer">
+	  <img src="https://img.shields.io/badge/Notion-000000?style=flat-square&logo=Notion&logoColor=white"/>
+	</a>
 
 
 
