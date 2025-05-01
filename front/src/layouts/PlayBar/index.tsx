@@ -54,8 +54,13 @@ const PlayBar = () => {
     console.log("동영상 길이 가져오는 옵션 실행");
     setPlayBarDuration(playBarDuration);
   };
+  // ================================= animationFrame 관련해서 알아보기
+  const { currentTime, played, setPlayed } = usePlayerProgress(
+    playerRef,
+    isPlaying
+  );
 
-  // ======================================= 영상 진행도 조절
+  // ======================================= 영상 진행도 수동 조절
   // 사용자에 의한 진행도 수동 이동
   const handleSeek = (newPlayed: number) => {
     setPlayed(newPlayed);
@@ -356,12 +361,6 @@ const PlayBar = () => {
       setIsLoading(true);
     }
   }, [playBarUrl]);
-
-  // ================================= animationFrame 관련해서 알아보기
-  const { currentTime, played, setPlayed } = usePlayerProgress(
-    playerRef,
-    isPlaying
-  );
 
   const testBtn = () => {
     console.log("isPlaying : ", isPlaying);
