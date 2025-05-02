@@ -2,6 +2,7 @@
   "name": "front",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://github.com/ParkHanGyu/https-music-player",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -29,7 +30,9 @@
     "start": "set PORT=3001 && react-scripts start",
     "build": "set PORT=3001 && react-scripts build",
     "test": "set PORT=3001 && react-scripts test",
-    "eject": "set PORT=3001 && react-scripts eject"
+    "eject": "set PORT=3001 && react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +54,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.31",
-    "@types/react-beautiful-dnd": "^13.1.8"
+    "@types/react-beautiful-dnd": "^13.1.8",
+    "gh-pages": "^6.3.0"
   }
 }

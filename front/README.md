@@ -8,6 +8,7 @@ npm install react-player
 npm install zustand
 npm install axios
 npm install react-cookie
+npm install gh-pages --save-dev
 
 ## icon color
 
