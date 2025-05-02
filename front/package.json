@@ -2,7 +2,7 @@
   "name": "front",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/ParkHanGyu/https-music-player",
+  "homepage": "https://ParkHanGyu.github.io/https-music-player",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
