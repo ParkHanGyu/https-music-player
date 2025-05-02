@@ -87,6 +87,7 @@ function App() {
 
   return (
     <Router>
+      <div style={{ color: "white" }}>라우팅 시작</div> {/* 디버깅 */}
       <Routes>
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
