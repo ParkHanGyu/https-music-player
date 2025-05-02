@@ -37,6 +37,7 @@ const useTokenExpiration = (token: string) => {
     } catch (error) {
       console.error("유효하지 않은 토큰입니다.", error);
       setIsValid(false); // 예외 발생시 false
+      return () => false;
     }
   }, [token]); // token이 변경될 때마다 실행
 
