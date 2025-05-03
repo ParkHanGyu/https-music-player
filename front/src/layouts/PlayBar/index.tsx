@@ -494,7 +494,6 @@ const PlayBar = () => {
             className={styles["music-sound-icon"]}
             onClick={onSoundDropDown}
           ></div>
-          <div className={styles["music-sound-icon"]} onClick={testBtn}></div>
         </div>
       </div>
     </>
