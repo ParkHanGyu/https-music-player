@@ -1,3 +1,33 @@
+#spring:
+#  config:
+#    import: classpath:application-secret.yml
+
+
+server:
+  port: ${SERVER_PORT:8080}
+
 spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
   config:
-    import: classpath:application-secret.yml
+    import: optional:file:.env[.properties]
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  refreshKey: ${JWT_REFRESH_KEY}
+
+file:
+  path: ${FILE_PATH}
+  url: ${FILE_URL}
