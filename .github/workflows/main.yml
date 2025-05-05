@@ -22,10 +22,10 @@ jobs:
         run: npm install
         working-directory: ./front
 
-      - name: Set up environment variables
+      - name: Set environment variables
         run: |
+          touch ./front/.env
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> ./front/.env
-        working-directory: ./front
 
       - name: Build project
         run: CI='false' npm run build
