@@ -3,7 +3,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - master  # main 브랜치에 push될 때 실행
+      - master
 
 jobs:
   build:
@@ -22,13 +22,12 @@ jobs:
         run: npm install
         working-directory: ./front
 
-      - name: Build project
+      - name: Set environment variables
         run: |
-          REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} CI=false npm run build
-        working-directory: ./front
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > ./front/.env
 
       - name: Build project
-        run: CI='false' npm run build
+        run: CI=false npm run build
         working-directory: ./front
 
       - name: Deploy to GitHub Pages
