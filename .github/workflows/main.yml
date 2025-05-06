@@ -26,6 +26,11 @@ jobs:
         run: |
           echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" > ./front/.env
 
+      - name: Debug REACT_APP_API_URL
+        run: echo "REACT_APP_API_URL is $REACT_APP_API_URL"
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+
       - name: Build project
         run: CI=false npm run build
         working-directory: ./front
