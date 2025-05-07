@@ -40,8 +40,8 @@ const Menu = () => {
   //      Zustand state : playBar url, info, 로딩 상태      //
   const { setPlayBarUrl, resetPlayBarInfo } = useVideoStore();
 
-    //    Zustand state : PlayBar 재생 상태    //
-    const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  //    Zustand state : PlayBar 재생 상태    //
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
   // url ID
   const { playlistId } = useParams();
@@ -158,10 +158,12 @@ const Menu = () => {
       return;
     }
     const profileImage = responseBody as GetUserImageResponseDto;
+    const IMAGE_BASE_URL = process.env.REACT_APP_API_URL;
+    const fullUrl = `${IMAGE_BASE_URL}${profileImage.url}`;
     if (loginUserInfo) {
       setLoginUserInfo({
         ...loginUserInfo,
-        profileImage: profileImage.url, // 새 URL로 업데이트
+        profileImage: fullUrl, // 새 URL로 업데이트
       });
     }
   };
