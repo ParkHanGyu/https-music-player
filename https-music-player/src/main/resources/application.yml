@@ -32,3 +32,4 @@ jwt:
 file:
   path: ${FILE_PATH}
   url: ${FILE_URL}
+  static-resource-path: ${STATIC_RESOURCE_PATH}
