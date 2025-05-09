@@ -53,7 +53,11 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
+        System.out.println("fileUrl : "+ fileUrl);
+        System.out.println("saveFileName : "+ saveFileName);
+
         String url = fileUrl + saveFileName;
+        System.out.println("url : "+ url);
 
         // user 정보 가져옴
         User user = userRepoService.findByEmail(email);

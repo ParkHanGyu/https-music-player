@@ -125,7 +125,6 @@ export const signUpRequest = async (requestBody: SignUpRequestDto) => {
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 export const signInRequest = async (requestBody: SignInRequestDto) => {
   // await : 응답이 올 때까지 기다리겠다., requestBody: 어떤 데이터를 넣을 것인지
-  console.log("REACT_APP_API_URL :", DOMAIN);
   const result = await axios
     .post(SIGN_IN_URL(), requestBody) // 서버에 post요청
     .then((response) => {

@@ -158,8 +158,9 @@ const Menu = () => {
       return;
     }
     const profileImage = responseBody as GetUserImageResponseDto;
-    const IMAGE_BASE_URL = process.env.REACT_APP_API_URL;
-    const fullUrl = `${IMAGE_BASE_URL}${profileImage.url}`;
+    // const IMAGE_BASE_URL = process.env.REACT_APP_API_URL;
+    // const fullUrl = `${IMAGE_BASE_URL}${profileImage.url}`;
+    const fullUrl = `${profileImage.url}`;
     if (loginUserInfo) {
       setLoginUserInfo({
         ...loginUserInfo,
