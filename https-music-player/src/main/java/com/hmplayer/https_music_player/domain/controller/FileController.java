@@ -19,9 +19,9 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/upload/profile")
-    public ResponseEntity<? super UploadResponse> upload(@RequestParam("file") MultipartFile file , @AuthenticationPrincipal String email) {
+    public ResponseEntity<? super UploadResponse> upload(@RequestParam("file") MultipartFile file , @RequestParam("prevImageUrl") String prevImageUrl, @AuthenticationPrincipal String email) {
         System.out.println("upload 컨트롤러 실행");
-        return fileService.upload(file,email);
+        return fileService.upload(file,prevImageUrl,email);
     }
 
     @GetMapping(value = "/image/{fileName}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})

@@ -7,6 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
 
-    ResponseEntity<? super UploadResponse> upload(MultipartFile file, String email);
+    ResponseEntity<? super UploadResponse> upload(MultipartFile file, String prevImageUrl,String email);
     Resource getImage(String fileName);
 }

@@ -1,12 +1,12 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.dto.response.music.UploadResponse;
-import com.hmplayer.https_music_player.domain.dto.response.user.GetLoginUserResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.UserRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.service.FileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -19,6 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileServiceImpl implements FileService {
 
     private final UserRepoService userRepoService;
@@ -32,7 +33,7 @@ public class FileServiceImpl implements FileService {
     private String fileUrl;
 
     @Override
-    public ResponseEntity<? super UploadResponse> upload(MultipartFile file, String email) {
+    public ResponseEntity<? super UploadResponse> upload(MultipartFile file, String prevImageUrl, String email) {
 
         if(file.isEmpty()) {
             return null;
@@ -65,6 +66,20 @@ public class FileServiceImpl implements FileService {
         user.setProfileImage(url);
         // 그리고 저장
         userRepository.save(user);
+
+
+
+        // 5. 기존 이미지 삭제 (성공적으로 저장된 이후)
+        if (prevImageUrl != null && !prevImageUrl.isEmpty()) {
+            String fileNameToDelete = prevImageUrl.replace(fileUrl, ""); // 도메인/이미지.png에서 이미지.png만 남음
+            File prevFile = new File(filePath + fileNameToDelete); // 실제 저장된 디렉토리 경로 + 삭제 대상 이미지 파일명 = 삭제 타겟 파일 객체 생성
+            if (prevFile.exists()) { // 경로에 이미지가 존재해?
+                boolean deleted = prevFile.delete(); // 존재하면 삭제해
+                if (!deleted) { // 존재하지 않으면 error 로그 띄워줘
+                    log.warn("기존 이미지 삭제 실패: " + prevFile.getAbsolutePath());
+                }
+            }
+        }
 
 
         return UploadResponse.success(url);

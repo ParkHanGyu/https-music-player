@@ -26,6 +26,7 @@ import Playlist from "../../types/interface/playList.interface";
 import updatePlaylistNameRequestDto from "../../apis/request/update-playlist-name.dto";
 import { useVideoStore } from "../../store/useVideo.store";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import { userInfo } from "os";
 
 const Menu = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -147,9 +148,13 @@ const Menu = () => {
       alert("파일을 선택하세요.");
       return;
     }
-    uploadProfileImageRequest(selectedFile, cookies.accessToken).then(
-      uploadProfileImageResponse
-    );
+    if (loginUserInfo) {
+      uploadProfileImageRequest(
+        loginUserInfo.profileImage,
+        selectedFile,
+        cookies.accessToken
+      ).then(uploadProfileImageResponse);
+    }
   };
   const uploadProfileImageResponse = (
     responseBody: GetUserImageResponseDto | ResponseDto | null

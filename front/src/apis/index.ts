@@ -223,14 +223,16 @@ export const deletePlaylist = async (
 // const UPLOAD_PROFILE_IMAGE_URL = () => `${DOMAIN}/file/upload`;
 const UPLOAD_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/file/upload/profile`;
 export const uploadProfileImageRequest = async (
+  profileImage: string,
   file: File,
   accessToken: string
 ) => {
   // FormData 객체 생성
   const formData = new FormData();
   formData.append("file", file); // 서버에서 받을 파라미터 이름과 일치해야 함
+  formData.append("prevImageUrl", profileImage); // 현재 프로필 이미지 set
 
-  console.log("api. 서버로 보내는 file 값 : ", file.name, file.size, file.type);
+  console.log("api. 서버로 보내는 formData 값 : ", formData);
 
   const result = await axios
     .post(UPLOAD_PROFILE_IMAGE_URL(), formData, authorication(accessToken))
