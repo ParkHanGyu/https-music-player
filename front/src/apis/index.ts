@@ -12,6 +12,7 @@ import updatePlaylistNameRequestDto from "./request/update-playlist-name.dto";
 import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
 import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.response.dto";
 
+// const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
 const DOMAIN = process.env.REACT_APP_API_URL;
 const API_DOMAIN = `${DOMAIN}/api`;

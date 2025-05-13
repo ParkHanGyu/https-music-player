@@ -39,3 +39,7 @@ out/
 ### 개인 설정 파일 ###
 application-secret.yml
 .env
+
+### Docer ###
+docker.env
+Dockerfile
