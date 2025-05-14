@@ -34,6 +34,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public ResponseEntity<? super UploadResponse> upload(MultipartFile file, String prevImageUrl, String email) {
+        System.out.println("file.path : " + filePath);
 
         if(file.isEmpty()) {
             return null;

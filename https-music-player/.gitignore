@@ -42,4 +42,3 @@ application-secret.yml
 
 ### Docer ###
 docker.env
-Dockerfile
