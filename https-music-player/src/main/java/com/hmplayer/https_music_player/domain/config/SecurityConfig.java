@@ -26,10 +26,11 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정
                 .csrf(csrf -> csrf.disable())  // CSRF 비활성화
-                .authorizeRequests(authz -> authz
+                // Spring Boot 버전에 따라 authorizeRequests 또는 authorizeHttpRequests 사용
+                .authorizeHttpRequests(authz -> authz  // authorizeRequests 대신 authorizeHttpRequests 권장 (최신 버전)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 모든 OPTIONS 요청 허용 (가장 먼저 추가!)
                         .requestMatchers(HttpMethod.GET,"/","/api/file/image/**","/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in").permitAll()
-//                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터 등록
