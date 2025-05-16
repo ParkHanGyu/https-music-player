@@ -20,4 +20,8 @@ public interface PlayListRepository extends JpaRepository<Playlist, Long> {
     @Modifying
     @Query("DELETE FROM Playlist p WHERE p.playlistId = :playlistId")
     void deleteByPlaylistId(@Param("playlistId") Long playlistId);
+
+
+    boolean existsByPlaylistId(Long playlistId);
+
 }

@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
 
         try {
             User user = userRepoService.findByEmail(request.getEmail());
-//            if (!user.getActive()) return SignInResponse.loginFail(); // 회원탈퇴 기능 셍기면 추가하기
+//            if (!user.getActive()) return SignInResponse.loginFail(); // 회원탈퇴 기능 생기면 추가하기
 
             String encodedPassword = user.getPassword();
             System.out.println("클라이언트에서 받은 encodedPassword값 : "+encodedPassword);

@@ -5,6 +5,7 @@ import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMus
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
+import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
@@ -12,6 +13,9 @@ import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.UserRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
@@ -39,6 +43,11 @@ public class MusicServiceImpl implements MusicService {
     private final UserRepoService userRepoService;
     private final JwtSecurity jwtSecurity;
     private final PlaylistMusicRepoService playlistMusicRepoService;
+    private final MusicRepository musicRepository;
+    private final UserRepository userRepository;
+    private final PlayListRepository playListRepository;
+
+
 
 
     // 음악 추가
@@ -49,7 +58,52 @@ public class MusicServiceImpl implements MusicService {
         Long playlistId = request.getPlaylistId();
         log.info("추가할 노래 제목 = {}, infoDuration = {}, 추가할 플레이리스트 ID = {}", musicInfoData.getVidTitle(),infoDuration,playlistId);
 
-
+//        String musicUrl = request.getMusicInfoData().getVidUrl();
+//        // 0. user가 존재하는지 확인  -> 없다면 error 반환
+//        if (token.startsWith("Bearer ")) {
+//            token = token.substring(7);
+//        }
+//        String email = jwtSecurity.getEmailFromToken(token);
+////        Optional<User> userOptional = userRepoService.existCheckEmail(email);
+////        if (userOptional.isPresent()) return SignUpResponse.existingUser();
+//
+//        System.out.println("email : " + email);
+//        boolean userExists = userRepository.existsByEmail(email); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+//
+//        if(userExists) { // 유저가 있다
+//            System.out.println("user 존재");
+//        } else { // 노래가 없다
+//            System.out.println("user 없음 - 예외 또는 오류 발생시킬것");
+//        }
+//
+//        //1. music 테이블에 해당 음악이 있는지 확인 -> 없다면 예외 발생
+//        //-> 있으면 music 테이블에 데이터 생성
+//        boolean musicExists = musicRepository.existsByUrl(musicUrl); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+//        if(musicExists) { // 노래가 있다
+//            System.out.println("중복 노래 존재 - 예외 또는 오류 발생시킬것");
+//        } else { // 노래가 없다
+//            System.out.println("중복 노래 없음");
+//        }
+//
+//        //2. playlist 테이블에 해당 재생목록이 있는지 확인
+//        boolean playlistExists = playListRepository.existsByPlaylistId(playlistId);
+//        if(playlistExists) { // 데이터가 있다
+//            System.out.println("playlist 존재");
+//        } else { // 데이터가 없다
+//            System.out.println("playlist 없음 - 예외 또는 오류 발생시킬것");
+//        }
+//
+//        // 5월 16일 existsBy~~ 사용했는데 findBy~~~로 바꿀지 생각하기
+//        // 어떤 기준으로 선택할지는
+//        // - 해당 데이터를 사용해야 할경우 findBy~~~로 사용하기
+//        // - 단순 데이터 조회라면 existsBy~~~ 사용하기
+//
+//
+//
+//        //3.  Playlist 와 music 테이블 연결 시켜주기
+//        //-> PlaylistMusic 테이블에 데이터 생성
+//
+//        //////////////////
         Optional<PlaylistMusic> findExistingMusic = playlistMusicRepoService.findByPlaylistIdAndMusicUrl(playlistId,musicInfoData.getVidUrl());
 
         log.info("findExistingMusic = {}", findExistingMusic);
