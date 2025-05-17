@@ -24,4 +24,6 @@ public interface PlayListRepository extends JpaRepository<Playlist, Long> {
 
     boolean existsByPlaylistId(Long playlistId);
 
+
+    Optional<Playlist> findByPlaylistId(Long playlistId);
 }

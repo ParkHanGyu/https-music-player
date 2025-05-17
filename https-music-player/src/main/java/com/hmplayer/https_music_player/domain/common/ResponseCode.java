@@ -17,6 +17,8 @@ public interface ResponseCode {
 
     String PLAYLIST_MUSIC_EMPTY = "PME"; // 특정 플레이리스트에 음악이 없음
 
+    String TEST_ERROR = "TR";
+
 
 
 

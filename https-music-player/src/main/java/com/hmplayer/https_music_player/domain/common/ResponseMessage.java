@@ -15,6 +15,8 @@ public interface ResponseMessage {
 
     String PLAYLIST_MUSIC_EMPTY = "특정 플레이리스트에 음악이 없습니다.";
 
+    String TEST_ERROR = "TEST ERROR";
+
 
 
 }

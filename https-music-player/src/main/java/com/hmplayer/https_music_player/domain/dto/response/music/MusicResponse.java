@@ -26,4 +26,9 @@ public class MusicResponse extends ResponseDto {
     public static ResponseEntity<ResponseDto> existingMusic() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(ResponseCode.DUPLICATE_MUSIC,ResponseMessage.DUPLICATE_MUSIC));
     }
+
+    public static ResponseEntity<ResponseDto> testResponse() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(ResponseCode.TEST_ERROR,ResponseMessage.TEST_ERROR));
+    }
+
 }

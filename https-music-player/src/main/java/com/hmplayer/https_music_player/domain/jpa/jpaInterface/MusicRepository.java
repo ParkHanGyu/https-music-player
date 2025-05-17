@@ -21,6 +21,9 @@ public interface MusicRepository extends JpaRepository<Music, Long> {
     void deleteMusicsByIds(@Param("musicIds") List<Long> musicIds);
 
     boolean existsByUrl(String musicUrl);
+
+
+    Optional<Music> findByUrl(String musicUrl);
 }
 
 
