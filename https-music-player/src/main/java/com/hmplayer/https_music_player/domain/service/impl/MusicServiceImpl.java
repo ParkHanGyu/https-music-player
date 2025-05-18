@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.MusicIdNotFoundException;
 import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMusicNotFoundException;
+import com.hmplayer.https_music_player.domain.common.customexception.PlaylistNotFoundException;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
@@ -83,9 +84,22 @@ public class MusicServiceImpl implements MusicService {
         }
 
 
+
+
+
+
         //1. playlist 테이블에 해당 재생목록이 있는지 확인
 //        boolean playlistExists = playListRepository.existsByPlaylistId(playlistId);
         Optional<Playlist> targetPlaylistData = playListRepository.findByPlaylistId(playlistId);
+
+
+        Playlist actualPlaylist = targetPlaylistData.orElseThrow(() ->
+                new PlaylistNotFoundException(playlistId) // 또는 적절한 커스텀 예외
+        );
+
+
+
+
         if(targetPlaylistData.isPresent()) { // .isPresent() = true일 경우 = 값이 있을 경우 =  데이터가 있다
             System.out.println("playlist 존재");
             log.info("targetPlaylistData = {}", targetPlaylistData);
@@ -94,10 +108,19 @@ public class MusicServiceImpl implements MusicService {
             return MusicResponse.testResponse();
         }
 
-        //2. music 테이블에 해당 음악이 있는지 확인 -> 없다면 예외 발생
-        //-> 있으면 music 테이블에 데이터 생성
-        boolean musicExists = musicRepository.existsByUrl(musicUrl); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+
+
+
+
+
+        //2. music 테이블에 해당 음악이 있는지 확인 -> 없으면 노래 추가
+        //-> 있으면 playlistMusic 테이블 관계 확인
         Optional<Music> addMusicData = musicRepository.findByUrl(musicUrl); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+        // 2. Music 객체 추출
+        Music actualMusic = addMusicData.orElseThrow(() ->
+                new EntityNotFoundException("음악을 찾을 수 없습니다. URL: " + musicUrl) // 또는 적절한 커스텀 예외
+        );
+
 
         if(addMusicData.isPresent()) { // 노래가 있다
             System.out.println("중복 노래 존재 - 하지만 등록하려는 노래가 등록하려는 재생목록에 추가하는건지 확인");
@@ -107,7 +130,6 @@ public class MusicServiceImpl implements MusicService {
                     .existsByMusic_MusicIdAndPlaylist_PlaylistId(addMusicData.get().getMusicId(), playlistId);
 
 
-            System.out.println("그래서, playlistMusic 테이블에 ");
             log.info("그래서, PlaylistMusic 테이블에 addMusicData.get().getMusicId() = {}, aplaylistId = {}, 데이터가 있어? : = {}", addMusicData.get().getMusicId(),playlistId,playlistMuiscExists);
 
 
@@ -133,15 +155,9 @@ public class MusicServiceImpl implements MusicService {
 
 
 
-                // 1. Playlist 객체 추출
-                Playlist actualPlaylist = targetPlaylistData.orElseThrow(() ->
-                        new EntityNotFoundException("플레이리스트를 찾을 수 없습니다. ID: " + playlistId) // 또는 적절한 커스텀 예외
-                );
 
-                // 2. Music 객체 추출
-                Music actualMusic = addMusicData.orElseThrow(() ->
-                        new EntityNotFoundException("음악을 찾을 수 없습니다. URL: " + musicUrl) // 또는 적절한 커스텀 예외
-                );
+
+
 
 
 

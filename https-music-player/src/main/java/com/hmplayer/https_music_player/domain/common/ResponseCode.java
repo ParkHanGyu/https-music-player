@@ -16,6 +16,9 @@ public interface ResponseCode {
     String NON_EXISTED_MUSIC = "NM"; // 존재하지 않는 music
 
     String PLAYLIST_MUSIC_EMPTY = "PME"; // 특정 플레이리스트에 음악이 없음
+    String NON_EXISTED_PLAYLIST = "NEP"; // 존재하지 않는 플레이리스트
+
+
 
     String TEST_ERROR = "TR";
 

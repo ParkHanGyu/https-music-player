@@ -14,6 +14,8 @@ public interface ResponseMessage {
     String NON_EXISTED_MUSIC = "존재하지 않는 음악입니다.";
 
     String PLAYLIST_MUSIC_EMPTY = "특정 플레이리스트에 음악이 없습니다.";
+    String NON_EXISTED_PLAYLIST = "존재하지 않는 플레이리스트 입니다.";
+
 
     String TEST_ERROR = "TEST ERROR";
 
