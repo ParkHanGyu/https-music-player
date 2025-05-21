@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,10 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepoService userRepoService;
     private final JwtSecurity jwtSecurity;
+    // BCrypt 해싱
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    // Argon2 해싱
+    private PasswordEncoder argon2PasswordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(); // 또는 new Argon2PasswordEncoder(...) 로 직접 파라미터 설정
 
 
     @Override
@@ -64,6 +68,12 @@ public class AuthServiceImpl implements AuthService {
 
             String encodedPassword = user.getPassword();
             System.out.println("클라이언트에서 받은 encodedPassword값 : "+encodedPassword);
+
+            System.out.println("request.getPassword() : " + request.getPassword());
+            System.out.println("BCrypt 해싱 이후 패스워드 값 : " + passwordEncoder.encode(request.getPassword()));
+            System.out.println("Argon2 해싱 이후 패스워드 값 : " + argon2PasswordEncoder.encode(request.getPassword()));
+
+
 
             // 입력한 비번과 db에 있는 비번이 일치한지 확인
             boolean isMatched = passwordEncoder.matches(request.getPassword(), encodedPassword);

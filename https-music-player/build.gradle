@@ -45,6 +45,9 @@ dependencies {
 	// PostgreSQL
 	implementation 'org.postgresql:postgresql:42.7.1'
 
+	// Argon2 사용을 위한 Bouncy Castle 의존성 추가
+	implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+
 
 	// .env 자동으로 읽는 외부 라이브러리
 //	implementation 'io.github.cdimascio:dotenv-spring:3.0.0'
