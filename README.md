@@ -26,6 +26,12 @@
   - React Cookie
   - React Router DOM
   - Zustand
+#### `DevOps & Deployment`
+  - GitHub Actions
+  - GitHub Pages
+  - Render
+  - Docker
+
 
 
 </br>
