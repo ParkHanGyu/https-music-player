@@ -28,9 +28,10 @@ public class MusicController {
 
 
     // 음악 삭제
-    @DeleteMapping("/delete/{musicId}")
-    public ResponseEntity<? super DeleteMusicResponse> deleteMusic(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
-        return musicservice.deleteMusic(musicId,email);
+    @DeleteMapping("/delete/playlist/{playlistId}/musicId/{musicId}")
+    public ResponseEntity<? super DeleteMusicResponse> deleteMusic(@PathVariable("playlistId") Long playlistId, @PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
+        log.info("playlistId ={} , musicId = {}, email = {}", playlistId, musicId, email);
+        return musicservice.deleteMusic(playlistId, musicId, email);
     }
 
 

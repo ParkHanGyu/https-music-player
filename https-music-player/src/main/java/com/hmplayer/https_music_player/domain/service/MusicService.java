@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 public interface MusicService {
     ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String email);
 
-    ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String token);
+    ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long playlistId, Long musicId, String token);
 
     ResponseEntity<? super UpdateOrderValueResponse> updatePlaylistOrder(Long playlistId, UpdatePlaylistOrderRequest request, String email);
 

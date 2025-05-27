@@ -3,6 +3,7 @@ package com.hmplayer.https_music_player.global.exception;
 import com.hmplayer.https_music_player.domain.common.ResponseCode;
 import com.hmplayer.https_music_player.domain.common.ResponseMessage;
 import com.hmplayer.https_music_player.domain.common.customexception.MusicIdNotFoundException;
+import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
 import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMusicNotFoundException;
 import com.hmplayer.https_music_player.domain.common.customexception.PlaylistNotFoundException;
 import com.hmplayer.https_music_player.domain.dto.response.ResponseDto;
@@ -36,6 +37,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseDto(ResponseCode.NON_EXISTED_PLAYLIST, ResponseMessage.NON_EXISTED_PLAYLIST));
     }
+
+    // user 확인 실패
+    @ExceptionHandler(NonExistUserException.class)
+    public ResponseEntity<ResponseDto> NonExistUserException(NonExistUserException ex) {
+        log.warn("NonExistUserException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.NON_EXISTED_USER, ResponseMessage.NON_EXISTED_USER));
+    }
+
 
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)

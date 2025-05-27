@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.MusicIdNotFoundException;
+import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
 import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMusicNotFoundException;
 import com.hmplayer.https_music_player.domain.common.customexception.PlaylistNotFoundException;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
@@ -65,23 +66,17 @@ public class MusicServiceImpl implements MusicService {
         log.info("추가할 노래 제목 = {}, infoDuration = {}, 추가할 플레이리스트 ID = {}", musicInfoData.getVidTitle(),infoDuration,playlistId);
 
         String musicUrl = request.getMusicInfoData().getVidUrl();
-        // 0. user가 존재하는지 확인  -> 없다면 error 반환
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
         String email = jwtSecurity.getEmailFromToken(token);
-//        Optional<User> userOptional = userRepoService.existCheckEmail(email);
-//        if (userOptional.isPresent()) return SignUpResponse.existingUser();
 
-        System.out.println("email : " + email);
-        boolean userExists = userRepository.existsByEmail(email); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+        // 0. user가 존재하는지 확인  -> 없다면 error 반환
+        User userInfoData = userRepository.findByEmail(email).orElseThrow(() ->
+                new NonExistUserException(email)
+                );
 
-        if(userExists) { // 유저가 있다
-            System.out.println("user 존재");
-        } else { // 유저가 없다
-            System.out.println("user 없음 - 예외 또는 오류 발생시킬것");
-            return MusicResponse.testResponse();
-        }
+        log.info("userInfoData = {}", userInfoData);
 
 
 
@@ -96,6 +91,7 @@ public class MusicServiceImpl implements MusicService {
         Playlist actualPlaylist = targetPlaylistData.orElseThrow(() ->
                 new PlaylistNotFoundException(playlistId) // 또는 적절한 커스텀 예외
         );
+
 
 
 
@@ -239,7 +235,8 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long musicId, String email) {
+    public ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long playlistId, Long musicId, String email) {
+        log.info("playlistId ={} , musicId = {}, email = {}", playlistId, musicId, email);
         try{
             User user = userRepoService.findByEmail(email);
 

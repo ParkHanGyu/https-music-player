@@ -165,9 +165,11 @@ const PlayList = () => {
 
       console.log("로딩true");
       setPlaylistLoading(true);
-      deleteMusic(musicId, cookies.accessToken).then((responseBody) =>
-        deleteMusicResponse(responseBody, musicId)
-      );
+      if (playlistId) {
+        deleteMusic(playlistId, musicId, cookies.accessToken).then(
+          (responseBody) => deleteMusicResponse(responseBody, musicId)
+        );
+      }
     }
   };
   const deleteMusicResponse = (

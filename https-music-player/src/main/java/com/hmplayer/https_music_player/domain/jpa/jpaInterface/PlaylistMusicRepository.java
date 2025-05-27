@@ -13,6 +13,14 @@ import java.util.Optional;
 
 public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Long> {
 
+
+
+//    @Modifying
+//    @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId AND pm.music.id = :musicId AND pm.playlist.user.id = :userId")
+//    int deleteByPlaylistIdAndMusicIdAndUserId(@Param("playlistId") Long playlistId, @Param("musicId") Long musicId, @Param("userId") Long userId);
+
+
+
     @Query("SELECT pm FROM PlaylistMusic pm " +
             "JOIN pm.playlist pl " +
             "WHERE pl.user.id = :userId AND pm.music.musicId = :musicId")

@@ -159,14 +159,15 @@ export const getUserInfo = async (accessToken: string) => {
 
 // =============== delete
 // 노래 삭제
-const DELETE_MUSIC = (musicId: bigint | string) =>
-  `${API_DOMAIN}/music/delete/${musicId}`;
+const DELETE_MUSIC = (playlistId: bigint | string, musicId: bigint | string) =>
+  `${API_DOMAIN}/music/delete/playlist/${playlistId}/musicId/${musicId}`;
 export const deleteMusic = async (
+  playlistId: bigint | string,
   musicId: bigint | string,
   accessToken: string
 ) => {
   const result = await axios
-    .delete(DELETE_MUSIC(musicId), authorication(accessToken))
+    .delete(DELETE_MUSIC(playlistId, musicId), authorication(accessToken))
     .then((response) => {
       const responseBody: ResponseDto = response.data;
       return responseBody;
