@@ -98,4 +98,9 @@ public class PlaylistMusicRepoService {
     public void updatePlaylist(List<PlaylistMusic> playlistMusics) {
         playlistMusicRepository.saveAll(playlistMusics);
     }
+
+    @Transactional
+    public void deleteByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId) {
+        playlistMusicRepository.deleteByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
+    }
 }

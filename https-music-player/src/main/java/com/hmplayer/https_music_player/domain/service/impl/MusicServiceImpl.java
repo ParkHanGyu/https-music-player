@@ -71,93 +71,54 @@ public class MusicServiceImpl implements MusicService {
         }
         String email = jwtSecurity.getEmailFromToken(token);
 
-        // 0. user가 존재하는지 확인  -> 없다면 error 반환
-        User userInfoData = userRepository.findByEmail(email).orElseThrow(() ->
-                new NonExistUserException(email)
-                );
-
-        log.info("userInfoData = {}", userInfoData);
+        // 0-1. user가 존재하는지 확인(데이터 무결성을 위해) -> 없다면 error 반환
+//        User userInfoData =
+        userRepository.findByEmail(email).orElseThrow(() -> new NonExistUserException(email));
 
 
 
 
-
-
-        //1. playlist 테이블에 해당 재생목록이 있는지 확인
-//        boolean playlistExists = playListRepository.existsByPlaylistId(playlistId);
+        //0-2. 추가하려는 playlist가 db에 실제로 존재하는지 확인(데이터 무결성을 위해)
+        // 존재를 확인하고 그 값을 targetPlaylistData에 담음
         Optional<Playlist> targetPlaylistData = playListRepository.findByPlaylistId(playlistId);
-
-
+        // targetPlaylistData에 값이 있다면 actualPlaylist에 담아주고
         Playlist actualPlaylist = targetPlaylistData.orElseThrow(() ->
-                new PlaylistNotFoundException(playlistId) // 또는 적절한 커스텀 예외
+                new PlaylistNotFoundException(playlistId) // 없다면 PlaylistNotFoundException 예외 발생
         );
 
 
 
 
+        // 1. music 테이블에 해당 음악이 있는지 확인
+        Optional<Music> addMusicData = musicRepository.findByUrl(musicUrl);
 
-        if(targetPlaylistData.isPresent()) { // .isPresent() = true일 경우 = 값이 있을 경우 =  데이터가 있다
-            System.out.println("playlist 존재");
-            log.info("targetPlaylistData = {}", targetPlaylistData);
-        } else { // 데이터가 없다
-            System.out.println("playlist 없음 - 예외 또는 오류 발생시킬것");
-            return MusicResponse.testResponse();
-        }
-
-
-
-
-
-
-        //2. music 테이블에 해당 음악이 있는지 확인 -> 없으면 노래 추가
-        //-> 있으면 playlistMusic 테이블 관계 확인
-        Optional<Music> addMusicData = musicRepository.findByUrl(musicUrl); // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
-        // 2. Music 객체 추출
-        Music actualMusic = addMusicData.orElseThrow(() ->
-                new EntityNotFoundException("음악을 찾을 수 없습니다. URL: " + musicUrl) // 또는 적절한 커스텀 예외
-        );
-
-
+        // -> 있으면 playlistMusic 테이블 관계 확인
         if(addMusicData.isPresent()) { // 노래가 있다
+            // 노래가 있다면 PlaylistMusic 테이블에 관계를 설정해줘야함.
+            // Music 테이블에 데이터를 가져오고
+            Music actualMusic = addMusicData.get();
             System.out.println("중복 노래 존재 - 하지만 등록하려는 노래가 등록하려는 재생목록에 추가하는건지 확인");
-            // 그러면 혹시 그 노래는 어느 playlist랑 이어져있어? 확인하기
-            System.out.println("addMusicData : " + addMusicData); // => 기대값 : 추가하려는 노래 music 테이블 데이터
-            boolean playlistMuiscExists = playlistMusicRepository // musicUrl와 같은 데이터가 존재할경우 true 존재하지 않을경우 false
+            // 그러면 혹시 그 노래는 내가 추가하려는 Playlist와 이어져 있어?
+            boolean playlistMuiscExists = playlistMusicRepository
                     .existsByMusic_MusicIdAndPlaylist_PlaylistId(addMusicData.get().getMusicId(), playlistId);
 
 
-            log.info("그래서, PlaylistMusic 테이블에 addMusicData.get().getMusicId() = {}, aplaylistId = {}, 데이터가 있어? : = {}", addMusicData.get().getMusicId(),playlistId,playlistMuiscExists);
 
+            // 5월 28일
+            // playlistMusic에 값이 있다면 중복이기 떄문에 중복관련한 커스텀 예외 작성해서 아래에 적용해주기
 
-
-//            playlistMusicRepository.findBy
-
-            // 3-1. 너가 보내는 재생목록에 이어져있어. - 추가할 필요 x 해당 재생목록에는 중복노래야!
+            // 내가 추가하려는 playlist와 이어져있어. => 중복 추가로 추가 할 필요 x. 종료
             if(playlistMuiscExists) {
                 return MusicResponse.testResponse();
-
             }
 
 
             // 3-2. 너가 보내는 재생목록에 없어. - 추가해줘야함. 하지만 music 테이블에 음악 데이터는 있으니 playlistMusic 테이블에만 관계 설정
             if(!playlistMuiscExists) {
 
-
-
                 Optional<Integer> maxOrderOpt = playlistMusicRepository.findMaxOrderValueGlobally();
                 int currentMaxOrder = maxOrderOpt.orElse(0);
                 int newCalculatedOrderValue = currentMaxOrder + 10;
-
-
-
-
-
-
-
-
-
-
-
 
 
                 PlaylistMusic newPlaylistMusicEntry = new PlaylistMusic(actualPlaylist, actualMusic, newCalculatedOrderValue);
@@ -173,27 +134,12 @@ public class MusicServiceImpl implements MusicService {
             }
 
 
-
-        } else { // 노래가 없다
-            System.out.println("중복 노래 없음");
         }
 
+        // -> 없으면 노래 추가
 
 
-        // 5월 16일 existsBy~~ 사용했는데 findBy~~~로 바꿀지 생각하기
-        // 어떤 기준으로 선택할지는
-        // - 해당 데이터를 사용해야 할경우 findBy~~~로 사용하기
-        // - 단순 데이터 조회라면 existsBy~~~ 사용하기
-
-
-
-
-
-
-        //////////////////
         Optional<PlaylistMusic> findExistingMusic = playlistMusicRepoService.findByPlaylistIdAndMusicUrl(playlistId,musicInfoData.getVidUrl());
-
-        log.info("findExistingMusic = {}", findExistingMusic);
 
         if (findExistingMusic.isPresent()) {
             // 중복된 경우: 이미 존재하는 음악 데이터
@@ -204,7 +150,6 @@ public class MusicServiceImpl implements MusicService {
 
         // playlistId의 재생목록의 정보들을 가져옴
         Optional<Playlist> optionalPlaylist = playListRepoService.findById(playlistId);
-        // optionalPlaylist = Optional[Playlist(playlistId=1, user=user정보, title=test1, musics=[..] ... [..]
         log.info("optionalPlaylist = {}",optionalPlaylist);
         if (optionalPlaylist.isEmpty()) {
             return ResponseEntity.badRequest().body(new MusicResponse());
@@ -214,39 +159,46 @@ public class MusicServiceImpl implements MusicService {
 
         Music addMusicInfo = new Music(musicInfoData, infoDuration);
 
-//
         // playlist.getMusics()에서 현재 최대 order 값 가져오기
         int maxOrder = playlist.getMusics()
                 .stream()
                 .mapToInt(PlaylistMusic::getOrderValue)
                 .max()
                 .orElse(0);
-        System.out.println("maxOrder 값 : " + maxOrder);
-
         int newOrderValue = maxOrder + 10;
-//
         PlaylistMusic playlistMusic = new PlaylistMusic(playlist,addMusicInfo, newOrderValue);
-
         addMusicInfo.setPlaylists(Collections.singletonList(playlistMusic));
-
         musicRepoService.save(addMusicInfo);
 
         return MusicResponse.success();
     }
 
+    // 음악 삭제
     @Override
     public ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long playlistId, Long musicId, String email) {
         log.info("playlistId ={} , musicId = {}, email = {}", playlistId, musicId, email);
         try{
+            // 삭제하려는 대상 데이터 접근. (우리는 PLaylistMusic 테이블에 특정 데이터를 지울 예정) ->
+            PlaylistMusic playlistMusic = playlistMusicRepository.findByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
+            // 가져온 데이터의 Playlist테이블에 데이터가 우리가 접근할때 들어온 사용자의 ID와 일치한지 확인(권한이 있는가?) ->
+            Long playlistMusicUserId = playlistMusic.getPlaylist().getUser().getId();
             User user = userRepoService.findByEmail(email);
+            Long userId = user.getId();
+            if(playlistMusicUserId == userId) {
+                System.out.println("db에서 가져온 userId와 실제 접근한 userId가 같음. 삭제 권한이 있음. 삭제 로직 진행");
+                // 일치하면 해당 데이터 삭제
+                playlistMusicRepoService.deleteByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
+            } else {
+                System.out.println("db에서 가져온 userId와 실제 접근한 userId가 다름. 삭제 권한이 없음. 로직 중지");
+                return null;
+            }
 
-            // 해당 사용자의 Playlist에 해당 Music이 존재하는지 확인
-            PlaylistMusic playlistMusic = playlistMusicRepoService.findByUserAndMusicId(user.getId(), musicId)
-                    .orElseThrow(() -> new IllegalArgumentException("삭제 권한이 없거나 음악이 존재하지 않습니다."));
-
-            playlistMusicRepoService.deletePlaylistMusicByUserAndMusicId(user.getId(), musicId);
-
-            musicRepoService.deleteByMusicId(musicId);
+            // 삭제 이후 PlaylistMusic 테이블에 삭제한 노래가 있는지 확인
+            Boolean remainingPlaylistMusicExists = playlistMusicRepository.existsByMusic_MusicId(musicId);
+            if(!remainingPlaylistMusicExists) { // true = 노래가 없다면
+                // Music 테이블에 해당 음악 삭제
+                musicRepoService.deleteByMusicId(musicId);
+            }
 
             return DeleteMusicResponse.success();
         } catch (Exception e) {
