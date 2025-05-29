@@ -19,7 +19,7 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
 //    @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId AND pm.music.id = :musicId AND pm.playlist.user.id = :userId")
 //    int deleteByPlaylistIdAndMusicIdAndUserId(@Param("playlistId") Long playlistId, @Param("musicId") Long musicId, @Param("userId") Long userId);
 
-    PlaylistMusic findByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId);
+    Optional<PlaylistMusic> findByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId);
 
     @Modifying
     void deleteByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId);

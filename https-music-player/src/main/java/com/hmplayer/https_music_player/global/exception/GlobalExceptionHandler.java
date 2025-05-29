@@ -2,10 +2,7 @@ package com.hmplayer.https_music_player.global.exception;
 
 import com.hmplayer.https_music_player.domain.common.ResponseCode;
 import com.hmplayer.https_music_player.domain.common.ResponseMessage;
-import com.hmplayer.https_music_player.domain.common.customexception.MusicIdNotFoundException;
-import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
-import com.hmplayer.https_music_player.domain.common.customexception.PlaylistMusicNotFoundException;
-import com.hmplayer.https_music_player.domain.common.customexception.PlaylistNotFoundException;
+import com.hmplayer.https_music_player.domain.common.customexception.*;
 import com.hmplayer.https_music_player.domain.dto.response.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -46,6 +43,20 @@ public class GlobalExceptionHandler {
                 .body(new ResponseDto(ResponseCode.NON_EXISTED_USER, ResponseMessage.NON_EXISTED_USER));
     }
 
+    // PlaylistMuisc테이블에 이미 노래가 존재 = 중복 노래
+    @ExceptionHandler(PlaylistMusicDuplication.class)
+    public ResponseEntity<ResponseDto> PlaylistMusicDuplication(PlaylistMusicDuplication ex) {
+        log.warn("PlaylistMusicDuplication 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.DUPLICATE_PLAYLIST_MUSIC, ResponseMessage.DUPLICATE_PLAYLIST_MUSIC));
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ResponseDto> UnauthorizedAccessException(UnauthorizedAccessException ex) {
+        log.warn("UnauthorizedAccessException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.FORBIDDEN_ACCESS, ResponseMessage.FORBIDDEN_ACCESS));
+    }
 
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)
