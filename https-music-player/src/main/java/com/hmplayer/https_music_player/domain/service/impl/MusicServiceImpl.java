@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -111,9 +112,10 @@ public class MusicServiceImpl implements MusicService {
         // orderValue값 세팅
         System.out.println("playlistMusic 테이블에 데이터가 없기 떄문에. 저장할 데이터들 준비");
 
-        Optional<Integer> maxOrderOpt = playlistMusicRepository.findMaxOrderValueGlobally();
+        Optional<Integer> maxOrderOpt = playlistMusicRepository.findMaxOrderValueByPlaylistId(requestPlaylistId);
         int currentMaxOrder = maxOrderOpt.orElse(10);
         int newCalculatedOrderValue = currentMaxOrder + 10;
+        log.info("PlaylistMusic 테이블 데이터 추가시 들어가는 OrderValue값 = {} ", newCalculatedOrderValue);
 
 
         // PlaylistMusic 테이블에 넣어줄 객체들 set
@@ -129,15 +131,13 @@ public class MusicServiceImpl implements MusicService {
     }
 
     // 음악 삭제
+    @Transactional
     @Override
     public ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long playlistId, Long musicId, String email) {
         log.info("playlistId ={} , musicId = {}, email = {}", playlistId, musicId, email);
-        try{
             // 삭제하려는 대상 데이터 접근. (우리는 PLaylistMusic 테이블에 특정 데이터를 지울 예정) ->
             Optional<PlaylistMusic> optionalPlaylistMusic = playlistMusicRepository.findByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
             // 가져온 데이터의 Playlist테이블에 데이터가 우리가 접근할때 들어온 사용자의 ID와 일치한지 확인(권한이 있는가?) ->
-//            Long playlistMusicUserId = playlistMusic.getPlaylist().getUser().getId();
-//            PlaylistMusic playlistMusic = optionalPlaylistMusic.get();
 
             PlaylistMusic playlistMusic = optionalPlaylistMusic.orElseThrow(() ->
                     new PlaylistMusicNotFoundException(playlistId, musicId)
@@ -152,21 +152,12 @@ public class MusicServiceImpl implements MusicService {
                 playlistMusicRepoService.deleteByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
             } else {
                 System.out.println("db에서 가져온 userId와 실제 접근한 userId가 다름. 삭제 권한이 없음. 로직 중지");
-                new UnauthorizedAccessException(playlistId, playlistMusicUserId);
+                throw new UnauthorizedAccessException(playlistId, playlistMusicUserId);
             }
 
-            // 삭제 이후 PlaylistMusic 테이블에 삭제한 노래가 있는지 확인
-            Boolean remainingPlaylistMusicExists = playlistMusicRepository.existsByMusic_MusicId(musicId);
-            if(!remainingPlaylistMusicExists) { // true = 노래가 없다면
-                // Music 테이블에 해당 음악 삭제
-                musicRepoService.deleteByMusicId(musicId);
-            }
+            musicRepoService.deleteMusicIfOrphaned(musicId);
 
             return DeleteMusicResponse.success();
-        } catch (Exception e) {
-        e.printStackTrace();
-        throw new InternalException();
-        }
     }
 
     // 음악 순서 변경
@@ -237,41 +228,9 @@ public class MusicServiceImpl implements MusicService {
         // 드래그한 음악의 orderValue를 newOrderValue로 set해줌
         playlistMusics.get(dragItemIndex).setOrderValue(newOrderValue);
 
-        reorderPlaylist(playlistMusics); // 재배치 후 저장
-
-        playlistMusicRepoService.updatePlaylist(playlistMusics);
-
-        log.info("=== 재배치 완료 ===");
+        playlistMusicRepoService.reorderAndSavePlaylist(playlistMusics);
 
         return UpdateOrderValueResponse.success();
     }
-
-
-    private void reorderPlaylist(List<PlaylistMusic> playlistMusics) {
-        // newOrderValue 적용된 리스트의 orderValue 기준으로 순서 정렬
-        // reorderPlaylist가 왜 필요한가?
-        // 위에서 newOrderValue로 새로운 값을 set해줬지만 정렬을 해주지 않았다. 즉
-        // orderValue = 10, orderValue = 20, orderValue = 30, orderValue = 40, orderValue = 50, orderValue = 5
-        // 정렬을 하지 않을 경우 이런 순서인데. 이상태로 재배치를 시작하면
-        // orderValue = 10, orderValue = 20, orderValue = 30, orderValue = 40, orderValue = 50, orderValue = 60
-        // orderValue가 5인 친구가 원래 10으로 재배치 되어야 하는데 for으로 재배치 할때 리스트 순서대로 들어가기 때문에 재배치를 해줘야 한다.
-        playlistMusics.sort(Comparator.comparingInt(PlaylistMusic::getOrderValue));
-
-        int orderValue = 10; // 초기값
-        log.info("=== 재배치 시작 ===");
-
-        for (PlaylistMusic pm : playlistMusics) {
-            pm.setOrderValue(orderValue);
-            log.info("Music ID: {}, Title: {}, New OrderValue: {}",
-                    pm.getMusicId(),
-                    pm.getMusic().getTitle(),
-                    orderValue);
-            orderValue += 10; // 10단위로 증가
-        }
-
-//        playlistMusicRepoService.saveAll(playlistMusics);
-//        log.info("=== 재배치 완료 ===");
-    }
-
 
 }

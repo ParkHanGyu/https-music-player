@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,5 +103,25 @@ public class PlaylistMusicRepoService {
     @Transactional
     public void deleteByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId) {
         playlistMusicRepository.deleteByPlaylist_PlaylistIdAndMusic_MusicId(playlistId, musicId);
+    }
+
+
+    @Transactional
+    public void reorderAndSavePlaylist(List<PlaylistMusic> playlistMusics) {
+        // 1. 전달받은 리스트를 orderValue 기준으로 정렬
+        playlistMusics.sort(Comparator.comparingInt(PlaylistMusic::getOrderValue));
+
+        // 2. 순서 값을 10부터 시작하여 10씩 증가시키며 재할당
+        int orderValue = 10;
+        log.info("=== 재배치 시작 ===");
+        for (PlaylistMusic pm : playlistMusics) {
+            pm.setOrderValue(orderValue);
+            log.info("Music ID: {}, New OrderValue: {}", pm.getMusicId(), orderValue);
+            orderValue += 10;
+        }
+
+        // 3. 변경된 모든 데이터를 한번에 저장 (JPA의 변경 감지(dirty checking)가 처리)
+        playlistMusicRepository.saveAll(playlistMusics);
+        log.info("=== 재배치 완료 ===");
     }
 }

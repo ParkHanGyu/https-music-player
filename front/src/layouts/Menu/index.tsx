@@ -67,8 +67,9 @@ const Menu = () => {
   };
 
   const testValue = () => {
-    navigator(TEST_PATH());
+    // navigator(TEST_PATH());
     // console.log("playlistLibrary", JSON.stringify(playlistLibrary));
+    console.log("playlistId : ", playlistId);
   };
 
   //========================================== playlist 드롭박스
@@ -376,7 +377,9 @@ const Menu = () => {
                   className={styles["main-menu-item-li"]}
                   style={{
                     backgroundColor:
-                      playlistId === (index + 1).toString()
+                      // playlistId === (index + 1).toString()
+                      playlistId ===
+                      playlistLibrary[index].playlistId.toString()
                         ? "#333333"
                         : undefined,
 

@@ -59,6 +59,9 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
 
     boolean existsByMusic_MusicIdAndPlaylist_PlaylistId(Long musicId, Long playlistId);
 
-    @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm")
-    Optional<Integer> findMaxOrderValueGlobally();
+//    @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm")
+//    Optional<Integer> findMaxOrderValueGlobally();
+
+    @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId")
+    Optional<Integer> findMaxOrderValueByPlaylistId(@Param("playlistId") Long playlistId);
 }
