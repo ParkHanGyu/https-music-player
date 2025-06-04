@@ -15,10 +15,6 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
 
 
 
-//    @Modifying
-//    @Query("DELETE FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId AND pm.music.id = :musicId AND pm.playlist.user.id = :userId")
-//    int deleteByPlaylistIdAndMusicIdAndUserId(@Param("playlistId") Long playlistId, @Param("musicId") Long musicId, @Param("userId") Long userId);
-
     Optional<PlaylistMusic> findByPlaylist_PlaylistIdAndMusic_MusicId(Long playlistId, Long musicId);
 
     @Modifying
@@ -57,10 +53,8 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
     @Query("SELECT pm FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId ORDER BY pm.orderValue")
     List<PlaylistMusic> findByPlaylistIdOrderByOrderValue(@Param("playlistId") Long playlistId);
 
-    boolean existsByMusic_MusicIdAndPlaylist_PlaylistId(Long musicId, Long playlistId);
+//    boolean existsByMusic_MusicIdAndPlaylist_PlaylistId(Long musicId, Long playlistId);
 
-//    @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm")
-//    Optional<Integer> findMaxOrderValueGlobally();
 
     @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId")
     Optional<Integer> findMaxOrderValueByPlaylistId(@Param("playlistId") Long playlistId);

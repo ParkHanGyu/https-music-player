@@ -22,16 +22,6 @@ public class MusicRepoService {
     private final PlaylistMusicRepository playlistMusicRepository;
 
     @Transactional
-    public void save(Music playlist) {
-        musicRepository.save(playlist);
-    }
-
-    @Transactional
-    public void deleteByMusicId(Long musicId) {
-        musicRepository.deleteByMusicId(musicId);
-    }
-
-    @Transactional
     public void deleteMusicsByIds(List<Long> musicIds) {
         musicRepository.deleteMusicsByIds(musicIds);
     }
