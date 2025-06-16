@@ -20,6 +20,17 @@ const SignUp = () => {
     setEmail(value);
   };
 
+  // ========================================== 인증번호
+  //        state: 인증번호 상태            //
+  const [authNumber, setAuthNumber] = useState<string>("");
+  //        state: 인증번호 readOnly 상태            //
+  const [isReadOnly, setIsReadOnly] = useState(true);
+  // event handler: 이메일 변경 이벤트 처리     //
+  const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setAuthNumber(value);
+  };
+
   // ========================================== 비밀번호
 
   //        state: 패스워드 상태          //
@@ -112,13 +123,33 @@ const SignUp = () => {
           <div className={styles["sign-up-container-mid"]}>
             <div className={styles["sign-up-email"]}>
               email
-              <input
-                type="text"
-                value={email}
-                onChange={onEmailChangeHandler}
-                className={styles["input-style"]}
-              />
+              <div className={styles["auth-email-box"]}>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={onEmailChangeHandler}
+                  className={styles["auth-input-style"]}
+                />
+
+                <div className={styles["auth-text-box"]}>발송</div>
+              </div>
             </div>
+
+            <div className={styles["sign-up-auth"]}>
+              인증번호
+              <div className={styles["auth-box"]}>
+                <input
+                  type="text"
+                  readOnly={isReadOnly}
+                  value={authNumber}
+                  onChange={onAuthNumberChangeHandler}
+                  className={styles["auth-input-style"]}
+                />
+
+                <div className={styles["auth-text-box"]}>확인</div>
+              </div>
+            </div>
+
             <div className={styles["sign-up-password"]}>
               password
               <input
