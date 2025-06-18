@@ -93,3 +93,8 @@
   background-color: #e74736;
   cursor: pointer;
 }
+
+.input-look {
+  background-color: rgb(145, 145, 145);
+  cursor: default;
+}

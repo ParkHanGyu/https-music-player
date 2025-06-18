@@ -20,6 +20,34 @@ const SignUp = () => {
     setEmail(value);
   };
 
+  //        state: email 중복 확인 상태            //
+  const [emailDuplicateState, setEmailDuplicateState] = useState(true);
+
+  // event handler: 이메일 중복 확인 이벤트     //
+  const onDuplicateCheckHandler = () => {
+    alert("중복 체크 api 실행하기");
+
+    // 이메일
+    const hasEmail = email.trim().length !== 0;
+
+    console.log(hasEmail);
+    if (!hasEmail || !validateEmail(email)) {
+      alert("올바른 이메일 형식이 아닙니다.");
+      return;
+    }
+
+    setEmailDuplicateState(false);
+
+    // api 호출
+
+    // 중복이 아니라면 emailDuplicateState 값은 false, 중복이면 ture
+    // setEmailDuplicateState(true);
+    // setEmailDuplicateState(false);
+
+    // emailDuplicateState가 ture면 alert으로 중복 메세지 띄워주기
+    // emailDuplicateState가 false면 중복이 아니므로 이메일 인증번호를 발송하는 api 실행
+  };
+
   // ========================================== 인증번호
   //        state: 인증번호 상태            //
   const [authNumber, setAuthNumber] = useState<string>("");
@@ -131,7 +159,12 @@ const SignUp = () => {
                   className={styles["auth-input-style"]}
                 />
 
-                <div className={styles["auth-text-box"]}>발송</div>
+                <div
+                  className={styles["auth-text-box"]}
+                  onClick={onDuplicateCheckHandler}
+                >
+                  발송
+                </div>
               </div>
             </div>
 
@@ -143,10 +176,23 @@ const SignUp = () => {
                   readOnly={isReadOnly}
                   value={authNumber}
                   onChange={onAuthNumberChangeHandler}
-                  className={styles["auth-input-style"]}
+                  className={`${styles["auth-input-style"]} ${
+                    emailDuplicateState ? styles["input-look"] : ""
+                  }`}
                 />
 
-                <div className={styles["auth-text-box"]}>확인</div>
+                <div
+                  className={
+                    emailDuplicateState
+                      ? `${styles["auth-text-box"]} ${styles["input-look"]}`
+                      : styles["auth-text-box"]
+                  }
+                  onClick={
+                    emailDuplicateState ? undefined : onDuplicateCheckHandler
+                  }
+                >
+                  확인
+                </div>
               </div>
             </div>
 
