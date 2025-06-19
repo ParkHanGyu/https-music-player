@@ -10,18 +10,26 @@ import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.AuthService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.angus.mail.util.logging.MailHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -29,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepoService userRepoService;
     private final JwtSecurity jwtSecurity;
+    private final JavaMailSender javaMailSender;
     // BCrypt 해싱
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     // Argon2 해싱
@@ -135,6 +144,15 @@ public class AuthServiceImpl implements AuthService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error refreshing access token.");
         }
+    }
+
+    @Override
+    public ResponseEntity <?> authNumberSend(HttpSession session, String userEmail) {
+
+//        MailHandler mailHandler = new MailHandler(javaMailSender);
+
+
+        return null;
     }
 
 

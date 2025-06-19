@@ -52,6 +52,10 @@ dependencies {
 	// .env 자동으로 읽는 외부 라이브러리
 //	implementation 'io.github.cdimascio:dotenv-spring:3.0.0'
 
+	// 이메일 인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
 
 }
 
