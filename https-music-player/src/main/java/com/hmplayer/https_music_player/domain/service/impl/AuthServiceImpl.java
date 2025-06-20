@@ -3,6 +3,8 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
+import com.hmplayer.https_music_player.domain.dto.request.auth.TestEmailSendRequest;
+import com.hmplayer.https_music_player.domain.dto.response.auth.AuthNumberSendResponse;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignInResponse;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
 import com.hmplayer.https_music_player.domain.dto.response.auth.accessTokenReissueResponse;
@@ -11,12 +13,15 @@ import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
 import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.AuthService;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.angus.mail.util.logging.MailHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -146,14 +151,81 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    @Override
-    public ResponseEntity <?> authNumberSend(HttpSession session, String userEmail) {
-
+//    @Override
+//    public ResponseEntity <?> authNumberSend(HttpSession session, String userEmail) {
+//
 //        MailHandler mailHandler = new MailHandler(javaMailSender);
+//
+//
+//        return null;
+//    }
+
+    private String senderEmail = "qkrgksrl0033@gmail.com";
 
 
-        return null;
+
+
+
+    @Override
+    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request, HttpSession session) {
+
+        // 1. 인증번호 생성
+        Random random = new Random();
+        StringBuilder key = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(3);
+            switch (index) {
+                case 0 -> key.append((char) (random.nextInt(26) + 97)); // 소문자
+                case 1 -> key.append((char) (random.nextInt(26) + 65)); // 대문자
+                case 2 -> key.append(random.nextInt(10));               // 숫자
+            }
+        }
+
+        String randomNumber = key.toString();
+        log.info("만들어진 인증번호 = {}", randomNumber);
+        // =====================================================================================
+
+        //2. 이메일 발송
+        try{
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            message.setFrom(senderEmail);
+            message.setRecipients(MimeMessage.RecipientType.TO, request.getEmail());
+            message.setSubject("이메일 인증");
+
+            String html = """
+            <h3>요청하신 인증 번호입니다.</h3>
+            <h1>%s</h1>
+            <h3>감사합니다.</h3>
+        """.formatted(randomNumber);
+
+            message.setText(html, "UTF-8", "html");
+            javaMailSender.send(message);
+
+
+
+        }catch (Exception e) {
+            log.error("이메일 발송 실패", e);
+
+        }
+
+        session.setAttribute("email_auth_code", randomNumber);
+        session.setAttribute("email_auth_address", request.getEmail());
+
+
+
+
+        return AuthNumberSendResponse.success();
     }
+
+
+
+
+
+
+
+
 
 
 }

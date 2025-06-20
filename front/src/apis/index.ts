@@ -321,3 +321,21 @@ export const accessTokenReissue = async (refreshToken: string) => {
     });
   return result;
 };
+
+// 이메일 인증번호 요청
+const AUTH_EMAIL_SEND_URL = () => `${API_DOMAIN}/auth/email/send`;
+export const authNumberSend = async (email: string) => {
+  // await : 응답이 올 때까지 기다리겠다., requestBody: 어떤 데이터를 넣을 것인지
+  const result = await axios
+    .post(AUTH_EMAIL_SEND_URL(), { email }) // 서버에 post요청
+    .then((response) => {
+      const responseBody: accessTokenReissueResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response.data) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};

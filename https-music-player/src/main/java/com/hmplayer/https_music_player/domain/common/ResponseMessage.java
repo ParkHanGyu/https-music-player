@@ -23,6 +23,9 @@ public interface ResponseMessage {
 
     String TEST_ERROR = "TEST ERROR";
 
+    String EMAIL_SEND_FAIL = "이메일 발송 실패";
+    
+
 
 
 }

@@ -25,6 +25,8 @@ public interface ResponseCode {
     String NON_EXISTED_PLAYLIST = "NEP"; // 존재하지 않는 플레이리스트
     String FORBIDDEN = "NEP"; // 존재하지 않는 플레이리스트
 
+    String EMAIL_SEND_FAIL = "ESF";
+
 
 
 

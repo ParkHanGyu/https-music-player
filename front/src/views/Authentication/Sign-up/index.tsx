@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import styles from "./style.module.css";
 import SignUpRequestDto from "../../../apis/request/auth/sign-up-request.dto";
-import { signUpRequest } from "../../../apis";
+import { authNumberSend, signUpRequest } from "../../../apis";
 import SignUpResponseDto from "../../../apis/response/auth/sign-up-response.dto";
 import ResponseDto from "../../../apis/response/response.dto";
 import { useNavigate } from "react-router-dom";
@@ -14,17 +14,19 @@ const SignUp = () => {
   // ========================================== 이메일
   //        state: 이메일 상태            //
   const [email, setEmail] = useState<string>("");
+  //        state: 인증번호 readOnly 상태            //
+  const [isEmailReadOnly, setIsEmailReadOnly] = useState(false);
   // event handler: 이메일 변경 이벤트 처리     //
   const onEmailChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setEmail(value);
   };
 
-  //        state: email 중복 확인 상태            //
-  const [emailDuplicateState, setEmailDuplicateState] = useState(true);
+  //        state:  email input, 발송 버튼 비활성화 상태            //
+  const [emailInputBtnState, setEmailInputBtnState] = useState(false);
 
-  // event handler: 이메일 중복 확인 이벤트     //
-  const onDuplicateCheckHandler = () => {
+  //      event handler: 이메일 중복 확인 + 인증번호 발송 이벤트     //
+  const onInputBtnCheckHandler = () => {
     alert("중복 체크 api 실행하기");
 
     // 이메일
@@ -36,7 +38,10 @@ const SignUp = () => {
       return;
     }
 
-    setEmailDuplicateState(false);
+    setAuthDuplicateState(false);
+    setIsReadOnly(false);
+
+    authNumberSend(email).then(authNumberSendResponse);
 
     // api 호출
 
@@ -48,7 +53,21 @@ const SignUp = () => {
     // emailDuplicateState가 false면 중복이 아니므로 이메일 인증번호를 발송하는 api 실행
   };
 
+  //        function: authNumberSendResponse 처리 함수       //
+  const authNumberSendResponse = (responseBody: ResponseDto | null) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+
+    alert("인증번호를 발송했습니다.");
+    setEmailInputBtnState(true);
+    setIsEmailReadOnly(true);
+  };
+
   // ========================================== 인증번호
+
+  //        state: 인증번호 input, 확인 버튼 비활성화 상태            //
+  const [authDuplicateState, setAuthDuplicateState] = useState(true);
   //        state: 인증번호 상태            //
   const [authNumber, setAuthNumber] = useState<string>("");
   //        state: 인증번호 readOnly 상태            //
@@ -155,13 +174,22 @@ const SignUp = () => {
                 <input
                   type="text"
                   value={email}
+                  readOnly={isEmailReadOnly}
                   onChange={onEmailChangeHandler}
-                  className={styles["auth-input-style"]}
+                  className={`${styles["auth-input-style"]} ${
+                    emailInputBtnState ? styles["input-look"] : ""
+                  }`}
                 />
 
                 <div
-                  className={styles["auth-text-box"]}
-                  onClick={onDuplicateCheckHandler}
+                  className={
+                    emailInputBtnState
+                      ? `${styles["auth-text-box"]} ${styles["input-look"]}`
+                      : styles["auth-text-box"]
+                  }
+                  onClick={
+                    emailInputBtnState ? undefined : onInputBtnCheckHandler
+                  }
                 >
                   발송
                 </div>
@@ -177,18 +205,18 @@ const SignUp = () => {
                   value={authNumber}
                   onChange={onAuthNumberChangeHandler}
                   className={`${styles["auth-input-style"]} ${
-                    emailDuplicateState ? styles["input-look"] : ""
+                    authDuplicateState ? styles["input-look"] : ""
                   }`}
                 />
 
                 <div
                   className={
-                    emailDuplicateState
+                    authDuplicateState
                       ? `${styles["auth-text-box"]} ${styles["input-look"]}`
                       : styles["auth-text-box"]
                   }
                   onClick={
-                    emailDuplicateState ? undefined : onDuplicateCheckHandler
+                    authDuplicateState ? undefined : onInputBtnCheckHandler
                   }
                 >
                   확인

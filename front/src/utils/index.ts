@@ -11,6 +11,7 @@ export const ResponseUtil = (responseBody: any) => {
   if (code === "SF") alert("아이디 또는 비밀번호가 올바르지 않습니다.");
   if (code === "DE") alert("사용중인 이메일 입니다.");
   if (code === "TR") alert("test에러");
+  if (code === "ESF") alert("인증번호 발송 실패");
 
   if (code !== "SU") {
     return false;
