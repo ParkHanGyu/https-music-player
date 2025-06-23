@@ -58,6 +58,14 @@ public class GlobalExceptionHandler {
                 .body(new ResponseDto(ResponseCode.FORBIDDEN_ACCESS, ResponseMessage.FORBIDDEN_ACCESS));
     }
 
+    // 이메일 중복
+    @ExceptionHandler(EmailDuplicatedException.class)
+    public ResponseEntity<ResponseDto> EmailDuplicatedException(EmailDuplicatedException ex) {
+        log.warn("EmailDuplicatedException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.DUPLICATE_EMAIL, ResponseMessage.DUPLICATE_EMAIL));
+    }
+
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleAll(Exception ex) {

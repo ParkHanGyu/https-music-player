@@ -1,12 +1,17 @@
 import React, { ChangeEvent, useState } from "react";
 import styles from "./style.module.css";
 import SignUpRequestDto from "../../../apis/request/auth/sign-up-request.dto";
-import { authNumberSend, signUpRequest } from "../../../apis";
+import {
+  authNumberCheckRequest,
+  authNumberRequest,
+  signUpRequest,
+} from "../../../apis";
 import SignUpResponseDto from "../../../apis/response/auth/sign-up-response.dto";
 import ResponseDto from "../../../apis/response/response.dto";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN_PATH } from "../../../constant";
 import { ResponseUtil } from "../../../utils";
+import authNumberCheckRequestDto from "../../../apis/request/auth/auth-number-check-request.dto";
 
 const SignUp = () => {
   const navigator = useNavigate();
@@ -27,8 +32,6 @@ const SignUp = () => {
 
   //      event handler: 이메일 중복 확인 + 인증번호 발송 이벤트     //
   const onInputBtnCheckHandler = () => {
-    alert("중복 체크 api 실행하기");
-
     // 이메일
     const hasEmail = email.trim().length !== 0;
 
@@ -38,30 +41,29 @@ const SignUp = () => {
       return;
     }
 
-    setAuthDuplicateState(false);
-    setIsReadOnly(false);
-
-    authNumberSend(email).then(authNumberSendResponse);
-
-    // api 호출
-
-    // 중복이 아니라면 emailDuplicateState 값은 false, 중복이면 ture
-    // setEmailDuplicateState(true);
-    // setEmailDuplicateState(false);
+    // 인증번호 발송 api
+    authNumberRequest(email).then(authNumberResponse);
 
     // emailDuplicateState가 ture면 alert으로 중복 메세지 띄워주기
     // emailDuplicateState가 false면 중복이 아니므로 이메일 인증번호를 발송하는 api 실행
   };
 
-  //        function: authNumberSendResponse 처리 함수       //
-  const authNumberSendResponse = (responseBody: ResponseDto | null) => {
+  //        function: authNumberResponse 처리 함수       //
+  const authNumberResponse = (responseBody: ResponseDto | null) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
 
     alert("인증번호를 발송했습니다.");
+    // 이메일 input, btn 비활성화
     setEmailInputBtnState(true);
+    // 이메일 input readonly 활성화
     setIsEmailReadOnly(true);
+
+    // 인증번호 input, btn 활성화
+    setAuthDuplicateState(false);
+    // 인증번호 input readonly 비활성화(입력불가 -> 입력가능)
+    setIsReadOnly(false);
   };
 
   // ========================================== 인증번호
@@ -76,6 +78,45 @@ const SignUp = () => {
   const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setAuthNumber(value);
+  };
+
+  //      event handler: 인증번호 확인 이벤트     //
+  const onAuthNumberCheckHandler = () => {
+    // 이메일
+    const hasAuthNumber = authNumber.trim().length !== 0;
+
+    console.log(hasAuthNumber);
+    if (!hasAuthNumber) {
+      alert("인증번호를 입력해주세요.");
+      return;
+    }
+
+    const requestBody: authNumberCheckRequestDto = {
+      // 몇번쨰로 이동할지
+      email: email,
+      // 이동할 음악 ID
+      authNumber: authNumber,
+    };
+
+    // 인증번호 확인 api 요청
+    authNumberCheckRequest(requestBody).then(authNumberCheckResponse);
+
+    // emailDuplicateState가 ture면 alert으로 중복 메세지 띄워주기
+    // emailDuplicateState가 false면 중복이 아니므로 이메일 인증번호를 발송하는 api 실행
+  };
+
+  //        function: authNumberCheckResponse 처리 함수       //
+  const authNumberCheckResponse = (responseBody: ResponseDto | null) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+
+    alert("인증번호가 확인되었습니다.");
+
+    // 인증번호 input, btn 비활성화
+    setAuthDuplicateState(true);
+    // 인증번호 input readonly 활성화(입력가능 -> 불가)
+    setIsReadOnly(false);
   };
 
   // ========================================== 비밀번호
@@ -216,7 +257,7 @@ const SignUp = () => {
                       : styles["auth-text-box"]
                   }
                   onClick={
-                    authDuplicateState ? undefined : onInputBtnCheckHandler
+                    authDuplicateState ? undefined : onAuthNumberCheckHandler
                   }
                 >
                   확인

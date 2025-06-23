@@ -59,27 +59,12 @@ public class AuthController {
         return authService.authNumberSend(request,session);
     }
 
-//    @PostMapping("/email/verify")
-//    public ResponseEntity<?> verifyCode(@RequestBody VerifyRequest request, HttpSession session) {
-//        String storedCode = (String) session.getAttribute("email_auth_code");
-//        String storedEmail = (String) session.getAttribute("email_auth_address");
-//
-//        if (storedCode == null || storedEmail == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("세션에 인증 정보가 없습니다.");
-//        }
-//
-//        if (!storedEmail.equals(request.getEmail())) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일 주소가 일치하지 않습니다.");
-//        }
-//
-//        if (storedCode.equals(request.getCode())) {
-//            return ResponseEntity.ok("이메일 인증 성공");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 일치하지 않습니다.");
-//        }
-//
-//
-//        return authService.verifyCodeCheck(request, session);
+
+    // 수정해서 인증번호 대조하는걸로 바꾸기
+//    @PostMapping("/email/send")
+//    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(@RequestBody TestEmailSendRequest request, HttpSession session) {
+//        log.info("HttpServletRequest userEmail = {}, String session = {}", request, session);
+//        return authService.authNumberSend(request,session);
 //    }
 
 

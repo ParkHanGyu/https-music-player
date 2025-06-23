@@ -11,6 +11,7 @@ import GetUserImageResponseDto from "./response/user/get-user-new-image-url.dto"
 import updatePlaylistNameRequestDto from "./request/update-playlist-name.dto";
 import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
 import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.response.dto";
+import authNumberCheckRequestDto from "./request/auth/auth-number-check-request.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -323,13 +324,32 @@ export const accessTokenReissue = async (refreshToken: string) => {
 };
 
 // 이메일 인증번호 요청
-const AUTH_EMAIL_SEND_URL = () => `${API_DOMAIN}/auth/email/send`;
-export const authNumberSend = async (email: string) => {
+const AUTH_EMAIL_REQUEST_URL = () => `${API_DOMAIN}/auth/email/send`;
+export const authNumberRequest = async (email: string) => {
   // await : 응답이 올 때까지 기다리겠다., requestBody: 어떤 데이터를 넣을 것인지
   const result = await axios
-    .post(AUTH_EMAIL_SEND_URL(), { email }) // 서버에 post요청
+    .post(AUTH_EMAIL_REQUEST_URL(), { email }) // 서버에 post요청
     .then((response) => {
-      const responseBody: accessTokenReissueResponseDto = response.data;
+      const responseBody = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response.data) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// 인증번호 확인
+const AUTH_NUMBER_CHECK_URL = () => `${API_DOMAIN}/auth/authNumber-check`;
+export const authNumberCheckRequest = async (
+  responseBody: authNumberCheckRequestDto
+) => {
+  const result = await axios
+    .post(AUTH_NUMBER_CHECK_URL(), { responseBody }) // 서버에 post요청
+    .then((response) => {
+      const responseBody = response.data;
       return responseBody;
     })
     .catch((error) => {
