@@ -347,7 +347,7 @@ export const authNumberCheckRequest = async (
   responseBody: authNumberCheckRequestDto
 ) => {
   const result = await axios
-    .post(AUTH_NUMBER_CHECK_URL(), { responseBody }) // 서버에 post요청
+    .post(AUTH_NUMBER_CHECK_URL(), responseBody, { withCredentials: true }) // 서버에 post요청
     .then((response) => {
       const responseBody = response.data;
       return responseBody;

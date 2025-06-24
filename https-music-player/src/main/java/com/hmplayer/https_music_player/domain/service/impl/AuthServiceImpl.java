@@ -2,13 +2,11 @@ package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.EmailDuplicatedException;
 import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
+import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.TestEmailSendRequest;
-import com.hmplayer.https_music_player.domain.dto.response.auth.AuthNumberSendResponse;
-import com.hmplayer.https_music_player.domain.dto.response.auth.SignInResponse;
-import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
-import com.hmplayer.https_music_player.domain.dto.response.auth.accessTokenReissueResponse;
+import com.hmplayer.https_music_player.domain.dto.response.auth.*;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.UserRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.UserRepoService;
@@ -238,7 +236,29 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
+    @Override
+    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request, HttpSession session) {
+        String sessionCode = (String) session.getAttribute("email_auth_code");
+        String sessionEmail = (String) session.getAttribute("email_auth_address");
 
+        log.info("sessionCode = {}, sessionEmail = {}", sessionCode, sessionEmail);
+        log.info("request.getEmail() = {}, request.getAuthNumber() = {}", request.getEmail(), request.getAuthNumber());
+
+
+        if (sessionCode == null || sessionEmail == null) {
+            return ResponseEntity.badRequest().body("인증 세션이 없습니다.");
+        }
+
+        if (!sessionEmail.equals(request.getEmail())) {
+            return ResponseEntity.badRequest().body("요청 이메일이 일치하지 않습니다.");
+        }
+
+        if (!sessionCode.equals(request.getAuthNumber())) {
+            return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
+        }
+
+        return AuthNumberCheckResponse.success();
+    }
 
 
 

@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz  // authorizeRequests 대신 authorizeHttpRequests 권장 (최신 버전)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 모든 OPTIONS 요청 허용 (가장 먼저 추가!)
                         .requestMatchers(HttpMethod.GET,"/","/api/file/image/**","/images/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in", "/api/auth/email/send").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up", "/api/auth/sign-in", "/api/auth/email/send", "/api/auth/authNumber-check").permitAll()
                         .anyRequest().authenticated()  // 그 외 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 필터 등록

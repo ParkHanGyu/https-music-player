@@ -107,6 +107,7 @@ const SignUp = () => {
 
   //        function: authNumberCheckResponse 처리 함수       //
   const authNumberCheckResponse = (responseBody: ResponseDto | null) => {
+    alert(responseBody?.code);
     if (!ResponseUtil(responseBody)) {
       return;
     }
