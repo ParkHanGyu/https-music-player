@@ -55,6 +55,10 @@ dependencies {
 	// 이메일 인증
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// 인증번호 redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
 
 
 }

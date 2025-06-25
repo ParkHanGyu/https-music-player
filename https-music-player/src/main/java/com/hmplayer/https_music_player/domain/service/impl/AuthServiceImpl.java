@@ -14,11 +14,13 @@ import com.hmplayer.https_music_player.domain.security.JwtSecurity;
 import com.hmplayer.https_music_player.domain.service.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.angus.mail.util.logging.MailHandler;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -35,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -45,6 +48,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtSecurity jwtSecurity;
     private final JavaMailSender javaMailSender;
+    // Redis
+    private final RedisTemplate<String, String> redisTemplate;
     // BCrypt 해싱
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     // Argon2 해싱
@@ -172,7 +177,7 @@ public class AuthServiceImpl implements AuthService {
 
     // 이메일 인증 (중복 확인 -> 중복 아닐 경우 인증번호 발송해주기)
     @Override
-    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request, HttpSession session) {
+    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request) {
 
         // 0. 중복 회원(이메일)
 //        Optional<User> findExistingUser = userRepoService.existCheckEmail(request.getEmail());
@@ -226,10 +231,17 @@ public class AuthServiceImpl implements AuthService {
 
         }
 
-        session.setAttribute("email_auth_code", randomNumber);
-        session.setAttribute("email_auth_address", request.getEmail());
 
+        String redisKey = "email:auth:" + request.getEmail();
 
+        // Redis에 인증번호 저장 (3분 후 만료)
+        redisTemplate.opsForValue().set(redisKey, randomNumber, 3, TimeUnit.MINUTES);
+//
+//        // 세션 가져오기 (없으면 새로 생성)
+//        HttpSession session = httpServletRequest.getSession(true);
+//
+//        session.setAttribute("email_auth_code", randomNumber);
+//        session.setAttribute("email_auth_address", request.getEmail());
 
 
         return AuthNumberSendResponse.success();

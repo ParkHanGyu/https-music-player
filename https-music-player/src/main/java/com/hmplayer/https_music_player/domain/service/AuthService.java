@@ -22,7 +22,7 @@ public interface AuthService {
 
     ResponseEntity<? super accessTokenReissueResponse> refreshAccessToken(String token);
 
-    ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request, HttpSession session);
+    ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request);
 
     ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request, HttpSession session);
 

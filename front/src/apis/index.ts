@@ -353,7 +353,7 @@ export const authNumberCheckRequest = async (
       return responseBody;
     })
     .catch((error) => {
-      if (!error.response.data) return null;
+      if (!error.response || !error.response.data) return null;
       const responseBody: ResponseDto = error.response.data;
       return responseBody;
     });
