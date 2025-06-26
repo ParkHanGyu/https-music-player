@@ -24,6 +24,6 @@ public interface AuthService {
 
     ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request);
 
-    ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request, HttpSession session);
+    ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request);
 
     }

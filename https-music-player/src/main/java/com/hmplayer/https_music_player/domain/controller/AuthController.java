@@ -57,22 +57,8 @@ public class AuthController {
 //    }
 
     @PostMapping("/authNumber-check")
-    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(@RequestBody AuthNumberCheckRequest request, HttpServletRequest httpServletRequest) {
-
-        HttpSession session = httpServletRequest.getSession(false); // false: 세션이 없으면 null 반환
-        if (session == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        session.setAttribute("", request.getEmail());
-        String sessionCode = (String) session.getAttribute("email_auth_code");
-        String sessionEmail = (String) session.getAttribute("email_auth_address");
-
-        log.info("클라이언트에서 받아온 데이터 - 이메일 = {}, 코드 = {}", request.getEmail(), request.getAuthNumber());
-        log.info("서버에 가지고 있는 세션 - 이메일 = {}, 코드 = {}", sessionEmail, sessionCode);
-
-
-        return null;
+    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(@RequestBody AuthNumberCheckRequest request) {
+        return authService.authNumberCheck(request);
     }
 
 

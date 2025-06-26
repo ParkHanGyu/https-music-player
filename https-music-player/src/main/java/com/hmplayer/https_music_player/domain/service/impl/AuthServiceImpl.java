@@ -223,52 +223,48 @@ public class AuthServiceImpl implements AuthService {
 
             message.setText(html, "UTF-8", "html");
             javaMailSender.send(message);
-
-
-
         }catch (Exception e) {
             log.error("이메일 발송 실패", e);
-
         }
-
 
         String redisKey = "email:auth:" + request.getEmail();
 
         // Redis에 인증번호 저장 (3분 후 만료)
         redisTemplate.opsForValue().set(redisKey, randomNumber, 3, TimeUnit.MINUTES);
-//
-//        // 세션 가져오기 (없으면 새로 생성)
-//        HttpSession session = httpServletRequest.getSession(true);
-//
-//        session.setAttribute("email_auth_code", randomNumber);
-//        session.setAttribute("email_auth_address", request.getEmail());
+
+        Long redisExpireTime = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
+        int expireTime = redisExpireTime != null ? redisExpireTime.intValue() : 0;
 
 
-        return AuthNumberSendResponse.success();
+        return AuthNumberSendResponse.success(expireTime);
     }
 
 
     @Override
-    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request, HttpSession session) {
-        String sessionCode = (String) session.getAttribute("email_auth_code");
-        String sessionEmail = (String) session.getAttribute("email_auth_address");
+    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request) {
+        String email = request.getEmail();
+        String authNumber = request.getAuthNumber();
 
-        log.info("sessionCode = {}, sessionEmail = {}", sessionCode, sessionEmail);
-        log.info("request.getEmail() = {}, request.getAuthNumber() = {}", request.getEmail(), request.getAuthNumber());
+        String redisKey = "email:auth:" + email;
+        String redisAuthNumber = redisTemplate.opsForValue().get(redisKey);
 
+        log.info("클라이언트에서 받아온 데이터 - 이메일 = {}, 코드 = {}", email, authNumber);
+        log.info("Redis에 저장된 코드 = {}", redisAuthNumber);
 
-        if (sessionCode == null || sessionEmail == null) {
-            return ResponseEntity.badRequest().body("인증 세션이 없습니다.");
+        if (redisAuthNumber == null) {
+            // 인증번호가 존재하지 않음 (시간 초과 or 잘못된 이메일)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (!sessionEmail.equals(request.getEmail())) {
-            return ResponseEntity.badRequest().body("요청 이메일이 일치하지 않습니다.");
+        if (!redisAuthNumber.equals(authNumber)) {
+            // 인증번호 불일치
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (!sessionCode.equals(request.getAuthNumber())) {
-            return ResponseEntity.badRequest().body("인증번호가 일치하지 않습니다.");
-        }
+        // 인증 성공 시 Redis에서 해당 인증번호 삭제 (선택)
+        redisTemplate.delete(redisKey);
 
+        // 성공 응답
         return AuthNumberCheckResponse.success();
     }
 

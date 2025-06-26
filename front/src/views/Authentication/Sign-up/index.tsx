@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { SIGN_IN_PATH } from "../../../constant";
 import { ResponseUtil } from "../../../utils";
 import authNumberCheckRequestDto from "../../../apis/request/auth/auth-number-check-request.dto";
+import authNumberCheckResponseDto from "../../../apis/response/auth/auth-number-check-response.dto";
 
 const SignUp = () => {
   const navigator = useNavigate();
@@ -49,7 +50,9 @@ const SignUp = () => {
   };
 
   //        function: authNumberResponse 처리 함수       //
-  const authNumberResponse = (responseBody: ResponseDto | null) => {
+  const authNumberResponse = (
+    responseBody: authNumberCheckResponseDto | ResponseDto | null
+  ) => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
@@ -64,9 +67,19 @@ const SignUp = () => {
     setAuthDuplicateState(false);
     // 인증번호 input readonly 비활성화(입력불가 -> 입력가능)
     setIsReadOnly(false);
+
+    const expireTimeResult = responseBody as authNumberCheckResponseDto;
+    setExpireTime(expireTimeResult.expireTime);
+
+    console.log(
+      "서버에서 받아온 인증번호 유효시간 : ",
+      expireTimeResult.expireTime
+    );
   };
 
   // ========================================== 인증번호
+  //        state: 인증번호 유효시간 상태            //
+  const [expireTime, setExpireTime] = useState<number>();
 
   //        state: 인증번호 input, 확인 버튼 비활성화 상태            //
   const [authDuplicateState, setAuthDuplicateState] = useState(true);
@@ -117,7 +130,7 @@ const SignUp = () => {
     // 인증번호 input, btn 비활성화
     setAuthDuplicateState(true);
     // 인증번호 input readonly 활성화(입력가능 -> 불가)
-    setIsReadOnly(false);
+    setIsReadOnly(true);
   };
 
   // ========================================== 비밀번호

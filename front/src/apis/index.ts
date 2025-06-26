@@ -12,6 +12,7 @@ import updatePlaylistNameRequestDto from "./request/update-playlist-name.dto";
 import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
 import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.response.dto";
 import authNumberCheckRequestDto from "./request/auth/auth-number-check-request.dto";
+import authNumberCheckResponseDto from "./response/auth/auth-number-check-response.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -349,7 +350,7 @@ export const authNumberCheckRequest = async (
   const result = await axios
     .post(AUTH_NUMBER_CHECK_URL(), responseBody, { withCredentials: true }) // 서버에 post요청
     .then((response) => {
-      const responseBody = response.data;
+      const responseBody: authNumberCheckResponseDto = response.data;
       return responseBody;
     })
     .catch((error) => {
