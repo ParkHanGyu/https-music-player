@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./style.module.css";
 import SignUpRequestDto from "../../../apis/request/auth/sign-up-request.dto";
 import {
@@ -79,7 +79,7 @@ const SignUp = () => {
 
   // ========================================== 인증번호
   //        state: 인증번호 유효시간 상태            //
-  const [expireTime, setExpireTime] = useState<number>();
+  const [expireTime, setExpireTime] = useState<number | null>(null);
 
   //        state: 인증번호 input, 확인 버튼 비활성화 상태            //
   const [authDuplicateState, setAuthDuplicateState] = useState(true);
@@ -131,7 +131,27 @@ const SignUp = () => {
     setAuthDuplicateState(true);
     // 인증번호 input readonly 활성화(입력가능 -> 불가)
     setIsReadOnly(true);
+
+    setExpireTime(null);
   };
+
+  const formatTime = (time: number) => {
+    const minutes = String(Math.floor(time / 60)).padStart(2, "0");
+    const seconds = String(time % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+
+  useEffect(() => {
+    // expireTime이 1 이상일 때만 타이머 작동
+    if (expireTime && expireTime > 0) {
+      const timer = setInterval(() => {
+        setExpireTime((prevTime) => (prevTime ? prevTime - 1 : 0));
+      }, 1000);
+
+      // 언마운트 시 타이머 정리
+      return () => clearInterval(timer);
+    }
+  }, [expireTime]);
 
   // ========================================== 비밀번호
 
@@ -215,6 +235,7 @@ const SignUp = () => {
     alert("회원가입 완료");
     navigator(SIGN_IN_PATH());
   };
+
   return (
     <>
       <div className={styles["sign-up-wrap"]}>
@@ -252,7 +273,19 @@ const SignUp = () => {
             </div>
 
             <div className={styles["sign-up-auth"]}>
-              인증번호
+              <div className={styles["sign-up-auth-top-box"]}>
+                <div className={styles["sign-up-title-box"]}>인증번호</div>
+                <div className={styles["auth-time-box"]}>
+                  {expireTime === null ? (
+                    ""
+                  ) : expireTime === 0 ? (
+                    <p style={{ color: "red" }}>인증번호가 만료되었습니다.</p>
+                  ) : (
+                    <p>남은 시간: {formatTime(expireTime)}</p>
+                  )}
+                </div>
+              </div>
+
               <div className={styles["auth-box"]}>
                 <input
                   type="text"

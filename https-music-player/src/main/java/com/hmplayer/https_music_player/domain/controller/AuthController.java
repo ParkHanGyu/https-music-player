@@ -43,7 +43,7 @@ public class AuthController {
         return authService.refreshAccessToken(token);
     }
 
-    @PostMapping("/email/send") // 이메일 인증번호 요청
+    @PostMapping("/sign-up/verifications") // 이메일 인증번호 요청
     public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(@RequestBody AuthNumberRequest request) {
                 log.info("HttpServletRequest userEmail = {}", request);
         return authService.authNumberSend(request);

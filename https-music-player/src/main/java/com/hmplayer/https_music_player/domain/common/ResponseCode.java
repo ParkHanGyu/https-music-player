@@ -27,6 +27,7 @@ public interface ResponseCode {
 
     String EMAIL_SEND_FAIL = "ESF";
 
+    String NON_VALID_AUTHNUMBER = "NVA"; // 유효하지 않는 인증번호
 
 
 

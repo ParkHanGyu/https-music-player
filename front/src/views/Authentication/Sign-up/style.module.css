@@ -98,3 +98,12 @@
   background-color: rgb(145, 145, 145);
   cursor: default;
 }
+
+.sign-up-auth-top-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.auth-time-box > p {
+  margin: 0px;
+}

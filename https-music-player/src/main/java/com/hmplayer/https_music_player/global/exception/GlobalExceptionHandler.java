@@ -66,6 +66,22 @@ public class GlobalExceptionHandler {
                 .body(new ResponseDto(ResponseCode.DUPLICATE_EMAIL, ResponseMessage.DUPLICATE_EMAIL));
     }
 
+    // 유효하지 않은 인증번호(인증번호 유효시간 초과, redis에 해당 이메일에 대한 정보가 없을 경우)
+    @ExceptionHandler(AuthNumberNullException.class)
+    public ResponseEntity<ResponseDto> AuthNumberNullException(AuthNumberNullException ex) {
+        log.warn("AuthNumberNullException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.NON_VALID_AUTHNUMBER, ResponseMessage.NON_VALID_AUTHNUMBER));
+    }
+
+    // 사용자가 입력한 인증번호가 redis에 저장된 인증번호와 일치하지 않을경우.
+    @ExceptionHandler(AuthNumberMismatchException.class)
+    public ResponseEntity<ResponseDto> AuthNumberMismatchException(AuthNumberMismatchException ex) {
+        log.warn("AuthNumberMismatchException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDto(ResponseCode.NON_VALID_AUTHNUMBER, ResponseMessage.NON_VALID_AUTHNUMBER));
+    }
+
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleAll(Exception ex) {

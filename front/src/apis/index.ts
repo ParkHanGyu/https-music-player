@@ -325,7 +325,7 @@ export const accessTokenReissue = async (refreshToken: string) => {
 };
 
 // 이메일 인증번호 요청
-const AUTH_EMAIL_REQUEST_URL = () => `${API_DOMAIN}/auth/email/send`;
+const AUTH_EMAIL_REQUEST_URL = () => `${API_DOMAIN}/auth/sign-up/verifications`;
 export const authNumberRequest = async (email: string) => {
   // await : 응답이 올 때까지 기다리겠다., requestBody: 어떤 데이터를 넣을 것인지
   const result = await axios

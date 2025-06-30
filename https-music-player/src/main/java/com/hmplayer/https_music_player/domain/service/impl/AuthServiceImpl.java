@@ -1,5 +1,7 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
+import com.hmplayer.https_music_player.domain.common.customexception.AuthNumberMismatchException;
+import com.hmplayer.https_music_player.domain.common.customexception.AuthNumberNullException;
 import com.hmplayer.https_music_player.domain.common.customexception.EmailDuplicatedException;
 import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
@@ -242,23 +244,26 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request) {
+        // 사용자가 입력한 eamil
         String email = request.getEmail();
+        // 사용자가 보내준 인증번호
         String authNumber = request.getAuthNumber();
 
         String redisKey = "email:auth:" + email;
+        // 서버에 저장되어 있는 인증번호
         String redisAuthNumber = redisTemplate.opsForValue().get(redisKey);
 
         log.info("클라이언트에서 받아온 데이터 - 이메일 = {}, 코드 = {}", email, authNumber);
         log.info("Redis에 저장된 코드 = {}", redisAuthNumber);
 
         if (redisAuthNumber == null) {
-            // 인증번호가 존재하지 않음 (시간 초과 or 잘못된 이메일)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            // 인증번호가 존재하지 않음 (시간 초과 or 잘못된 이메일 => 애초에 저런 이메일로 저장한 적이 없는 경우)
+            throw new AuthNumberNullException(email);
         }
 
         if (!redisAuthNumber.equals(authNumber)) {
             // 인증번호 불일치
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            throw new AuthNumberMismatchException(authNumber);
         }
 
         // 인증 성공 시 Redis에서 해당 인증번호 삭제 (선택)

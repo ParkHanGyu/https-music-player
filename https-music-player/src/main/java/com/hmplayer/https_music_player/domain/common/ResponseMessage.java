@@ -24,6 +24,9 @@ public interface ResponseMessage {
     String TEST_ERROR = "TEST ERROR";
 
     String EMAIL_SEND_FAIL = "이메일 발송 실패";
+
+    String NON_VALID_AUTHNUMBER = "인증번호가 유효하지 않습니다. 다시 요청하거나 이메일을 확인해주세요."; // 유효하지 않는 인증번호
+
     
 
 
