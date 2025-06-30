@@ -1,9 +1,9 @@
 package com.hmplayer.https_music_player.domain.service;
 
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
+import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
-import com.hmplayer.https_music_player.domain.dto.request.auth.TestEmailSendRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.*;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public interface AuthService {
 
     ResponseEntity<? super accessTokenReissueResponse> refreshAccessToken(String token);
 
-    ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request);
+    ResponseEntity<? super AuthNumberSendResponse> authNumberSend(AuthNumberRequest request);
 
     ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(AuthNumberCheckRequest request);
 

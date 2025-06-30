@@ -2,9 +2,9 @@ package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
+import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
-import com.hmplayer.https_music_player.domain.dto.request.auth.TestEmailSendRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.*;
 import com.hmplayer.https_music_player.domain.dto.response.music.PlayListResponse;
 import com.hmplayer.https_music_player.domain.service.AuthService;
@@ -44,17 +44,10 @@ public class AuthController {
     }
 
     @PostMapping("/email/send") // 이메일 인증번호 요청
-    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(@RequestBody TestEmailSendRequest request) {
+    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(@RequestBody AuthNumberRequest request) {
                 log.info("HttpServletRequest userEmail = {}", request);
         return authService.authNumberSend(request);
     }
-
-    // 인증번호 확인
-//    @PostMapping("/authNumber-check")
-//    public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(@RequestBody AuthNumberCheckRequest request, HttpSession session) {
-//        log.info("AuthNumberCheckRequest request = {}, HttpSession session = {}", request, session);
-//        return authService.authNumberCheck(request,session);
-//    }
 
     @PostMapping("/authNumber-check")
     public ResponseEntity<? super AuthNumberCheckResponse> authNumberCheck(@RequestBody AuthNumberCheckRequest request) {

@@ -3,9 +3,9 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.common.customexception.EmailDuplicatedException;
 import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
+import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignUpRequest;
-import com.hmplayer.https_music_player.domain.dto.request.auth.TestEmailSendRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.*;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.UserRepository;
@@ -177,7 +177,7 @@ public class AuthServiceImpl implements AuthService {
 
     // 이메일 인증 (중복 확인 -> 중복 아닐 경우 인증번호 발송해주기)
     @Override
-    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(TestEmailSendRequest request) {
+    public ResponseEntity<? super AuthNumberSendResponse> authNumberSend(AuthNumberRequest request) {
 
         // 0. 중복 회원(이메일)
 //        Optional<User> findExistingUser = userRepoService.existCheckEmail(request.getEmail());
