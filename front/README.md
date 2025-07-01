@@ -9,6 +9,7 @@ npm install zustand
 npm install axios
 npm install react-cookie
 npm install gh-pages --save-dev
+npm install react-toastify
 
 ## icon color
 
@@ -16,3 +17,6 @@ npm install gh-pages --save-dev
 
 hover color
 #cccccc
+
+sign-up btn
+#e74736

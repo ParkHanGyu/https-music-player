@@ -82,6 +82,15 @@ public class GlobalExceptionHandler {
                 .body(new ResponseDto(ResponseCode.NON_VALID_AUTHNUMBER, ResponseMessage.NON_VALID_AUTHNUMBER));
     }
 
+    // Redis관련 예외
+    @ExceptionHandler(RedisException.class)
+    public ResponseEntity<ResponseDto> RedisException(RedisException ex) {
+        log.warn("RedisException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ResponseDto(ResponseCode.SERVICE_UNAVAILABLE, ResponseMessage.SERVICE_UNAVAILABLE));
+    }
+
+
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleAll(Exception ex) {

@@ -107,3 +107,9 @@
 .auth-time-box > p {
   margin: 0px;
 }
+
+/* toast css */
+.custom-toast {
+  background-color: #e74736 !important; /* 배경색 */
+  color: #cccccc !important; /* 글자색 */
+}

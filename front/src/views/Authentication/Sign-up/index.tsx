@@ -13,6 +13,7 @@ import { SIGN_IN_PATH } from "../../../constant";
 import { ResponseUtil } from "../../../utils";
 import authNumberCheckRequestDto from "../../../apis/request/auth/auth-number-check-request.dto";
 import authNumberCheckResponseDto from "../../../apis/response/auth/auth-number-check-response.dto";
+import { toast, ToastContainer } from "react-toastify";
 
 const SignUp = () => {
   const navigator = useNavigate();
@@ -36,7 +37,11 @@ const SignUp = () => {
     // 이메일
     const hasEmail = email.trim().length !== 0;
 
-    console.log(hasEmail);
+    if (!hasEmail) {
+      alert("이메일을 입력해주세요.");
+      return;
+    }
+
     if (!hasEmail || !validateEmail(email)) {
       alert("올바른 이메일 형식이 아닙니다.");
       return;
@@ -57,7 +62,6 @@ const SignUp = () => {
       return;
     }
 
-    alert("인증번호를 발송했습니다.");
     // 이메일 input, btn 비활성화
     setEmailInputBtnState(true);
     // 이메일 input readonly 활성화
@@ -75,6 +79,12 @@ const SignUp = () => {
       "서버에서 받아온 인증번호 유효시간 : ",
       expireTimeResult.expireTime
     );
+
+    toast("인증번호를 발송했습니다.", {
+      position: "top-center",
+      autoClose: 2000,
+      className: "custom-toast",
+    });
   };
 
   // ========================================== 인증번호
@@ -150,6 +160,19 @@ const SignUp = () => {
 
       // 언마운트 시 타이머 정리
       return () => clearInterval(timer);
+    }
+
+    if (expireTime === 0) {
+      // 이메일 관련
+      setEmail("");
+      setIsEmailReadOnly(false);
+      setEmailInputBtnState(false);
+
+      // 인증번호 관련
+      setExpireTime(null);
+      setAuthDuplicateState(true);
+      setAuthNumber("");
+      setIsReadOnly(true);
     }
   }, [expireTime]);
 
@@ -238,6 +261,8 @@ const SignUp = () => {
 
   return (
     <>
+      <ToastContainer />
+
       <div className={styles["sign-up-wrap"]}>
         <div className={styles["sign-up-container"]}>
           <div className={styles["sign-up-container-top"]}>

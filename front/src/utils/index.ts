@@ -3,7 +3,9 @@ export const ResponseUtil = (responseBody: any) => {
     alert("네트워크 이상입니다.");
     return;
   }
-  const { code } = responseBody;
+
+  const { code, message } = responseBody;
+  console.log(JSON.stringify(responseBody));
   if (code === "VF") alert("유효성 검사 실패");
   if (code === "DBE") alert("데이터베이스 오류");
   if (code === "NU") alert("존재하지 않는 유저");
@@ -12,6 +14,7 @@ export const ResponseUtil = (responseBody: any) => {
   if (code === "DE") alert("사용중인 이메일 입니다.");
   if (code === "TR") alert("test에러");
   if (code === "ESF") alert("인증번호 발송 실패");
+  if (code === "SEU") alert(message);
 
   if (code !== "SU") {
     return false;

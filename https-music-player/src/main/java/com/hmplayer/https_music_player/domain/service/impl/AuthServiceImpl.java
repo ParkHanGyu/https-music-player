@@ -1,9 +1,6 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
-import com.hmplayer.https_music_player.domain.common.customexception.AuthNumberMismatchException;
-import com.hmplayer.https_music_player.domain.common.customexception.AuthNumberNullException;
-import com.hmplayer.https_music_player.domain.common.customexception.EmailDuplicatedException;
-import com.hmplayer.https_music_player.domain.common.customexception.NonExistUserException;
+import com.hmplayer.https_music_player.domain.common.customexception.*;
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberCheckRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.AuthNumberRequest;
 import com.hmplayer.https_music_player.domain.dto.request.auth.SignInRequest;
@@ -22,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.angus.mail.util.logging.MailHandler;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -231,8 +229,15 @@ public class AuthServiceImpl implements AuthService {
 
         String redisKey = "email:auth:" + request.getEmail();
 
-        // Redis에 인증번호 저장 (3분 후 만료)
-        redisTemplate.opsForValue().set(redisKey, randomNumber, 3, TimeUnit.MINUTES);
+        // 외부 리소스를 사용 할 경우 try + catch를 사용하는게 정석
+        try {
+            // Redis에 인증번호 저장 (3분 후 만료)
+            redisTemplate.opsForValue().set(redisKey, randomNumber, 1, TimeUnit.MINUTES);
+        } catch(RedisConnectionFailureException e) {
+            throw new RedisException();
+        }
+
+
 
         Long redisExpireTime = redisTemplate.getExpire(redisKey, TimeUnit.SECONDS);
         int expireTime = redisExpireTime != null ? redisExpireTime.intValue() : 0;

@@ -29,6 +29,11 @@ public interface ResponseCode {
 
     String NON_VALID_AUTHNUMBER = "NVA"; // 유효하지 않는 인증번호
 
+    String SERVICE_UNAVAILABLE = "SEU"; // 서버 문제로 일시 중단
+
+
+
+
 
 
     String TEST_ERROR = "TR";

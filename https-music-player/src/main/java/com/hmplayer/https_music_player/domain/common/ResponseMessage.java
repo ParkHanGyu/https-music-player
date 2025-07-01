@@ -27,6 +27,8 @@ public interface ResponseMessage {
 
     String NON_VALID_AUTHNUMBER = "인증번호가 유효하지 않습니다. 다시 요청하거나 이메일을 확인해주세요."; // 유효하지 않는 인증번호
 
+    String SERVICE_UNAVAILABLE = "현재 서비스가 원활하지 않습니다. 잠시 후 다시 시도해주세요."; // 서버 문제로 일시 중단
+
     
 
 
