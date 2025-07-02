@@ -108,8 +108,21 @@
   margin: 0px;
 }
 
-/* toast css */
-.custom-toast {
-  background-color: #e74736 !important; /* 배경색 */
-  color: #cccccc !important; /* 글자색 */
+/* 회전 로딩 애니메이션 */
+.loader {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #b4b4b4;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

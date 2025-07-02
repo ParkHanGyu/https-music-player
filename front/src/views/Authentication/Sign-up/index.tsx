@@ -46,6 +46,7 @@ const SignUp = () => {
       alert("올바른 이메일 형식이 아닙니다.");
       return;
     }
+    setSendBtnLoading(true);
 
     // 인증번호 발송 api
     authNumberRequest(email).then(authNumberResponse);
@@ -59,8 +60,20 @@ const SignUp = () => {
     responseBody: authNumberCheckResponseDto | ResponseDto | null
   ) => {
     if (!ResponseUtil(responseBody)) {
+      toast.error(responseBody?.message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
+
       return;
     }
+
+    // if(responseBody?.code !== "SU") {
+    //   toast.error(responseBody?.message, {
+    //     position: "top-center",
+    //     autoClose: 2000,
+    //   });
+    // }
 
     // 이메일 input, btn 비활성화
     setEmailInputBtnState(true);
@@ -75,15 +88,15 @@ const SignUp = () => {
     const expireTimeResult = responseBody as authNumberCheckResponseDto;
     setExpireTime(expireTimeResult.expireTime);
 
+    setSendBtnLoading(false);
     console.log(
       "서버에서 받아온 인증번호 유효시간 : ",
       expireTimeResult.expireTime
     );
 
-    toast("인증번호를 발송했습니다.", {
+    toast.success("인증번호를 발송했습니다.", {
       position: "top-center",
       autoClose: 2000,
-      className: "custom-toast",
     });
   };
 
@@ -163,6 +176,10 @@ const SignUp = () => {
     }
 
     if (expireTime === 0) {
+      toast.error("인증시간이 만료되었습니다", {
+        position: "top-center",
+        autoClose: 2000,
+      });
       // 이메일 관련
       setEmail("");
       setIsEmailReadOnly(false);
@@ -259,6 +276,12 @@ const SignUp = () => {
     navigator(SIGN_IN_PATH());
   };
 
+  const [sendBtnLoading, setSendBtnLoading] = useState(false);
+
+  const testBtn = () => {
+    console.log("emailInputBtnState = ", emailInputBtnState);
+    console.log("sendBtnLoading = ", sendBtnLoading);
+  };
   return (
     <>
       <ToastContainer />
@@ -266,7 +289,9 @@ const SignUp = () => {
       <div className={styles["sign-up-wrap"]}>
         <div className={styles["sign-up-container"]}>
           <div className={styles["sign-up-container-top"]}>
-            <div className={styles["sign-up-title"]}>SIGN UP</div>
+            <div className={styles["sign-up-title"]} onClick={testBtn}>
+              SIGN UP
+            </div>
           </div>
           <div className={styles["sign-up-container-mid"]}>
             <div className={styles["sign-up-email"]}>
@@ -282,18 +307,25 @@ const SignUp = () => {
                   }`}
                 />
 
-                <div
-                  className={
-                    emailInputBtnState
-                      ? `${styles["auth-text-box"]} ${styles["input-look"]}`
-                      : styles["auth-text-box"]
-                  }
-                  onClick={
-                    emailInputBtnState ? undefined : onInputBtnCheckHandler
-                  }
-                >
-                  발송
-                </div>
+                {/* 이메일 발송 버튼 비활성화일때 / 발송 버튼 로딩 활성화일때 */}
+                {emailInputBtnState && !sendBtnLoading ? (
+                  <div
+                    className={`${styles["auth-text-box"]} ${styles["input-look"]}`}
+                  >
+                    발송
+                  </div>
+                ) : !emailInputBtnState && !sendBtnLoading ? (
+                  <div
+                    className={styles["auth-text-box"]}
+                    onClick={onInputBtnCheckHandler}
+                  >
+                    발송
+                  </div>
+                ) : (
+                  <div className={styles["auth-text-box"]}>
+                    <div className={styles["loader"]}></div>
+                  </div>
+                )}
               </div>
             </div>
 

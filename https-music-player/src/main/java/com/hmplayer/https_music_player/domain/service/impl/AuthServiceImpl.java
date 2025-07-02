@@ -207,9 +207,20 @@ public class AuthServiceImpl implements AuthService {
         log.info("만들어진 인증번호 = {}", randomNumber);
         // =====================================================================================
 
-        //2. 이메일 발송
-        try{
+        // 2. 인증번호 저장
+        String redisKey = "email:auth:" + request.getEmail();
 
+        // 외부 리소스를 사용 할 경우 try + catch를 사용하는게 정석
+        try {
+            // Redis에 인증번호 저장 (3분 후 만료)
+            redisTemplate.opsForValue().set(redisKey, randomNumber, 1, TimeUnit.MINUTES);
+        } catch(RedisConnectionFailureException e) {
+            throw new RedisException();
+        }
+
+
+        // 3. 이메일 발송
+        try{
             MimeMessage message = javaMailSender.createMimeMessage();
             message.setFrom(senderEmail);
             message.setRecipients(MimeMessage.RecipientType.TO, request.getEmail());
@@ -227,15 +238,7 @@ public class AuthServiceImpl implements AuthService {
             log.error("이메일 발송 실패", e);
         }
 
-        String redisKey = "email:auth:" + request.getEmail();
 
-        // 외부 리소스를 사용 할 경우 try + catch를 사용하는게 정석
-        try {
-            // Redis에 인증번호 저장 (3분 후 만료)
-            redisTemplate.opsForValue().set(redisKey, randomNumber, 1, TimeUnit.MINUTES);
-        } catch(RedisConnectionFailureException e) {
-            throw new RedisException();
-        }
 
 
 
