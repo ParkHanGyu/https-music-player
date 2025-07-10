@@ -1,81 +1,62 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./style.module.css";
-import "../TestView2/testStyle.css";
-import { jwtDecode } from "jwt-decode";
-import { useCookies } from "react-cookie";
-import ReactPlayer from "react-player";
-
-type PlaylistItem = {
-  id: number;
-  title: string;
-  description: string;
-};
+import React, { useState } from "react";
+import axios from "axios";
 
 const TestView2 = () => {
-  const [rafX, setRafX] = useState(0); // requestAnimationFrame 위치
-  const [intervalX, setIntervalX] = useState(0); // setInterval 위치
+  const [url, setUrl] = useState("");
+  const [mediaInfo, setMediaInfo] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const rafRef = useRef<number | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const fetchOEmbed = async () => {
+    try {
+      let oEmbedUrl = "";
 
-  // 🎯 requestAnimationFrame 애니메이션
-  useEffect(() => {
-    const animate = () => {
-      setRafX((prev) => {
-        if (prev < 500) return prev + 2;
-        else return prev;
-      });
-      rafRef.current = requestAnimationFrame(animate);
-    };
-    rafRef.current = requestAnimationFrame(animate);
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        oEmbedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
+          url
+        )}&format=json`;
+      } else if (url.includes("soundcloud.com")) {
+        oEmbedUrl = `https://soundcloud.com/oembed?url=${encodeURIComponent(
+          url
+        )}&format=json`;
+      } else {
+        setError("지원하지 않는 URL입니다.");
+        setMediaInfo(null);
+        return;
+      }
 
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  // 🎯 setInterval 애니메이션
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setIntervalX((prev) => (prev < 500 ? prev + 2 : prev));
-    }, 16); // 약 60fps
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
+      const response = await axios.get(oEmbedUrl);
+      setMediaInfo(response.data);
+      console.log(JSON.stringify(response.data, null, 2));
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("미디어 정보를 가져오는 데 실패했습니다.");
+      setMediaInfo(null);
+    }
+  };
 
   return (
-    <div style={{ padding: "50px" }}>
-      <div style={{ marginBottom: "20px" }}>
-        <strong>🌀 requestAnimationFrame 애니메이션</strong>
-        <div
-          style={{
-            position: "relative",
-            top: "10px",
-            left: rafX,
-            width: "50px",
-            height: "50px",
-            backgroundColor: "dodgerblue",
-            transition: "none",
-          }}
-        />
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h2>oEmbed 미디어 정보 가져오기</h2>
+      <input
+        type="text"
+        value={url}
+        placeholder="YouTube 또는 SoundCloud URL 입력"
+        onChange={(e) => setUrl(e.target.value)}
+        style={{ width: "400px", marginRight: "10px" }}
+      />
+      <button onClick={fetchOEmbed}>가져오기</button>
 
-      <div>
-        <strong>⏱ setInterval 애니메이션</strong>
-        <div
-          style={{
-            position: "relative",
-            top: "10px",
-            left: intervalX,
-            width: "50px",
-            height: "50px",
-            backgroundColor: "orange",
-            transition: "none",
-          }}
-        />
-      </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {mediaInfo && (
+        <div style={{ marginTop: "20px" }}>
+          <h3>{mediaInfo.title}</h3>
+          <p>작성자: {mediaInfo.author_name}</p>
+          {/* oEmbed에서 제공하는 HTML을 직접 렌더링 */}
+          <div dangerouslySetInnerHTML={{ __html: mediaInfo.html }} />
+        </div>
+      )}
     </div>
   );
 };
