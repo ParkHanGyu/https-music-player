@@ -53,14 +53,16 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const toggleAddMusicToPlaylist = (
     requestBody: AddPlayListToMusicRequestDto
   ) => {
-    if (!requestBody.musicInfoData) {
+    if (!requestBody) {
       return;
     }
+
     console.log("로딩 true");
     setPlaylistLoading(true);
 
     const addPlaylistID = String(requestBody.playlistId);
 
+    // 음악 추가 api 실행
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
       (responseBody) => playlistAddMusicResponse(responseBody, addPlaylistID)
     );
@@ -69,6 +71,11 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     responseBody: ResponseDto | null,
     addPlaylistID: string
   ) => {
+    // 위에 api 추가를 성공하지 못하면 에러 발생하고 추가 컴포넌트 off.
+    // 성공하면 방금 추가한 재생목록의 노래를 최신 데이터를 받아오고 싶어함. 이유는
+    // 현재 듣는 노래의 재생목록과 추가한 노래의 재생목록이 같으면 반영해야 하니까.
+    // 근데 내가 작성한 코드는 현재 듣는 노래의 재생목록과 추가한 재생목록이 같지 않아도
+    // 최신화 시켜주려고함. 불필요한 요소임. 수정할것.
     if (!ResponseUtil(responseBody)) {
       alert(responseBody?.message);
       setPlaylistPopupOpen(false);
@@ -77,6 +84,13 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
       return;
     }
     setPlaylistPopupOpen(!playlistPopupOpen);
+
+    // 재생중인 재생목록과 방금 추가한 노래의 재생목록이 같지 않으면
+    if (nowPlayingPlaylistID !== addPlaylistID) {
+      setPlaylistLoading(false);
+      return;
+    }
+
     getPlaylistMusicReqeust(addPlaylistID, cookies.accessToken).then(
       (responseBody) => getPlaylistMusicResponse(responseBody, addPlaylistID)
     );
@@ -126,11 +140,6 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     }
     console.log("로딩 false");
     setPlaylistLoading(false);
-  };
-
-  const shuffle = (playlist: Music[]) => {
-    const copiedPlaylist = [...playlist]; // 배열 복사
-    return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
   };
 
   //================================= add 팝업 관련
