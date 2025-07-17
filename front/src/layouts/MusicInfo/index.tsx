@@ -85,21 +85,23 @@ const MusicInfo = () => {
     }
 
     // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
-    if (playBarUrl) {
+    if (playBarUrl === searchUrl) {
       setPlayBarUrl("");
     }
 
     setTimeout(() => {
       setPlayBarUrl(searchUrl);
-      // youtube데이터를 useVideoStore에 셋팅
-      setPlayBarInfo(infoData);
-      // 비회원도 가능한 기능이기 때문에 현재 노래를 제외한 노래재생목록을 비워주기
-      setNowRandomPlaylist([]);
-      setNowPlayingPlaylist([]);
-      setNowPlayingPlaylistID("");
-      setNowRandomPlaylistID("");
-    }, 1000);
+    }, 100);
 
+    // youtube데이터를 useVideoStore에 셋팅
+    setPlayBarInfo(infoData);
+    // 비회원도 가능한 기능이기 때문에 현재 노래를 제외한 노래재생목록을 비워주기
+    setNowRandomPlaylist([]);
+    setNowPlayingPlaylist([]);
+    setNowPlayingPlaylistID("");
+    setNowRandomPlaylistID("");
+
+    // 재생
     if (!isPlaying) {
       setIsPlaying(true);
     }
@@ -219,6 +221,7 @@ const MusicInfo = () => {
         </div>
 
         <div className={styles["music-info-controller"]}>
+          {/* 재생버튼 */}
           <div
             className={styles["info-controller-play-btn"]}
             onClick={playHandleClick}

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
-import { getPlatformUrl } from "../../utils/mediaUrlHelper";
 
 const Main = () => {
   //    Zustand state : 메인 화면 검색 url 상태    //

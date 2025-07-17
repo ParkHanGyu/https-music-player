@@ -366,6 +366,13 @@ const PlayBar = () => {
     console.log("isPlaying : ", isPlaying);
   };
 
+  const [likeState, setLikeState] = useState(false);
+
+  const handleMusicLikeClick = () => {
+    alert(likeState);
+    setLikeState(!likeState);
+  };
+
   return (
     <>
       {/* 로딩 화면 */}
@@ -375,30 +382,40 @@ const PlayBar = () => {
           isLoading ? styles["blur"] : undefined
         }`}
       >
-        <div
-          className={styles["main-wrap-bottom-left"]}
-          style={{
-            cursor: playBarInfo ? "pointer" : undefined,
-          }}
-          onClick={handleMusicInfoClick}
-        >
-          <div className={styles["main-wrap-play-img-box"]}>
-            <div
-              className={styles["main-wrap-play-img"]}
-              style={{
-                backgroundImage: `url(${playBarInfo?.thumb})`,
-              }}
-            ></div>
-          </div>
-          <div className={styles["main-wrap-play-info-box"]}>
-            <div className={styles["main-wrap-play-title"]}>
-              {playBarInfo?.vidTitle}
-            </div>
-            <div className={styles["main-wrap-play-artist"]}>
-              {playBarInfo?.author}
-            </div>
-          </div>
+        <div className={styles["main-wrap-bottom-left"]}>
+          {playBarInfo && (
+            <>
+              <div
+                className={`${styles["main-wrap-bottom-like"]} ${
+                  likeState ? styles["like-true"] : undefined
+                }`}
+                onClick={handleMusicLikeClick}
+              ></div>
+              <div
+                className={styles["main-wrap-bottom-info"]}
+                onClick={handleMusicInfoClick}
+              >
+                <div className={styles["main-wrap-play-img-box"]}>
+                  <div
+                    className={styles["main-wrap-play-img"]}
+                    style={{
+                      backgroundImage: `url(${playBarInfo?.thumb})`,
+                    }}
+                  ></div>
+                </div>
+                <div className={styles["main-wrap-play-info-box"]}>
+                  <div className={styles["main-wrap-play-title"]}>
+                    {playBarInfo?.vidTitle}
+                  </div>
+                  <div className={styles["main-wrap-play-artist"]}>
+                    {playBarInfo?.author}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
+
         <div className={styles["main-wrap-bottom-center"]}>
           <div className={styles["main-play-box"]}>
             <div className={styles["main-play-top"]}>

@@ -4,8 +4,6 @@
   width: 100%;
 }
 
-
-
 .main-left {
   background-color: rgb(25, 25, 25);
   width: 18em;
@@ -180,6 +178,23 @@
 
   /* + */
   justify-self: start;
+}
+
+.main-wrap-bottom-info {
+  display: flex;
+}
+
+.like-true {
+  background-image: url("../../assets/heart-icon-hover.png") !important;
+}
+
+.main-wrap-bottom-like {
+  cursor: pointer;
+  background-image: url("../../assets/heart-icon.png");
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  margin: 40px 30px 0px 10px;
 }
 
 .main-play-box {
