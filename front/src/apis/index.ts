@@ -13,6 +13,7 @@ import updatePlaylistOrderRequestDto from "./request/update-playlist-order.dto";
 import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.response.dto";
 import authNumberCheckRequestDto from "./request/auth/auth-number-check-request.dto";
 import authNumberCheckResponseDto from "./response/auth/auth-number-check-response.dto";
+import musicLikeRequestDto from "./request/music-like-request.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -348,9 +349,28 @@ export const authNumberCheckRequest = async (
   responseBody: authNumberCheckRequestDto
 ) => {
   const result = await axios
-    .post(AUTH_NUMBER_CHECK_URL(), responseBody, { withCredentials: true }) // 서버에 post요청
+    .post(AUTH_NUMBER_CHECK_URL(), responseBody, { withCredentials: true }) // 서버에 post요청. withCredentials는 세션으로 인증번호를 확인하기 때문에 사용
     .then((response) => {
       const responseBody: authNumberCheckResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response || !error.response.data) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+const MUSIC_LIKE_URL = () => `${API_DOMAIN}/music/like`;
+export const musicLikeRequest = async (
+  responseBody: musicLikeRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .post(MUSIC_LIKE_URL(), responseBody, authorication(accessToken)) // 서버에 post요청
+    .then((response) => {
+      const responseBody: musicLikeRequestDto = response.data;
       return responseBody;
     })
     .catch((error) => {

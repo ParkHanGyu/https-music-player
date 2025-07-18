@@ -1,8 +1,10 @@
 package com.hmplayer.https_music_player.domain.controller;
 
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
 import com.hmplayer.https_music_player.domain.service.MusicService;
@@ -42,5 +44,11 @@ public class MusicController {
         return musicservice.updatePlaylistOrder(playlistId, request, email);
     }
 
+    // 음악 좋아요
+    @PutMapping("/like")
+    public ResponseEntity<? super MusicLikeResponse> musicLike(@RequestBody MusicLikeRequest request, @AuthenticationPrincipal String email) {
+        log.info("request = {}, token = {}", request, email);
+        return musicservice.musicLike(request, email);
+    }
 
 }

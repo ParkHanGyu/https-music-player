@@ -3,9 +3,11 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.common.customexception.*;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
+import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
@@ -27,8 +29,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -229,5 +233,16 @@ public class MusicServiceImpl implements MusicService {
 
         return UpdateOrderValueResponse.success();
     }
+
+
+    @Override
+    public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
+    log.info("request = {}, email = {}", request, email);
+
+
+//        return MusicLikeResponse.success();
+        return null;
+    }
+
 
 }

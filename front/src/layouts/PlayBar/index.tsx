@@ -12,6 +12,7 @@ import usePlayerProgress from "../../hooks/usePlayerProgress";
 import { useCookies } from "react-cookie";
 import LoadingScreen from "../LoadingScreen";
 import useLoginUserStore from "../../store/login-user.store";
+import { musicLikeRequest } from "../../apis";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -369,7 +370,19 @@ const PlayBar = () => {
   const [likeState, setLikeState] = useState(false);
 
   const handleMusicLikeClick = () => {
-    alert(likeState);
+    console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
+    console.log(JSON.stringify(playBarUrl, null, 2));
+
+    if (nowPlayingPlaylist) {
+      const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
+      const musicId = target ? target.musicId : null;
+
+      console.log(musicId);
+    }
+
+    // 좋아요 하는 music ID는 musicId. 이제 토큰을 포함해서 api 요청하면 될듯
+    // musicLikeRequest().then();
+
     setLikeState(!likeState);
   };
 
