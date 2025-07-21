@@ -10,14 +10,8 @@ import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResp
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
 import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
-import com.hmplayer.https_music_player.domain.jpa.entity.Music;
-import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
-import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
-import com.hmplayer.https_music_player.domain.jpa.entity.User;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicRepository;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlayListRepository;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.PlaylistMusicRepository;
-import com.hmplayer.https_music_player.domain.jpa.jpaInterface.UserRepository;
+import com.hmplayer.https_music_player.domain.jpa.entity.*;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.*;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
@@ -54,6 +48,7 @@ public class MusicServiceImpl implements MusicService {
     private final UserRepository userRepository;
     private final PlayListRepository playListRepository;
     private final PlaylistMusicRepository playlistMusicRepository;
+    private final MusicLikeRepository musicLikeRepository;
 
 
     // 음악 추가
@@ -238,6 +233,24 @@ public class MusicServiceImpl implements MusicService {
     @Override
     public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
     log.info("request = {}, email = {}", request, email);
+
+        Music dbMusic = musicRepository.findById(request.getMusicId()) .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
+        User dbUser = userRepoService.findByEmail(email);
+
+        Like mewLike = new Like(dbMusic, dbUser);
+
+
+    musicLikeRepository.save(mewLike);
+
+//        Like like = new Like(dbmusic, dbUser);
+//        Music dbmusic = musicRepository.findById(musicId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
+//        User dbUser = userRepoService.findByEmail(email);
+//
+
+
+
+
 
 
 //        return MusicLikeResponse.success();

@@ -13,6 +13,7 @@ import { useCookies } from "react-cookie";
 import LoadingScreen from "../LoadingScreen";
 import useLoginUserStore from "../../store/login-user.store";
 import { musicLikeRequest } from "../../apis";
+import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -378,12 +379,17 @@ const PlayBar = () => {
       const musicId = target ? target.musicId : null;
 
       console.log(musicId);
+
+      if (musicId !== null) {
+        const requestBody: musicLikeRequestDto = {
+          musicId: musicId,
+        };
+
+        musicLikeRequest(requestBody, cookies.accessToken).then();
+
+        setLikeState(!likeState);
+      }
     }
-
-    // 좋아요 하는 music ID는 musicId. 이제 토큰을 포함해서 api 요청하면 될듯
-    // musicLikeRequest().then();
-
-    setLikeState(!likeState);
   };
 
   return (
@@ -407,6 +413,9 @@ const PlayBar = () => {
               <div
                 className={styles["main-wrap-bottom-info"]}
                 onClick={handleMusicInfoClick}
+                style={{
+                  cursor: playBarInfo ? "pointer" : "",
+                }}
               >
                 <div className={styles["main-wrap-play-img-box"]}>
                   <div

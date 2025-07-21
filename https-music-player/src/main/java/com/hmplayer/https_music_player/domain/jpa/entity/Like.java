@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @Entity
@@ -23,5 +25,12 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "music_id", nullable = false)
     private Music music;
+
+    public Like(Music music, User user) {
+        this.music = music;
+        this.user = user;
+    }
+
+
 
 }

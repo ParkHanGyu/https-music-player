@@ -45,7 +45,7 @@ public class MusicController {
     }
 
     // 음악 좋아요
-    @PutMapping("/like")
+    @PostMapping("/like")
     public ResponseEntity<? super MusicLikeResponse> musicLike(@RequestBody MusicLikeRequest request, @AuthenticationPrincipal String email) {
         log.info("request = {}, token = {}", request, email);
         return musicservice.musicLike(request, email);
