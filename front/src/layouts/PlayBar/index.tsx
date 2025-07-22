@@ -365,7 +365,7 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log("isPlaying : ", isPlaying);
+    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
   };
 
   const [likeState, setLikeState] = useState(false);
@@ -404,12 +404,18 @@ const PlayBar = () => {
         <div className={styles["main-wrap-bottom-left"]}>
           {playBarInfo && (
             <>
-              <div
-                className={`${styles["main-wrap-bottom-like"]} ${
-                  likeState ? styles["like-true"] : undefined
-                }`}
-                onClick={handleMusicLikeClick}
-              ></div>
+            {/* 검색한 노래라면 like 버튼 x */}
+              {nowPlayingPlaylist.length > 0 ? (
+                <div
+                  className={`${styles["main-wrap-bottom-like"]} ${
+                    likeState ? styles["like-true"] : undefined
+                  }`}
+                  onClick={handleMusicLikeClick}
+                ></div>
+              ) : (
+                ""
+              )}
+
               <div
                 className={styles["main-wrap-bottom-info"]}
                 onClick={handleMusicInfoClick}
@@ -531,7 +537,8 @@ const PlayBar = () => {
 
           <div
             className={styles["music-sound-icon"]}
-            onClick={onSoundDropDown}
+            // onClick={onSoundDropDown}
+            onClick={testBtn}
           ></div>
         </div>
       </div>

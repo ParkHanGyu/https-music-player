@@ -79,6 +79,7 @@ const PlayList = () => {
       return;
     }
     const playListResult = responseBody as GetMusicResponseDto;
+    console.log(JSON.stringify(playListResult, null, 2));
     setMusics(playListResult.musicList);
   };
 

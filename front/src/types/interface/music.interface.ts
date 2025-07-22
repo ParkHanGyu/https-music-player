@@ -6,4 +6,5 @@ export default interface Music {
   url: string;
   imageUrl: string;
   createdAt: string;
+  // like: boolean;
 }
