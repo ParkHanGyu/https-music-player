@@ -21,6 +21,7 @@ import { ResponseUtil } from "../../utils";
 import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-order.dto";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
+import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -101,8 +102,13 @@ const PlayList = () => {
     }
 
     const itemMusicUrl = musics[index].url;
+    const itemMusicLike = musics[index].like;
     setMusicInfo(itemMusicUrl, (newInfoData) => {
-      setPlayBarInfo(newInfoData);
+      const musicWithLike: MusicInfoAndLikeData = {
+        ...newInfoData,
+        like: itemMusicLike,
+      };
+      setPlayBarInfo(musicWithLike);
     });
 
     // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
@@ -205,14 +211,22 @@ const PlayList = () => {
         const newMusicUrl = nowPlayingPlaylist[0].url;
         setPlayBarUrl(newMusicUrl);
         setMusicInfo(newMusicUrl, (newInfoData) => {
-          setPlayBarInfo(newInfoData);
+          const musicWithLike: MusicInfoAndLikeData = {
+            ...newInfoData,
+            like: nowPlayingPlaylist[0].like,
+          };
+          setPlayBarInfo(musicWithLike);
         });
       } else {
         const newMusicUrl = nowPlayingPlaylist[deleteMusicIndex + 1].url;
         setPlayBarUrl(newMusicUrl);
         // 콜백
         setMusicInfo(newMusicUrl, (newInfoData) => {
-          setPlayBarInfo(newInfoData);
+          const musicWithLike: MusicInfoAndLikeData = {
+            ...newInfoData,
+            like: nowPlayingPlaylist[deleteMusicIndex + 1].like,
+          };
+          setPlayBarInfo(musicWithLike);
         });
       }
     }

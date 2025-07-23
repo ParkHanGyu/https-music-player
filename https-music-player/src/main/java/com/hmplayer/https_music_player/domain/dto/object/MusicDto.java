@@ -25,8 +25,10 @@ public class MusicDto {
     private String imageUrl;  // 음악 이미지
     private Date createdAt;  // 생성 날짜
 
+    private boolean like;
 
-    public MusicDto(Music music) {
+
+    public MusicDto(Music music, boolean like) {
         this.musicId = music.getMusicId();
         this.title = music.getTitle();
         this.author = music.getAuthor();
@@ -34,6 +36,7 @@ public class MusicDto {
         this.url = music.getUrl();
         this.imageUrl = music.getImageUrl();
         this.createdAt = music.getCreatedAt();
+        this.like = like;
     }
 
     public MusicDto of(Music music){

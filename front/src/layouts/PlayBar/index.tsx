@@ -14,6 +14,7 @@ import LoadingScreen from "../LoadingScreen";
 import useLoginUserStore from "../../store/login-user.store";
 import { musicLikeRequest } from "../../apis";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
+import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -217,6 +218,7 @@ const PlayBar = () => {
       return;
     }
     let prevMusicUrl;
+    let prevMusicLike: boolean;
 
     if (isRandom) {
       // nowRandomPlaylist에서 현재 음악 index
@@ -227,12 +229,14 @@ const PlayBar = () => {
       if (nowRandomPlaylist[nowIndex - 1]) {
         // nowIndex - 1 값이 있다면 이전노래의 index로
         prevMusicUrl = nowRandomPlaylist[nowIndex - 1].url;
+        prevMusicLike = nowRandomPlaylist[nowIndex - 1].like;
       } else if (!nowRandomPlaylist[nowIndex - 1]) {
         // nowIndex - 1 값이 없다면 마지막으로
 
         const randomPlaylistLength = nowRandomPlaylist.length;
 
         prevMusicUrl = nowRandomPlaylist[randomPlaylistLength - 1].url;
+        prevMusicLike = nowRandomPlaylist[randomPlaylistLength - 1].like;
       }
     }
 
@@ -246,15 +250,21 @@ const PlayBar = () => {
       if (nowIndex === 0) {
         const prevIndex = nowPlayingPlaylist.length - 1;
         prevMusicUrl = nowPlayingPlaylist[prevIndex].url;
+        prevMusicLike = nowPlayingPlaylist[prevIndex].like;
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].url;
+        prevMusicLike = nowPlayingPlaylist[nowIndex - 1].like;
       }
     }
 
     if (prevMusicUrl) {
       // 콜백 함수 실행
       setMusicInfo(prevMusicUrl, (data) => {
-        setPlayBarInfo(data);
+        const musicWithLike: MusicInfoAndLikeData = {
+          ...data,
+          like: prevMusicLike,
+        };
+        setPlayBarInfo(musicWithLike);
       });
       setPlayBarUrl(prevMusicUrl);
     } else {
@@ -269,6 +279,7 @@ const PlayBar = () => {
       return;
     }
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
+    let prevMusicLike: boolean;
 
     if (isRandom) {
       console.log("onNextMusic() -> isRandom true if문 실행");
@@ -285,6 +296,7 @@ const PlayBar = () => {
       if (nowRandomPlaylist[nowIndex + 1]) {
         // nowIndex+1 값이 있다면 다음노래의 index로
         prevMusicUrl = nowRandomPlaylist[nowIndex + 1].url;
+        prevMusicLike = nowRandomPlaylist[nowIndex + 1].like;
       } else if (!nowRandomPlaylist[nowIndex + 1]) {
         // nowIndex+1 값이 없다면 처음으로
 
@@ -305,6 +317,7 @@ const PlayBar = () => {
           : nowRandomPlaylist;
 
         prevMusicUrl = updatedNowRandomPlaylist[0].url;
+        prevMusicLike = updatedNowRandomPlaylist[0].like;
         setNowRandomPlaylist(updatedNowRandomPlaylist);
       }
     }
@@ -316,9 +329,11 @@ const PlayBar = () => {
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
       if (nowPlayingPlaylist.length === nowIndex + 1) {
         prevMusicUrl = nowPlayingPlaylist[0].url;
+        prevMusicLike = nowPlayingPlaylist[0].like;
         console.log("마지막 노래라면 재생시킬 노래: ", prevMusicUrl);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].url;
+        prevMusicLike = nowPlayingPlaylist[nowIndex + 1].like;
         console.log("마지막 노래가 아니라면 재생시킬 노래: ", prevMusicUrl);
       }
     }
@@ -326,7 +341,11 @@ const PlayBar = () => {
     if (prevMusicUrl) {
       // 콜백 함수 실행
       setMusicInfo(prevMusicUrl, (data) => {
-        setPlayBarInfo(data);
+        const musicWithLike: MusicInfoAndLikeData = {
+          ...data,
+          like: prevMusicLike,
+        };
+        setPlayBarInfo(musicWithLike);
       });
       setPlayBarUrl(prevMusicUrl);
     } else {
@@ -366,13 +385,14 @@ const PlayBar = () => {
 
   const testBtn = () => {
     console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
+    console.log("playBarInfo : ", playBarInfo);
   };
 
   const [likeState, setLikeState] = useState(false);
 
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
-    console.log(JSON.stringify(playBarUrl, null, 2));
+    console.log(JSON.stringify(playBarInfo, null, 2));
 
     if (nowPlayingPlaylist) {
       const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
@@ -404,11 +424,11 @@ const PlayBar = () => {
         <div className={styles["main-wrap-bottom-left"]}>
           {playBarInfo && (
             <>
-            {/* 검색한 노래라면 like 버튼 x */}
+              {/* 검색한 노래라면 like 버튼 x */}
               {nowPlayingPlaylist.length > 0 ? (
                 <div
                   className={`${styles["main-wrap-bottom-like"]} ${
-                    likeState ? styles["like-true"] : undefined
+                    playBarInfo.like ? styles["like-true"] : undefined
                   }`}
                   onClick={handleMusicLikeClick}
                 ></div>

@@ -12,6 +12,7 @@ import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.Playlist;
 import com.hmplayer.https_music_player.domain.jpa.entity.PlaylistMusic;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
+import com.hmplayer.https_music_player.domain.jpa.jpaInterface.MusicLikeRepository;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlayListRepoService;
 import com.hmplayer.https_music_player.domain.jpa.service.PlaylistMusicRepoService;
@@ -37,6 +38,7 @@ public class PlayListServiceImpl implements PlayListService {
     private final UserRepoService userRepoService;
     private final PlaylistMusicRepoService playlistMusicRepoService;
     private final MusicRepoService musicRepoService;
+    private final MusicLikeRepository musicLikeRepository;
 
 
 
@@ -63,7 +65,7 @@ public class PlayListServiceImpl implements PlayListService {
     }
 
     @Override
-    public ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId) {
+    public ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId, String email) {
         List<MusicDto> musicsData;
         try{
             Optional<Playlist> filteredPlayList = playListRepoService.findById(playlistId);
@@ -73,13 +75,18 @@ public class PlayListServiceImpl implements PlayListService {
             }
 
             Playlist playlistAndMusics = filteredPlayList.get();
+            User user = userRepoService.findByEmail(email); // 현재 사용자 조회
+
 
             musicsData = playlistAndMusics.getMusics()
                     .stream()
                     // OrderValue 기준으로 정렬해서 list 만들어줌
                     .sorted(Comparator.comparing(PlaylistMusic::getOrderValue))
-                    .map(PlaylistMusic::getMusic)
-                    .map(MusicDto::new) // 명시적으로 생성자 호출
+                    .map(playlistMusic -> {
+                        Music music = playlistMusic.getMusic();
+                        boolean isLiked = musicLikeRepository.existsByUserAndMusic(user, music); // ✅ 좋아요 여부 확인
+                        return new MusicDto(music, isLiked);
+                    })
                     .toList();
 
         } catch(Exception e) {

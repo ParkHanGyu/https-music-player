@@ -16,6 +16,7 @@ import useMediaInfo from "../../hooks/useMediaInfo";
 import LoadingScreen from "../LoadingScreen";
 import { ResponseUtil } from "../../utils";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
+import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
 
 const MusicInfo = () => {
   const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
@@ -93,8 +94,13 @@ const MusicInfo = () => {
       setPlayBarUrl(searchUrl);
     }, 100);
 
+    const musicWithLike: MusicInfoAndLikeData = {
+      ...infoData,
+      like: null,
+    };
+
     // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(infoData);
+    setPlayBarInfo(musicWithLike);
     // 비회원도 가능한 기능이기 때문에 현재 노래를 제외한 노래재생목록을 비워주기
     setNowRandomPlaylist([]);
     setNowPlayingPlaylist([]);

@@ -20,7 +20,7 @@ public interface PlayListService {
 
     ResponseEntity<? super PlayListResponse> getPlayListLibrary(String email);
 
-    ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId);
+    ResponseEntity<? super GetMusicResponse> getPlayList(Long playlistId, String email);
 
     ResponseEntity<? super DeletePlaylistResponse> deletePlaylist(Long playlistId, String email);
 
