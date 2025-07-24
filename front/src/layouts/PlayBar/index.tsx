@@ -12,7 +12,7 @@ import usePlayerProgress from "../../hooks/usePlayerProgress";
 import { useCookies } from "react-cookie";
 import LoadingScreen from "../LoadingScreen";
 import useLoginUserStore from "../../store/login-user.store";
-import { musicLikeRequest } from "../../apis";
+import { musicLikeAddRequest, musicLikeRemoveRequest } from "../../apis";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
 
@@ -43,6 +43,33 @@ const PlayBar = () => {
       setIsPlaying(!isPlaying);
     }
   };
+  // useEffect : 스페이스바로 일시정지, 재생
+  useEffect(() => {
+    // const handleKeyDown = (event: KeyboardEvent) => {
+    //   const activeTag = document.activeElement?.tagName;
+
+    //   // 입력 중일 때는 무시
+    //   if (
+    //     activeTag === "INPUT" ||
+    //     activeTag === "TEXTAREA" ||
+    //     (document.activeElement as HTMLElement)?.isContentEditable
+    //   ) {
+    //     return;
+    //   }
+
+    //   if (event.code === "Space") {
+    //     event.preventDefault(); // 기본 스크롤 방지
+    //     if (isLoading === false) {
+    //       console.log("스페이스바 실행");
+    //       handlePlayPause();
+    //       // setIsPlaying(!isPlaying);
+    //     }
+    //   }
+    // };
+
+    document.addEventListener("keydown", handlePlayPause);
+    return () => document.removeEventListener("keydown", handlePlayPause);
+  }, []);
 
   const formatTime = useFormatTime();
 
@@ -386,9 +413,10 @@ const PlayBar = () => {
   const testBtn = () => {
     console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
     console.log("playBarInfo : ", playBarInfo);
+    console.log("likeState : ", likeState);
   };
 
-  const [likeState, setLikeState] = useState(false);
+  const [likeState, setLikeState] = useState<boolean | undefined>(false);
 
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
@@ -405,12 +433,36 @@ const PlayBar = () => {
           musicId: musicId,
         };
 
-        musicLikeRequest(requestBody, cookies.accessToken).then();
+        // 듣는 노래의 like가 undefinde가 아니고, 듣는 노래의 like가 false고, likeState가 false일때 => 음악 추가 api 실행
+        if (
+          playBarInfo?.like !== undefined &&
+          !playBarInfo?.like &&
+          !likeState
+        ) {
+          console.log("like add 실행");
+          // 음악 like add
+          musicLikeAddRequest(requestBody, cookies.accessToken).then();
+          // 듣는 노래의 like가 undefinde가 아니고, 듣는 노래의 like가 true고, likeState가 true일때 => 음악 추가 api 실행
+        } else if (
+          playBarInfo?.like !== undefined &&
+          playBarInfo?.like &&
+          likeState
+        ) {
+          console.log("remove 실행");
+          musicLikeRemoveRequest(requestBody, cookies.accessToken).then();
+        }
 
         setLikeState(!likeState);
       }
     }
   };
+
+  // 음악 변경시 db에서 가져온 like 데이터 PlayBar 컴포넌트 state에 set
+  useEffect(() => {
+    if (playBarInfo && playBarInfo !== undefined) {
+      setLikeState(playBarInfo.like);
+    }
+  }, [playBarInfo]);
 
   return (
     <>

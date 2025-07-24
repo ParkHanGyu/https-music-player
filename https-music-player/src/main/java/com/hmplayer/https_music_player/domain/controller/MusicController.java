@@ -51,4 +51,10 @@ public class MusicController {
         return musicservice.musicLike(request, email);
     }
 
+    @DeleteMapping("/like/remove")
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@RequestBody MusicLikeRequest request, @AuthenticationPrincipal String email) {
+        log.info("request = {}, token = {}", request, email);
+        return musicservice.musicLike(request, email);
+    }
+
 }

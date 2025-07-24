@@ -96,7 +96,7 @@ const MusicInfo = () => {
 
     const musicWithLike: MusicInfoAndLikeData = {
       ...infoData,
-      like: null,
+      like: undefined,
     };
 
     // youtube데이터를 useVideoStore에 셋팅

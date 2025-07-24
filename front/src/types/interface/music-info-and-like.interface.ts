@@ -3,5 +3,5 @@ export interface MusicInfoAndLikeData {
   author: string | null;
   thumb: string | null;
   vidTitle: string | null;
-  like: Boolean | null;
+  like: boolean | undefined;
 }

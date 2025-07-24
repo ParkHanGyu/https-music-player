@@ -363,12 +363,31 @@ export const authNumberCheckRequest = async (
 };
 
 const MUSIC_LIKE_URL = () => `${API_DOMAIN}/music/like`;
-export const musicLikeRequest = async (
+export const musicLikeAddRequest = async (
   responseBody: musicLikeRequestDto,
   accessToken: string
 ) => {
   const result = await axios
     .post(MUSIC_LIKE_URL(), responseBody, authorication(accessToken)) // 서버에 post요청
+    .then((response) => {
+      const responseBody: musicLikeRequestDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error.response || !error.response.data) return null;
+      const responseBody: ResponseDto = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+const MUSIC_LIKE_REMOVE_URL = () => `${API_DOMAIN}/music/like/remove`;
+export const musicLikeRemoveRequest = async (
+  responseBody: musicLikeRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .post(MUSIC_LIKE_REMOVE_URL(), responseBody, authorication(accessToken)) // 서버에 post요청
     .then((response) => {
       const responseBody: musicLikeRequestDto = response.data;
       return responseBody;
