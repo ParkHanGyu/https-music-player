@@ -3,10 +3,7 @@ package com.hmplayer.https_music_player.domain.controller;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
-import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.*;
 import com.hmplayer.https_music_player.domain.service.MusicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +51,7 @@ public class MusicController {
     @DeleteMapping("/like/remove")
     public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@RequestBody MusicLikeRequest request, @AuthenticationPrincipal String email) {
         log.info("request = {}, token = {}", request, email);
-        return musicservice.musicLike(request, email);
+        return musicservice.musicLikeRemove(request, email);
     }
 
 }

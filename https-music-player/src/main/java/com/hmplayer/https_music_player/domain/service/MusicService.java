@@ -3,10 +3,7 @@ package com.hmplayer.https_music_player.domain.service;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
-import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,5 +17,6 @@ public interface MusicService {
 
     ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email);
 
+    ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(MusicLikeRequest request, String email);
 
-    }
+}

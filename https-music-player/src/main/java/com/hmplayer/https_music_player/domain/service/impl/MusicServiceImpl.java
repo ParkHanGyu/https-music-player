@@ -6,10 +6,7 @@ import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequ
 import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
 import com.hmplayer.https_music_player.domain.dto.response.auth.SignUpResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.DeleteMusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicLikeResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.MusicResponse;
-import com.hmplayer.https_music_player.domain.dto.response.music.UpdateOrderValueResponse;
+import com.hmplayer.https_music_player.domain.dto.response.music.*;
 import com.hmplayer.https_music_player.domain.jpa.entity.*;
 import com.hmplayer.https_music_player.domain.jpa.jpaInterface.*;
 import com.hmplayer.https_music_player.domain.jpa.service.MusicRepoService;
@@ -254,6 +251,12 @@ public class MusicServiceImpl implements MusicService {
 
 
 //        return MusicLikeResponse.success();
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove( MusicLikeRequest request,  String email) {
+
         return null;
     }
 

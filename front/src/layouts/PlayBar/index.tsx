@@ -45,27 +45,27 @@ const PlayBar = () => {
   };
   // useEffect : 스페이스바로 일시정지, 재생
   useEffect(() => {
-    // const handleKeyDown = (event: KeyboardEvent) => {
-    //   const activeTag = document.activeElement?.tagName;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const activeTag = document.activeElement?.tagName;
 
-    //   // 입력 중일 때는 무시
-    //   if (
-    //     activeTag === "INPUT" ||
-    //     activeTag === "TEXTAREA" ||
-    //     (document.activeElement as HTMLElement)?.isContentEditable
-    //   ) {
-    //     return;
-    //   }
+      // 입력 중일 때는 무시
+      if (
+        activeTag === "INPUT" ||
+        activeTag === "TEXTAREA" ||
+        (document.activeElement as HTMLElement)?.isContentEditable
+      ) {
+        return;
+      }
 
-    //   if (event.code === "Space") {
-    //     event.preventDefault(); // 기본 스크롤 방지
-    //     if (isLoading === false) {
-    //       console.log("스페이스바 실행");
-    //       handlePlayPause();
-    //       // setIsPlaying(!isPlaying);
-    //     }
-    //   }
-    // };
+      if (event.code === "Space") {
+        event.preventDefault(); // 기본 스크롤 방지
+        if (isLoading === false) {
+          console.log("스페이스바 실행");
+          handlePlayPause();
+          // setIsPlaying(!isPlaying);
+        }
+      }
+    };
 
     document.addEventListener("keydown", handlePlayPause);
     return () => document.removeEventListener("keydown", handlePlayPause);
@@ -452,6 +452,8 @@ const PlayBar = () => {
           musicLikeRemoveRequest(requestBody, cookies.accessToken).then();
         }
 
+        console.log("setLikeState(!likeState);");
+        console.log("현재 likeState값 : ", likeState);
         setLikeState(!likeState);
       }
     }
@@ -480,7 +482,7 @@ const PlayBar = () => {
               {nowPlayingPlaylist.length > 0 ? (
                 <div
                   className={`${styles["main-wrap-bottom-like"]} ${
-                    playBarInfo.like ? styles["like-true"] : undefined
+                    likeState ? styles["like-true"] : undefined
                   }`}
                   onClick={handleMusicLikeClick}
                 ></div>
