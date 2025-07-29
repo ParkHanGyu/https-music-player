@@ -251,7 +251,7 @@ public class MusicServiceImpl implements MusicService {
 
 
 //        return MusicLikeResponse.success();
-        return null;
+        return MusicLikeResponse.success();
     }
 
     @Override

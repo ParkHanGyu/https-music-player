@@ -4,10 +4,9 @@ import Music from "../types/interface/music.interface";
 
 // Zustand 상태 정의
 interface VideoState {
-  // ============================================
-  playlistLibrary: Playlist[]; // 재생목록 데이터 추가
+  // ========================== 재생목록 모음
+  playlistLibrary: Playlist[]; // 재생목록 모음
   setPlaylistLibrary: (playlistLibrary: Playlist[]) => void; // 재생목록 설정 함수
-  // ============================================
 
   // ======================== 현재 재생중인 재생목록의 음악들
   nowPlayingPlaylist: Music[]; // 음악 리스트 상태
@@ -15,7 +14,6 @@ interface VideoState {
 
   nowPlayingPlaylistID: string | undefined;
   setNowPlayingPlaylistID: (nowPlayingPlaylistID: string | undefined) => void;
-  // ============================================
 
   // ======================== 현재 재생중인 랜덤용 재생목록의 음악들
   nowRandomPlaylist: Music[]; // 음악 리스트 상태
@@ -25,6 +23,9 @@ interface VideoState {
 
   nowRandomPlaylistID: string | undefined;
   setNowRandomPlaylistID: (nowRandomPlaylistID: string | undefined) => void;
+  // ======================== 현재 보는 재생목록 음악들
+  musics: Music[]; // 현재 보는 재생목록 음악들
+  setMusics: (musics: Music[]) => void;
 }
 
 // Zustand 스토어 생성
@@ -60,4 +61,8 @@ export const usePlaylistStore = create<VideoState>((set) => ({
   nowRandomPlaylistID: "",
   setNowRandomPlaylistID: (nowRandomPlaylistID) =>
     set({ nowRandomPlaylistID: nowRandomPlaylistID }),
+
+  // ======================== 현재 보는 재생목록 음악들
+  musics: [], // 현재 보는 재생목록 음악들
+  setMusics: (musics) => set({ musics }),
 }));

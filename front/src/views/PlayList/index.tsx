@@ -45,6 +45,8 @@ const PlayList = () => {
     setNowRandomPlaylist,
     nowRandomPlaylist,
     setNowRandomPlaylistID,
+    musics,
+    setMusics,
   } = usePlaylistStore();
   const formatTime = useFormatTime();
 
@@ -84,7 +86,7 @@ const PlayList = () => {
     setMusics(playListResult.musicList);
   };
 
-  const [musics, setMusics] = useState<Music[]>([]);
+  // const [musics, setMusics] = useState<Music[]>([]);
 
   //      event handler : 음악 셔플 이벤트 처리 함수       //
   const shuffle = (playlist: Music[]) => {
@@ -363,15 +365,7 @@ const PlayList = () => {
   }
 
   const testBtn = () => {
-    console.log(
-      "PlayList.tsx - nowPlayingPlaylist : " +
-        JSON.stringify(nowPlayingPlaylist, null, 2)
-    );
-
-    console.log(
-      "PlayList.tsx - nowRandomPlaylist : " +
-        JSON.stringify(nowRandomPlaylist, null, 2)
-    );
+    console.log("PlayList.tsx - musics : " + JSON.stringify(musics, null, 2));
   };
 
   return (

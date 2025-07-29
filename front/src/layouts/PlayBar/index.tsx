@@ -15,19 +15,33 @@ import useLoginUserStore from "../../store/login-user.store";
 import { musicLikeAddRequest, musicLikeRemoveRequest } from "../../apis";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import ResponseDto from "../../apis/response/response.dto";
+import { ResponseUtil } from "../../utils";
+import { useParams } from "react-router-dom";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
-  const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
-    useVideoStore();
+  const {
+    playBarUrl,
+    setPlayBarUrl,
+    playBarInfo,
+    setPlayBarInfo,
+    playlistLoading,
+    setPlaylistLoading,
+  } = useVideoStore();
   const {
     nowPlayingPlaylist,
     nowRandomPlaylist,
+    nowPlayingPlaylistID,
     setNowRandomPlaylist,
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
+    musics,
+    setMusics,
   } = usePlaylistStore();
+
+  const { playlistId } = useParams();
 
   //    Zustand state : PlayBar 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
@@ -44,32 +58,32 @@ const PlayBar = () => {
     }
   };
   // useEffect : 스페이스바로 일시정지, 재생
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const activeTag = document.activeElement?.tagName;
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     const activeTag = document.activeElement?.tagName;
 
-      // 입력 중일 때는 무시
-      if (
-        activeTag === "INPUT" ||
-        activeTag === "TEXTAREA" ||
-        (document.activeElement as HTMLElement)?.isContentEditable
-      ) {
-        return;
-      }
+  //     // 입력 중일 때는 무시
+  //     if (
+  //       activeTag === "INPUT" ||
+  //       activeTag === "TEXTAREA" ||
+  //       (document.activeElement as HTMLElement)?.isContentEditable
+  //     ) {
+  //       return;
+  //     }
 
-      if (event.code === "Space") {
-        event.preventDefault(); // 기본 스크롤 방지
-        if (isLoading === false) {
-          console.log("스페이스바 실행");
-          handlePlayPause();
-          // setIsPlaying(!isPlaying);
-        }
-      }
-    };
+  //     if (event.code === "Space") {
+  //       event.preventDefault(); // 기본 스크롤 방지
+  //       if (isLoading === false) {
+  //         console.log("스페이스바 실행");
+  //         handlePlayPause();
+  //         // setIsPlaying(!isPlaying);
+  //       }
+  //     }
+  //   };
 
-    document.addEventListener("keydown", handlePlayPause);
-    return () => document.removeEventListener("keydown", handlePlayPause);
-  }, []);
+  //   document.addEventListener("keydown", handlePlayPause);
+  //   return () => document.removeEventListener("keydown", handlePlayPause);
+  // }, []);
 
   const formatTime = useFormatTime();
 
@@ -413,10 +427,8 @@ const PlayBar = () => {
   const testBtn = () => {
     console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
     console.log("playBarInfo : ", playBarInfo);
-    console.log("likeState : ", likeState);
+    console.log("playlistLoading : ", playlistLoading);
   };
-
-  const [likeState, setLikeState] = useState<boolean | undefined>(false);
 
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
@@ -433,38 +445,73 @@ const PlayBar = () => {
           musicId: musicId,
         };
 
-        // 듣는 노래의 like가 undefinde가 아니고, 듣는 노래의 like가 false고, likeState가 false일때 => 음악 추가 api 실행
-        if (
-          playBarInfo?.like !== undefined &&
-          !playBarInfo?.like &&
-          !likeState
-        ) {
+        // add
+        if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
           console.log("like add 실행");
-          // 음악 like add
-          musicLikeAddRequest(requestBody, cookies.accessToken).then();
-          // 듣는 노래의 like가 undefinde가 아니고, 듣는 노래의 like가 true고, likeState가 true일때 => 음악 추가 api 실행
-        } else if (
-          playBarInfo?.like !== undefined &&
-          playBarInfo?.like &&
-          likeState
-        ) {
-          console.log("remove 실행");
-          musicLikeRemoveRequest(requestBody, cookies.accessToken).then();
-        }
+          musicLikeAddRequest(requestBody, cookies.accessToken).then(
+            musicLikeAddResponse
+          );
 
-        console.log("setLikeState(!likeState);");
-        console.log("현재 likeState값 : ", likeState);
-        setLikeState(!likeState);
+          // remove
+        } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
+          console.log("remove 실행");
+          // musicLikeRemoveRequest(requestBody, cookies.accessToken).then(
+          //   musicLikeRemoveResponse
+          // );
+        }
       }
     }
   };
 
-  // 음악 변경시 db에서 가져온 like 데이터 PlayBar 컴포넌트 state에 set
-  useEffect(() => {
-    if (playBarInfo && playBarInfo !== undefined) {
-      setLikeState(playBarInfo.like);
+  const musicLikeAddResponse = (
+    responseBody: musicLikeRequestDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
     }
-  }, [playBarInfo]);
+
+    console.log("musicLikeAddResponse 실행");
+
+    // 현재 재생중인 노래가 현재 보고있는 재생목록이랑 같다면
+    // why 이런 기준을 가졌을까?
+    // 우리가 하려는건 like를 했을때 해당 노래의 like 상태를 업데이트 해주려고 함.
+    // 음악 리스트가 언제 db랑 최신화가 되냐면 새로운 재생목록을 클릭했을때 db에서 가져옴.
+    // 근데 여기서는 새로운 재생목록을 클릭하는게 아니고 like 유무만 바꿔줘야 함.
+    // 현재 재생중인 노래(nowPlayingPlaylistID)가 현재 보고있는 재생목록(playlistId)이랑 같다면
+    // musics 데이터중 해당 노래의 like 를 업데이트 해줘야 함. 업데이트를 하지 않는다면
+    // 노래에 like를 하면(이떄 db에 api요청) db에만 적용되고 클라이언트에 데이터는 최신 상태가 아님. 그래서 like의 유무를 클라이언트에서 바꿔줘야 함.
+
+    if (nowPlayingPlaylistID === playlistId) {
+      const updatedMusics = musics.map((music) =>
+        music.url === playBarInfo?.vidUrl ? { ...music, like: true } : music
+      );
+
+      const updatedNowRandomMusics = nowRandomPlaylist.map((music) =>
+        music.url === playBarInfo?.vidUrl ? { ...music, like: true } : music
+      );
+
+      setMusics(updatedMusics);
+      setNowPlayingPlaylist(updatedMusics);
+      setNowRandomPlaylist(updatedNowRandomMusics);
+    }
+  };
+
+  // const musicLikeRemoveResponse = (
+  //   responseBody: musicLikeRequestDto | ResponseDto | null
+  // ) => {
+  //   if (!ResponseUtil(responseBody)) {
+  //     return;
+  //   }
+
+  //   setPlaylistLoading(true);
+  // };
+
+  // 음악 변경시 db에서 가져온 like 데이터 PlayBar 컴포넌트 state에 set
+  // useEffect(() => {
+  //   if (playBarInfo && playBarInfo !== undefined) {
+  //     setLikeState(playBarInfo.like);
+  //   }
+  // }, [playBarInfo]);
 
   return (
     <>
@@ -482,7 +529,7 @@ const PlayBar = () => {
               {nowPlayingPlaylist.length > 0 ? (
                 <div
                   className={`${styles["main-wrap-bottom-like"]} ${
-                    likeState ? styles["like-true"] : undefined
+                    playBarInfo.like ? styles["like-true"] : undefined
                   }`}
                   onClick={handleMusicLikeClick}
                 ></div>
