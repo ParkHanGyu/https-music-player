@@ -5,8 +5,12 @@ import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface MusicLikeRepository extends JpaRepository<Like, Long> {
     boolean existsByUserAndMusic(User user, Music music);
+
+    Optional<Like> findByUserAndMusic(User user, Music music);
 
 
 //    void save(Long musicId, String userEmail);

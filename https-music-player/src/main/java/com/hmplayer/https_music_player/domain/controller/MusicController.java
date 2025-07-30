@@ -48,10 +48,9 @@ public class MusicController {
         return musicservice.musicLike(request, email);
     }
 
-    @DeleteMapping("/like/remove")
-    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@RequestBody MusicLikeRequest request, @AuthenticationPrincipal String email) {
-        log.info("request = {}, token = {}", request, email);
-        return musicservice.musicLikeRemove(request, email);
+    @DeleteMapping("/like/delete/musicId/{musicId}")
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
+        return musicservice.musicLikeRemove(musicId, email);
     }
 
 }

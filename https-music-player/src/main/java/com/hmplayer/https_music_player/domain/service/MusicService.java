@@ -6,6 +6,7 @@ import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderReq
 import com.hmplayer.https_music_player.domain.dto.response.music.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface MusicService {
@@ -17,6 +18,6 @@ public interface MusicService {
 
     ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email);
 
-    ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(MusicLikeRequest request, String email);
+    ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email);
 
 }

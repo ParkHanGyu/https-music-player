@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    // Music ID 확인
     @ExceptionHandler(MusicIdNotFoundException.class)
     public ResponseEntity<ResponseDto> handleMusicIdNotFound(MusicIdNotFoundException ex) {
         log.warn("handleMusicIdNotFound 발생: {}", ex.getMessage());

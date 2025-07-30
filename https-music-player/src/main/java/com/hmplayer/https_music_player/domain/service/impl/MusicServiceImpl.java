@@ -19,6 +19,7 @@ import com.sun.jdi.InternalException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
@@ -229,35 +230,48 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
-    log.info("request = {}, email = {}", request, email);
+        log.info("request = {}, email = {}", request, email);
 
         Music dbMusic = musicRepository.findById(request.getMusicId()) .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
         User dbUser = userRepoService.findByEmail(email);
 
         Like mewLike = new Like(dbMusic, dbUser);
-
-
-    musicLikeRepository.save(mewLike);
-
-//        Like like = new Like(dbmusic, dbUser);
-//        Music dbmusic = musicRepository.findById(musicId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
-//        User dbUser = userRepoService.findByEmail(email);
-//
-
-
-
-
-
-
-//        return MusicLikeResponse.success();
+        musicLikeRepository.save(mewLike);
         return MusicLikeResponse.success();
     }
 
     @Override
-    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove( MusicLikeRequest request,  String email) {
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email) {
+        log.info("musicId = {}, email = {}", musicId, email);
 
-        return null;
+        // 1. 유저 조회
+//        Optional<User> userOpt = userRepository.findByEmail(email);
+//        if (userOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NonExistUserException(email));
+
+        // 2. 음악 조회
+//        Optional<Music> musicOpt = musicRepository.findById(musicId);
+//        if (musicOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//
+//        Music music = musicOpt.get();
+
+        Music music =  musicRepository.findById(musicId).orElseThrow(()-> new MusicIdNotFoundException(musicId));
+
+        // 3. Like 조회
+        Optional<Like> likeOpt = musicLikeRepository.findByUserAndMusic(user, music);
+        if (likeOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 좋아요 안 돼있을 수도 있으니까
+        }
+
+        // 4. 삭제
+        musicLikeRepository.delete(likeOpt.get());
+
+        // 5. 응답
+        return MusicLikeRemoveResponse.success();
     }
 
 

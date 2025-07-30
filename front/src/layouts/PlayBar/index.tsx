@@ -240,7 +240,10 @@ const PlayBar = () => {
 
       playerRef.current.seekTo(0);
       setIsPlaying(false);
-      setTimeout(() => setIsPlaying(true), 200);
+      setTimeout(() => {
+        console.log("playbar - 245");
+        setIsPlaying(true);
+      }, 200);
     } else if (!isLoop) {
       onNextMusic();
     }
@@ -425,9 +428,9 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log("nowPlayingPlaylist : ", nowPlayingPlaylist);
-    console.log("playBarInfo : ", playBarInfo);
-    console.log("playlistLoading : ", playlistLoading);
+    console.log("playBarUrl : ", JSON.stringify(playBarUrl, null, 2));
+    console.log("isPlaying : ", JSON.stringify(isPlaying, null, 2));
+    console.log("playBarInfo : ", JSON.stringify(playBarInfo, null, 2));
   };
 
   const handleMusicLikeClick = () => {
@@ -455,9 +458,12 @@ const PlayBar = () => {
           // remove
         } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
           console.log("remove 실행");
-          // musicLikeRemoveRequest(requestBody, cookies.accessToken).then(
-          //   musicLikeRemoveResponse
-          // );
+          musicLikeRemoveRequest(musicId, cookies.accessToken).then(
+            musicLikeRemoveResponse
+          );
+        }
+        if (playBarInfo) {
+          playBarInfo.like = !playBarInfo.like;
         }
       }
     }
@@ -469,18 +475,7 @@ const PlayBar = () => {
     if (!ResponseUtil(responseBody)) {
       return;
     }
-
     console.log("musicLikeAddResponse 실행");
-
-    // 현재 재생중인 노래가 현재 보고있는 재생목록이랑 같다면
-    // why 이런 기준을 가졌을까?
-    // 우리가 하려는건 like를 했을때 해당 노래의 like 상태를 업데이트 해주려고 함.
-    // 음악 리스트가 언제 db랑 최신화가 되냐면 새로운 재생목록을 클릭했을때 db에서 가져옴.
-    // 근데 여기서는 새로운 재생목록을 클릭하는게 아니고 like 유무만 바꿔줘야 함.
-    // 현재 재생중인 노래(nowPlayingPlaylistID)가 현재 보고있는 재생목록(playlistId)이랑 같다면
-    // musics 데이터중 해당 노래의 like 를 업데이트 해줘야 함. 업데이트를 하지 않는다면
-    // 노래에 like를 하면(이떄 db에 api요청) db에만 적용되고 클라이언트에 데이터는 최신 상태가 아님. 그래서 like의 유무를 클라이언트에서 바꿔줘야 함.
-
     if (nowPlayingPlaylistID === playlistId) {
       const updatedMusics = musics.map((music) =>
         music.url === playBarInfo?.vidUrl ? { ...music, like: true } : music
@@ -496,15 +491,27 @@ const PlayBar = () => {
     }
   };
 
-  // const musicLikeRemoveResponse = (
-  //   responseBody: musicLikeRequestDto | ResponseDto | null
-  // ) => {
-  //   if (!ResponseUtil(responseBody)) {
-  //     return;
-  //   }
+  const musicLikeRemoveResponse = (
+    responseBody: musicLikeRequestDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
 
-  //   setPlaylistLoading(true);
-  // };
+    if (nowPlayingPlaylistID === playlistId) {
+      const updatedMusics = musics.map((music) =>
+        music.url === playBarInfo?.vidUrl ? { ...music, like: false } : music
+      );
+
+      const updatedNowRandomMusics = nowRandomPlaylist.map((music) =>
+        music.url === playBarInfo?.vidUrl ? { ...music, like: false } : music
+      );
+
+      setMusics(updatedMusics);
+      setNowPlayingPlaylist(updatedMusics);
+      setNowRandomPlaylist(updatedNowRandomMusics);
+    }
+  };
 
   // 음악 변경시 db에서 가져온 like 데이터 PlayBar 컴포넌트 state에 set
   // useEffect(() => {
