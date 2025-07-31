@@ -91,6 +91,14 @@ public class GlobalExceptionHandler {
                 .body(new ResponseDto(ResponseCode.SERVICE_UNAVAILABLE, ResponseMessage.SERVICE_UNAVAILABLE));
     }
 
+    // like 데이터 없음
+    @ExceptionHandler(NonExistLikeException.class)
+    public ResponseEntity<ResponseDto> NonExistLikeException(NonExistLikeException ex) {
+        log.warn("NonExistLikeException 발생: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ResponseDto(ResponseCode.NON_EXISTED_LIKE, ResponseMessage.NON_EXISTED_LIKE));
+    }
+
 
     // 그 외 예상치 못한 예외 처리
     @ExceptionHandler(Exception.class)

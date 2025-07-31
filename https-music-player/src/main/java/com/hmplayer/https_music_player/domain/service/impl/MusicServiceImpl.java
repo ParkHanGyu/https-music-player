@@ -245,30 +245,16 @@ public class MusicServiceImpl implements MusicService {
         log.info("musicId = {}, email = {}", musicId, email);
 
         // 1. 유저 조회
-//        Optional<User> userOpt = userRepository.findByEmail(email);
-//        if (userOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new NonExistUserException(email));
+        User dbUserData = userRepository.findByEmail(email).orElseThrow(() -> new NonExistUserException(email));
 
         // 2. 음악 조회
-//        Optional<Music> musicOpt = musicRepository.findById(musicId);
-//        if (musicOpt.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//
-//        Music music = musicOpt.get();
-
-        Music music =  musicRepository.findById(musicId).orElseThrow(()-> new MusicIdNotFoundException(musicId));
+        Music dbMusicData =  musicRepository.findById(musicId).orElseThrow(()-> new MusicIdNotFoundException(musicId));
 
         // 3. Like 조회
-        Optional<Like> likeOpt = musicLikeRepository.findByUserAndMusic(user, music);
-        if (likeOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 좋아요 안 돼있을 수도 있으니까
-        }
+        Like dbLikeData = musicLikeRepository.findByUserAndMusic(dbUserData, dbMusicData).orElseThrow(() -> new NonExistLikeException(dbUserData.getId(), dbMusicData.getMusicId()));
 
         // 4. 삭제
-        musicLikeRepository.delete(likeOpt.get());
+        musicLikeRepository.delete(dbLikeData);
 
         // 5. 응답
         return MusicLikeRemoveResponse.success();

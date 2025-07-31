@@ -29,7 +29,8 @@ public interface ResponseMessage {
 
     String SERVICE_UNAVAILABLE = "현재 서비스가 원활하지 않습니다. 잠시 후 다시 시도해주세요."; // 서버 문제로 일시 중단
 
-    
+
+    String NON_EXISTED_LIKE = "존재하지 않는 like 입니다."; // 존재하지 않는 like
 
 
 
