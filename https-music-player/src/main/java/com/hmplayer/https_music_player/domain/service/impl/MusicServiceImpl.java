@@ -228,6 +228,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
 
+    // like 추가
     @Override
     public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
         log.info("request = {}, email = {}", request, email);
@@ -240,6 +241,7 @@ public class MusicServiceImpl implements MusicService {
         return MusicLikeResponse.success();
     }
 
+    // like 삭제
     @Override
     public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email) {
         log.info("musicId = {}, email = {}", musicId, email);

@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
+  LIKE_PATH,
   MAIN_PATH,
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
@@ -113,6 +114,11 @@ const Menu = () => {
     if (pageName === "soundcloud") {
       window.open(`https://www.${pageName}.com`);
     }
+  };
+
+  //      event handler: Like 클릭 이벤트 처리 함수       //
+  const onLikeClickHandler = () => {
+    navigator(LIKE_PATH());
   };
 
   //      event handler: 로그인 클릭 이벤트 처리 함수       //
@@ -445,20 +451,25 @@ const Menu = () => {
             </ul>
           )}
         </div>
+
+        <div className={styles["main-menu-item3"]} onClick={onLikeClickHandler}>
+          Like Rank
+        </div>
+
         <div
-          className={styles["main-menu-item3"]}
+          className={styles["main-menu-item4"]}
           onClick={() => openPlatformPage("youtube")}
         >
           Youtube
         </div>
         <div
-          className={styles["main-menu-item4"]}
+          className={styles["main-menu-item5"]}
           onClick={() => openPlatformPage("soundcloud")}
         >
           SoundCloud
         </div>
 
-        <div className={styles["main-menu-item5"]} onClick={testValue}>
+        <div className={styles["main-menu-item6"]} onClick={testValue}>
           TEST
         </div>
 

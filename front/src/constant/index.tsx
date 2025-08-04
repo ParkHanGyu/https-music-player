@@ -4,3 +4,4 @@ export const MAIN_PATH = () => "/";
 export const TEST_PATH = () => "/test";
 export const SIGN_IN_PATH = () => "/auth/sign-in";
 export const SIGN_UP_PATH = () => "/auth/sign-up";
+export const LIKE_PATH = () => "/like/rank";

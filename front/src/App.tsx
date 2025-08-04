@@ -2,6 +2,7 @@ import "./App.css";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Container from "./layouts/Container";
 import {
+  LIKE_PATH,
   MAIN_PATH,
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
@@ -23,6 +24,7 @@ import { useVideoStore } from "./store/useVideo.store";
 import TestView2 from "./views/TestView2";
 import accessTokenReissueResponseDto from "./apis/response/auth/accessTokenReissue.response.dto";
 import useTokenExpiration from "./hooks/useTokenExpiration";
+import LikeRank from "./views/LikeRank";
 
 function App() {
   //          state: 쿠키 상태        //
@@ -94,6 +96,7 @@ function App() {
           <Route path={SIGN_UP_PATH()} element={<SignUp />} />
           <Route path={PLAY_LIST_PATH(":playlistId")} element={<PlayList />} />
           <Route path={TEST_PATH()} element={<TestView2 />} />
+          <Route path={LIKE_PATH()} element={<LikeRank />} />
         </Route>
       </Routes>
     </Router>
