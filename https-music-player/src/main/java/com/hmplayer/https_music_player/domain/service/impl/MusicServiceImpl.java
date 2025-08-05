@@ -2,6 +2,7 @@ package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.*;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -262,5 +264,21 @@ public class MusicServiceImpl implements MusicService {
         return MusicLikeRemoveResponse.success();
     }
 
+
+    // like rank 데이터 반환
+    @Override
+    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank() {
+
+        List<MusicLikeCountDto> result = musicLikeRepository.findMusicWithLikeCount();
+
+        List<MusicLikeCountDto> likedMusicOnly = result.stream()
+                .filter(dto -> dto.getLikeCount() > 0)
+                .collect(Collectors.toList());
+
+
+        log.info("likedMusicOnly = {}", likedMusicOnly.toString());
+        return MusicLikeRankResponse.success(likedMusicOnly);
+
+    }
 
 }

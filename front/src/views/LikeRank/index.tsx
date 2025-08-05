@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import { musicLikeRankRequest } from "../../apis";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
-  const {
-    nowPlayingPlaylist,
-    setNowPlayingPlaylist,
-    nowPlayingPlaylistID,
-    setNowPlayingPlaylistID,
-    setNowRandomPlaylist,
-    nowRandomPlaylist,
-    setNowRandomPlaylistID,
-    musics,
-    setMusics,
-  } = usePlaylistStore();
+  const { musics } = usePlaylistStore();
+
+  useEffect(() => {
+    // musicLikeRankRequest().then(musicLikeRankResponse);
+    musicLikeRankRequest().then();
+  }, []);
+
+  // const getPlaylistMusicResponse = (
+  //     responseBody: GetMusicResponseDto | ResponseDto | null
+  //   ) => {
+  //     if (!ResponseUtil(responseBody)) {
+  //       return;
+  //     }
+  //     const playListResult = responseBody as GetMusicResponseDto;
+  //     console.log(JSON.stringify(playListResult, null, 2));
+  //     setMusics(playListResult.musicList);
+  //   };
 
   return (
     <>

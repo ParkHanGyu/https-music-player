@@ -20,4 +20,7 @@ public interface MusicService {
 
     ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email);
 
+    ResponseEntity<? super MusicLikeRankResponse> musicLikeRank();
+
+
 }

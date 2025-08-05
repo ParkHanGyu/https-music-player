@@ -399,3 +399,24 @@ export const musicLikeRemoveRequest = async (
     });
   return result;
 };
+
+
+// like rank get
+
+
+// 재생목록 라이브러리 불러오기
+const GET_MUSIC_RANK_URL = () => `${API_DOMAIN}/music/likeRank`;
+export const musicLikeRankRequest = async () => {
+  const result = await axios
+    .get(GET_MUSIC_RANK_URL())
+    .then((response) => {
+      const responseBody = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};

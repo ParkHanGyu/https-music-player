@@ -53,4 +53,10 @@ public class MusicController {
         return musicservice.musicLikeRemove(musicId, email);
     }
 
+    // rank 데이터 요청
+    @GetMapping("/likeRank")
+    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank() {
+        return musicservice.musicLikeRank();
+    }
+
 }
