@@ -5,11 +5,15 @@ import com.hmplayer.https_music_player.domain.common.ResponseMessage;
 import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
 import com.hmplayer.https_music_player.domain.dto.response.ResponseDto;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@ToString
 public class MusicLikeRankResponse extends ResponseDto {
 
     private List<MusicLikeCountDto> musicList = new ArrayList<>();

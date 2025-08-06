@@ -52,6 +52,7 @@
 .music-info-image-title-box {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .music-info-artist,
@@ -100,7 +101,5 @@
   margin-right: 10px;
 }
 
-
 .music-info-rank-move {
-  
 }

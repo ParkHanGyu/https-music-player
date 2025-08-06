@@ -1,27 +1,38 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import { musicLikeRankRequest } from "../../apis";
+import musicLikeRankResponseDto from "../../apis/response/Music/get-music-like-rank.dto";
+import ResponseDto from "../../apis/response/response.dto";
+import { ResponseUtil } from "../../utils";
+import LikeRankMusic from "../../types/interface/like-rank-music.interface";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
   const { musics } = usePlaylistStore();
 
   useEffect(() => {
-    // musicLikeRankRequest().then(musicLikeRankResponse);
-    musicLikeRankRequest().then();
+    musicLikeRankRequest().then(musicLikeRankResponse);
   }, []);
 
-  // const getPlaylistMusicResponse = (
-  //     responseBody: GetMusicResponseDto | ResponseDto | null
-  //   ) => {
-  //     if (!ResponseUtil(responseBody)) {
-  //       return;
-  //     }
-  //     const playListResult = responseBody as GetMusicResponseDto;
-  //     console.log(JSON.stringify(playListResult, null, 2));
-  //     setMusics(playListResult.musicList);
-  //   };
+  const [likeRankMusic, setLikeRankMusic] = useState<LikeRankMusic[]>([]);
+
+  const musicLikeRankResponse = (
+    responseBody: musicLikeRankResponseDto | ResponseDto | null
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+    const musicLikeRankResult = responseBody as musicLikeRankResponseDto;
+    console.log("27줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
+
+    setLikeRankMusic(musicLikeRankResult.musicList);
+  };
+
+  //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
+  const handleMusicInfoClick = (musicUrl: string) => {
+    window.open(musicUrl, "_blank");
+  };
 
   return (
     <>
@@ -37,12 +48,15 @@ const LikeRank = () => {
           </div>
 
           <div className={styles["main-music-container"]}>
-            {musics.map((music, index) => (
+            {likeRankMusic.map((music, index) => (
               <div key={index} className={styles["main-music-data-info-box"]}>
                 <div className={styles["music-info-number"]}>{index + 1}</div>
                 <div className={styles["music-info-rank-move"]}></div>
 
-                <div className={styles["music-info-image-title-box"]}>
+                <div
+                  className={styles["music-info-image-title-box"]}
+                  onClick={() => handleMusicInfoClick(music.url)}
+                >
                   <div
                     className={styles["music-info-image"]}
                     style={{
@@ -68,7 +82,7 @@ const LikeRank = () => {
                 <div className={styles["music-info-like"]}>
                   <div className={styles["music-info-like-imge"]}></div>
 
-                  {music.duration}
+                  {music.likeCount}
                 </div>
 
                 {/* ================= 더보기 btn ================ */}

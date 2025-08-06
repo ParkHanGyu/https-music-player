@@ -14,6 +14,7 @@ import accessTokenReissueResponseDto from "./response/auth/accessTokenReissue.re
 import authNumberCheckRequestDto from "./request/auth/auth-number-check-request.dto";
 import authNumberCheckResponseDto from "./response/auth/auth-number-check-response.dto";
 import musicLikeRequestDto from "./request/music-like-request.dto";
+import musicLikeRankResponseDto from "./response/Music/get-music-like-rank.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -400,17 +401,13 @@ export const musicLikeRemoveRequest = async (
   return result;
 };
 
-
 // like rank get
-
-
-// 재생목록 라이브러리 불러오기
 const GET_MUSIC_RANK_URL = () => `${API_DOMAIN}/music/likeRank`;
 export const musicLikeRankRequest = async () => {
   const result = await axios
     .get(GET_MUSIC_RANK_URL())
     .then((response) => {
-      const responseBody = response.data;
+      const responseBody: musicLikeRankResponseDto = response.data;
       return responseBody;
     })
     .catch((error) => {
