@@ -59,4 +59,10 @@ public class MusicController {
         return musicservice.musicLikeRank();
     }
 
+    // 특정 음악 like 유무 요청
+    @GetMapping("/likeUrl")
+    public ResponseEntity<? super TargetMusicLikeStateResponse> targetMusicLikeState(@RequestParam("targetUrl") String targetUrl, @AuthenticationPrincipal String email) {
+        return musicservice.targetMusicLikeState(targetUrl,email);
+    }
+
 }

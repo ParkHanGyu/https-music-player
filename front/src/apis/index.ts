@@ -417,3 +417,24 @@ export const musicLikeRankRequest = async () => {
     });
   return result;
 };
+
+// 해당 유저가 해당 노래를 like 하는지 유무 확인
+const GET_TARGET_MUSIC_LIKE_STATE_URL = (targetUrl: string) =>
+  `${API_DOMAIN}/music/likeUrl?targetUrl=${encodeURIComponent(targetUrl)}`;
+export const targetMusicLikeStateRequest = async (
+  targetUrl: string,
+  accessToken: string
+) => {
+  const result = await axios
+    .get(GET_TARGET_MUSIC_LIKE_STATE_URL(targetUrl), authorication(accessToken))
+    .then((response) => {
+      const responseBody: musicLikeRankResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};

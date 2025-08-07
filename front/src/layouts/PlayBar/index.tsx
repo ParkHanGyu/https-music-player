@@ -436,6 +436,12 @@ const PlayBar = () => {
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
     console.log(JSON.stringify(playBarInfo, null, 2));
+    console.log("loginUserInfo : ", JSON.stringify(loginUserInfo, null, 2));
+
+    if (!loginUserInfo) {
+      console.log("로그인 해주세요");
+      return;
+    }
 
     if (nowPlayingPlaylist) {
       const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
@@ -533,16 +539,12 @@ const PlayBar = () => {
           {playBarInfo && (
             <>
               {/* 검색한 노래라면 like 버튼 x */}
-              {nowPlayingPlaylist.length > 0 ? (
-                <div
-                  className={`${styles["main-wrap-bottom-like"]} ${
-                    playBarInfo.like ? styles["like-true"] : undefined
-                  }`}
-                  onClick={handleMusicLikeClick}
-                ></div>
-              ) : (
-                ""
-              )}
+              <div
+                className={`${styles["main-wrap-bottom-like"]} ${
+                  playBarInfo.like ? styles["like-true"] : undefined
+                }`}
+                onClick={handleMusicLikeClick}
+              ></div>
 
               <div
                 className={styles["main-wrap-bottom-info"]}

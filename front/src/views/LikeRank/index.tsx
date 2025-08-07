@@ -6,10 +6,14 @@ import musicLikeRankResponseDto from "../../apis/response/Music/get-music-like-r
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import LikeRankMusic from "../../types/interface/like-rank-music.interface";
+import { useVideoStore } from "../../store/useVideo.store";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
   const { musics } = usePlaylistStore();
+
+  //    Zustand state : 메인 화면 검색 url 상태    //
+  const { setSearchUrl } = useVideoStore();
 
   useEffect(() => {
     musicLikeRankRequest().then(musicLikeRankResponse);
@@ -31,7 +35,8 @@ const LikeRank = () => {
 
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = (musicUrl: string) => {
-    window.open(musicUrl, "_blank");
+    // window.open(musicUrl, "_blank");
+    setSearchUrl(musicUrl);
   };
 
   return (

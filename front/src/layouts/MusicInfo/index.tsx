@@ -3,7 +3,10 @@ import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
 import ReactPlayer from "react-player";
 import useFormatTime from "../../hooks/useFormatTime";
-import { getPlayListLibraryReqeust } from "../../apis";
+import {
+  getPlayListLibraryReqeust,
+  targetMusicLikeStateRequest,
+} from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +20,17 @@ import LoadingScreen from "../LoadingScreen";
 import { ResponseUtil } from "../../utils";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
 
 const MusicInfo = () => {
-  const { searchUrl, setSearchUrl, playBarUrl, setPlayBarUrl, setPlayBarInfo } =
-    useVideoStore();
+  const {
+    searchUrl,
+    setSearchUrl,
+    playBarUrl,
+    setPlayBarUrl,
+    playBarInfo,
+    setPlayBarInfo,
+  } = useVideoStore();
 
   //    Zustand state : playBar.tsx 관련 상태    //
   const {
@@ -74,7 +84,7 @@ const MusicInfo = () => {
   };
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
-  const playHandleClick = () => {
+  const playHandleClick = async () => {
     if (isInfoError) {
       alert("error");
       return;
@@ -85,29 +95,58 @@ const MusicInfo = () => {
       return;
     }
 
-    // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
     if (playBarUrl === searchUrl) {
       setPlayBarUrl("");
     }
 
+    let musicWithLike: MusicInfoAndLikeData;
+
+    // ✅ 로그인 상태일 때: like 상태 요청 후 처리
+    if (loginUserInfo) {
+      alert("if 실행");
+
+      const responseBody = await targetMusicLikeStateRequest(
+        searchUrl,
+        cookies.accessToken
+      );
+
+      if (!ResponseUtil(responseBody)) {
+        alert("Like 상태를 불러오는 데 실패했습니다.");
+        return;
+      }
+
+      const playListResult = responseBody as musicLikeStateResponseDto;
+
+      console.log(
+        "playListResult 값 : ",
+        JSON.stringify(playListResult, null, 2)
+      );
+
+      musicWithLike = {
+        ...infoData,
+        like: playListResult.targetLikeState, // ✅ 이 값 제대로 셋팅됨
+      };
+    } else {
+      alert("else 실행");
+      musicWithLike = {
+        ...infoData,
+        like: undefined,
+      };
+    }
+
+    // ✅ 비동기 처리가 끝난 후에만 셋팅
+    setPlayBarInfo(musicWithLike);
+
+    // ✅ 나머지 로직
     setTimeout(() => {
       setPlayBarUrl(searchUrl);
     }, 100);
 
-    const musicWithLike: MusicInfoAndLikeData = {
-      ...infoData,
-      like: undefined,
-    };
-
-    // youtube데이터를 useVideoStore에 셋팅
-    setPlayBarInfo(musicWithLike);
-    // 비회원도 가능한 기능이기 때문에 현재 노래를 제외한 노래재생목록을 비워주기
     setNowRandomPlaylist([]);
     setNowPlayingPlaylist([]);
     setNowPlayingPlaylistID("");
     setNowRandomPlaylistID("");
 
-    // 재생
     if (!isPlaying) {
       setIsPlaying(true);
     }
@@ -175,7 +214,7 @@ const MusicInfo = () => {
   };
 
   const testBtn = () => {
-    console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
+    console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
   };
 
   return (

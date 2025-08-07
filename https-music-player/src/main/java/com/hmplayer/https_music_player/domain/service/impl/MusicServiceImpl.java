@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
@@ -280,5 +281,27 @@ public class MusicServiceImpl implements MusicService {
         return MusicLikeRankResponse.success(likedMusicOnly);
 
     }
+
+    @Override
+    public ResponseEntity<? super TargetMusicLikeStateResponse> targetMusicLikeState(String targetUrl, String email) {
+        log.info("targetUrl = {}, email = {}", targetUrl, email);
+
+
+
+        User dbUser = userRepoService.findByEmail(email);
+        Music dbMusic = musicRepository.findByUrl(targetUrl).orElseThrow(() -> new IllegalArgumentException("해당음악이없습니다"));
+        Optional<Like> likeOptional = musicLikeRepository.findByUserAndMusic(dbUser, dbMusic);
+
+        boolean liked = likeOptional.isPresent();
+
+        System.out.println("liked : " + liked);
+
+        return TargetMusicLikeStateResponse.success(liked);
+
+    }
+
+
+
+
 
 }
