@@ -1,3 +1,4 @@
 export default interface musicLikeRequestDto {
-  musicId: bigint;
+  // musicId: bigint;
+  playBarUrl: string;
 }

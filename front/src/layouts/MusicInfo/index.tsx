@@ -101,7 +101,6 @@ const MusicInfo = () => {
 
     let musicWithLike: MusicInfoAndLikeData;
 
-    // ✅ 로그인 상태일 때: like 상태 요청 후 처리
     if (loginUserInfo) {
       alert("if 실행");
 
@@ -124,7 +123,7 @@ const MusicInfo = () => {
 
       musicWithLike = {
         ...infoData,
-        like: playListResult.targetLikeState, // ✅ 이 값 제대로 셋팅됨
+        like: playListResult.targetLikeState,
       };
     } else {
       alert("else 실행");
@@ -134,10 +133,8 @@ const MusicInfo = () => {
       };
     }
 
-    // ✅ 비동기 처리가 끝난 후에만 셋팅
     setPlayBarInfo(musicWithLike);
 
-    // ✅ 나머지 로직
     setTimeout(() => {
       setPlayBarUrl(searchUrl);
     }, 100);

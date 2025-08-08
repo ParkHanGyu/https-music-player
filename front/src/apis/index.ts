@@ -382,15 +382,17 @@ export const musicLikeAddRequest = async (
   return result;
 };
 
-// 노래 삭제
-const MUSIC_LIKE_REMOVE_URL = (musicId: bigint | string) =>
-  `${API_DOMAIN}/music/like/delete/musicId/${musicId}`;
+// 노래 like 삭제
+const MUSIC_LIKE_REMOVE_URL = (playBarUrl: string) =>
+  `${API_DOMAIN}/music/like/delete/musicUrl?playBarUrl=${encodeURIComponent(
+    playBarUrl
+  )}`;
 export const musicLikeRemoveRequest = async (
-  musicId: bigint | string,
+  playBarUrl: string,
   accessToken: string
 ) => {
   const result = await axios
-    .delete(MUSIC_LIKE_REMOVE_URL(musicId), authorication(accessToken))
+    .delete(MUSIC_LIKE_REMOVE_URL(playBarUrl), authorication(accessToken))
     .then((response) => {
       const responseBody: ResponseDto = response.data;
       return responseBody;

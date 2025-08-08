@@ -6,5 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MusicLikeRequest {
-    private Long musicId;
+//    private Long musicId;
+    private String playBarUrl;
+
 }

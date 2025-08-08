@@ -433,6 +433,48 @@ const PlayBar = () => {
     console.log("playBarInfo : ", JSON.stringify(playBarInfo, null, 2));
   };
 
+  // const handleMusicLikeClick = () => {
+  //   console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
+  //   console.log(JSON.stringify(playBarInfo, null, 2));
+  //   console.log("loginUserInfo : ", JSON.stringify(loginUserInfo, null, 2));
+
+  //   if (!loginUserInfo) {
+  //     console.log("로그인 해주세요");
+  //     return;
+  //   }
+
+  //   if (nowPlayingPlaylist) {
+  //     const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
+  //     const musicId = target ? target.musicId : null;
+
+  //     console.log(musicId);
+
+  //     if (musicId !== null) {
+  //       const requestBody: musicLikeRequestDto = {
+  //         musicId: musicId,
+  //       };
+
+  //       // add
+  //       if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
+  //         console.log("like add 실행");
+  //         musicLikeAddRequest(requestBody, cookies.accessToken).then(
+  //           musicLikeAddResponse
+  //         );
+
+  //         // remove
+  //       } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
+  //         console.log("remove 실행");
+  //         musicLikeRemoveRequest(musicId, cookies.accessToken).then(
+  //           musicLikeRemoveResponse
+  //         );
+  //       }
+  //       if (playBarInfo) {
+  //         playBarInfo.like = !playBarInfo.like;
+  //       }
+  //     }
+  //   }
+  // };
+
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
     console.log(JSON.stringify(playBarInfo, null, 2));
@@ -443,35 +485,25 @@ const PlayBar = () => {
       return;
     }
 
-    if (nowPlayingPlaylist) {
-      const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
-      const musicId = target ? target.musicId : null;
+    const requestBody: musicLikeRequestDto = {
+      playBarUrl: playBarUrl,
+    };
 
-      console.log(musicId);
+    if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
+      console.log("like add 실행");
+      musicLikeAddRequest(requestBody, cookies.accessToken).then(
+        musicLikeAddResponse
+      );
 
-      if (musicId !== null) {
-        const requestBody: musicLikeRequestDto = {
-          musicId: musicId,
-        };
-
-        // add
-        if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
-          console.log("like add 실행");
-          musicLikeAddRequest(requestBody, cookies.accessToken).then(
-            musicLikeAddResponse
-          );
-
-          // remove
-        } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
-          console.log("remove 실행");
-          musicLikeRemoveRequest(musicId, cookies.accessToken).then(
-            musicLikeRemoveResponse
-          );
-        }
-        if (playBarInfo) {
-          playBarInfo.like = !playBarInfo.like;
-        }
-      }
+      // remove
+    } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
+      console.log("remove 실행");
+      musicLikeRemoveRequest(playBarUrl, cookies.accessToken).then(
+        musicLikeRemoveResponse
+      );
+    }
+    if (playBarInfo) {
+      playBarInfo.like = !playBarInfo.like;
     }
   };
 
@@ -482,7 +514,7 @@ const PlayBar = () => {
       return;
     }
     console.log("musicLikeAddResponse 실행");
-    if (nowPlayingPlaylistID === playlistId) {
+    if (nowPlayingPlaylist && nowPlayingPlaylistID === playlistId) {
       const updatedMusics = musics.map((music) =>
         music.url === playBarInfo?.vidUrl ? { ...music, like: true } : music
       );
@@ -504,7 +536,7 @@ const PlayBar = () => {
       return;
     }
 
-    if (nowPlayingPlaylistID === playlistId) {
+    if (nowPlayingPlaylist && nowPlayingPlaylistID === playlistId) {
       const updatedMusics = musics.map((music) =>
         music.url === playBarInfo?.vidUrl ? { ...music, like: false } : music
       );

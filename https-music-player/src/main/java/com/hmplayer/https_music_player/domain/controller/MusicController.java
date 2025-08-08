@@ -48,9 +48,10 @@ public class MusicController {
         return musicservice.musicLike(request, email);
     }
 
-    @DeleteMapping("/like/delete/musicId/{musicId}")
-    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@PathVariable("musicId") Long musicId, @AuthenticationPrincipal String email) {
-        return musicservice.musicLikeRemove(musicId, email);
+    // like remove
+    @DeleteMapping("/like/delete/musicUrl")
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(@RequestParam("playBarUrl") String musicUrl, @AuthenticationPrincipal String email) {
+        return musicservice.musicLikeRemove(musicUrl, email);
     }
 
     // rank 데이터 요청

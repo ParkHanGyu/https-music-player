@@ -18,10 +18,9 @@ public interface MusicService {
 
     ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email);
 
-    ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email);
+    ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(String musicUrl, String email);
 
     ResponseEntity<? super MusicLikeRankResponse> musicLikeRank();
-
 
     ResponseEntity<? super TargetMusicLikeStateResponse> targetMusicLikeState(String targetUrl,String email);
 

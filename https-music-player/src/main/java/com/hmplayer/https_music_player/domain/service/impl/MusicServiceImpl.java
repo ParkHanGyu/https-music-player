@@ -236,7 +236,13 @@ public class MusicServiceImpl implements MusicService {
     public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
         log.info("request = {}, email = {}", request, email);
 
-        Music dbMusic = musicRepository.findById(request.getMusicId()) .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
+//        like 할때 음악이 없을때도 추가해서 작성하기 
+//        ex) 사용자가 like하려는 music이 있는지 db에 확인하고 없으면 music 테이블에 추가 후 like 테이블에 데이터 추가해주기
+//        music이 있다면 기존 로직 수행. 두가지로 나누라는 뜻
+        
+        
+        
+        Music dbMusic = musicRepository.findByUrl(request.getPlayBarUrl()) .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
         User dbUser = userRepoService.findByEmail(email);
 
         Like mewLike = new Like(dbMusic, dbUser);
@@ -246,14 +252,14 @@ public class MusicServiceImpl implements MusicService {
 
     // like 삭제
     @Override
-    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(Long musicId, String email) {
-        log.info("musicId = {}, email = {}", musicId, email);
+    public ResponseEntity<? super MusicLikeRemoveResponse> musicLikeRemove(String musicUrl, String email) {
+        log.info("musicUrl = {}, email = {}", musicUrl, email);
 
         // 1. 유저 조회
         User dbUserData = userRepository.findByEmail(email).orElseThrow(() -> new NonExistUserException(email));
 
         // 2. 음악 조회
-        Music dbMusicData =  musicRepository.findById(musicId).orElseThrow(()-> new MusicIdNotFoundException(musicId));
+        Music dbMusicData =  musicRepository.findByUrl(musicUrl).orElseThrow(()-> new MusicIdNotFoundException(musicUrl));
 
         // 3. Like 조회
         Like dbLikeData = musicLikeRepository.findByUserAndMusic(dbUserData, dbMusicData).orElseThrow(() -> new NonExistLikeException(dbUserData.getId(), dbMusicData.getMusicId()));
