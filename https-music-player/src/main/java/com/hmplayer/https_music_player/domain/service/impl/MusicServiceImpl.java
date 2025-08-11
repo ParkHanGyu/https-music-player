@@ -236,13 +236,26 @@ public class MusicServiceImpl implements MusicService {
     public ResponseEntity<? super MusicLikeResponse> musicLike(MusicLikeRequest request, String email) {
         log.info("request = {}, email = {}", request, email);
 
-//        like 할때 음악이 없을때도 추가해서 작성하기 
+//        like 할때 음악이 없을때도 추가해서 작성하기
 //        ex) 사용자가 like하려는 music이 있는지 db에 확인하고 없으면 music 테이블에 추가 후 like 테이블에 데이터 추가해주기
 //        music이 있다면 기존 로직 수행. 두가지로 나누라는 뜻
         
         
-        
-        Music dbMusic = musicRepository.findByUrl(request.getPlayBarUrl()) .orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
+        // .orElseThrow() 없으면 예외를 던짐
+        // .orElseGet() 없으면 값을 만들어서 사용
+//        Music dbMusic = musicRepository.findByUrl(request.getPlayBarUrl()).orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
+        Music dbMusic = musicRepository.findByUrl(request.getMusicInfoData().getVidUrl())
+                .orElseGet(() -> {
+                    Music newMusic = new Music();
+                    newMusic.setUrl(request.getMusicInfoData().getVidUrl());
+                    newMusic.setAuthor(request.getMusicInfoData().getAuthor());      // 요청에서 받아온 값
+                    newMusic.setTitle(request.getMusicInfoData().getVidTitle());     // 요청에서 받아온 값
+                    newMusic.setImageUrl(request.getMusicInfoData().getThumb());    // 요청에서 받아온 값
+                    newMusic.setDuration(request.getInfoDuration());    // 요청에서 받아온 값
+                    return musicRepository.save(newMusic);
+                });
+
+
         User dbUser = userRepoService.findByEmail(email);
 
         Like mewLike = new Like(dbMusic, dbUser);

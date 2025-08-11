@@ -101,19 +101,49 @@ const MusicInfo = () => {
 
     let musicWithLike: MusicInfoAndLikeData;
 
-    if (loginUserInfo) {
-      alert("if 실행");
+    // if (loginUserInfo) {
+    //   alert("if 실행");
 
-      const responseBody = await targetMusicLikeStateRequest(
-        searchUrl,
-        cookies.accessToken
-      );
+    //   const responseBody = await targetMusicLikeStateRequest(
+    //     searchUrl,
+    //     cookies.accessToken
+    //   );
 
-      if (!ResponseUtil(responseBody)) {
-        alert("Like 상태를 불러오는 데 실패했습니다.");
-        return;
-      }
+    //   JSON.stringify(responseBody, null, 2);
 
+    //   if (!ResponseUtil(responseBody)) {
+    //     alert("Like 상태를 불러오는 데 실패했습니다.");
+    //     console.log("responseBody 값 : ");
+
+    //     return;
+    //   }
+
+    //   const playListResult = responseBody as musicLikeStateResponseDto;
+
+    //   console.log(
+    //     "playListResult 값 : ",
+    //     JSON.stringify(playListResult, null, 2)
+    //   );
+
+    //   musicWithLike = {
+    //     ...infoData,
+    //     like: playListResult.targetLikeState,
+    //   };
+    // } else {
+    //   alert("else 실행");
+    //   musicWithLike = {
+    //     ...infoData,
+    //     like: undefined,
+    //   };
+    // }
+
+    const responseBody = await targetMusicLikeStateRequest(
+      searchUrl,
+      cookies.accessToken
+    );
+
+    // responseBody = true면 like 데이터를 받아옴 => 등록된 노래임
+    if (responseBody) {
       const playListResult = responseBody as musicLikeStateResponseDto;
 
       console.log(
@@ -125,6 +155,7 @@ const MusicInfo = () => {
         ...infoData,
         like: playListResult.targetLikeState,
       };
+      // responseBody = false면 like 데이터를 못받아옴 => 등록된 노래가 아님
     } else {
       alert("else 실행");
       musicWithLike = {
@@ -132,6 +163,11 @@ const MusicInfo = () => {
         like: undefined,
       };
     }
+
+    // if (!ResponseUtil(responseBody)) {
+    //   alert("Like 상태를 불러오는 데 실패했습니다.");
+    //   return;
+    // }
 
     setPlayBarInfo(musicWithLike);
 

@@ -60,4 +60,9 @@ public class Music {
         return musicId;
     }
 
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
 }

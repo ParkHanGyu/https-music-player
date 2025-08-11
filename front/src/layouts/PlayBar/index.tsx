@@ -428,9 +428,13 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log("playBarUrl : ", JSON.stringify(playBarUrl, null, 2));
-    console.log("isPlaying : ", JSON.stringify(isPlaying, null, 2));
-    console.log("playBarInfo : ", JSON.stringify(playBarInfo, null, 2));
+    // console.log("playBarUrl : ", JSON.stringify(playBarUrl, null, 2));
+    // console.log("isPlaying : ", JSON.stringify(isPlaying, null, 2));
+    // console.log("playBarInfo : ", JSON.stringify(playBarInfo, null, 2));
+    console.log(
+      "playBarInfo.kie : ",
+      JSON.stringify(playBarInfo?.like, null, 2)
+    );
   };
 
   // const handleMusicLikeClick = () => {
@@ -485,12 +489,22 @@ const PlayBar = () => {
       return;
     }
 
+    if (!playBarInfo) {
+      return;
+    }
+
     const requestBody: musicLikeRequestDto = {
-      playBarUrl: playBarUrl,
+      musicInfoData: playBarInfo,
+      infoDuration: playBarDuration,
     };
 
-    if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
+    if (!playBarInfo?.like) {
       console.log("like add 실행");
+      console.log(
+        "서버에 보내는 데이터 requestBody : ",
+        JSON.stringify(requestBody, null, 2)
+      );
+
       musicLikeAddRequest(requestBody, cookies.accessToken).then(
         musicLikeAddResponse
       );
@@ -503,6 +517,7 @@ const PlayBar = () => {
       );
     }
     if (playBarInfo) {
+      console.log("-하트 체인지 실행");
       playBarInfo.like = !playBarInfo.like;
     }
   };
