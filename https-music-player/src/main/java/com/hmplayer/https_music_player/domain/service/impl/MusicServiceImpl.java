@@ -58,7 +58,6 @@ public class MusicServiceImpl implements MusicService {
         // 0. 데이터 무결성 확인
         // 0-1. 요청하는 user가 db에 존재하는 user인가
         // 토큰 추출
-        System.out.println("0 데이터 무결성 확인");
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
@@ -81,6 +80,7 @@ public class MusicServiceImpl implements MusicService {
         Optional<Music> optionalMusic = musicRepository.findByUrl(requestMusicUrl);
         Music finalMusicData; // 최종적으로 사용할 Music 객체
         if(optionalMusic.isEmpty()) { // optionalMusic 값이 비어있을때 - Music 테이블 추가
+            System.out.println("music 데이터 없음 - 새로운 music 데이터 추가");
             // 기본 음악 data
             MusicInfoDataDto musicInfoData = request.getMusicInfoData();
             // 음악 time
@@ -89,6 +89,7 @@ public class MusicServiceImpl implements MusicService {
             Music newMusic = new Music(musicInfoData, infoDuration);
             finalMusicData = musicRepository.save(newMusic);
         } else { // optionalMusic 값이 존재할때 - 해당 optionalMusic 데이터 그대로 사용
+            System.out.println("music 데이터가 있음 - 기존 music 데이터 사용");
             finalMusicData = optionalMusic.get(); // 기존 Music 객체 사용
         }
 

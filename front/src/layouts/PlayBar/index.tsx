@@ -428,56 +428,11 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    // console.log("playBarUrl : ", JSON.stringify(playBarUrl, null, 2));
-    // console.log("isPlaying : ", JSON.stringify(isPlaying, null, 2));
-    // console.log("playBarInfo : ", JSON.stringify(playBarInfo, null, 2));
     console.log(
-      "playBarInfo.kie : ",
+      "playBarInfo.like : ",
       JSON.stringify(playBarInfo?.like, null, 2)
     );
   };
-
-  // const handleMusicLikeClick = () => {
-  //   console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
-  //   console.log(JSON.stringify(playBarInfo, null, 2));
-  //   console.log("loginUserInfo : ", JSON.stringify(loginUserInfo, null, 2));
-
-  //   if (!loginUserInfo) {
-  //     console.log("로그인 해주세요");
-  //     return;
-  //   }
-
-  //   if (nowPlayingPlaylist) {
-  //     const target = nowPlayingPlaylist.find((item) => item.url === playBarUrl);
-  //     const musicId = target ? target.musicId : null;
-
-  //     console.log(musicId);
-
-  //     if (musicId !== null) {
-  //       const requestBody: musicLikeRequestDto = {
-  //         musicId: musicId,
-  //       };
-
-  //       // add
-  //       if (playBarInfo?.like !== undefined && !playBarInfo?.like) {
-  //         console.log("like add 실행");
-  //         musicLikeAddRequest(requestBody, cookies.accessToken).then(
-  //           musicLikeAddResponse
-  //         );
-
-  //         // remove
-  //       } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
-  //         console.log("remove 실행");
-  //         musicLikeRemoveRequest(musicId, cookies.accessToken).then(
-  //           musicLikeRemoveResponse
-  //         );
-  //       }
-  //       if (playBarInfo) {
-  //         playBarInfo.like = !playBarInfo.like;
-  //       }
-  //     }
-  //   }
-  // };
 
   const handleMusicLikeClick = () => {
     console.log(JSON.stringify(nowPlayingPlaylist, null, 2));
@@ -517,7 +472,6 @@ const PlayBar = () => {
       );
     }
     if (playBarInfo) {
-      console.log("-하트 체인지 실행");
       playBarInfo.like = !playBarInfo.like;
     }
   };
@@ -565,13 +519,6 @@ const PlayBar = () => {
       setNowRandomPlaylist(updatedNowRandomMusics);
     }
   };
-
-  // 음악 변경시 db에서 가져온 like 데이터 PlayBar 컴포넌트 state에 set
-  // useEffect(() => {
-  //   if (playBarInfo && playBarInfo !== undefined) {
-  //     setLikeState(playBarInfo.like);
-  //   }
-  // }, [playBarInfo]);
 
   return (
     <>

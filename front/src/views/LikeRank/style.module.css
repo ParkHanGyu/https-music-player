@@ -40,7 +40,7 @@
 
 .music-info-number,
 .music-column-number {
-  min-width: 20px;
+  min-width: 31px;
   text-align: center;
 }
 
@@ -57,12 +57,12 @@
 
 .music-info-artist,
 .music-column-artist {
-  width: 300px;
+  width: 250px;
 }
 
 .music-info-createdAt,
 .music-column-createdAt {
-  width: 200px;
+  width: 150px;
 }
 
 .music-info-like,
@@ -72,6 +72,22 @@
 
 .music-info-like {
   display: flex;
+  align-items: center;
+}
+
+.music-info-like-imge {
+  background-image: url("../../assets/heart-icon.png");
+  width: 16px;
+  height: 16px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.music-info-like-count {
+  margin-bottom: 2px;
 }
 
 .music-info-image {
@@ -88,18 +104,46 @@
   display: flex;
   align-items: center;
   font-size: 12px;
-  border: 1px solid rgba(0, 0, 0, 0);
+  border-bottom: 1px solid rgb(33, 33, 33);
 }
 
-.music-info-like-imge {
-  background-image: url("../../assets/heart-icon.png");
-  width: 14px;
-  height: 14px;
+/* play 아이콘 */
+.music-info-play,
+.music-column-play {
+  width: 60px;
+}
+
+.music-info-play {
+  display: flex;
+}
+
+.music-info-play-imge {
+  background-image: url("../../assets/play-btn-icon-hover.png");
+  width: 19px;
+  height: 19px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  margin-right: 10px;
+  margin-left: 5px;
+  cursor: pointer;
 }
 
-.music-info-rank-move {
+/* add 아이콘 */
+.music-info-add,
+.music-column-add {
+  width: 60px;
+}
+
+.music-info-add {
+  display: flex;
+}
+
+.music-info-add-imge {
+  background-image: url("../../assets/add-playlist-icon-hover.png");
+  width: 19px;
+  height: 19px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
