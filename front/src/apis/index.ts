@@ -405,9 +405,11 @@ export const musicLikeRemoveRequest = async (
 
 // like rank get
 const GET_MUSIC_RANK_URL = () => `${API_DOMAIN}/music/likeRank`;
-export const musicLikeRankRequest = async () => {
+export const musicLikeRankRequest = async (accessToken?: string) => {
+  const config = accessToken ? authorication(accessToken) : {};
+
   const result = await axios
-    .get(GET_MUSIC_RANK_URL())
+    .get(GET_MUSIC_RANK_URL(), config)
     .then((response) => {
       const responseBody: musicLikeRankResponseDto = response.data;
       return responseBody;

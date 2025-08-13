@@ -101,42 +101,6 @@ const MusicInfo = () => {
 
     let musicWithLike: MusicInfoAndLikeData;
 
-    // if (loginUserInfo) {
-    //   alert("if 실행");
-
-    //   const responseBody = await targetMusicLikeStateRequest(
-    //     searchUrl,
-    //     cookies.accessToken
-    //   );
-
-    //   JSON.stringify(responseBody, null, 2);
-
-    //   if (!ResponseUtil(responseBody)) {
-    //     alert("Like 상태를 불러오는 데 실패했습니다.");
-    //     console.log("responseBody 값 : ");
-
-    //     return;
-    //   }
-
-    //   const playListResult = responseBody as musicLikeStateResponseDto;
-
-    //   console.log(
-    //     "playListResult 값 : ",
-    //     JSON.stringify(playListResult, null, 2)
-    //   );
-
-    //   musicWithLike = {
-    //     ...infoData,
-    //     like: playListResult.targetLikeState,
-    //   };
-    // } else {
-    //   alert("else 실행");
-    //   musicWithLike = {
-    //     ...infoData,
-    //     like: undefined,
-    //   };
-    // }
-
     const responseBody = await targetMusicLikeStateRequest(
       searchUrl,
       cookies.accessToken
@@ -305,6 +269,7 @@ const MusicInfo = () => {
             onClick={playHandleClick}
           ></div>
 
+          {/* playlist에 추가 */}
           <div
             className={styles["controller-add-playlist"]}
             onClick={togglePlaylistPopup}

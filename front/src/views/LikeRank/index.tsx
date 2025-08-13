@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import { musicLikeRankRequest } from "../../apis";
+import { musicLikeRankRequest, targetMusicLikeStateRequest } from "../../apis";
 import musicLikeRankResponseDto from "../../apis/response/Music/get-music-like-rank.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import LikeRankMusic from "../../types/interface/like-rank-music.interface";
 import { useVideoStore } from "../../store/useVideo.store";
+import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import { useCookies } from "react-cookie";
+import useLoginUserStore from "../../store/login-user.store";
+import { MusicInfoData } from "../../types/interface/music-info-data.interface";
+import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import { useNavigate } from "react-router-dom";
+import { SIGN_IN_PATH } from "../../constant";
+import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -15,8 +24,27 @@ const LikeRank = () => {
   //    Zustand state : 메인 화면 검색 url 상태    //
   const { setSearchUrl } = useVideoStore();
 
+  //      Zustand state : 로그인 유저 정보 상태      //
+  const { loginUserInfo } = useLoginUserStore();
+
+  //    Zustand state : playBar.tsx 관련 상태    //
+  const {
+    setPlaylistLibrary,
+    setNowRandomPlaylist,
+    setNowPlayingPlaylist,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
+  //    Zustand state : playBar.tsx 재생 상태    //
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  const navigator = useNavigate();
+  const [cookies] = useCookies();
+
+  const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
+    useVideoStore();
+
   useEffect(() => {
-    musicLikeRankRequest().then(musicLikeRankResponse);
+    musicLikeRankRequest(cookies.accessToken).then(musicLikeRankResponse);
   }, []);
 
   const [likeRankMusic, setLikeRankMusic] = useState<LikeRankMusic[]>([]);
@@ -39,6 +67,88 @@ const LikeRank = () => {
     setSearchUrl(musicUrl);
   };
 
+  //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
+  const playHandleClick = async (targetLikeMusic: LikeRankMusic) => {
+    if (playBarUrl === targetLikeMusic.url) {
+      setPlayBarUrl("");
+    }
+
+    let musicWithLike: MusicInfoAndLikeData;
+    const musicInfoData: MusicInfoData = {
+      vidUrl: targetLikeMusic.url,
+      author: targetLikeMusic.author,
+      thumb: targetLikeMusic.imageUrl,
+      vidTitle: targetLikeMusic.title,
+    };
+
+    // 로그인 상태라면
+    if (loginUserInfo) {
+      const responseBody = await targetMusicLikeStateRequest(
+        targetLikeMusic.url,
+        cookies.accessToken
+      );
+
+      const playListResult = responseBody as musicLikeStateResponseDto;
+      musicWithLike = {
+        ...musicInfoData,
+        like: playListResult.targetLikeState,
+      };
+
+      // 로그인 상태가 아니라면
+    } else {
+      musicWithLike = {
+        ...musicInfoData,
+        like: false,
+      };
+    }
+
+    setPlayBarInfo(musicWithLike);
+
+    setTimeout(() => {
+      setPlayBarUrl(targetLikeMusic.url);
+    }, 100);
+
+    setNowRandomPlaylist([]);
+    setNowPlayingPlaylist([]);
+    setNowPlayingPlaylistID("");
+    setNowRandomPlaylistID("");
+
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
+  //      state:  url 시간 상태        //
+  const [infoDuration, setInfoDuration] = useState<number>(0);
+
+  //      state:  재생목록 팝업 상태 상태        //
+  const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
+
+  const [targetInfoData, setTargetInfoData] = useState<MusicInfoData>({
+    vidUrl: "",
+    author: "",
+    thumb: "",
+    vidTitle: "",
+  });
+
+  //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
+  const togglePlaylistPopup = (music: LikeRankMusic) => {
+    if (!loginUserInfo) {
+      alert("로그인 이후 추가해주세요.");
+      navigator(SIGN_IN_PATH());
+      return;
+    }
+    const targetMusicInfo: MusicInfoData = {
+      vidUrl: music.url,
+      author: music.author,
+      thumb: music.imageUrl,
+      vidTitle: music.title,
+    };
+
+    setTargetInfoData(targetMusicInfo);
+    setInfoDuration(music.duration);
+    setPlaylistPopupOpen(!playlistPopupOpen);
+  };
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -95,12 +205,18 @@ const LikeRank = () => {
 
                 {/* play */}
                 <div className={styles["music-info-play"]}>
-                  <div className={styles["music-info-play-imge"]}></div>
+                  <div
+                    className={styles["music-info-play-imge"]}
+                    onClick={() => playHandleClick(music)}
+                  ></div>
                 </div>
 
                 {/* 재생목록 추가 */}
                 <div className={styles["music-info-add"]}>
-                  <div className={styles["music-info-add-imge"]}></div>
+                  <div
+                    className={styles["music-info-add-imge"]}
+                    onClick={() => togglePlaylistPopup(music)}
+                  ></div>
                 </div>
 
                 {/* ================= 더보기 btn ================ */}
@@ -110,6 +226,15 @@ const LikeRank = () => {
           </div>
         </div>
       </div>
+      {/* =======================================재생목록 팝업 */}
+      {playlistPopupOpen && (
+        <PlaylistLibrary
+          infoData={targetInfoData}
+          infoDuration={infoDuration}
+          playlistPopupOpen={playlistPopupOpen}
+          setPlaylistPopupOpen={setPlaylistPopupOpen}
+        />
+      )}
     </>
   );
 };

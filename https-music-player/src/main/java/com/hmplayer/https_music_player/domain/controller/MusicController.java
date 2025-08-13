@@ -56,8 +56,8 @@ public class MusicController {
 
     // rank 데이터 요청
     @GetMapping("/likeRank")
-    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank() {
-        return musicservice.musicLikeRank();
+    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank(@AuthenticationPrincipal String email) {
+        return musicservice.musicLikeRank(email);
     }
 
     // 특정 음악 like 유무 요청

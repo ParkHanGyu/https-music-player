@@ -21,8 +21,9 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
             "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt, COUNT(l)) " +
             "FROM Music m LEFT JOIN Like l ON l.music = m " +
             "GROUP BY m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt " +
-            "ORDER BY COUNT(l) DESC")
+            "ORDER BY COUNT(l) DESC, MIN(l.id) ASC")
     List<MusicLikeCountDto> findMusicWithLikeCount();
+
 
 
 }

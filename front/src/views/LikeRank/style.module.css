@@ -104,7 +104,10 @@
   display: flex;
   align-items: center;
   font-size: 12px;
-  border-bottom: 1px solid rgb(33, 33, 33);
+}
+
+.main-music-data-info-box:hover {
+  background-color: rgb(44, 44, 44);
 }
 
 /* play 아이콘 */

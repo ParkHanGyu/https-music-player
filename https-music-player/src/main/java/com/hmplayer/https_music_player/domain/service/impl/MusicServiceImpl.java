@@ -288,8 +288,13 @@ public class MusicServiceImpl implements MusicService {
 
     // like rank 데이터 반환
     @Override
-    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank() {
+    public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank(String email) {
 
+        if(email=="anonymousUser") {
+            System.out.println("비어있음");
+        }else {
+            System.out.println("로그인 유저 email : "+email);
+        }
         List<MusicLikeCountDto> result = musicLikeRepository.findMusicWithLikeCount();
 
         List<MusicLikeCountDto> likedMusicOnly = result.stream()
@@ -302,12 +307,10 @@ public class MusicServiceImpl implements MusicService {
 
     }
 
+    // 특정 음악 like 상태
     @Override
     public ResponseEntity<? super TargetMusicLikeStateResponse> targetMusicLikeState(String targetUrl, String email) {
         log.info("targetUrl = {}, email = {}", targetUrl, email);
-
-
-
         User dbUser = userRepoService.findByEmail(email);
         Music dbMusic = musicRepository.findByUrl(targetUrl).orElseThrow(() -> new IllegalArgumentException("해당음악이없습니다"));
         Optional<Like> likeOptional = musicLikeRepository.findByUserAndMusic(dbUser, dbMusic);
