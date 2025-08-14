@@ -7,4 +7,5 @@ export default interface LikeRankMusic {
   imageUrl: string;
   createdAt: string;
   likeCount: number;
+  liked: boolean;
 }

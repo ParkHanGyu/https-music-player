@@ -289,22 +289,28 @@ public class MusicServiceImpl implements MusicService {
     // like rank 데이터 반환
     @Override
     public ResponseEntity<? super MusicLikeRankResponse> musicLikeRank(String email) {
-
-        if(email=="anonymousUser") {
-            System.out.println("비어있음");
-        }else {
-            System.out.println("로그인 유저 email : "+email);
-        }
         List<MusicLikeCountDto> result = musicLikeRepository.findMusicWithLikeCount();
-
+        // count가 0인 데이터는 제거
         List<MusicLikeCountDto> likedMusicOnly = result.stream()
                 .filter(dto -> dto.getLikeCount() > 0)
                 .collect(Collectors.toList());
 
+        // 로그인 하지 않았을때
+        if(email.equals("anonymousUser")) {
+            log.info("likedMusicOnly = {}", likedMusicOnly.toString());
+            return MusicLikeRankResponse.success(likedMusicOnly);
+        }else { // 로그인 했을때
+            System.out.println("로그인 유저 email : "+email);
 
-        log.info("likedMusicOnly = {}", likedMusicOnly.toString());
+            List<Long> likedMusicIds = musicLikeRepository.findMusicIdsByUserEmail(email);
+
+            likedMusicOnly.forEach(dto -> {
+                if (likedMusicIds.contains(dto.getMusicId())) {
+                    dto.setLiked(true);
+                }
+            });
+        }
         return MusicLikeRankResponse.success(likedMusicOnly);
-
     }
 
     // 특정 음악 like 상태

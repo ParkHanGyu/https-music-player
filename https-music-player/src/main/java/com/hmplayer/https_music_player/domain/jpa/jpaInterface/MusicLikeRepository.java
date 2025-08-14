@@ -6,6 +6,7 @@ import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,10 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
             "GROUP BY m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt " +
             "ORDER BY COUNT(l) DESC, MIN(l.id) ASC")
     List<MusicLikeCountDto> findMusicWithLikeCount();
+
+    @Query("SELECT l.music.musicId FROM Like l WHERE l.user.email = :email")
+    List<Long> findMusicIdsByUserEmail(@Param("email") String email);
+
 
 
 

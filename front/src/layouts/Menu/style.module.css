@@ -51,7 +51,8 @@
 .main-menu-item3,
 .main-menu-item4,
 .main-menu-item5,
-.main-menu-item6 {
+.main-menu-item6,
+.main-menu-item7 {
   cursor: pointer;
   padding: 10px 20px 10px 20px;
 }

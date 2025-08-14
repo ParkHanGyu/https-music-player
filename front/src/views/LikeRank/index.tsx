@@ -16,6 +16,7 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN_PATH } from "../../constant";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
+import Music from "../../types/interface/music.interface";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -56,7 +57,7 @@ const LikeRank = () => {
       return;
     }
     const musicLikeRankResult = responseBody as musicLikeRankResponseDto;
-    console.log("27줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
+    console.log("59줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
 
     setLikeRankMusic(musicLikeRankResult.musicList);
   };
@@ -149,11 +150,79 @@ const LikeRank = () => {
     setInfoDuration(music.duration);
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
+
+  //      state:  체크 상태 관리 상태        //
+  const [checkedMusicIds, setCheckedMusicIds] = useState<number[]>([]);
+
+  //      event handler:  체크박스 클릭 함수       //
+  const handleCheck = (musicId: number) => {
+    setCheckedMusicIds(
+      (prev) =>
+        prev.includes(musicId)
+          ? prev.filter((id) => id !== musicId) // 이미 있으면 제거
+          : [...prev, musicId] // 없으면 추가
+    );
+  };
+
+  //      event handler:  전체 재생 버튼 클릭 함수       //
+  const handlePlaySelected = () => {
+    let targetMusic = likeRankMusic;
+
+    // 체크한게 있다면
+    if (checkedMusicIds.length > 0) {
+      targetMusic = likeRankMusic.filter((music) =>
+        checkedMusicIds.includes(Number(music.musicId))
+      );
+    }
+
+    // Music[]타입에 맞게 set
+    const selectedMusic: Music[] = targetMusic.map((music) => ({
+      musicId: music.musicId,
+      title: music.title,
+      author: music.author,
+      duration: music.duration,
+      url: music.url,
+      imageUrl: music.imageUrl,
+      createdAt: music.createdAt,
+      like: music.liked,
+    }));
+
+    if (playBarUrl === selectedMusic[0].url) {
+      setPlayBarUrl("");
+    }
+
+    // 첫번째 재생할 노래 info 데이터 준비
+    const item1info: MusicInfoAndLikeData = {
+      vidUrl: selectedMusic[0].url,
+      author: selectedMusic[0].author,
+      thumb: selectedMusic[0].imageUrl,
+      vidTitle: selectedMusic[0].title,
+      like: selectedMusic[0].like,
+    };
+
+    setPlayBarInfo(item1info);
+    setNowPlayingPlaylist(selectedMusic);
+    setNowRandomPlaylist(selectedMusic);
+    setNowRandomPlaylistID("");
+    setNowPlayingPlaylistID("");
+    setTimeout(() => {
+      setPlayBarUrl(selectedMusic[0].url);
+    }, 100);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
         <div className={styles["main-container"]}>
           <div className={styles["main-music-data-column-box"]}>
+            <div
+              className={styles["music-column-all-play"]}
+              onClick={handlePlaySelected}
+            ></div>
+
             <div className={styles["music-column-number"]}>Rank</div>
             <div className={styles["music-column-title"]}>Title</div>
             <div className={styles["music-column-artist"]}>Artist</div>
@@ -167,8 +236,18 @@ const LikeRank = () => {
           <div className={styles["main-music-container"]}>
             {likeRankMusic.map((music, index) => (
               <div key={index} className={styles["main-music-data-info-box"]}>
+                <div className={styles["music-info-play-check"]}>
+                  <input
+                    type="checkbox"
+                    checked={checkedMusicIds.includes(Number(music.musicId))}
+                    onChange={() => handleCheck(Number(music.musicId))}
+                  />
+                </div>
+
+                {/* rank */}
                 <div className={styles["music-info-number"]}>{index + 1}</div>
                 {/* <div className={styles["music-info-rank-move"]}></div> */}
+                {/* image + title */}
                 <div
                   className={styles["music-info-image-title-box"]}
                   onClick={() => handleMusicInfoClick(music.url)}
@@ -179,8 +258,6 @@ const LikeRank = () => {
                       backgroundImage: `url(${music.imageUrl})`,
                     }}
                   ></div>
-
-                  {/* 수정을 위해 title div를 input으로 바꿔주기 */}
                   <div
                     className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                   >
@@ -188,16 +265,21 @@ const LikeRank = () => {
                   </div>
                 </div>
 
-                {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
+                {/* author */}
                 <div className={styles["music-info-artist"]}>
                   {music.author}
                 </div>
+                {/* At */}
                 <div className={styles["music-info-createdAt"]}>
                   {music.createdAt.split("T")[0]}
                 </div>
                 {/* like */}
                 <div className={styles["music-info-like"]}>
-                  <div className={styles["music-info-like-imge"]}></div>
+                  <div
+                    className={`${styles["music-info-like-imge"]} ${
+                      music.liked ? styles["like-true"] : undefined
+                    }`}
+                  ></div>
                   <div className={styles["music-info-like-count"]}>
                     {music.likeCount}
                   </div>

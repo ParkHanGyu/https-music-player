@@ -62,7 +62,7 @@
 
 .music-info-createdAt,
 .music-column-createdAt {
-  width: 150px;
+  width: 120px;
 }
 
 .music-info-like,
@@ -84,6 +84,10 @@
   background-repeat: no-repeat;
   margin-right: 5px;
   cursor: pointer;
+}
+
+.like-true {
+  background-image: url("../../assets/heart-icon-hover.png");
 }
 
 .music-info-like-count {
@@ -143,6 +147,16 @@
 
 .music-info-add-imge {
   background-image: url("../../assets/add-playlist-icon-hover.png");
+  width: 19px;
+  height: 19px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.music-column-all-play {
+  background-image: url("../../assets/play-button-arrowhead.png");
   width: 19px;
   height: 19px;
   background-size: cover;

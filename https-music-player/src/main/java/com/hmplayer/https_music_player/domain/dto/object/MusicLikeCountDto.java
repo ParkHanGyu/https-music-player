@@ -10,7 +10,6 @@ import java.util.Date;
 @Setter
 @ToString
 public class MusicLikeCountDto {
-
     private Long musicId;
     private String title;
     private String author;
@@ -19,9 +18,9 @@ public class MusicLikeCountDto {
     private String imageUrl;
     private Date createdAt;
     private long likeCount;
+    private boolean liked;
 
-
-    public MusicLikeCountDto(Long musicId, String title, String author, int duration, String url, String imageUrl, Date createdAt, long likeCount ){
+    public MusicLikeCountDto(Long musicId, String title, String author, int duration, String url, String imageUrl, Date createdAt, long likeCount) {
         this.musicId = musicId;
         this.title = title;
         this.author = author;
@@ -30,5 +29,10 @@ public class MusicLikeCountDto {
         this.imageUrl = imageUrl;
         this.createdAt = createdAt;
         this.likeCount = likeCount;
+        this.liked = false;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 }

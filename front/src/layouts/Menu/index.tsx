@@ -453,23 +453,27 @@ const Menu = () => {
         </div>
 
         <div className={styles["main-menu-item3"]} onClick={onLikeClickHandler}>
-          Like Rank
+          TOP
+        </div>
+
+        <div className={styles["main-menu-item4"]} onClick={onLikeClickHandler}>
+          LIKE
         </div>
 
         <div
-          className={styles["main-menu-item4"]}
+          className={styles["main-menu-item5"]}
           onClick={() => openPlatformPage("youtube")}
         >
           Youtube
         </div>
         <div
-          className={styles["main-menu-item5"]}
+          className={styles["main-menu-item6"]}
           onClick={() => openPlatformPage("soundcloud")}
         >
           SoundCloud
         </div>
 
-        <div className={styles["main-menu-item6"]} onClick={testValue}>
+        <div className={styles["main-menu-item7"]} onClick={testValue}>
           TEST
         </div>
 
