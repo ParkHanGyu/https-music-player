@@ -15,6 +15,7 @@ import authNumberCheckRequestDto from "./request/auth/auth-number-check-request.
 import authNumberCheckResponseDto from "./response/auth/auth-number-check-response.dto";
 import musicLikeRequestDto from "./request/music-like-request.dto";
 import musicLikeRankResponseDto from "./response/Music/get-music-like-rank.dto";
+import myMusicLikeResponseDto from "./response/Music/get-my-music-like.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -433,6 +434,23 @@ export const targetMusicLikeStateRequest = async (
     .get(GET_TARGET_MUSIC_LIKE_STATE_URL(targetUrl), authorication(accessToken))
     .then((response) => {
       const responseBody: musicLikeRankResponseDto = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
+// my like get
+const GET_MY_MUSIC_LIKE_URL = () => `${API_DOMAIN}/music/myMusic/like`;
+export const myMusicLikeRequest = async (accessToken: string) => {
+  const result = await axios
+    .get(GET_MY_MUSIC_LIKE_URL(), authorication(accessToken))
+    .then((response) => {
+      const responseBody: myMusicLikeResponseDto = response.data;
       return responseBody;
     })
     .catch((error) => {

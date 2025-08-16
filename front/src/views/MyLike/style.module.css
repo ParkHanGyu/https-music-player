@@ -1,0 +1,166 @@
+.main-wrap {
+  width: 100%;
+  font-size: 14px;
+  color: #fff;
+}
+
+/*  */
+
+.main-container {
+  width: 100%;
+  height: 89vh;
+  /* overflow-y: auto;
+  overflow-x: hidden; */
+}
+
+/*  */
+
+/* 음악 데이터 부분 */
+.main-music-data-column-box,
+.main-music-data-info-box {
+  display: flex;
+  padding: 2px 0px;
+}
+
+.main-music-data-column-box > div,
+.main-music-data-info-box > div:not(:last-child) {
+  margin: 0px 20px;
+}
+
+.main-music-data-column-box {
+  color: #dedede;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(39, 39, 39);
+  padding: 10px 0px;
+}
+
+/*  */
+
+.music-info-number,
+.music-column-number {
+  min-width: 31px;
+  text-align: center;
+}
+
+.music-info-image-title-box,
+.music-column-title {
+  width: 500px;
+}
+
+.music-info-image-title-box {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.music-info-artist,
+.music-column-artist {
+  width: 250px;
+}
+
+.music-info-createdAt,
+.music-column-createdAt {
+  width: 120px;
+}
+
+.music-info-like,
+.music-column-like {
+  width: 60px;
+}
+
+.music-info-like {
+  display: flex;
+  align-items: center;
+}
+
+.music-info-like-imge {
+  background-image: url("../../assets/heart-icon.png");
+  width: 16px;
+  height: 16px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.like-true {
+  background-image: url("../../assets/heart-icon-hover.png");
+}
+
+.music-info-like-count {
+  margin-bottom: 2px;
+}
+
+.music-info-image {
+  background-image: url("../../assets/music-info-image.PNG");
+  width: 45px;
+  height: 45px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+}
+
+.main-music-data-info-box {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.main-music-data-info-box:hover {
+  background-color: rgb(44, 44, 44);
+}
+
+/* play 아이콘 */
+.music-info-play,
+.music-column-play {
+  width: 60px;
+}
+
+.music-info-play {
+  display: flex;
+}
+
+.music-info-play-imge {
+  background-image: url("../../assets/play-btn-icon-hover.png");
+  width: 19px;
+  height: 19px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* add 아이콘 */
+.music-info-add,
+.music-column-add {
+  width: 60px;
+}
+
+.music-info-add {
+  display: flex;
+}
+
+.music-info-add-imge {
+  background-image: url("../../assets/add-playlist-icon-hover.png");
+  width: 19px;
+  height: 19px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.music-column-all-play {
+  background-image: url("../../assets/play-button-arrowhead.png");
+  width: 19px;
+  height: 19px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

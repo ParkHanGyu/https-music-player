@@ -66,4 +66,10 @@ public class MusicController {
         return musicservice.targetMusicLikeState(targetUrl,email);
     }
 
+    // rank 데이터 요청
+    @GetMapping("/myMusic/like")
+    public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(@AuthenticationPrincipal String email) {
+        return musicservice.myLikeMusic(email);
+    }
+
 }

@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   LIKE_PATH,
   MAIN_PATH,
+  MY_LIKE_PATH,
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
@@ -116,9 +117,18 @@ const Menu = () => {
     }
   };
 
+  //      event handler: Top 클릭 이벤트 처리 함수       //
+  const onTopClickHandler = () => {
+    navigator(LIKE_PATH());
+  };
+
   //      event handler: Like 클릭 이벤트 처리 함수       //
   const onLikeClickHandler = () => {
-    navigator(LIKE_PATH());
+    if (!loginUserInfo) {
+      alert("로그인을 해주세요!");
+      return;
+    }
+    navigator(MY_LIKE_PATH());
   };
 
   //      event handler: 로그인 클릭 이벤트 처리 함수       //
@@ -452,7 +462,7 @@ const Menu = () => {
           )}
         </div>
 
-        <div className={styles["main-menu-item3"]} onClick={onLikeClickHandler}>
+        <div className={styles["main-menu-item3"]} onClick={onTopClickHandler}>
           TOP
         </div>
 

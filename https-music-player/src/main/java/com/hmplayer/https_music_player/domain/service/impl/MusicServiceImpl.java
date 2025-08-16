@@ -330,6 +330,19 @@ public class MusicServiceImpl implements MusicService {
     }
 
 
+    // like rank 데이터 반환
+    @Override
+    public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(String email) {
+        // findLikedMusicDtoByUserEmail 쿼리 수정하기
+//        List<MusicLikeCountDto> result = musicLikeRepository.findLikedMusicDtoByUserEmail(email);
+
+//        log.info("result = {}", result.toString());
+//        return MyMusicLikeResponse.success(likedMusicOnly);
+        return null;
+    }
+
+
+
 
 
 

@@ -24,4 +24,7 @@ public interface MusicService {
 
     ResponseEntity<? super TargetMusicLikeStateResponse> targetMusicLikeState(String targetUrl,String email);
 
+    public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(String email);
+
+
 }

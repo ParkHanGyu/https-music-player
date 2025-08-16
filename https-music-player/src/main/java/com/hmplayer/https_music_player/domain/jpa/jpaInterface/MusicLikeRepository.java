@@ -28,6 +28,14 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
     @Query("SELECT l.music.musicId FROM Like l WHERE l.user.email = :email")
     List<Long> findMusicIdsByUserEmail(@Param("email") String email);
 
+    
+    
+    // 수정하기
+//    @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicDto(" +
+//            "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt) " +
+//            "FROM Like l JOIN l.music m " +
+//            "WHERE l.user.email = :email")
+//    List<MusicLikeCountDto> findLikedMusicDtoByUserEmail(@Param("email") String email);
 
 
 

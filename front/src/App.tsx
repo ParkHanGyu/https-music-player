@@ -4,6 +4,7 @@ import Container from "./layouts/Container";
 import {
   LIKE_PATH,
   MAIN_PATH,
+  MY_LIKE_PATH,
   PLAY_LIST_PATH,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
@@ -25,6 +26,7 @@ import TestView2 from "./views/TestView2";
 import accessTokenReissueResponseDto from "./apis/response/auth/accessTokenReissue.response.dto";
 import useTokenExpiration from "./hooks/useTokenExpiration";
 import LikeRank from "./views/LikeRank";
+import MyLike from "./views/MyLike";
 
 function App() {
   //          state: 쿠키 상태        //
@@ -97,6 +99,7 @@ function App() {
           <Route path={PLAY_LIST_PATH(":playlistId")} element={<PlayList />} />
           <Route path={TEST_PATH()} element={<TestView2 />} />
           <Route path={LIKE_PATH()} element={<LikeRank />} />
+          <Route path={MY_LIKE_PATH()} element={<MyLike />} />
         </Route>
       </Routes>
     </Router>
