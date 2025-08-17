@@ -1,53 +1,54 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
-import LikeRankMusic from "../../types/interface/like-rank-music.interface";
 import { useCookies } from "react-cookie";
-import { myMusicLikeRequest } from "../../apis";
+import { musicLikeRemoveRequest, myMusicLikeRequest } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import myMusicLikeResponseDto from "../../apis/response/Music/get-my-music-like.dto";
 import { ResponseUtil } from "../../utils";
+import MyLikeMusic from "../../types/interface/my-like-music.interface";
+import useLoginUserStore from "../../store/login-user.store";
+import { MusicInfoData } from "../../types/interface/music-info-data.interface";
+import { SIGN_IN_PATH } from "../../constant";
+import { useNavigate } from "react-router-dom";
 
 const MyLike = () => {
+  //      Zustand state : 로그인 유저 정보 상태      //
+  const { loginUserInfo } = useLoginUserStore();
   const [cookies] = useCookies();
+  const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
-  const dummyLikeRankMusic: LikeRankMusic[] = [
-    {
-      musicId: BigInt(1),
-      title: "Shape of You",
-      author: "Ed Sheeran",
-      duration: 233,
-      url: "https://example.com/music/shape-of-you.mp3",
-      imageUrl: "https://example.com/images/shape-of-you.jpg",
-      createdAt: "2025-08-16T12:00:00",
-      likeCount: 152,
-      liked: true,
-    },
-    {
-      musicId: BigInt(2),
-      title: "Blinding Lights",
-      author: "The Weeknd",
-      duration: 201,
-      url: "https://example.com/music/blinding-lights.mp3",
-      imageUrl: "https://example.com/images/blinding-lights.jpg",
-      createdAt: "2025-08-15T15:30:00",
-      likeCount: 98,
-      liked: false,
-    },
-    {
-      musicId: BigInt(3),
-      title: "Levitating",
-      author: "Dua Lipa",
-      duration: 203,
-      url: "https://example.com/music/levitating.mp3",
-      imageUrl: "https://example.com/images/levitating.jpg",
-      createdAt: "2025-08-14T10:20:00",
-      likeCount: 120,
-      liked: true,
-    },
-  ];
-  const [myLikeMusic, setMyLikeMusic] =
-    useState<LikeRankMusic[]>(dummyLikeRankMusic);
+  const [myLikeMusic, setMyLikeMusic] = useState<MyLikeMusic[]>([]);
+  const navigator = useNavigate();
+
+  const [targetInfoData, setTargetInfoData] = useState<MusicInfoData>({
+    vidUrl: "",
+    author: "",
+    thumb: "",
+    vidTitle: "",
+  });
+
+  //      state:  url 시간 상태        //
+  const [infoDuration, setInfoDuration] = useState<number>(0);
+
+  //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
+  const togglePlaylistPopup = (music: MyLikeMusic) => {
+    if (!loginUserInfo) {
+      alert("로그인 이후 추가해주세요.");
+      navigator(SIGN_IN_PATH());
+      return;
+    }
+    const targetMusicInfo: MusicInfoData = {
+      vidUrl: music.url,
+      author: music.author,
+      thumb: music.imageUrl,
+      vidTitle: music.title,
+    };
+
+    setTargetInfoData(targetMusicInfo);
+    setInfoDuration(music.duration);
+    setPlaylistPopupOpen(!playlistPopupOpen);
+  };
 
   // useEffect
   useEffect(() => {
@@ -65,6 +66,31 @@ const MyLike = () => {
 
     setMyLikeMusic(musicLikeRankResult.musicList);
   };
+
+  const handleMusicLikeClick = (musicUrl: string) => {
+    if (!loginUserInfo) {
+      console.log("로그인 해주세요");
+      return;
+    }
+
+    musicLikeRemoveRequest(musicUrl, cookies.accessToken).then((responseBody) =>
+      musicLikeRemoveResponse(responseBody, musicUrl)
+    );
+  };
+
+  const musicLikeRemoveResponse = (
+    responseBody: ResponseDto | null,
+    musicUrl: string
+  ) => {
+    if (!ResponseUtil(responseBody)) {
+      return;
+    }
+
+    const newMyLikeMusic = myLikeMusic.filter((item) => item.url !== musicUrl);
+
+    setMyLikeMusic(newMyLikeMusic);
+  };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -75,7 +101,7 @@ const MyLike = () => {
               // onClick={handlePlaySelected}
             ></div>
 
-            <div className={styles["music-column-number"]}>Rank</div>
+            <div className={styles["music-column-number"]}>#</div>
             <div className={styles["music-column-title"]}>Title</div>
             <div className={styles["music-column-artist"]}>Artist</div>
             <div className={styles["music-column-createdAt"]}>CreatedAt</div>
@@ -96,7 +122,7 @@ const MyLike = () => {
                   />
                 </div>
 
-                {/* rank */}
+                {/* 순서 */}
                 <div className={styles["music-info-number"]}>{index + 1}</div>
                 {/* <div className={styles["music-info-rank-move"]}></div> */}
                 {/* image + title */}
@@ -131,10 +157,9 @@ const MyLike = () => {
                     className={`${styles["music-info-like-imge"]} ${
                       music.liked ? styles["like-true"] : undefined
                     }`}
+                    onClick={() => handleMusicLikeClick(music.url)}
                   ></div>
-                  <div className={styles["music-info-like-count"]}>
-                    {music.likeCount}
-                  </div>
+                  <div className={styles["music-info-like-count"]}></div>
                 </div>
 
                 {/* play */}
@@ -149,7 +174,7 @@ const MyLike = () => {
                 <div className={styles["music-info-add"]}>
                   <div
                     className={styles["music-info-add-imge"]}
-                    // onClick={() => togglePlaylistPopup(music)}
+                    onClick={() => togglePlaylistPopup(music)}
                   ></div>
                 </div>
 
@@ -160,15 +185,15 @@ const MyLike = () => {
           </div>
         </div>
       </div>
-      {/* =======================================재생목록 팝업 */}
-      {/* {playlistPopupOpen && (
+      {/* =======================================재생목록 add 팝업 */}
+      {playlistPopupOpen && (
         <PlaylistLibrary
           infoData={targetInfoData}
           infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )} */}
+      )}
     </>
   );
 };

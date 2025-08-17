@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.jpa.jpaInterface;
 
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto;
 import com.hmplayer.https_music_player.domain.jpa.entity.Like;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
@@ -30,13 +31,13 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
 
     
     
-    // 수정하기
-//    @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicDto(" +
-//            "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt) " +
-//            "FROM Like l JOIN l.music m " +
-//            "WHERE l.user.email = :email")
-//    List<MusicLikeCountDto> findLikedMusicDtoByUserEmail(@Param("email") String email);
-
+    // db에 있는 모든 music중 특정 user가 like 하고 있는 데이터 get
+    @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto(" +
+            "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt) " +
+            "FROM Music m " +
+            "JOIN Like ul ON ul.music = m AND ul.user.email = :email " +
+            "ORDER BY ul.id ASC")
+    List<MusicLikeDto> findMyLikedMusic(@Param("email") String email);
 
 
 }

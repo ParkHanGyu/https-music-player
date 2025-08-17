@@ -450,6 +450,8 @@ export const myMusicLikeRequest = async (accessToken: string) => {
   const result = await axios
     .get(GET_MY_MUSIC_LIKE_URL(), authorication(accessToken))
     .then((response) => {
+      console.log("453줄 : ", JSON.stringify(response, null, 2));
+
       const responseBody: myMusicLikeResponseDto = response.data;
       return responseBody;
     })

@@ -462,11 +462,25 @@ const Menu = () => {
           )}
         </div>
 
-        <div className={styles["main-menu-item3"]} onClick={onTopClickHandler}>
+        <div
+          className={styles["main-menu-item3"]}
+          style={{
+            backgroundColor:
+              window.location.hash === "#/like/rank" ? "#333333" : undefined,
+          }}
+          onClick={onTopClickHandler}
+        >
           TOP
         </div>
 
-        <div className={styles["main-menu-item4"]} onClick={onLikeClickHandler}>
+        <div
+          className={styles["main-menu-item4"]}
+          style={{
+            backgroundColor:
+              window.location.hash === "#/like/my" ? "#333333" : undefined,
+          }}
+          onClick={onLikeClickHandler}
+        >
           LIKE
         </div>
 

@@ -3,6 +3,7 @@ package com.hmplayer.https_music_player.domain.service.impl;
 import com.hmplayer.https_music_player.domain.common.customexception.*;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
+import com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto;
 import com.hmplayer.https_music_player.domain.dto.request.AddPlayListToMusicRequest;
 import com.hmplayer.https_music_player.domain.dto.request.MusicLikeRequest;
 import com.hmplayer.https_music_player.domain.dto.request.UpdatePlaylistOrderRequest;
@@ -330,15 +331,18 @@ public class MusicServiceImpl implements MusicService {
     }
 
 
-    // like rank 데이터 반환
+    // my like music 데이터 반환
     @Override
     public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(String email) {
-        // findLikedMusicDtoByUserEmail 쿼리 수정하기
-//        List<MusicLikeCountDto> result = musicLikeRepository.findLikedMusicDtoByUserEmail(email);
+        List<MusicLikeDto> result = musicLikeRepository.findMyLikedMusic(email);
 
-//        log.info("result = {}", result.toString());
-//        return MyMusicLikeResponse.success(likedMusicOnly);
-        return null;
+        result.forEach(dto -> {
+                dto.setLiked(true);
+        });
+
+
+        log.info("result = {}", result.toString());
+        return MyMusicLikeResponse.success(result);
     }
 
 
