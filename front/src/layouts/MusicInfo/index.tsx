@@ -19,7 +19,7 @@ import useMediaInfo from "../../hooks/useMediaInfo";
 import LoadingScreen from "../LoadingScreen";
 import { ResponseUtil } from "../../utils";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
-import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
 
 const MusicInfo = () => {

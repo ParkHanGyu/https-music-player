@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MusicInfoData } from "../types/interface/music-info-data.interface";
+import MusicInfoData from "../types/interface/music-info-data.interface";
 
 const noEmbed = "https://noembed.com/embed?url=";
 // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
@@ -19,7 +19,14 @@ const useMediaInfo = (defaultImage: string) => {
     fetch(fullUrl)
       .then((res) => res.json())
       .then((data) => {
-        const { url, author_name, thumbnail_url, title } = data;
+        console.log("noembed data 값 : ", JSON.stringify(data, null, 2));
+        const { url, author_name, thumbnail_url, title, error } = data;
+
+        if (error) {
+          alert("error");
+          return;
+        }
+
         let processedTitle = title || "-";
         if (
           url.includes("soundcloud") &&

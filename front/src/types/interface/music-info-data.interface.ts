@@ -1,6 +1,6 @@
-export interface MusicInfoData {
-  vidUrl: string | null;
-  author: string | null;
-  thumb: string | null;
-  vidTitle: string | null;
+export default interface MusicInfoData {
+  vidUrl: string;
+  author: string;
+  thumb: string;
+  vidTitle: string;
 }

@@ -1,7 +1,7 @@
-export interface MusicInfoAndLikeData {
-  vidUrl: string | null;
-  author: string | null;
-  thumb: string | null;
-  vidTitle: string | null;
+export default interface MusicInfoAndLikeData {
+  vidUrl: string;
+  author: string;
+  thumb: string;
+  vidTitle: string;
   like: boolean | undefined;
 }

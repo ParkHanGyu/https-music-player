@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import { musicLikeRankRequest, targetMusicLikeStateRequest } from "../../apis";
+import {
+  musicLikeRankRequest,
+  musicLikeRemoveRequest,
+  targetMusicLikeStateRequest,
+} from "../../apis";
 import musicLikeRankResponseDto from "../../apis/response/Music/get-music-like-rank.dto";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import LikeRankMusic from "../../types/interface/like-rank-music.interface";
 import { useVideoStore } from "../../store/useVideo.store";
-import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import { useCookies } from "react-cookie";
 import useLoginUserStore from "../../store/login-user.store";
-import { MusicInfoData } from "../../types/interface/music-info-data.interface";
+import MusicInfoData from "../../types/interface/music-info-data.interface";
 import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN_PATH } from "../../constant";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 import Music from "../../types/interface/music.interface";
+import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -213,6 +218,62 @@ const LikeRank = () => {
     }
   };
 
+  // const handleMusicLikeClick = (music: LikeRankMusic) => {
+  //     if (!loginUserInfo) {
+  //       console.log("로그인 해주세요");
+  //       return;
+  //     }
+
+  //         const requestBody: musicLikeRequestDto = {
+  //           musicInfoData: {
+  //              vidUrl: music.url ,
+  // author: music.author ,
+  // thumb: music.imageUrl ,
+  // vidTitle: music.title
+  //           },
+
+  //           infoDuration: music.duration,
+  //         };
+
+  //     // 해당 아이템의 like가 false라면
+  //     if (!music.liked) {
+  //         console.log("like add 실행");
+  //         console.log(
+  //           "서버에 보내는 데이터 requestBody : ",
+  //           JSON.stringify(requestBody, null, 2)
+  //         );
+
+  //         musicLikeAddRequest(requestBody, cookies.accessToken).then(
+  //           musicLikeAddResponse
+  //         );
+
+  //              // 해당 아이템의 like가 true라면
+
+  //       } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
+  //         console.log("remove 실행");
+  //         musicLikeRemoveRequest(playBarUrl, cookies.accessToken).then(
+  //           musicLikeRemoveResponse
+  //         );
+  //       }
+
+  //     musicLikeRemoveRequest(musicUrl, cookies.accessToken).then((responseBody) =>
+  //       musicLikeRemoveResponse(responseBody, musicUrl)
+  //     );
+  //   };
+
+  // const musicLikeRemoveResponse = (
+  //     responseBody: ResponseDto | null,
+  //     musicUrl: string
+  //   ) => {
+  //     if (!ResponseUtil(responseBody)) {
+  //       return;
+  //     }
+
+  //     const newMyLikeMusic = myLikeMusic.filter((item) => item.url !== musicUrl);
+
+  //     setMyLikeMusic(newMyLikeMusic);
+  //   };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -279,6 +340,7 @@ const LikeRank = () => {
                     className={`${styles["music-info-like-imge"]} ${
                       music.liked ? styles["like-true"] : undefined
                     }`}
+                    // onClick={()=>handleMusicLikeClick(music)}
                   ></div>
                   <div className={styles["music-info-like-count"]}>
                     {music.likeCount}

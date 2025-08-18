@@ -14,7 +14,7 @@ import LoadingScreen from "../LoadingScreen";
 import useLoginUserStore from "../../store/login-user.store";
 import { musicLikeAddRequest, musicLikeRemoveRequest } from "../../apis";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
-import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
 import { useParams } from "react-router-dom";

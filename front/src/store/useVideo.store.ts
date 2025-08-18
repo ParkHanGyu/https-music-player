@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { MusicInfoData } from "../types/interface/music-info-data.interface";
-import { MusicInfoAndLikeData } from "../types/interface/music-info-and-like.interface";
+import MusicInfoAndLikeData from "../types/interface/music-info-and-like.interface";
 
 // Zustand 상태 정의
 interface VideoState {

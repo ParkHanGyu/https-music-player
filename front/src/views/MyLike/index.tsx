@@ -6,11 +6,11 @@ import { musicLikeRemoveRequest, myMusicLikeRequest } from "../../apis";
 import ResponseDto from "../../apis/response/response.dto";
 import myMusicLikeResponseDto from "../../apis/response/Music/get-my-music-like.dto";
 import { ResponseUtil } from "../../utils";
-import MyLikeMusic from "../../types/interface/my-like-music.interface";
 import useLoginUserStore from "../../store/login-user.store";
-import { MusicInfoData } from "../../types/interface/music-info-data.interface";
+import MusicInfoData from "../../types/interface/music-info-data.interface";
 import { SIGN_IN_PATH } from "../../constant";
 import { useNavigate } from "react-router-dom";
+import Music from "../../types/interface/music.interface";
 
 const MyLike = () => {
   //      Zustand state : 로그인 유저 정보 상태      //
@@ -18,7 +18,7 @@ const MyLike = () => {
   const [cookies] = useCookies();
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
-  const [myLikeMusic, setMyLikeMusic] = useState<MyLikeMusic[]>([]);
+  const [myLikeMusic, setMyLikeMusic] = useState<Music[]>([]);
   const navigator = useNavigate();
 
   const [targetInfoData, setTargetInfoData] = useState<MusicInfoData>({
@@ -32,7 +32,7 @@ const MyLike = () => {
   const [infoDuration, setInfoDuration] = useState<number>(0);
 
   //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
-  const togglePlaylistPopup = (music: MyLikeMusic) => {
+  const togglePlaylistPopup = (music: Music) => {
     if (!loginUserInfo) {
       alert("로그인 이후 추가해주세요.");
       navigator(SIGN_IN_PATH());
@@ -155,7 +155,7 @@ const MyLike = () => {
                 <div className={styles["music-info-like"]}>
                   <div
                     className={`${styles["music-info-like-imge"]} ${
-                      music.liked ? styles["like-true"] : undefined
+                      music.like ? styles["like-true"] : undefined
                     }`}
                     onClick={() => handleMusicLikeClick(music.url)}
                   ></div>

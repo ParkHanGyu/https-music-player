@@ -6,6 +6,6 @@ export default interface LikeRankMusic {
   url: string;
   imageUrl: string;
   createdAt: string;
-  likeCount: number;
   liked: boolean;
+  likeCount: number;
 }

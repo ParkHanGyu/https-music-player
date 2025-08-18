@@ -21,7 +21,7 @@ import { ResponseUtil } from "../../utils";
 import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-order.dto";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
-import { MusicInfoAndLikeData } from "../../types/interface/music-info-and-like.interface";
+import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 
 const PlayList = () => {
   const [cookies] = useCookies();

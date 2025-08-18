@@ -10,7 +10,7 @@ import {
 } from "../../apis";
 import { useCookies } from "react-cookie";
 import ResponseDto from "../../apis/response/response.dto";
-import { MusicInfoData } from "../../types/interface/music-info-data.interface";
+import MusicInfoData from "../../types/interface/music-info-data.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
