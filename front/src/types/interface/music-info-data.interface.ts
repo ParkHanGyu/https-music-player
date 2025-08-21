@@ -1,4 +1,4 @@
-export default interface MusicInfoData {
+export default interface NoembedMusicInfoData {
   vidUrl: string;
   author: string;
   thumb: string;

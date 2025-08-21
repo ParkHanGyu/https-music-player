@@ -11,24 +11,12 @@ import java.util.Date;
 @ToString
 public class MusicLikeDto {
 
-    private Long musicId;
-    private String title;
-    private String author;
-    private int duration;
-    private String url;
-    private String imageUrl;
-    private Date createdAt;
+    private MusicDto musicInfo;
     private long likeCount;
-    private boolean liked;
 
-    public MusicLikeDto(Long musicId, String title, String author, int duration, String url, String imageUrl, Date createdAt) {
-        this.musicId = musicId;
-        this.title = title;
-        this.author = author;
-        this.duration = duration;
-        this.url = url;
-        this.imageUrl = imageUrl;
-        this.createdAt = createdAt;
-        this.liked = false;
+
+    public MusicLikeDto(MusicDto musicInfo, long likeCount) {
+        this.musicInfo = musicInfo;
+        this.likeCount = likeCount;
     }
 }

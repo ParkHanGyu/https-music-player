@@ -306,8 +306,8 @@ public class MusicServiceImpl implements MusicService {
             List<Long> likedMusicIds = musicLikeRepository.findMusicIdsByUserEmail(email);
 
             likedMusicOnly.forEach(dto -> {
-                if (likedMusicIds.contains(dto.getMusicId())) {
-                    dto.setLiked(true);
+                if (likedMusicIds.contains(dto.getMusicInfo().getMusicId())) {
+                    dto.getMusicInfo().setLiked(true);
                 }
             });
         }
@@ -336,10 +336,10 @@ public class MusicServiceImpl implements MusicService {
     public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(String email) {
         List<MusicLikeDto> result = musicLikeRepository.findMyLikedMusic(email);
 
+        System.out.println("myLikeMusic 339줄-------------------");
         result.forEach(dto -> {
-                dto.setLiked(true);
+                dto.getMusicInfo().setLiked(true);
         });
-
 
         log.info("result = {}", result.toString());
         return MyMusicLikeResponse.success(result);

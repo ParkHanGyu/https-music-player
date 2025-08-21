@@ -1,11 +1,6 @@
+import Music from "./music.interface";
+
 export default interface LikeRankMusic {
-  musicId: bigint;
-  title: string;
-  author: string;
-  duration: number;
-  url: string;
-  imageUrl: string;
-  createdAt: string;
-  liked: boolean;
+  musicInfo: Music;
   likeCount: number;
 }

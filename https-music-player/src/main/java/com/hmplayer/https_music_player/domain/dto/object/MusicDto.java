@@ -24,8 +24,7 @@ public class MusicDto {
     private String url;  // 음악 URL
     private String imageUrl;  // 음악 이미지
     private Date createdAt;  // 생성 날짜
-
-    private boolean like;
+    private boolean like; // like 유무
 
 
     public MusicDto(Music music, boolean like) {
@@ -48,6 +47,10 @@ public class MusicDto {
         this.imageUrl = music.getImageUrl();
         this.createdAt = music.getCreatedAt();
         return this;
+    }
+
+    public void setLiked(boolean like) {
+        this.like = like;
     }
 
 //    public static List<MusicDto> ofList(List<Music> Musics){

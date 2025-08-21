@@ -1,7 +1,7 @@
-import MusicInfoData from "../../types/interface/music-info-data.interface";
+import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
 
 export default interface AddPlayListToMusicRequestDto {
-  musicInfoData: MusicInfoData;
+  musicInfoData: NoembedMusicInfoData;
   infoDuration: number;
   playlistId: bigint;
 }

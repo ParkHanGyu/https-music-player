@@ -1,7 +1,6 @@
+import NoembedMusicInfoData from "./music-info-data.interface";
+
 export default interface MusicInfoAndLikeData {
-  vidUrl: string;
-  author: string;
-  thumb: string;
-  vidTitle: string;
+  musicInfo: NoembedMusicInfoData;
   like: boolean | undefined;
 }

@@ -20,11 +20,12 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
 
 //    void save(Long musicId, String userEmail);
     @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto(" +
-            "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt, COUNT(l)) " +
+            "new com.hmplayer.https_music_player.domain.dto.object.MusicDto(m, false), COUNT(l)) " +
             "FROM Music m LEFT JOIN Like l ON l.music = m " +
-            "GROUP BY m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt " +
+            "GROUP BY m " +
             "ORDER BY COUNT(l) DESC, MIN(l.id) ASC")
     List<MusicLikeCountDto> findMusicWithLikeCount();
+
 
     @Query("SELECT l.music.musicId FROM Like l WHERE l.user.email = :email")
     List<Long> findMusicIdsByUserEmail(@Param("email") String email);
@@ -33,11 +34,14 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
     
     // db에 있는 모든 music중 특정 user가 like 하고 있는 데이터 get
     @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto(" +
-            "m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt) " +
+            "new com.hmplayer.https_music_player.domain.dto.object.MusicDto(m, false), " + // MusicDto 생성
+            "COUNT(l)) " + // likeCount
             "FROM Music m " +
-            "JOIN Like ul ON ul.music = m AND ul.user.email = :email " +
-            "ORDER BY ul.id ASC")
+            "JOIN Like l ON l.music = m AND l.user.email = :email " +
+            "GROUP BY m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt " +
+            "ORDER BY MIN(l.id) ASC")
     List<MusicLikeDto> findMyLikedMusic(@Param("email") String email);
+
 
 
 }

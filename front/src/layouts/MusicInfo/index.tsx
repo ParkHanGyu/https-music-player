@@ -116,14 +116,14 @@ const MusicInfo = () => {
       );
 
       musicWithLike = {
-        ...infoData,
+        musicInfo: infoData,
         like: playListResult.targetLikeState,
       };
       // responseBody = false면 like 데이터를 못받아옴 => 등록된 노래가 아님
     } else {
       alert("else 실행");
       musicWithLike = {
-        ...infoData,
+        musicInfo: infoData,
         like: undefined,
       };
     }

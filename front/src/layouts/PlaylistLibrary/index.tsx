@@ -10,7 +10,6 @@ import {
 } from "../../apis";
 import { useCookies } from "react-cookie";
 import ResponseDto from "../../apis/response/response.dto";
-import MusicInfoData from "../../types/interface/music-info-data.interface";
 import CreatePlayListRequestDto from "../../apis/request/create-play-list-request.dto";
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
@@ -18,9 +17,10 @@ import { useVideoStore } from "../../store/useVideo.store";
 import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 import { useParams } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
+import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
 
 interface PlaylistLibraryProps {
-  infoData: MusicInfoData;
+  infoData: NoembedMusicInfoData;
   infoDuration: number;
   playlistPopupOpen: boolean;
   setPlaylistPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -109,7 +109,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     if (nowPlayingPlaylistID === addPlaylistID) {
       // nowRandomPlaylist에서 지금 듣는 노래의 index. 기준 찾기
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
-        music.url.includes(playBarUrl)
+        music.basicInfo.vidUrl.includes(playBarUrl)
       );
 
       if (nowIndex !== -1) {

@@ -22,6 +22,7 @@ import { SIGN_IN_PATH } from "../../constant";
 import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 import Music from "../../types/interface/music.interface";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
+import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -75,35 +76,35 @@ const LikeRank = () => {
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
   const playHandleClick = async (targetLikeMusic: LikeRankMusic) => {
-    if (playBarUrl === targetLikeMusic.url) {
+    if (playBarUrl === targetLikeMusic.musicInfo.basicInfo.vidUrl) {
       setPlayBarUrl("");
     }
 
     let musicWithLike: MusicInfoAndLikeData;
-    const musicInfoData: MusicInfoData = {
-      vidUrl: targetLikeMusic.url,
-      author: targetLikeMusic.author,
-      thumb: targetLikeMusic.imageUrl,
-      vidTitle: targetLikeMusic.title,
+    const musicInfoData: NoembedMusicInfoData = {
+      vidUrl: targetLikeMusic.musicInfo.basicInfo.vidUrl,
+      author: targetLikeMusic.musicInfo.basicInfo.author,
+      thumb: targetLikeMusic.musicInfo.basicInfo.thumb,
+      vidTitle: targetLikeMusic.musicInfo.basicInfo.vidTitle,
     };
 
     // 로그인 상태라면
     if (loginUserInfo) {
       const responseBody = await targetMusicLikeStateRequest(
-        targetLikeMusic.url,
+        targetLikeMusic.musicInfo.basicInfo.vidUrl,
         cookies.accessToken
       );
 
       const playListResult = responseBody as musicLikeStateResponseDto;
       musicWithLike = {
-        ...musicInfoData,
+        musicInfo: musicInfoData,
         like: playListResult.targetLikeState,
       };
 
       // 로그인 상태가 아니라면
     } else {
       musicWithLike = {
-        ...musicInfoData,
+        musicInfo: musicInfoData,
         like: false,
       };
     }
@@ -111,7 +112,7 @@ const LikeRank = () => {
     setPlayBarInfo(musicWithLike);
 
     setTimeout(() => {
-      setPlayBarUrl(targetLikeMusic.url);
+      setPlayBarUrl(targetLikeMusic.musicInfo.basicInfo.vidUrl);
     }, 100);
 
     setNowRandomPlaylist([]);
@@ -130,7 +131,7 @@ const LikeRank = () => {
   //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
-  const [targetInfoData, setTargetInfoData] = useState<MusicInfoData>({
+  const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
     vidUrl: "",
     author: "",
     thumb: "",
@@ -144,15 +145,15 @@ const LikeRank = () => {
       navigator(SIGN_IN_PATH());
       return;
     }
-    const targetMusicInfo: MusicInfoData = {
-      vidUrl: music.url,
-      author: music.author,
-      thumb: music.imageUrl,
-      vidTitle: music.title,
+    const targetMusicInfo: NoembedMusicInfoData = {
+      vidUrl: music.musicInfo.basicInfo.vidUrl,
+      author: music.musicInfo.basicInfo.author,
+      thumb: music.musicInfo.basicInfo.thumb,
+      vidTitle: music.musicInfo.basicInfo.vidTitle,
     };
 
     setTargetInfoData(targetMusicInfo);
-    setInfoDuration(music.duration);
+    setInfoDuration(music.musicInfo.duration);
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
@@ -176,32 +177,37 @@ const LikeRank = () => {
     // 체크한게 있다면
     if (checkedMusicIds.length > 0) {
       targetMusic = likeRankMusic.filter((music) =>
-        checkedMusicIds.includes(Number(music.musicId))
+        checkedMusicIds.includes(Number(music.musicInfo.musicId))
       );
     }
 
     // Music[]타입에 맞게 set
     const selectedMusic: Music[] = targetMusic.map((music) => ({
-      musicId: music.musicId,
-      title: music.title,
-      author: music.author,
-      duration: music.duration,
-      url: music.url,
-      imageUrl: music.imageUrl,
-      createdAt: music.createdAt,
-      like: music.liked,
+      basicInfo: {
+        vidUrl: music.musicInfo.basicInfo.vidUrl,
+        vidTitle: music.musicInfo.basicInfo.vidTitle,
+        thumb: music.musicInfo.basicInfo.thumb,
+        author: music.musicInfo.basicInfo.author,
+      },
+
+      musicId: music.musicInfo.musicId,
+      duration: music.musicInfo.duration,
+      createdAt: music.musicInfo.createdAt,
+      like: music.musicInfo.like,
     }));
 
-    if (playBarUrl === selectedMusic[0].url) {
+    if (playBarUrl === selectedMusic[0].basicInfo.vidUrl) {
       setPlayBarUrl("");
     }
 
     // 첫번째 재생할 노래 info 데이터 준비
     const item1info: MusicInfoAndLikeData = {
-      vidUrl: selectedMusic[0].url,
-      author: selectedMusic[0].author,
-      thumb: selectedMusic[0].imageUrl,
-      vidTitle: selectedMusic[0].title,
+      musicInfo: {
+        vidUrl: selectedMusic[0].basicInfo.vidUrl,
+        author: selectedMusic[0].basicInfo.author,
+        thumb: selectedMusic[0].basicInfo.thumb,
+        vidTitle: selectedMusic[0].basicInfo.vidTitle,
+      },
       like: selectedMusic[0].like,
     };
 
@@ -211,68 +217,12 @@ const LikeRank = () => {
     setNowRandomPlaylistID("");
     setNowPlayingPlaylistID("");
     setTimeout(() => {
-      setPlayBarUrl(selectedMusic[0].url);
+      setPlayBarUrl(selectedMusic[0].basicInfo.vidUrl);
     }, 100);
     if (!isPlaying) {
       setIsPlaying(true);
     }
   };
-
-  // const handleMusicLikeClick = (music: LikeRankMusic) => {
-  //     if (!loginUserInfo) {
-  //       console.log("로그인 해주세요");
-  //       return;
-  //     }
-
-  //         const requestBody: musicLikeRequestDto = {
-  //           musicInfoData: {
-  //              vidUrl: music.url ,
-  // author: music.author ,
-  // thumb: music.imageUrl ,
-  // vidTitle: music.title
-  //           },
-
-  //           infoDuration: music.duration,
-  //         };
-
-  //     // 해당 아이템의 like가 false라면
-  //     if (!music.liked) {
-  //         console.log("like add 실행");
-  //         console.log(
-  //           "서버에 보내는 데이터 requestBody : ",
-  //           JSON.stringify(requestBody, null, 2)
-  //         );
-
-  //         musicLikeAddRequest(requestBody, cookies.accessToken).then(
-  //           musicLikeAddResponse
-  //         );
-
-  //              // 해당 아이템의 like가 true라면
-
-  //       } else if (playBarInfo?.like !== undefined && playBarInfo?.like) {
-  //         console.log("remove 실행");
-  //         musicLikeRemoveRequest(playBarUrl, cookies.accessToken).then(
-  //           musicLikeRemoveResponse
-  //         );
-  //       }
-
-  //     musicLikeRemoveRequest(musicUrl, cookies.accessToken).then((responseBody) =>
-  //       musicLikeRemoveResponse(responseBody, musicUrl)
-  //     );
-  //   };
-
-  // const musicLikeRemoveResponse = (
-  //     responseBody: ResponseDto | null,
-  //     musicUrl: string
-  //   ) => {
-  //     if (!ResponseUtil(responseBody)) {
-  //       return;
-  //     }
-
-  //     const newMyLikeMusic = myLikeMusic.filter((item) => item.url !== musicUrl);
-
-  //     setMyLikeMusic(newMyLikeMusic);
-  //   };
 
   return (
     <>
@@ -300,8 +250,12 @@ const LikeRank = () => {
                 <div className={styles["music-info-play-check"]}>
                   <input
                     type="checkbox"
-                    checked={checkedMusicIds.includes(Number(music.musicId))}
-                    onChange={() => handleCheck(Number(music.musicId))}
+                    checked={checkedMusicIds.includes(
+                      Number(music.musicInfo.musicId)
+                    )}
+                    onChange={() =>
+                      handleCheck(Number(music.musicInfo.musicId))
+                    }
                   />
                 </div>
 
@@ -311,34 +265,36 @@ const LikeRank = () => {
                 {/* image + title */}
                 <div
                   className={styles["music-info-image-title-box"]}
-                  onClick={() => handleMusicInfoClick(music.url)}
+                  onClick={() =>
+                    handleMusicInfoClick(music.musicInfo.basicInfo.vidUrl)
+                  }
                 >
                   <div
                     className={styles["music-info-image"]}
                     style={{
-                      backgroundImage: `url(${music.imageUrl})`,
+                      backgroundImage: `url(${music.musicInfo.basicInfo.thumb})`,
                     }}
                   ></div>
                   <div
                     className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                   >
-                    {music.title}
+                    {music.musicInfo.basicInfo.vidTitle}
                   </div>
                 </div>
 
                 {/* author */}
                 <div className={styles["music-info-artist"]}>
-                  {music.author}
+                  {music.musicInfo.basicInfo.author}
                 </div>
                 {/* At */}
                 <div className={styles["music-info-createdAt"]}>
-                  {music.createdAt.split("T")[0]}
+                  {music.musicInfo.createdAt.split("T")[0]}
                 </div>
                 {/* like */}
                 <div className={styles["music-info-like"]}>
                   <div
                     className={`${styles["music-info-like-imge"]} ${
-                      music.liked ? styles["like-true"] : undefined
+                      music.musicInfo.like ? styles["like-true"] : undefined
                     }`}
                     // onClick={()=>handleMusicLikeClick(music)}
                   ></div>

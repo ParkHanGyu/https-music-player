@@ -1,10 +1,9 @@
+import NoembedMusicInfoData from "./music-info-data.interface";
+
 export default interface Music {
   musicId: bigint;
-  title: string;
-  author: string;
+  basicInfo: NoembedMusicInfoData;
   duration: number;
-  url: string;
-  imageUrl: string;
   createdAt: string;
   like: boolean;
 }

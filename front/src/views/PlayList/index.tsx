@@ -103,11 +103,11 @@ const PlayList = () => {
       return;
     }
 
-    const itemMusicUrl = musics[index].url;
+    const itemMusicUrl = musics[index].basicInfo.vidUrl;
     const itemMusicLike = musics[index].like;
     setMusicInfo(itemMusicUrl, (newInfoData) => {
       const musicWithLike: MusicInfoAndLikeData = {
-        ...newInfoData,
+        musicInfo: newInfoData,
         like: itemMusicLike,
       };
       setPlayBarInfo(musicWithLike);
@@ -129,11 +129,11 @@ const PlayList = () => {
       const shufflePlaylist = shuffle(musics);
       // 옮길 배열
       const targetItem = shufflePlaylist.find(
-        (item) => item.url === itemMusicUrl
+        (item) => item.basicInfo.vidUrl === itemMusicUrl
       );
       // 이외 배열
       const filteredList = shufflePlaylist.filter(
-        (item) => item.url !== itemMusicUrl
+        (item) => item.basicInfo.vidUrl !== itemMusicUrl
       );
       // 최종 결과 (targetItem을 맨 앞에 추가)
       const updatedNowRandomPlaylist = targetItem
@@ -159,7 +159,7 @@ const PlayList = () => {
   const onHandleMusicCopy = (index: number) => {
     setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
-    const itemMusicUrl = musics[index].url;
+    const itemMusicUrl = musics[index].basicInfo.vidUrl;
 
     if (itemMusicUrl) {
       setMusicInfo(itemMusicUrl);
@@ -203,29 +203,31 @@ const PlayList = () => {
 
     // 삭제하는 음악의 url
     const deleteMusicUrl =
-      nowPlayingPlaylist.find((item) => item.musicId === musicId)?.url || null;
+      nowPlayingPlaylist.find((item) => item.musicId === musicId)?.basicInfo
+        .vidUrl || null;
 
     // 삭제한 노래가 현재 듣고 있는 노래라면 다음 노래로 넘어가야 함.
     if (deleteMusicUrl === playBarUrl && playlistId === nowPlayingPlaylistID) {
       // 하지만 삭제하는 노래가 마지막 노래라면? 첫번쨰 노래로 넘어가야함.
       //                11 - 1          === 5
       if (lastIndexBoolean) {
-        const newMusicUrl = nowPlayingPlaylist[0].url;
+        const newMusicUrl = nowPlayingPlaylist[0].basicInfo.vidUrl;
         setPlayBarUrl(newMusicUrl);
         setMusicInfo(newMusicUrl, (newInfoData) => {
           const musicWithLike: MusicInfoAndLikeData = {
-            ...newInfoData,
+            musicInfo: newInfoData,
             like: nowPlayingPlaylist[0].like,
           };
           setPlayBarInfo(musicWithLike);
         });
       } else {
-        const newMusicUrl = nowPlayingPlaylist[deleteMusicIndex + 1].url;
+        const newMusicUrl =
+          nowPlayingPlaylist[deleteMusicIndex + 1].basicInfo.vidUrl;
         setPlayBarUrl(newMusicUrl);
         // 콜백
         setMusicInfo(newMusicUrl, (newInfoData) => {
           const musicWithLike: MusicInfoAndLikeData = {
-            ...newInfoData,
+            musicInfo: newInfoData,
             like: nowPlayingPlaylist[deleteMusicIndex + 1].like,
           };
           setPlayBarInfo(musicWithLike);
@@ -240,7 +242,7 @@ const PlayList = () => {
     ) {
       console.log("222줄 if 실행");
       getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
-        deleteGetPlaylistMusicResponse
+        deletePlaylistMusicResponse
       );
     }
 
@@ -248,7 +250,7 @@ const PlayList = () => {
     setPlaylistLoading(false);
   };
 
-  const deleteGetPlaylistMusicResponse = (
+  const deletePlaylistMusicResponse = (
     responseBody: GetMusicResponseDto | ResponseDto | null
   ) => {
     console.log("deleteGetPlaylistMusicResponse 실행");
@@ -400,7 +402,7 @@ const PlayList = () => {
                     className={
                       nowPlayingPlaylistID === playlistId &&
                       playBarUrl &&
-                      music.url.includes(playBarUrl)
+                      music.basicInfo.vidUrl.includes(playBarUrl)
                         ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
                         : styles["main-music-data-info-box"]
                     }
@@ -423,7 +425,7 @@ const PlayList = () => {
                       <div
                         className={styles["music-info-image"]}
                         style={{
-                          backgroundImage: `url(${music.imageUrl})`,
+                          backgroundImage: `url(${music.basicInfo.thumb})`,
                         }}
                       ></div>
 
@@ -431,13 +433,13 @@ const PlayList = () => {
                       <div
                         className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                       >
-                        {music.title}
+                        {music.basicInfo.vidTitle}
                       </div>
                     </div>
 
                     {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
                     <div className={styles["music-info-artist"]}>
-                      {music.author}
+                      {music.basicInfo.author}
                     </div>
                     <div className={styles["music-info-createdAt"]}>
                       {music.createdAt.split("T")[0]}
