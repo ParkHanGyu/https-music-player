@@ -76,22 +76,22 @@ const LikeRank = () => {
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
   const playHandleClick = async (targetLikeMusic: LikeRankMusic) => {
-    if (playBarUrl === targetLikeMusic.musicInfo.basicInfo.vidUrl) {
+    if (playBarUrl === targetLikeMusic.musicInfo.basicInfo.url) {
       setPlayBarUrl("");
     }
 
     let musicWithLike: MusicInfoAndLikeData;
     const musicInfoData: NoembedMusicInfoData = {
-      vidUrl: targetLikeMusic.musicInfo.basicInfo.vidUrl,
+      url: targetLikeMusic.musicInfo.basicInfo.url,
       author: targetLikeMusic.musicInfo.basicInfo.author,
-      thumb: targetLikeMusic.musicInfo.basicInfo.thumb,
-      vidTitle: targetLikeMusic.musicInfo.basicInfo.vidTitle,
+      imageUrl: targetLikeMusic.musicInfo.basicInfo.imageUrl,
+      title: targetLikeMusic.musicInfo.basicInfo.title,
     };
 
     // 로그인 상태라면
     if (loginUserInfo) {
       const responseBody = await targetMusicLikeStateRequest(
-        targetLikeMusic.musicInfo.basicInfo.vidUrl,
+        targetLikeMusic.musicInfo.basicInfo.url,
         cookies.accessToken
       );
 
@@ -112,7 +112,7 @@ const LikeRank = () => {
     setPlayBarInfo(musicWithLike);
 
     setTimeout(() => {
-      setPlayBarUrl(targetLikeMusic.musicInfo.basicInfo.vidUrl);
+      setPlayBarUrl(targetLikeMusic.musicInfo.basicInfo.url);
     }, 100);
 
     setNowRandomPlaylist([]);
@@ -132,10 +132,10 @@ const LikeRank = () => {
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
   const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
-    vidUrl: "",
+    url: "",
     author: "",
-    thumb: "",
-    vidTitle: "",
+    imageUrl: "",
+    title: "",
   });
 
   //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
@@ -146,10 +146,10 @@ const LikeRank = () => {
       return;
     }
     const targetMusicInfo: NoembedMusicInfoData = {
-      vidUrl: music.musicInfo.basicInfo.vidUrl,
+      url: music.musicInfo.basicInfo.url,
       author: music.musicInfo.basicInfo.author,
-      thumb: music.musicInfo.basicInfo.thumb,
-      vidTitle: music.musicInfo.basicInfo.vidTitle,
+      imageUrl: music.musicInfo.basicInfo.imageUrl,
+      title: music.musicInfo.basicInfo.title,
     };
 
     setTargetInfoData(targetMusicInfo);
@@ -184,9 +184,9 @@ const LikeRank = () => {
     // Music[]타입에 맞게 set
     const selectedMusic: Music[] = targetMusic.map((music) => ({
       basicInfo: {
-        vidUrl: music.musicInfo.basicInfo.vidUrl,
-        vidTitle: music.musicInfo.basicInfo.vidTitle,
-        thumb: music.musicInfo.basicInfo.thumb,
+        url: music.musicInfo.basicInfo.url,
+        title: music.musicInfo.basicInfo.title,
+        imageUrl: music.musicInfo.basicInfo.imageUrl,
         author: music.musicInfo.basicInfo.author,
       },
 
@@ -196,17 +196,17 @@ const LikeRank = () => {
       like: music.musicInfo.like,
     }));
 
-    if (playBarUrl === selectedMusic[0].basicInfo.vidUrl) {
+    if (playBarUrl === selectedMusic[0].basicInfo.url) {
       setPlayBarUrl("");
     }
 
     // 첫번째 재생할 노래 info 데이터 준비
     const item1info: MusicInfoAndLikeData = {
       musicInfo: {
-        vidUrl: selectedMusic[0].basicInfo.vidUrl,
+        url: selectedMusic[0].basicInfo.url,
         author: selectedMusic[0].basicInfo.author,
-        thumb: selectedMusic[0].basicInfo.thumb,
-        vidTitle: selectedMusic[0].basicInfo.vidTitle,
+        imageUrl: selectedMusic[0].basicInfo.imageUrl,
+        title: selectedMusic[0].basicInfo.title,
       },
       like: selectedMusic[0].like,
     };
@@ -217,7 +217,7 @@ const LikeRank = () => {
     setNowRandomPlaylistID("");
     setNowPlayingPlaylistID("");
     setTimeout(() => {
-      setPlayBarUrl(selectedMusic[0].basicInfo.vidUrl);
+      setPlayBarUrl(selectedMusic[0].basicInfo.url);
     }, 100);
     if (!isPlaying) {
       setIsPlaying(true);
@@ -266,19 +266,19 @@ const LikeRank = () => {
                 <div
                   className={styles["music-info-image-title-box"]}
                   onClick={() =>
-                    handleMusicInfoClick(music.musicInfo.basicInfo.vidUrl)
+                    handleMusicInfoClick(music.musicInfo.basicInfo.url)
                   }
                 >
                   <div
                     className={styles["music-info-image"]}
                     style={{
-                      backgroundImage: `url(${music.musicInfo.basicInfo.thumb})`,
+                      backgroundImage: `url(${music.musicInfo.basicInfo.imageUrl})`,
                     }}
                   ></div>
                   <div
                     className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                   >
-                    {music.musicInfo.basicInfo.vidTitle}
+                    {music.musicInfo.basicInfo.title}
                   </div>
                 </div>
 

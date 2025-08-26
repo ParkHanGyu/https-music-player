@@ -23,10 +23,10 @@ const MyLike = () => {
   const navigator = useNavigate();
 
   const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
-    vidUrl: "",
+    url: "",
     author: "",
-    thumb: "",
-    vidTitle: "",
+    imageUrl: "",
+    title: "",
   });
 
   //      state:  url 시간 상태        //
@@ -40,10 +40,10 @@ const MyLike = () => {
       return;
     }
     const targetMusicInfo: NoembedMusicInfoData = {
-      vidUrl: music.basicInfo.vidUrl,
+      url: music.basicInfo.url,
       author: music.basicInfo.author,
-      thumb: music.basicInfo.thumb,
-      vidTitle: music.basicInfo.vidTitle,
+      imageUrl: music.basicInfo.imageUrl,
+      title: music.basicInfo.title,
     };
 
     setTargetInfoData(targetMusicInfo);
@@ -63,7 +63,7 @@ const MyLike = () => {
       return;
     }
     const musicLikeRankResult = responseBody as myMusicLikeResponseDto;
-    console.log("59줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
+    console.log("66줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
 
     setMyLikeMusic(musicLikeRankResult.musicList);
   };
@@ -88,7 +88,12 @@ const MyLike = () => {
     }
 
     const newMyLikeMusic = myLikeMusic.filter(
-      (item) => item.basicInfo.vidUrl !== musicUrl
+      (item) => item.basicInfo.url !== musicUrl
+    );
+
+    console.log(
+      "myLikeMusic에 set해주는 값 : ",
+      JSON.stringify(newMyLikeMusic, null, 2)
     );
 
     setMyLikeMusic(newMyLikeMusic);
@@ -136,13 +141,13 @@ const MyLike = () => {
                   <div
                     className={styles["music-info-image"]}
                     style={{
-                      backgroundImage: `url(${music.basicInfo.thumb})`,
+                      backgroundImage: `url(${music.basicInfo.imageUrl})`,
                     }}
                   ></div>
                   <div
                     className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                   >
-                    {music.basicInfo.vidTitle}
+                    {music.basicInfo.title}
                   </div>
                 </div>
 
@@ -160,7 +165,7 @@ const MyLike = () => {
                     className={`${styles["music-info-like-imge"]} ${
                       music.like ? styles["like-true"] : undefined
                     }`}
-                    onClick={() => handleMusicLikeClick(music.basicInfo.vidUrl)}
+                    onClick={() => handleMusicLikeClick(music.basicInfo.url)}
                   ></div>
                   <div className={styles["music-info-like-count"]}></div>
                 </div>

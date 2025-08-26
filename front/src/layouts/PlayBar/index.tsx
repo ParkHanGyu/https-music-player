@@ -267,12 +267,12 @@ const PlayBar = () => {
     if (isRandom) {
       // nowRandomPlaylist에서 현재 음악 index
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
-        music.basicInfo.vidUrl.includes(playBarUrl)
+        music.basicInfo.url.includes(playBarUrl)
       );
 
       if (nowRandomPlaylist[nowIndex - 1]) {
         // nowIndex - 1 값이 있다면 이전노래의 index로
-        prevMusicUrl = nowRandomPlaylist[nowIndex - 1].basicInfo.vidUrl;
+        prevMusicUrl = nowRandomPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[nowIndex - 1].like;
       } else if (!nowRandomPlaylist[nowIndex - 1]) {
         // nowIndex - 1 값이 없다면 마지막으로
@@ -280,7 +280,7 @@ const PlayBar = () => {
         const randomPlaylistLength = nowRandomPlaylist.length;
 
         prevMusicUrl =
-          nowRandomPlaylist[randomPlaylistLength - 1].basicInfo.vidUrl;
+          nowRandomPlaylist[randomPlaylistLength - 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[randomPlaylistLength - 1].like;
       }
     }
@@ -288,16 +288,16 @@ const PlayBar = () => {
     if (!isRandom) {
       // nowPlayingPlaylist에서 현재 음악 index값
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
-        music.basicInfo.vidUrl.includes(playBarUrl)
+        music.basicInfo.url.includes(playBarUrl)
       );
 
       // 지금 노래가 첫번째 노래라면
       if (nowIndex === 0) {
         const prevIndex = nowPlayingPlaylist.length - 1;
-        prevMusicUrl = nowPlayingPlaylist[prevIndex].basicInfo.vidUrl;
+        prevMusicUrl = nowPlayingPlaylist[prevIndex].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[prevIndex].like;
       } else {
-        prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].basicInfo.vidUrl;
+        prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex - 1].like;
       }
     }
@@ -331,7 +331,7 @@ const PlayBar = () => {
       console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
       // nowRandomPlaylist에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
-        music.basicInfo.vidUrl.includes(playBarUrl)
+        music.basicInfo.url.includes(playBarUrl)
       );
 
       console.log("현재 노래의 index값 nowIndex : ", nowIndex);
@@ -340,7 +340,7 @@ const PlayBar = () => {
       // .filter()로 삭제할 필요가 없으러 같음. 다음날 이걸로 로직 바꿔보기
       if (nowRandomPlaylist[nowIndex + 1]) {
         // nowIndex+1 값이 있다면 다음노래의 index로
-        prevMusicUrl = nowRandomPlaylist[nowIndex + 1].basicInfo.vidUrl;
+        prevMusicUrl = nowRandomPlaylist[nowIndex + 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[nowIndex + 1].like;
       } else if (!nowRandomPlaylist[nowIndex + 1]) {
         // nowIndex+1 값이 없다면 처음으로
@@ -348,12 +348,12 @@ const PlayBar = () => {
         const resetRandomPlaylist = shuffle(nowPlayingPlaylist);
         // 옮길 배열
         const targetItem = resetRandomPlaylist.find(
-          (item) => item.basicInfo.vidUrl === playBarUrl
+          (item) => item.basicInfo.url === playBarUrl
         );
 
         // 이외 배열
         const filteredList = resetRandomPlaylist.filter(
-          (item) => item.basicInfo.vidUrl !== playBarUrl
+          (item) => item.basicInfo.url !== playBarUrl
         );
 
         // 최종 결과 (targetItem을 맨 앞에 추가)
@@ -361,7 +361,7 @@ const PlayBar = () => {
           ? [...filteredList, targetItem]
           : nowRandomPlaylist;
 
-        prevMusicUrl = updatedNowRandomPlaylist[0].basicInfo.vidUrl;
+        prevMusicUrl = updatedNowRandomPlaylist[0].basicInfo.url;
         prevMusicLike = updatedNowRandomPlaylist[0].like;
         setNowRandomPlaylist(updatedNowRandomPlaylist);
       }
@@ -369,15 +369,15 @@ const PlayBar = () => {
 
     if (!isRandom) {
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
-        music.basicInfo.vidUrl.includes(playBarUrl)
+        music.basicInfo.url.includes(playBarUrl)
       );
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
       if (nowPlayingPlaylist.length === nowIndex + 1) {
-        prevMusicUrl = nowPlayingPlaylist[0].basicInfo.vidUrl;
+        prevMusicUrl = nowPlayingPlaylist[0].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[0].like;
         console.log("마지막 노래라면 재생시킬 노래: ", prevMusicUrl);
       } else {
-        prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].basicInfo.vidUrl;
+        prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex + 1].like;
         console.log("마지막 노래가 아니라면 재생시킬 노래: ", prevMusicUrl);
       }
@@ -400,8 +400,8 @@ const PlayBar = () => {
 
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = () => {
-    if (playBarInfo && playBarInfo.musicInfo.vidUrl) {
-      window.open(playBarInfo.musicInfo.vidUrl, "_blank");
+    if (playBarInfo && playBarInfo.musicInfo.url) {
+      window.open(playBarInfo.musicInfo.url, "_blank");
     }
   };
 
@@ -486,13 +486,13 @@ const PlayBar = () => {
     console.log("musicLikeAddResponse 실행");
     if (nowPlayingPlaylist && nowPlayingPlaylistID === playlistId) {
       const updatedMusics = musics.map((music) =>
-        music.basicInfo.vidUrl === playBarInfo?.musicInfo.vidUrl
+        music.basicInfo.url === playBarInfo?.musicInfo.url
           ? { ...music, like: true }
           : music
       );
 
       const updatedNowRandomMusics = nowRandomPlaylist.map((music) =>
-        music.basicInfo.vidUrl === playBarInfo?.musicInfo.vidUrl
+        music.basicInfo.url === playBarInfo?.musicInfo.url
           ? { ...music, like: true }
           : music
       );
@@ -512,13 +512,13 @@ const PlayBar = () => {
 
     if (nowPlayingPlaylist && nowPlayingPlaylistID === playlistId) {
       const updatedMusics = musics.map((music) =>
-        music.basicInfo.vidUrl === playBarInfo?.musicInfo.vidUrl
+        music.basicInfo.url === playBarInfo?.musicInfo.url
           ? { ...music, like: false }
           : music
       );
 
       const updatedNowRandomMusics = nowRandomPlaylist.map((music) =>
-        music.basicInfo.vidUrl === playBarInfo?.musicInfo.vidUrl
+        music.basicInfo.url === playBarInfo?.musicInfo.url
           ? { ...music, like: false }
           : music
       );
@@ -560,13 +560,13 @@ const PlayBar = () => {
                   <div
                     className={styles["main-wrap-play-img"]}
                     style={{
-                      backgroundImage: `url(${playBarInfo?.musicInfo.thumb})`,
+                      backgroundImage: `url(${playBarInfo?.musicInfo.imageUrl})`,
                     }}
                   ></div>
                 </div>
                 <div className={styles["main-wrap-play-info-box"]}>
                   <div className={styles["main-wrap-play-title"]}>
-                    {playBarInfo?.musicInfo.vidTitle}
+                    {playBarInfo?.musicInfo.title}
                   </div>
                   <div className={styles["main-wrap-play-artist"]}>
                     {playBarInfo?.musicInfo.author}

@@ -1,5 +1,6 @@
 package com.hmplayer.https_music_player.domain.jpa.jpaInterface;
 
+import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto;
 import com.hmplayer.https_music_player.domain.jpa.entity.Like;
@@ -18,7 +19,6 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
     Optional<Like> findByUserAndMusic(User user, Music music);
 
 
-//    void save(Long musicId, String userEmail);
     @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto(" +
             "new com.hmplayer.https_music_player.domain.dto.object.MusicDto(m, false), COUNT(l)) " +
             "FROM Music m LEFT JOIN Like l ON l.music = m " +
@@ -33,14 +33,11 @@ public interface MusicLikeRepository extends JpaRepository<Like, Long> {
     
     
     // db에 있는 모든 music중 특정 user가 like 하고 있는 데이터 get
-    @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto(" +
-            "new com.hmplayer.https_music_player.domain.dto.object.MusicDto(m, false), " + // MusicDto 생성
-            "COUNT(l)) " + // likeCount
+    @Query("SELECT new com.hmplayer.https_music_player.domain.dto.object.MusicDto(m, true) " +
             "FROM Music m " +
             "JOIN Like l ON l.music = m AND l.user.email = :email " +
-            "GROUP BY m.musicId, m.title, m.author, m.duration, m.url, m.imageUrl, m.createdAt " +
-            "ORDER BY MIN(l.id) ASC")
-    List<MusicLikeDto> findMyLikedMusic(@Param("email") String email);
+            "ORDER BY l.id ASC")
+    List<MusicDto> findMyLikedMusic(@Param("email") String email);
 
 
 

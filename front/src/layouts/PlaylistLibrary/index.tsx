@@ -109,7 +109,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     if (nowPlayingPlaylistID === addPlaylistID) {
       // nowRandomPlaylist에서 지금 듣는 노래의 index. 기준 찾기
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
-        music.basicInfo.vidUrl.includes(playBarUrl)
+        music.basicInfo.url.includes(playBarUrl)
       );
 
       if (nowIndex !== -1) {

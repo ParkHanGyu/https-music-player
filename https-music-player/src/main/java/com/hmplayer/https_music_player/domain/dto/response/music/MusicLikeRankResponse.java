@@ -23,6 +23,7 @@ public class MusicLikeRankResponse extends ResponseDto {
         this.musicList = musicList;
     }
     public static ResponseEntity<MusicLikeRankResponse> success(List<MusicLikeCountDto> musicList){
+        System.out.println("클라이언트에 보내는 musicList 값 : " + musicList);
         return ResponseEntity.ok(new MusicLikeRankResponse(musicList));
     }
 

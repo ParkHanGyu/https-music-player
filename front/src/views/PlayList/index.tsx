@@ -103,7 +103,7 @@ const PlayList = () => {
       return;
     }
 
-    const itemMusicUrl = musics[index].basicInfo.vidUrl;
+    const itemMusicUrl = musics[index].basicInfo.url;
     const itemMusicLike = musics[index].like;
     setMusicInfo(itemMusicUrl, (newInfoData) => {
       const musicWithLike: MusicInfoAndLikeData = {
@@ -129,11 +129,11 @@ const PlayList = () => {
       const shufflePlaylist = shuffle(musics);
       // 옮길 배열
       const targetItem = shufflePlaylist.find(
-        (item) => item.basicInfo.vidUrl === itemMusicUrl
+        (item) => item.basicInfo.url === itemMusicUrl
       );
       // 이외 배열
       const filteredList = shufflePlaylist.filter(
-        (item) => item.basicInfo.vidUrl !== itemMusicUrl
+        (item) => item.basicInfo.url !== itemMusicUrl
       );
       // 최종 결과 (targetItem을 맨 앞에 추가)
       const updatedNowRandomPlaylist = targetItem
@@ -159,7 +159,7 @@ const PlayList = () => {
   const onHandleMusicCopy = (index: number) => {
     setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
-    const itemMusicUrl = musics[index].basicInfo.vidUrl;
+    const itemMusicUrl = musics[index].basicInfo.url;
 
     if (itemMusicUrl) {
       setMusicInfo(itemMusicUrl);
@@ -204,14 +204,14 @@ const PlayList = () => {
     // 삭제하는 음악의 url
     const deleteMusicUrl =
       nowPlayingPlaylist.find((item) => item.musicId === musicId)?.basicInfo
-        .vidUrl || null;
+        .url || null;
 
     // 삭제한 노래가 현재 듣고 있는 노래라면 다음 노래로 넘어가야 함.
     if (deleteMusicUrl === playBarUrl && playlistId === nowPlayingPlaylistID) {
       // 하지만 삭제하는 노래가 마지막 노래라면? 첫번쨰 노래로 넘어가야함.
       //                11 - 1          === 5
       if (lastIndexBoolean) {
-        const newMusicUrl = nowPlayingPlaylist[0].basicInfo.vidUrl;
+        const newMusicUrl = nowPlayingPlaylist[0].basicInfo.url;
         setPlayBarUrl(newMusicUrl);
         setMusicInfo(newMusicUrl, (newInfoData) => {
           const musicWithLike: MusicInfoAndLikeData = {
@@ -222,7 +222,7 @@ const PlayList = () => {
         });
       } else {
         const newMusicUrl =
-          nowPlayingPlaylist[deleteMusicIndex + 1].basicInfo.vidUrl;
+          nowPlayingPlaylist[deleteMusicIndex + 1].basicInfo.url;
         setPlayBarUrl(newMusicUrl);
         // 콜백
         setMusicInfo(newMusicUrl, (newInfoData) => {
@@ -402,7 +402,7 @@ const PlayList = () => {
                     className={
                       nowPlayingPlaylistID === playlistId &&
                       playBarUrl &&
-                      music.basicInfo.vidUrl.includes(playBarUrl)
+                      music.basicInfo.url.includes(playBarUrl)
                         ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
                         : styles["main-music-data-info-box"]
                     }
@@ -425,7 +425,7 @@ const PlayList = () => {
                       <div
                         className={styles["music-info-image"]}
                         style={{
-                          backgroundImage: `url(${music.basicInfo.thumb})`,
+                          backgroundImage: `url(${music.basicInfo.imageUrl})`,
                         }}
                       ></div>
 
@@ -433,7 +433,7 @@ const PlayList = () => {
                       <div
                         className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                       >
-                        {music.basicInfo.vidTitle}
+                        {music.basicInfo.title}
                       </div>
                     </div>
 

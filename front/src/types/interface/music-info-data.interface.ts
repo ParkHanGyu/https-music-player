@@ -1,6 +1,6 @@
 export default interface NoembedMusicInfoData {
-  vidUrl: string;
+  url: string;
   author: string;
-  thumb: string;
-  vidTitle: string;
+  imageUrl: string;
+  title: string;
 }

@@ -10,10 +10,8 @@ import java.util.Date;
 @Setter
 @ToString
 public class MusicLikeDto {
-
     private MusicDto musicInfo;
     private long likeCount;
-
 
     public MusicLikeDto(MusicDto musicInfo, long likeCount) {
         this.musicInfo = musicInfo;

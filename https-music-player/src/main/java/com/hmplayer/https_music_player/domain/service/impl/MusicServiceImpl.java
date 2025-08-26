@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.*;
+import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto;
@@ -298,7 +299,7 @@ public class MusicServiceImpl implements MusicService {
 
         // 로그인 하지 않았을때
         if(email.equals("anonymousUser")) {
-            log.info("likedMusicOnly = {}", likedMusicOnly.toString());
+            log.info("로그인 하지 않았을때 likedMusicOnly = {}", likedMusicOnly.toString());
             return MusicLikeRankResponse.success(likedMusicOnly);
         }else { // 로그인 했을때
             System.out.println("로그인 유저 email : "+email);
@@ -310,7 +311,11 @@ public class MusicServiceImpl implements MusicService {
                     dto.getMusicInfo().setLiked(true);
                 }
             });
+            log.info("로그인 했을때 likedMusicOnly = {}", likedMusicOnly.toString());
+
         }
+
+
         return MusicLikeRankResponse.success(likedMusicOnly);
     }
 
@@ -334,12 +339,13 @@ public class MusicServiceImpl implements MusicService {
     // my like music 데이터 반환
     @Override
     public ResponseEntity<? super MyMusicLikeResponse> myLikeMusic(String email) {
-        List<MusicLikeDto> result = musicLikeRepository.findMyLikedMusic(email);
+        List<MusicDto> result = musicLikeRepository.findMyLikedMusic(email);
 
         System.out.println("myLikeMusic 339줄-------------------");
-        result.forEach(dto -> {
-                dto.getMusicInfo().setLiked(true);
-        });
+
+//        result.forEach(dto -> {
+//                dto.setLiked(true);
+//        });
 
         log.info("result = {}", result.toString());
         return MyMusicLikeResponse.success(result);

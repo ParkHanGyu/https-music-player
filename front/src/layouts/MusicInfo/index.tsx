@@ -77,8 +77,8 @@ const MusicInfo = () => {
 
   //      event handler: 링크 클릭 이벤트 처리 함수       //
   const handleOpenVideo = () => {
-    if (infoData.vidUrl !== "-") {
-      window.open(`${infoData.vidUrl}`, "_blank");
+    if (infoData.url !== "-") {
+      window.open(`${infoData.url}`, "_blank");
     }
     return;
   };
@@ -227,13 +227,13 @@ const MusicInfo = () => {
         <div
           className={styles["music-info-image"]}
           style={{
-            backgroundImage: `url(${infoData.thumb})`,
+            backgroundImage: `url(${infoData.imageUrl})`,
           }}
         ></div>
         <div className={styles["music-info-data"]}>
           <div className={styles["music-info-title-box"]}>
             <div className={styles["title-info"]}>Title</div>
-            <div className={styles["title-data"]}>{infoData.vidTitle}</div>
+            <div className={styles["title-data"]}>{infoData.title}</div>
           </div>
           <div className={styles["music-info-artist-box"]}>
             <div className={styles["artist-info"]}>Artist</div>
@@ -247,10 +247,10 @@ const MusicInfo = () => {
                 handleOpenVideo();
               }}
               style={{
-                cursor: infoData.vidUrl === "-" ? undefined : "pointer",
+                cursor: infoData.url === "-" ? undefined : "pointer",
               }}
             >
-              {infoData.vidUrl}
+              {infoData.url}
             </div>
           </div>
 

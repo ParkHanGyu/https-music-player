@@ -18,34 +18,35 @@ import java.util.List;
 public class MusicDto {
 
     private Long musicId;  // 음악 ID
-    private String title;  // 음악 제목
-    private String author;  // 음악 작곡가
     private int duration;  // 재생 시간 (초 단위)
-    private String url;  // 음악 URL
-    private String imageUrl;  // 음악 이미지
     private Date createdAt;  // 생성 날짜
     private boolean like; // like 유무
+    private BasicInfoDto basicInfo;
 
 
     public MusicDto(Music music, boolean like) {
         this.musicId = music.getMusicId();
-        this.title = music.getTitle();
-        this.author = music.getAuthor();
         this.duration = music.getDuration();
-        this.url = music.getUrl();
-        this.imageUrl = music.getImageUrl();
         this.createdAt = music.getCreatedAt();
         this.like = like;
+
+        this.basicInfo = new BasicInfoDto();
+        this.basicInfo.setUrl(music.getUrl());
+        this.basicInfo.setImageUrl(music.getImageUrl());
+        this.basicInfo.setAuthor(music.getAuthor());
+        this.basicInfo.setTitle(music.getTitle());
     }
 
     public MusicDto of(Music music){
         this.musicId = music.getMusicId();
-        this.title = music.getTitle();
-        this.author = music.getAuthor();
         this.duration = music.getDuration();
-        this.url = music.getUrl();
-        this.imageUrl = music.getImageUrl();
         this.createdAt = music.getCreatedAt();
+
+        this.basicInfo = new BasicInfoDto();
+        this.basicInfo.setUrl(music.getUrl());
+        this.basicInfo.setImageUrl(music.getImageUrl());
+        this.basicInfo.setAuthor(music.getAuthor());
+        this.basicInfo.setTitle(music.getTitle());
         return this;
     }
 

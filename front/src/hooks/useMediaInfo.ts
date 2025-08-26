@@ -5,10 +5,10 @@ const noEmbed = "https://noembed.com/embed?url=";
 // 커스텀 훅: useMediaInfo (YouTube, SoundCloud 모두 지원)
 const useMediaInfo = (defaultImage: string) => {
   const [infoData, setInfoData] = useState<NoembedMusicInfoData>({
-    vidUrl: "-",
+    url: "-",
     author: "-",
-    thumb: defaultImage,
-    vidTitle: "-",
+    imageUrl: defaultImage,
+    title: "-",
   });
 
   const setMusicInfo = (
@@ -39,10 +39,10 @@ const useMediaInfo = (defaultImage: string) => {
         }
 
         const newInfoData = {
-          vidUrl: url || "-",
+          url: url || "-",
           author: author_name || "-",
-          thumb: thumbnail_url || defaultImage,
-          vidTitle: processedTitle || "-",
+          imageUrl: thumbnail_url || defaultImage,
+          title: processedTitle || "-",
         };
 
         setInfoData(newInfoData);
@@ -56,10 +56,10 @@ const useMediaInfo = (defaultImage: string) => {
 
   const resetInfoData = () => {
     setInfoData({
-      vidUrl: "-",
+      url: "-",
       author: "-",
-      thumb: defaultImage,
-      vidTitle: "-",
+      imageUrl: defaultImage,
+      title: "-",
     });
   };
 
