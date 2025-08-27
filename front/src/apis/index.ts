@@ -413,7 +413,6 @@ export const musicLikeRankRequest = async (accessToken?: string) => {
     .get(GET_MUSIC_RANK_URL(), config)
     .then((response) => {
       const responseBody: musicLikeRankResponseDto = response.data;
-      console.log("416줄 : ", JSON.stringify(responseBody, null, 2));
       return responseBody;
     })
     .catch((error) => {

@@ -12,6 +12,10 @@ import { SIGN_IN_PATH } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
 import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
+import { useVideoStore } from "../../store/useVideo.store";
+import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 
 const MyLike = () => {
   //      Zustand state : 로그인 유저 정보 상태      //
@@ -21,6 +25,20 @@ const MyLike = () => {
 
   const [myLikeMusic, setMyLikeMusic] = useState<Music[]>([]);
   const navigator = useNavigate();
+
+  const { playBarUrl, setPlayBarUrl, playBarInfo, setPlayBarInfo } =
+    useVideoStore();
+
+  //    Zustand state : playBar.tsx 관련 상태    //
+  const {
+    setPlaylistLibrary,
+    setNowRandomPlaylist,
+    setNowPlayingPlaylist,
+    setNowPlayingPlaylistID,
+    setNowRandomPlaylistID,
+  } = usePlaylistStore();
+  //    Zustand state : playBar.tsx 재생 상태    //
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
   const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
     url: "",
@@ -91,12 +109,74 @@ const MyLike = () => {
       (item) => item.basicInfo.url !== musicUrl
     );
 
-    console.log(
-      "myLikeMusic에 set해주는 값 : ",
-      JSON.stringify(newMyLikeMusic, null, 2)
-    );
-
     setMyLikeMusic(newMyLikeMusic);
+  };
+
+  //      event handler:  전체 재생 버튼 클릭 함수       //
+  const handlePlaySelected = () => {
+    let targetMusic = myLikeMusic;
+
+    // 체크한게 있다면
+    if (checkedMusicIds.length > 0) {
+      targetMusic = myLikeMusic.filter((music) =>
+        checkedMusicIds.includes(Number(music.musicId))
+      );
+    }
+
+    // Music[]타입에 맞게 set
+    const selectedMusic: Music[] = targetMusic.map((music) => ({
+      basicInfo: {
+        url: music.basicInfo.url,
+        title: music.basicInfo.title,
+        imageUrl: music.basicInfo.imageUrl,
+        author: music.basicInfo.author,
+      },
+
+      musicId: music.musicId,
+      duration: music.duration,
+      createdAt: music.createdAt,
+      like: music.like,
+    }));
+
+    if (playBarUrl === selectedMusic[0].basicInfo.url) {
+      setPlayBarUrl("");
+    }
+
+    // 첫번째 재생할 노래 info 데이터 준비
+    const item1info: MusicInfoAndLikeData = {
+      musicInfo: {
+        url: selectedMusic[0].basicInfo.url,
+        author: selectedMusic[0].basicInfo.author,
+        imageUrl: selectedMusic[0].basicInfo.imageUrl,
+        title: selectedMusic[0].basicInfo.title,
+      },
+      like: selectedMusic[0].like,
+    };
+
+    setPlayBarInfo(item1info);
+    setNowPlayingPlaylist(selectedMusic);
+    setNowRandomPlaylist(selectedMusic);
+    setNowRandomPlaylistID("");
+    setNowPlayingPlaylistID("");
+    setTimeout(() => {
+      setPlayBarUrl(selectedMusic[0].basicInfo.url);
+    }, 100);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
+  //      state:  체크 상태 관리 상태        //
+  const [checkedMusicIds, setCheckedMusicIds] = useState<number[]>([]);
+
+  //      event handler:  체크박스 클릭 함수       //
+  const handleCheck = (musicId: number) => {
+    setCheckedMusicIds(
+      (prev) =>
+        prev.includes(musicId)
+          ? prev.filter((id) => id !== musicId) // 이미 있으면 제거
+          : [...prev, musicId] // 없으면 추가
+    );
   };
 
   return (
@@ -106,7 +186,7 @@ const MyLike = () => {
           <div className={styles["main-music-data-column-box"]}>
             <div
               className={styles["music-column-all-play"]}
-              // onClick={handlePlaySelected}
+              onClick={handlePlaySelected}
             ></div>
 
             <div className={styles["music-column-number"]}>#</div>
@@ -125,8 +205,8 @@ const MyLike = () => {
                 <div className={styles["music-info-play-check"]}>
                   <input
                     type="checkbox"
-                    // checked={checkedMusicIds.includes(Number(music.musicId))}
-                    // onChange={() => handleCheck(Number(music.musicId))}
+                    checked={checkedMusicIds.includes(Number(music.musicId))}
+                    onChange={() => handleCheck(Number(music.musicId))}
                   />
                 </div>
 

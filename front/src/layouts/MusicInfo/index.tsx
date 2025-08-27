@@ -22,6 +22,10 @@ import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-librar
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
 
+import defaultImageFile from "../../assets/album.png";
+
+const defaultImage = defaultImageFile;
+
 const MusicInfo = () => {
   const {
     searchUrl,
@@ -50,8 +54,8 @@ const MusicInfo = () => {
   //    Zustand state :유저 정보 상태    //
   const { loginUserInfo } = useLoginUserStore();
 
-  const defaultImage =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
+  // const defaultImage =
+  //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjjb6DRcr48cY8lS0pYoQ4JjiEyrFlxWvWsw&s"; // 기본 이미지 URL
 
   //    hook (커스텀) : 음악 정보들 set    //
   const { infoData, setMusicInfo, resetInfoData } = useMediaInfo(defaultImage);

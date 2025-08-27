@@ -1,6 +1,6 @@
 .main-left {
   background-color: rgb(0, 0, 0);
-  width: 14em;
+  width: 24em;
   font-size: 14px;
   color: #dddddd;
   padding: 20px;
@@ -15,8 +15,8 @@
 
 .music-info-image {
   background-image: url("../../assets/sum.jpg");
-  width: 200px;
-  height: 200px;
+  width: 336px;
+  height: 336px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

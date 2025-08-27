@@ -481,7 +481,7 @@ const Menu = () => {
           }}
           onClick={onLikeClickHandler}
         >
-          LIKE
+          MyLike
         </div>
 
         <div

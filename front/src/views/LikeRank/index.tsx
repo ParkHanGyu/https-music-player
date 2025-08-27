@@ -63,7 +63,6 @@ const LikeRank = () => {
       return;
     }
     const musicLikeRankResult = responseBody as musicLikeRankResponseDto;
-    console.log("59줄 : ", JSON.stringify(musicLikeRankResult, null, 2));
 
     setLikeRankMusic(musicLikeRankResult.musicList);
   };
@@ -120,9 +119,9 @@ const LikeRank = () => {
     setNowPlayingPlaylistID("");
     setNowRandomPlaylistID("");
 
-    if (!isPlaying) {
-      setIsPlaying(true);
-    }
+    // if (!isPlaying) {
+    //   setIsPlaying(true);
+    // }
   };
 
   //      state:  url 시간 상태        //

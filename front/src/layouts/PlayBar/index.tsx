@@ -85,6 +85,28 @@ const PlayBar = () => {
   //   return () => document.removeEventListener("keydown", handlePlayPause);
   // }, []);
 
+  //================
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        event.preventDefault(); // 스크롤 방지
+
+        // Zustand 스토어의 현재 상태(snapshot)
+        const { isPlaying, setIsPlaying } = usePlayerOptionStore.getState();
+        if (!isPlaying) {
+          setIsPlaying(true);
+        } else {
+          setIsPlaying(false);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const formatTime = useFormatTime();
 
   //      state:  playBar 동영상 시간 상태        //
@@ -203,10 +225,21 @@ const PlayBar = () => {
 
   // ============================================== ReactPlayer 옵션 관련
   const handleReady = () => {
+    console.log("handleReady 실행");
     setTimeout(() => {
       setIsLoading(false);
       setIsPlaying(true);
     }, 800);
+
+    // if (playBarUrl !== "") {
+    //   // true로 해준 뒤 ReactPlayer컴포넌트에서 준비 완료시 setIsLoading(false)를 해줌
+    //   console.log("setIsLoading(true)실행");
+    //   setIsLoading(true);
+    // }
+
+    // setTimeout(() => {
+    //   setIsPlaying(true);
+    // }, 800);
   };
 
   // ===================================================== 반복재생 관련
@@ -411,6 +444,13 @@ const PlayBar = () => {
   // playBar변경시 버퍼링 대신 useEffect로 setIsLoading(true)로 로딩창 보여줌.
   // 이후 동영상 컴포넌트에서 handleReady() 함수로 setIsLoading(false)를 해줄꺼임.
   useEffect(() => {
+    if (playBarUrl !== "") {
+      // true로 해준 뒤 ReactPlayer컴포넌트에서 준비 완료시 setIsLoading(false)를 해줌
+      console.log("setIsLoading(true)실행");
+      console.log("setIsLoading(true)실행");
+      setIsLoading(true);
+    }
+
     // 노래를 듣는중에 로그인이 만료될 경우 현재 듣는 노래를 제외한 노래 순서를 초기화.
     // 로그인 하지 않으면 다음 노래부터 못들음
     if (!cookies.accessToken || !loginUserInfo) {
@@ -420,19 +460,10 @@ const PlayBar = () => {
       setNowRandomPlaylistID("");
       return;
     }
-
-    if (playBarUrl !== "") {
-      // true로 해준 뒤 ReactPlayer컴포넌트에서 준비 완료시 setIsLoading(false)를 해줌
-      console.log("setIsLoading(true)실행");
-      setIsLoading(true);
-    }
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log(
-      "playBarInfo.like : ",
-      JSON.stringify(playBarInfo?.like, null, 2)
-    );
+    console.log("isPlaying 상태 : ", JSON.stringify(isPlaying, null, 2));
   };
 
   const handleMusicLikeClick = () => {

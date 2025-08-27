@@ -2,7 +2,6 @@ package com.hmplayer.https_music_player.domain.jpa.jpaInterface;
 
 import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
-import com.hmplayer.https_music_player.domain.dto.object.MusicLikeDto;
 import com.hmplayer.https_music_player.domain.jpa.entity.Like;
 import com.hmplayer.https_music_player.domain.jpa.entity.Music;
 import com.hmplayer.https_music_player.domain.jpa.entity.User;
