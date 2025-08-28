@@ -267,17 +267,21 @@ const MusicInfo = () => {
         </div>
 
         <div className={styles["music-info-controller"]}>
-          {/* 재생버튼 */}
-          <div
-            className={styles["info-controller-play-btn"]}
-            onClick={playHandleClick}
-          ></div>
+          <div className={styles["music-info-play-and-add"]}>
+            {/* 재생버튼 */}
+            <div
+              className={styles["info-controller-play-btn"]}
+              onClick={playHandleClick}
+            ></div>
 
-          {/* playlist에 추가 */}
-          <div
-            className={styles["controller-add-playlist"]}
-            onClick={togglePlaylistPopup}
-          ></div>
+            {/* playlist에 추가 */}
+            <div
+              className={styles["controller-add-playlist"]}
+              onClick={togglePlaylistPopup}
+            ></div>
+          </div>
+          {/* 현재 재생중인 목록 */}
+          <div className={styles["info-controller-now-playlist-btn"]}></div>
         </div>
       </div>
       {searchUrl && (

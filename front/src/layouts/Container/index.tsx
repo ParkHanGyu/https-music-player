@@ -7,14 +7,12 @@ import styles from "./style.module.css";
 const Container = () => {
   return (
     <>
-      <div>
-        <div className={styles["warp"]}>
-          <Menu />
-          <Outlet />
-          <MusicInfo />
-        </div>
-        <PlayBar />
+      <div className={styles["warp"]}>
+        <Menu />
+        <Outlet />
+        <MusicInfo />
       </div>
+      <PlayBar />
     </>
   );
 };
