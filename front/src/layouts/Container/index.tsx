@@ -3,6 +3,7 @@ import Menu from "../Menu";
 import MusicInfo from "../MusicInfo";
 import PlayBar from "../PlayBar";
 import styles from "./style.module.css";
+import NowPlay from "../NowPlay";
 
 const Container = () => {
   return (
@@ -10,7 +11,8 @@ const Container = () => {
       <div className={styles["warp"]}>
         <Menu />
         <Outlet />
-        <MusicInfo />
+        {/* <MusicInfo /> */}
+        <NowPlay />
       </div>
       <PlayBar />
     </>
