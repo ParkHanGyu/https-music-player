@@ -398,13 +398,7 @@ const PlayList = () => {
               {musics.map((music, index) => (
                 <div
                   key={index}
-                  className={
-                    nowPlayingPlaylistID === playlistId &&
-                    playBarUrl &&
-                    music.basicInfo.url.includes(playBarUrl)
-                      ? `${styles["main-music-data-info-box"]} ${styles["music-target"]}`
-                      : styles["main-music-data-info-box"]
-                  }
+                  className={styles["main-music-data-info-box"]}
                   style={{
                     cursor: playlistPopupOpen ? "" : "pointer",
                   }}

@@ -20,3 +20,6 @@ hover color
 
 sign-up btn
 #e74736
+
+NowPlay
+#e35647

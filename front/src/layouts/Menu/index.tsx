@@ -61,6 +61,7 @@ const Menu = () => {
   // const tokenExp = useTokenExpiration(cookies.accessToken);
 
   const playListClickHandler = () => {
+    console.log("실행");
     setIsPlaylistDrop(!isPlaylistDrop);
   };
 
@@ -400,7 +401,7 @@ const Menu = () => {
                         : undefined,
 
                     color:
-                      playlistId === (index + 1).toString()
+                      playlistId === playlist.playlistId.toString()
                         ? "#ffffff"
                         : undefined,
                   }}

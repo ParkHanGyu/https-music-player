@@ -60,6 +60,11 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
     console.log("로딩 true");
     setPlaylistLoading(true);
 
+    console.log(
+      "PlaylistLibrary 에서 api요청시 서버에 보내는 값 : " +
+        JSON.stringify(requestBody, null, 2)
+    );
+
     const addPlaylistID = String(requestBody.playlistId);
 
     // 음악 추가 api 실행

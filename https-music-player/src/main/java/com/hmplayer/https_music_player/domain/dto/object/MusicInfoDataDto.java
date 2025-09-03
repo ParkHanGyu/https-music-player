@@ -8,8 +8,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MusicInfoDataDto {
-    private String vidUrl;
+    private String url;
     private String author;
-    private String thumb;
-    private String vidTitle;
+    private String imageUrl;
+    private String title;
 }

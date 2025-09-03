@@ -47,6 +47,7 @@ public class MusicServiceImpl implements MusicService {
     // 음악 추가
     @Override
     public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
+        log.info("서버에서 받아온 request = {}", request);
         // 0. 데이터 무결성 확인
         // 0-1. 요청하는 user가 db에 존재하는 user인가
         // 토큰 추출
@@ -68,7 +69,7 @@ public class MusicServiceImpl implements MusicService {
         // 여기까지 왔다면 유저의 요청은 정상적임. 검증된 user, 존재하는 playlist 이므로 메소드 진행
         // 1. Music테이블 음악 확인
         // db에 해당 음악이 있는지 확인
-        String requestMusicUrl = request.getMusicInfoData().getVidUrl();
+        String requestMusicUrl = request.getMusicInfoData().getUrl();
         Optional<Music> optionalMusic = musicRepository.findByUrl(requestMusicUrl);
         Music finalMusicData; // 최종적으로 사용할 Music 객체
         if(optionalMusic.isEmpty()) { // optionalMusic 값이 비어있을때 - Music 테이블 추가
@@ -94,7 +95,7 @@ public class MusicServiceImpl implements MusicService {
 
         if(optionalPlaylistMusic.isPresent()) {// optionalPlaylistMusic 존재할때 - music도 있고 playlistMusic 테이블에도 있기 때문에 중복 추가 예외 발생
             System.out.println("playlistMusic 테이블에 데이터가 존재함. 음악 중복 추가로 예외 발생");
-            throw new PlaylistMusicDuplication(request.getMusicInfoData().getVidTitle(),request.getPlaylistId());
+            throw new PlaylistMusicDuplication(request.getMusicInfoData().getTitle(),request.getPlaylistId());
         }
 
 
@@ -237,13 +238,13 @@ public class MusicServiceImpl implements MusicService {
         // .orElseThrow() 없으면 예외를 던짐
         // .orElseGet() 없으면 값을 만들어서 사용
 //        Music dbMusic = musicRepository.findByUrl(request.getPlayBarUrl()).orElseThrow(() -> new IllegalArgumentException("해당 음악이 없습니다."));
-        Music dbMusic = musicRepository.findByUrl(request.getMusicInfoData().getVidUrl())
+        Music dbMusic = musicRepository.findByUrl(request.getMusicInfoData().getUrl())
                 .orElseGet(() -> {
                     Music newMusic = new Music();
-                    newMusic.setUrl(request.getMusicInfoData().getVidUrl());
+                    newMusic.setUrl(request.getMusicInfoData().getUrl());
                     newMusic.setAuthor(request.getMusicInfoData().getAuthor());      // 요청에서 받아온 값
-                    newMusic.setTitle(request.getMusicInfoData().getVidTitle());     // 요청에서 받아온 값
-                    newMusic.setImageUrl(request.getMusicInfoData().getThumb());    // 요청에서 받아온 값
+                    newMusic.setTitle(request.getMusicInfoData().getTitle());     // 요청에서 받아온 값
+                    newMusic.setImageUrl(request.getMusicInfoData().getImageUrl());    // 요청에서 받아온 값
                     newMusic.setDuration(request.getInfoDuration());    // 요청에서 받아온 값
                     return musicRepository.save(newMusic);
                 });

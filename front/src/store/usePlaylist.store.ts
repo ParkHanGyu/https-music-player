@@ -26,6 +26,10 @@ interface VideoState {
   // ======================== 현재 보는 재생목록 음악들
   musics: Music[]; // 현재 보는 재생목록 음악들
   setMusics: (musics: Music[]) => void;
+
+  // ======================== 현재 재생중인 플레이리스트 view state
+  nowPlayViewState: boolean;
+  setNowPlayViewState: (nowPlayViewState: boolean) => void;
 }
 
 // Zustand 스토어 생성
@@ -65,4 +69,9 @@ export const usePlaylistStore = create<VideoState>((set) => ({
   // ======================== 현재 보는 재생목록 음악들
   musics: [], // 현재 보는 재생목록 음악들
   setMusics: (musics) => set({ musics }),
+
+  // ======================== 현재 재생중인 플레이리스트 view state
+  nowPlayViewState: false,
+  setNowPlayViewState: (nowPlayViewState) =>
+    set({ nowPlayViewState: nowPlayViewState }),
 }));

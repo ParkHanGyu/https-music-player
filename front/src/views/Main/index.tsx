@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 import { useVideoStore } from "../../store/useVideo.store";
+import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const Main = () => {
   //    Zustand state : 메인 화면 검색 url 상태    //
   const { setSearchUrl } = useVideoStore();
+  //    Zustand state : playBar.tsx 관련 상태    //
+  const { nowPlayViewState, setNowPlayViewState } = usePlaylistStore();
   //      state: 검색할 url 상태      //
   const [videoUrl, setVideoUrl] = useState<string>("");
   //      event handler: url input값 변경      //
@@ -37,6 +40,10 @@ const Main = () => {
     } else {
       alert("형식에 맞는 URL을 입력해주세요.");
       return;
+    }
+
+    if (nowPlayViewState) {
+      setNowPlayViewState(false);
     }
   };
 

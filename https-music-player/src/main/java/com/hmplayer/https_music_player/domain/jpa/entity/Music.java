@@ -46,11 +46,11 @@ public class Music {
     private List<PlaylistMusic> playlists;  // 연결된 재생 목록들
 
     public Music(MusicInfoDataDto youtube, int duration) {
-        this.title = youtube.getVidTitle();
+        this.title = youtube.getTitle();
         this.author = youtube.getAuthor();
-        this.imageUrl = youtube.getThumb();
+        this.imageUrl = youtube.getImageUrl();
         this.duration = duration;
-        this.url = youtube.getVidUrl();
+        this.url = youtube.getUrl();
 
         this.createdAt = new Date();  // 생성 시 현재 날짜로 초기화
     }

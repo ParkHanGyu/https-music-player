@@ -43,6 +43,8 @@ const MusicInfo = () => {
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
+    nowPlayViewState,
+    setNowPlayViewState,
   } = usePlaylistStore();
 
   //    Zustand state : playBar.tsx 재생 상태    //
@@ -132,11 +134,6 @@ const MusicInfo = () => {
       };
     }
 
-    // if (!ResponseUtil(responseBody)) {
-    //   alert("Like 상태를 불러오는 데 실패했습니다.");
-    //   return;
-    // }
-
     setPlayBarInfo(musicWithLike);
 
     setTimeout(() => {
@@ -218,6 +215,10 @@ const MusicInfo = () => {
     console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
   };
 
+  const nowPlayHandleClick = () => {
+    setNowPlayViewState(true);
+  };
+
   return (
     <>
       {/* 로딩 화면 */}
@@ -281,7 +282,10 @@ const MusicInfo = () => {
             ></div>
           </div>
           {/* 현재 재생중인 목록 */}
-          <div className={styles["info-controller-now-playlist-btn"]}></div>
+          <div
+            className={styles["info-controller-now-playlist-btn"]}
+            onClick={nowPlayHandleClick}
+          ></div>
         </div>
       </div>
       {searchUrl && (
