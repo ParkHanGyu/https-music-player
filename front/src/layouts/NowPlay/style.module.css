@@ -2,6 +2,7 @@
   /* border: 1px solid wheat; */
   background-color: rgb(0, 0, 0);
   width: 19.6%;
+  height: 100%;
   font-size: 14px;
   color: #dddddd;
   /* padding: 20px; */
@@ -14,19 +15,58 @@
   padding: 20px 0px;
 }
 
+/* ==========스크롤바  */
+.now-music-item-container {
+  color: #fff;
+  /* max-width: 360px; */
+  width: 100%;
+
+  height: 91%;
+  overflow: auto;
+}
+.now-music-item-container::-webkit-scrollbar {
+  width: 8px;
+}
+/* 스크롤바 배경 */
+.now-music-item-container::-webkit-scrollbar-track {
+  background-color: rgb(11, 11, 11);
+}
+.now-music-item-container::-webkit-scrollbar-thumb {
+  background-color: rgb(33, 33, 33);
+}
+.now-music-item-container::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* hover 효과 */
+.now-music-item-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(44, 44, 44);
+  transition: all 0.2s; /* 작동 안 됨 */
+}
+
+/* 코너에 라운드 효과 */
+.now-music-item-container::-webkit-scrollbar-track,
+.now-music-item-container::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+}
+
 /* ====================아이템 */
 .now-music-container {
-  /* border: 1px solid green; */
   width: 100%;
-  height: 100%;
+  height: 92%;
 }
+
 .now-music-item {
-  /* border: 1px solid red; */
-  width: 100%;
+  width: 99%;
   height: 8%;
   display: flex;
   cursor: pointer;
 }
+
+.now-music-item:hover {
+  background-color: rgb(33, 33, 33);
+}
+
 .now-music-image {
   background-image: url("../../assets/album.png");
   width: 45px;
@@ -40,7 +80,7 @@
 
 .now-music-info-box {
   margin: 10px 2px;
-  width: 77%;
+  width: 73%;
 }
 
 .now-muisc-info-author {
@@ -81,4 +121,18 @@
   background-color: rgb(33, 33, 33);
   border: 1px solid rgb(73, 73, 73);
   color: #e35647;
+}
+
+.now-music-move-btn {
+  display: none;
+  background-image: url("../../assets/moveBtn-hover.png");
+  width: 20px;
+  height: 20px;
+
+  background-size: cover;
+  margin: 20px 0px;
+}
+
+.now-music-item:hover .now-music-move-btn {
+  display: block;
 }

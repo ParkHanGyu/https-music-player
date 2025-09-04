@@ -59,28 +59,12 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
     console.log("로딩 true");
     setPlaylistLoading(true);
-
-    console.log(
-      "PlaylistLibrary 에서 api요청시 서버에 보내는 값 : " +
-        JSON.stringify(requestBody, null, 2)
-    );
-
-    const addPlaylistID = String(requestBody.playlistId);
-
     // 음악 추가 api 실행
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
-      (responseBody) => playlistAddMusicResponse(responseBody, addPlaylistID)
+      (responseBody) => playlistAddMusicResponse(responseBody)
     );
   };
-  const playlistAddMusicResponse = (
-    responseBody: ResponseDto | null,
-    addPlaylistID: string
-  ) => {
-    // 위에 api 추가를 성공하지 못하면 에러 발생하고 추가 컴포넌트 off.
-    // 성공하면 방금 추가한 재생목록의 노래를 최신 데이터를 받아오고 싶어함. 이유는
-    // 현재 듣는 노래의 재생목록과 추가한 노래의 재생목록이 같으면 반영해야 하니까.
-    // 근데 내가 작성한 코드는 현재 듣는 노래의 재생목록과 추가한 재생목록이 같지 않아도
-    // 최신화 시켜주려고함. 불필요한 요소임. 수정할것.
+  const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
     if (!ResponseUtil(responseBody)) {
       alert(responseBody?.message);
       setPlaylistPopupOpen(false);
@@ -89,61 +73,6 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
       return;
     }
     setPlaylistPopupOpen(!playlistPopupOpen);
-
-    // 재생중인 재생목록과 방금 추가한 노래의 재생목록이 같지 않으면
-    if (nowPlayingPlaylistID !== addPlaylistID) {
-      setPlaylistLoading(false);
-      return;
-    }
-
-    getPlaylistMusicReqeust(addPlaylistID, cookies.accessToken).then(
-      (responseBody) => getPlaylistMusicResponse(responseBody, addPlaylistID)
-    );
-  };
-
-  const getPlaylistMusicResponse = (
-    responseBody: GetMusicResponseDto | ResponseDto | null,
-    addPlaylistID: string
-  ) => {
-    if (!ResponseUtil(responseBody)) {
-      return;
-    }
-    const playListResult = responseBody as GetMusicResponseDto;
-
-    // 현재 듣고 있는 노래의 재생목록에 노래를 추가했다면 최신화 시켜줘야함
-    if (nowPlayingPlaylistID === addPlaylistID) {
-      // nowRandomPlaylist에서 지금 듣는 노래의 index. 기준 찾기
-      const nowIndex = nowRandomPlaylist.findIndex((music) =>
-        music.basicInfo.url.includes(playBarUrl)
-      );
-
-      if (nowIndex !== -1) {
-        // 2. nowIndex를 기준으로 beforeArray / afterArray로 배열 나누기
-        const beforeArray = nowRandomPlaylist.slice(0, nowIndex + 1);
-        const afterArray = nowRandomPlaylist.slice(nowIndex + 1);
-
-        // 3. nowRandomPlaylist와 playListResult.musicList을 비교해서 추가된 곡 찾기
-        const additionalItems = playListResult.musicList.filter(
-          (item) =>
-            !nowRandomPlaylist.some(
-              (existingItem) => existingItem.musicId === item.musicId
-            )
-        );
-
-        // 4. 랜덤한 위치 선택
-        const randomIndex = Math.floor(Math.random() * (afterArray.length + 1));
-
-        // 5. afterArray 배열에서 랜덤한 위치로 추가한 노래(additionalItems[0])를 삽입
-        afterArray.splice(randomIndex, 0, additionalItems[0]);
-
-        // 6. 최종 배열 합치기
-        const updatedPlaylist = [...beforeArray, ...afterArray];
-
-        setNowRandomPlaylist(updatedPlaylist);
-        setNowPlayingPlaylist(playListResult.musicList);
-      }
-    }
-    console.log("로딩 false");
     setPlaylistLoading(false);
   };
 

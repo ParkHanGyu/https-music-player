@@ -235,46 +235,8 @@ const PlayList = () => {
       }
     }
 
-    if (
-      playlistId !== undefined &&
-      nowPlayingPlaylist.length &&
-      playlistId === nowPlayingPlaylistID
-    ) {
-      console.log("222줄 if 실행");
-      getPlaylistMusicReqeust(playlistId, cookies.accessToken).then(
-        deletePlaylistMusicResponse
-      );
-    }
-
     console.log("로딩 false");
     setPlaylistLoading(false);
-  };
-
-  const deletePlaylistMusicResponse = (
-    responseBody: GetMusicResponseDto | ResponseDto | null
-  ) => {
-    console.log("deleteGetPlaylistMusicResponse 실행");
-
-    if (!ResponseUtil(responseBody)) {
-      return;
-    }
-    const playListResult = responseBody as GetMusicResponseDto;
-
-    // 삭제한 노래
-    const additionalItems = nowRandomPlaylist.filter(
-      (item) =>
-        !playListResult.musicList.some(
-          (existingItem) => existingItem.musicId === item.musicId
-        )
-    );
-
-    // 삭제할 노래의 ID를 기준으로 nowRandomPlaylist에서 일치하는 노래 삭제
-    const updatedPlaylist = nowRandomPlaylist.filter(
-      (item) => item.musicId !== additionalItems[0].musicId
-    );
-
-    setNowRandomPlaylist(updatedPlaylist);
-    setNowPlayingPlaylist(playListResult.musicList);
   };
 
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
@@ -349,10 +311,10 @@ const PlayList = () => {
     setStartIndex(null);
     setHoveringIndex(null);
 
-    if (playlistId === nowPlayingPlaylistID) {
-      // nowPlaylist 수정
-      setNowPlayingPlaylist(musics);
-    }
+    // if (playlistId === nowPlayingPlaylistID) {
+    //   // nowPlaylist 수정
+    //   setNowPlayingPlaylist(musics);
+    // }
   };
 
   // ========================================== 재생목록 순서 드래그 끝
