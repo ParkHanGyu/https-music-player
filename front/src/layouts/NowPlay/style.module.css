@@ -12,11 +12,46 @@
 
 .now-music-name {
   font-size: 18px;
-  padding: 20px 0px;
+  padding: 20px 0px 20px 10px;
+}
+
+.now-music-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.now-music-delete-btn {
+  background-image: url("../../assets/delete-icon.png");
+  width: 17px;
+  height: 17px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.now-music-action-btn {
+  display: flex;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.now-music-add-btn {
+  background-image: url("../../assets/add-playlist-icon.png");
+  width: 17px;
+  height: 17px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.now-music-add-btn:hover {
+  background-image: url("../../assets/add-playlist-icon-hover.png");
 }
 
 /* ==========스크롤바  */
-.now-music-item-container {
+.now-music-item-mid {
   color: #fff;
   /* max-width: 360px; */
   width: 100%;
@@ -24,29 +59,29 @@
   height: 91%;
   overflow: auto;
 }
-.now-music-item-container::-webkit-scrollbar {
+.now-music-item-mid::-webkit-scrollbar {
   width: 8px;
 }
 /* 스크롤바 배경 */
-.now-music-item-container::-webkit-scrollbar-track {
+.now-music-item-mid::-webkit-scrollbar-track {
   background-color: rgb(11, 11, 11);
 }
-.now-music-item-container::-webkit-scrollbar-thumb {
+.now-music-item-mid::-webkit-scrollbar-thumb {
   background-color: rgb(33, 33, 33);
 }
-.now-music-item-container::-webkit-scrollbar-button {
+.now-music-item-mid::-webkit-scrollbar-button {
   display: none;
 }
 
 /* hover 효과 */
-.now-music-item-container::-webkit-scrollbar-thumb:hover {
+.now-music-item-mid::-webkit-scrollbar-thumb:hover {
   background-color: rgb(44, 44, 44);
   transition: all 0.2s; /* 작동 안 됨 */
 }
 
 /* 코너에 라운드 효과 */
-.now-music-item-container::-webkit-scrollbar-track,
-.now-music-item-container::-webkit-scrollbar-thumb {
+.now-music-item-mid::-webkit-scrollbar-track,
+.now-music-item-mid::-webkit-scrollbar-thumb {
   border-radius: 5px;
 }
 
@@ -60,6 +95,7 @@
   width: 99%;
   height: 8%;
   display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -80,7 +116,7 @@
 
 .now-music-info-box {
   margin: 10px 2px;
-  width: 73%;
+  width: 70%;
 }
 
 .now-muisc-info-author {

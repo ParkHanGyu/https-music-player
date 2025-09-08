@@ -114,6 +114,44 @@ const NowPlay = () => {
     setHoveringIndex(null);
   };
 
+  //======== 삭제 관련
+  const [deleteModeState, setDeleteModeState] = useState<boolean>(false);
+
+  const handleDeleteMode = () => {
+    setDeleteModeState(true);
+  };
+
+  //======== add 관련
+  const [addModeState, setAddModeState] = useState<boolean>(false);
+
+  const handleAddMode = () => {
+    setAddModeState(true);
+  };
+
+  //======== 체크박스
+  //      state:  체크 상태 관리 상태        //
+  const [checkedMusicIds, setCheckedMusicIds] = useState<number[]>([]);
+
+  //      event handler:  체크박스 클릭 함수       //
+  const handleCheck = (musicId: number) => {
+    setCheckedMusicIds(
+      (prev) =>
+        prev.includes(musicId)
+          ? prev.filter((id) => id !== musicId) // 이미 있으면 제거
+          : [...prev, musicId] // 없으면 추가
+    );
+  };
+
+  const handleModeCancel = () => {
+    setAddModeState(false);
+    setDeleteModeState(false);
+  };
+
+  const testBtn = () => {
+    console.log("deleteModeState 상태 : ", deleteModeState);
+    console.log("addModeState 상태 : ", addModeState);
+  };
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -124,9 +162,35 @@ const NowPlay = () => {
           </div>
         ) : (
           <div className={styles["now-music-container"]}>
-            <div className={styles["now-music-name"]}> Now Play</div>
+            <div className={styles["now-music-top"]}>
+              <div className={styles["now-music-name"]} onClick={testBtn}>
+                {" "}
+                Now Play
+              </div>
+              <div className={styles["now-music-action-btn"]}>
+                {deleteModeState || addModeState ? (
+                  <div
+                    className={styles["now-music-mode-cancel-btn"]}
+                    onClick={handleModeCancel}
+                  >
+                    cancel
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className={styles["now-music-add-btn"]}
+                      onClick={handleAddMode}
+                    ></div>
+                    <div
+                      className={styles["now-music-delete-btn"]}
+                      onClick={handleDeleteMode}
+                    ></div>
+                  </>
+                )}
+              </div>
+            </div>
 
-            <div className={styles["now-music-item-container"]}>
+            <div className={styles["now-music-item-mid"]}>
               {nowPlayingPlaylist.map((nowPlayingPlaylist, index) => (
                 <div
                   className={
@@ -141,6 +205,20 @@ const NowPlay = () => {
                   onDragEnter={() => handleDragEnter(index)}
                   onDragEnd={() => handleDragEnd()}
                 >
+                  {deleteModeState && (
+                    <div className={styles["music-info-play-check"]}>
+                      <input
+                        type="checkbox"
+                        checked={checkedMusicIds.includes(
+                          Number(nowPlayingPlaylist.musicId)
+                        )}
+                        onChange={() =>
+                          handleCheck(Number(nowPlayingPlaylist.musicId))
+                        }
+                      />
+                    </div>
+                  )}
+
                   <div
                     className={styles["now-music-image"]}
                     style={{

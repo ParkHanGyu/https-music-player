@@ -164,7 +164,7 @@
   position: absolute; /* 기준인 div로 위치 설정 */
   border: none;
   right: 0;
-  min-width: 120px;
+  min-width: 133px;
   min-height: 80px;
   background-color: rgb(25, 25, 25);
   border-radius: 5%;
@@ -200,13 +200,16 @@
 }
 
 /* 삭제하기 아이콘 */
-.music-info-action-btn li:last-child::before {
+.music-info-action-btn li:nth-child(3)::before {
   background-image: url("../../assets/delete-icon.png"); /* 삭제 아이콘 */
 }
 .music-info-action-btn li:last-child {
   color: rgb(255, 47, 47);
 }
 
+.music-info-action-btn li:nth-child(2)::before {
+  background-image: url("../../assets/add-playlist-icon-hover.png"); /* 삭제 아이콘 */
+}
 .music-info-action-btn li:first-child::before {
   background-image: url("../../assets/copy-icon-hover.png"); /* 복사 아이콘 */
 }

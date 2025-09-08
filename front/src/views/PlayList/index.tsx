@@ -34,6 +34,7 @@ const PlayList = () => {
     setPlayBarInfo,
     playlistLoading,
     setPlaylistLoading,
+    searchUrl,
   } = useVideoStore();
 
   //      Zustand state : playBar 재생목록 상태      //
@@ -47,6 +48,8 @@ const PlayList = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
+    nowPlayViewState,
+    setNowPlayViewState,
   } = usePlaylistStore();
   const formatTime = useFormatTime();
 
@@ -142,6 +145,10 @@ const PlayList = () => {
 
       setNowRandomPlaylistID(playlistId);
       setNowRandomPlaylist(updatedNowRandomPlaylist);
+
+      if (!searchUrl) {
+        setNowPlayViewState(true);
+      }
     }, 100);
   };
 
@@ -156,6 +163,7 @@ const PlayList = () => {
     setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
+  // 음악 복사
   const onHandleMusicCopy = (index: number) => {
     setOpenDropdownIndex(null);
     setPlaylistPopupOpen(!playlistPopupOpen);
@@ -167,6 +175,14 @@ const PlayList = () => {
     }
   };
 
+  // now play에 추가
+  const onHandleNowPlayAdd = (index: number) => {
+    console.log("노래 정보 : " + JSON.stringify(musics[index], null, 2));
+    const targetItemInfo: Music = musics[index];
+    setNowPlayingPlaylist([...nowPlayingPlaylist, targetItemInfo]);
+  };
+
+  // 음악 삭제
   const onHandleMusicDelete = (musicId: bigint) => {
     const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
     if (isConfirmed) {
@@ -426,6 +442,14 @@ const PlayList = () => {
                           }}
                         >
                           음악복사
+                        </li>
+                        <li
+                          onClick={() => {
+                            // now play에 추가
+                            onHandleNowPlayAdd(index); // 클릭된 음악의 인덱스를 전달
+                          }}
+                        >
+                          Now Play Add
                         </li>
                         <li
                           onClick={() => {
