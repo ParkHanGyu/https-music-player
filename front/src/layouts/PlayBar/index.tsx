@@ -261,24 +261,22 @@ const PlayBar = () => {
 
   // ============ 영상 끝나면 실행되는 함수
   const handleEnded = () => {
+    // 반복재생일경우
     if (playerRef.current && isLoop) {
-      // // url이 soundcloud면 url 다시 넣어줌
-      // if (playBarUrl.includes("soundcloud")) {
-      //   setPlayBarUrl(""); // URL을 초기화
-      //   setTimeout(() => setPlayBarUrl(playBarUrl), 10); // 다시 URL 설정
-      // } else {
-      //   // soundcloud가 아닐경우 (유튜브일경우) 동영상 진행도 0으로
-      //   playerRef.current.seekTo(0);
-      // }
-
+      console.log("if 실행");
       playerRef.current.seekTo(0);
       setIsPlaying(false);
       setTimeout(() => {
-        console.log("playbar - 245");
         setIsPlaying(true);
       }, 200);
-    } else if (!isLoop) {
+    } else if (nowPlayingPlaylist.length > 1 && !isLoop) {
+      console.log("else if 실행");
+      // 다음 재생할 노래가 있고 반복재생이 아닐경우
       onNextMusic();
+    } else {
+      // 노래가 한곡이고 반복재생이 아닐경우
+      console.log("else 실행");
+      setIsPlaying(false);
     }
   };
 

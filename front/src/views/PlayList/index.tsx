@@ -35,6 +35,7 @@ const PlayList = () => {
     playlistLoading,
     setPlaylistLoading,
     searchUrl,
+    setSearchUrl,
   } = useVideoStore();
 
   //      Zustand state : playBar 재생목록 상태      //
@@ -51,6 +52,9 @@ const PlayList = () => {
     nowPlayViewState,
     setNowPlayViewState,
   } = usePlaylistStore();
+
+  //    Zustand state : playBar.tsx 재생 상태    //
+  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
   const formatTime = useFormatTime();
 
   //      state :  playBar 재생 시간 상태        //
@@ -97,60 +101,69 @@ const PlayList = () => {
     return copiedPlaylist.sort(() => Math.random() - 0.5); // 셔플된 배열 반환
   };
 
-  const onPlayMusic = (index: number) => {
-    console.log("이때 loginUserInfo : ", loginUserInfo);
-    if (!loginUserInfo) {
-      console.log("playlist.tsx 96");
-      alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
-      navigator(MAIN_PATH());
-      return;
+  //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
+  const handleMusicInfoClick = (musicUrl: string) => {
+    // window.open(musicUrl, "_blank");
+    if (nowPlayViewState) {
+      setNowPlayViewState(false);
     }
-
-    const itemMusicUrl = musics[index].basicInfo.url;
-    const itemMusicLike = musics[index].like;
-    setMusicInfo(itemMusicUrl, (newInfoData) => {
-      const musicWithLike: MusicInfoAndLikeData = {
-        musicInfo: newInfoData,
-        like: itemMusicLike,
-      };
-      setPlayBarInfo(musicWithLike);
-    });
-
-    // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
-    if (itemMusicUrl === playBarUrl && nowPlayingPlaylistID !== playlistId) {
-      setPlayBarUrl("");
-    }
-
-    // useE!ffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
-    // useE!ffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
-    setTimeout(() => {
-      setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
-      setNowPlayingPlaylistID(playlistId);
-      setNowPlayingPlaylist(musics);
-
-      // 랜덤 재생목록 set할때 내가 클릭한 노래가 제일 위로 위치하게
-      const shufflePlaylist = shuffle(musics);
-      // 옮길 배열
-      const targetItem = shufflePlaylist.find(
-        (item) => item.basicInfo.url === itemMusicUrl
-      );
-      // 이외 배열
-      const filteredList = shufflePlaylist.filter(
-        (item) => item.basicInfo.url !== itemMusicUrl
-      );
-      // 최종 결과 (targetItem을 맨 앞에 추가)
-      const updatedNowRandomPlaylist = targetItem
-        ? [targetItem, ...filteredList]
-        : shufflePlaylist;
-
-      setNowRandomPlaylistID(playlistId);
-      setNowRandomPlaylist(updatedNowRandomPlaylist);
-
-      if (!searchUrl) {
-        setNowPlayViewState(true);
-      }
-    }, 100);
+    setSearchUrl(musicUrl);
   };
+
+  // const onPlayMusic = (index: number) => {
+  //   console.log("이때 loginUserInfo : ", loginUserInfo);
+  //   if (!loginUserInfo) {
+  //     console.log("playlist.tsx 96");
+  //     alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
+  //     navigator(MAIN_PATH());
+  //     return;
+  //   }
+
+  //   const itemMusicUrl = musics[index].basicInfo.url;
+  //   const itemMusicLike = musics[index].like;
+  //   setMusicInfo(itemMusicUrl, (newInfoData) => {
+  //     const musicWithLike: MusicInfoAndLikeData = {
+  //       musicInfo: newInfoData,
+  //       like: itemMusicLike,
+  //     };
+  //     setPlayBarInfo(musicWithLike);
+  //   });
+
+  //   // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
+  //   if (itemMusicUrl === playBarUrl && nowPlayingPlaylistID !== playlistId) {
+  //     setPlayBarUrl("");
+  //   }
+
+  //   // useE!ffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
+  //   // useE!ffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
+  //   setTimeout(() => {
+  //     setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
+  //     setNowPlayingPlaylistID(playlistId);
+  //     setNowPlayingPlaylist(musics);
+
+  //     // 랜덤 재생목록 set할때 내가 클릭한 노래가 제일 위로 위치하게
+  //     const shufflePlaylist = shuffle(musics);
+  //     // 옮길 배열
+  //     const targetItem = shufflePlaylist.find(
+  //       (item) => item.basicInfo.url === itemMusicUrl
+  //     );
+  //     // 이외 배열
+  //     const filteredList = shufflePlaylist.filter(
+  //       (item) => item.basicInfo.url !== itemMusicUrl
+  //     );
+  //     // 최종 결과 (targetItem을 맨 앞에 추가)
+  //     const updatedNowRandomPlaylist = targetItem
+  //       ? [targetItem, ...filteredList]
+  //       : shufflePlaylist;
+
+  //     setNowRandomPlaylistID(playlistId);
+  //     setNowRandomPlaylist(updatedNowRandomPlaylist);
+
+  //     if (!searchUrl) {
+  //       setNowPlayViewState(true);
+  //     }
+  //   }, 100);
+  // };
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
     null
@@ -335,6 +348,78 @@ const PlayList = () => {
 
   // ========================================== 재생목록 순서 드래그 끝
 
+  const testBtn = () => {
+    console.log("PlayList.tsx - musics : " + JSON.stringify(musics, null, 2));
+  };
+
+  //      state:  체크 상태 관리 상태        //
+  const [checkedMusicIds, setCheckedMusicIds] = useState<number[]>([]);
+
+  //      event handler:  체크박스 클릭 함수       //
+  const handleCheck = (musicId: number) => {
+    setCheckedMusicIds(
+      (prev) =>
+        prev.includes(musicId)
+          ? prev.filter((id) => id !== musicId) // 이미 있으면 제거
+          : [...prev, musicId] // 없으면 추가
+    );
+  };
+
+  //      event handler:  전체 재생 버튼 클릭 함수       //
+  const handlePlaySelected = () => {
+    let targetMusic = musics;
+
+    // 체크한게 있다면
+    if (checkedMusicIds.length > 0) {
+      targetMusic = musics.filter((music) =>
+        checkedMusicIds.includes(Number(music.musicId))
+      );
+    }
+
+    // Music[]타입에 맞게 set
+    const selectedMusic: Music[] = targetMusic.map((music) => ({
+      basicInfo: {
+        url: music.basicInfo.url,
+        title: music.basicInfo.title,
+        imageUrl: music.basicInfo.imageUrl,
+        author: music.basicInfo.author,
+      },
+
+      musicId: music.musicId,
+      duration: music.duration,
+      createdAt: music.createdAt,
+      like: music.like,
+    }));
+
+    if (playBarUrl === selectedMusic[0].basicInfo.url) {
+      setPlayBarUrl("");
+    }
+
+    // 첫번째 재생할 노래 info 데이터 준비
+    const item1info: MusicInfoAndLikeData = {
+      musicInfo: {
+        url: selectedMusic[0].basicInfo.url,
+        author: selectedMusic[0].basicInfo.author,
+        imageUrl: selectedMusic[0].basicInfo.imageUrl,
+        title: selectedMusic[0].basicInfo.title,
+      },
+      like: selectedMusic[0].like,
+    };
+
+    setPlayBarInfo(item1info);
+    setNowPlayingPlaylist(selectedMusic);
+    setNowRandomPlaylist(selectedMusic);
+    setNowRandomPlaylistID("");
+    setNowPlayingPlaylistID("");
+    setTimeout(() => {
+      setPlayBarUrl(selectedMusic[0].basicInfo.url);
+    }, 100);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+    setCheckedMusicIds([]);
+  };
+
   // 로딩 중 표시
   if (playlistLoading) {
     return (
@@ -343,19 +428,15 @@ const PlayList = () => {
       </div>
     );
   }
-
-  const testBtn = () => {
-    console.log("PlayList.tsx - musics : " + JSON.stringify(musics, null, 2));
-  };
-
   return (
     <>
       <div className={styles["main-wrap"]}>
         <div className={styles["main-right"]}>
           <div className={styles["main-music-data-column-box"]}>
-            <div className={styles["music-column-number"]} onClick={testBtn}>
-              #
-            </div>
+            <div
+              className={styles["music-column-play-btn"]}
+              onClick={handlePlaySelected}
+            ></div>
             <div className={styles["music-column-title"]}>Title</div>
             <div className={styles["music-column-artist"]}>Artist</div>
             <div className={styles["music-column-createdAt"]}>CreatedAt</div>
@@ -377,20 +458,29 @@ const PlayList = () => {
                 <div
                   key={index}
                   className={styles["main-music-data-info-box"]}
-                  style={{
-                    cursor: playlistPopupOpen ? "" : "pointer",
-                  }}
-                  onClick={() => onPlayMusic(index)}
+                  // style={{
+                  //   cursor: playlistPopupOpen ? "" : "pointer",
+                  // }}
                   draggable
                   onDragStart={() => handleDragStart(index)}
                   onDragEnter={() => handleDragEnter(index)}
                   onDragEnd={() => handleDragEnd()}
                 >
-                  <div className={styles["music-info-number"]}>{index + 1}</div>
+                  <div className={styles["music-info-play-check"]}>
+                    <input
+                      type="checkbox"
+                      checked={checkedMusicIds.includes(Number(music.musicId))}
+                      onChange={() => handleCheck(Number(music.musicId))}
+                    />
+                  </div>
 
                   <div className={styles["music-move-btn"]}></div>
 
-                  <div className={styles["music-info-image-title-box"]}>
+                  <div
+                    className={styles["music-info-image-title-box"]}
+                    onClick={() => handleMusicInfoClick(music.basicInfo.url)}
+                  >
+                    {/* img */}
                     <div
                       className={styles["music-info-image"]}
                       style={{
@@ -398,7 +488,7 @@ const PlayList = () => {
                       }}
                     ></div>
 
-                    {/* 수정을 위해 title div를 input으로 바꿔주기 */}
+                    {/* title */}
                     <div
                       className={`${styles["music-info-title"]} ${styles["flex-center"]}`}
                     >
@@ -406,13 +496,17 @@ const PlayList = () => {
                     </div>
                   </div>
 
-                  {/* 수정을 위해 artist div를 input으로 바꿔주기 */}
+                  {/* 작성자 */}
                   <div className={styles["music-info-artist"]}>
                     {music.basicInfo.author}
                   </div>
+                  {/* 날짜 */}
+
                   <div className={styles["music-info-createdAt"]}>
                     {music.createdAt.split("T")[0]}
                   </div>
+                  {/* 재생시간 */}
+
                   <div className={styles["music-info-duration"]}>
                     {formatTime(music.duration)}
                   </div>

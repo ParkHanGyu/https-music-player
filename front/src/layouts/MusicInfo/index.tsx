@@ -91,6 +91,7 @@ const MusicInfo = () => {
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
   const playHandleClick = async () => {
+    console.log("musicinfo error");
     if (isInfoError) {
       alert("error");
       return;
@@ -219,6 +220,17 @@ const MusicInfo = () => {
     setNowPlayViewState(true);
   };
 
+  const handleError = () => {
+    alert(
+      "동영상 소유자가 외부 재생을 제한했습니다. 확인 후 다시 시도해주세요."
+    );
+    window.open(searchUrl);
+    resetInfo();
+    setIsInfoError(true);
+    setSearchUrl("");
+    setIsLoading(false);
+  };
+
   return (
     <>
       {/* 로딩 화면 */}
@@ -293,15 +305,8 @@ const MusicInfo = () => {
           url={searchUrl}
           playing={false}
           onDuration={handleDuration}
-          style={{ display: "none" }} // 완전히 숨김 처리
-          onError={(e) => {
-            alert(
-              "동영상 소유자가 외부 재생을 제한했습니다. YouTube에서 직접 시청해주세요."
-            );
-            resetInfo();
-            setIsInfoError(true);
-            setSearchUrl("");
-          }}
+          style={{ display: "none" }}
+          onError={handleError}
           onReady={() => {
             setIsLoading(false);
             setIsInfoError(false);

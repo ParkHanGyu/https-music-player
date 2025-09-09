@@ -23,7 +23,7 @@ const useMediaInfo = (defaultImage: string) => {
         const { url, author_name, thumbnail_url, title, error } = data;
 
         if (error) {
-          alert("error");
+          console.log("noembed error");
           return;
         }
 

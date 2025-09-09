@@ -26,15 +26,6 @@
   width: 180px;
   margin-right: 5px;
 }
-.main-search-btn {
-  background-image: url("../../assets/magnifier1.png");
-  width: 20px;
-  height: 20px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
 
 .main-right {
   width: 100%;
@@ -50,8 +41,17 @@
   padding: 2px 0px;
 }
 
+.music-column-play-btn {
+  background-image: url("../../assets/play-button-arrowhead.png");
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
 .music-info-number,
-.music-column-number {
+.music-column-play-btn {
   min-width: 20px;
   text-align: center;
 }
@@ -149,6 +149,7 @@
 .music-info-image-title-box {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .main-music-data-column-box {
   color: #dedede;
@@ -300,9 +301,9 @@
   background-repeat: no-repeat;
 }
 
-.main-music-data-info-box:hover .music-move-btn {
+/* .main-music-data-info-box:hover .music-move-btn {
   display: block;
-}
+} */
 
 .main-music-data-info-box:hover .music-info-number {
   display: none;
