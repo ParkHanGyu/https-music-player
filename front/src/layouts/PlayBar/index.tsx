@@ -558,6 +558,15 @@ const PlayBar = () => {
     }
   };
 
+  const handleError = () => {
+    alert(
+      "동영상 소유자가 외부 재생을 제한했습니다. 확인 후 다시 시도해주세요."
+    );
+
+    setIsPlaying(false);
+    onNextMusic();
+  };
+
   return (
     <>
       {/* 로딩 화면 */}
@@ -669,6 +678,7 @@ const PlayBar = () => {
                   onReady={handleReady}
                   onDuration={handleDuration}
                   onEnded={handleEnded}
+                  onError={handleError}
                   volume={volume}
                   style={{ display: "none" }}
                 />

@@ -23,6 +23,7 @@ import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.inte
 import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-state.dto";
 
 import defaultImageFile from "../../assets/album.png";
+import Music from "../../types/interface/music.interface";
 
 const defaultImage = defaultImageFile;
 
@@ -91,7 +92,6 @@ const MusicInfo = () => {
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //
   const playHandleClick = async () => {
-    console.log("musicinfo error");
     if (isInfoError) {
       alert("error");
       return;

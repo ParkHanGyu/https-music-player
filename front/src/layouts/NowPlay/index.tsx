@@ -130,10 +130,10 @@ const NowPlay = () => {
 
   //======== 체크박스
   //      state:  체크 상태 관리 상태        //
-  const [checkedMusicIds, setCheckedMusicIds] = useState<number[]>([]);
+  const [checkedMusicIds, setCheckedMusicIds] = useState<bigint[]>([]);
 
   //      event handler:  체크박스 클릭 함수       //
-  const handleCheck = (musicId: number) => {
+  const handleCheck = (musicId: bigint) => {
     setCheckedMusicIds(
       (prev) =>
         prev.includes(musicId)
@@ -143,15 +143,56 @@ const NowPlay = () => {
   };
 
   const handleModeCancel = () => {
-    setAddModeState(false);
-    setDeleteModeState(false);
+    if (addModeState) {
+      setAddModeState(false);
+    } else if (deleteModeState) {
+      setDeleteModeState(false);
+    }
   };
 
   const testBtn = () => {
-    console.log("deleteModeState 상태 : ", deleteModeState);
-    console.log("addModeState 상태 : ", addModeState);
+    console.log(
+      "nowPlayingPlaylist : " + JSON.stringify(nowPlayingPlaylist, null, 2)
+    );
   };
 
+  const handleDelete = () => {
+    // 체크한 노래 제외한 리스트 생성
+    const filteredPlaylist = nowPlayingPlaylist.filter(
+      (music) => !checkedMusicIds.includes(music.musicId)
+    );
+
+    // set
+    setNowPlayingPlaylist(filteredPlaylist);
+
+    // 체크한 노래(제외할) url 추출
+    const checkedMusicUrls = nowPlayingPlaylist
+      .filter((music) => checkedMusicIds.includes(music.musicId))
+      .map((music) => music.basicInfo.url);
+
+    // if 체크한 노래가 현재 듣는 노래라면?
+    if (checkedMusicUrls.includes(playBarUrl)) {
+      // 삭제할 음악중 마지막 url
+      const deleteLastUrl = checkedMusicUrls[checkedMusicUrls.length - 1];
+
+      // 마지막 url은 nowPlayingPlaylist에서 어느 순서에 있는지 확인
+      const nextPlayIndex = nowPlayingPlaylist.findIndex(
+        (music) => music.basicInfo.url === deleteLastUrl
+      );
+
+      // 해당 위치 다음 음악 url를 가져옴
+      const nextPlayUrl = nowPlayingPlaylist[nextPlayIndex + 1]?.basicInfo.url;
+
+      // 만약 st에 데이터가 없다면 => 마지막 index일경우 그럴수도 있음
+      if (!nextPlayUrl) {
+        // 위에서 음악 삭제후 리스트의 첫번쨰 url을 줌
+        setPlayBarUrl(filteredPlaylist[0].basicInfo.url);
+      } else {
+        // 다음 음악 set
+        setPlayBarUrl(nextPlayUrl);
+      }
+    }
+  };
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -164,10 +205,48 @@ const NowPlay = () => {
           <div className={styles["now-music-container"]}>
             <div className={styles["now-music-top"]}>
               <div className={styles["now-music-name"]} onClick={testBtn}>
-                {" "}
                 Now Play
               </div>
+
               <div className={styles["now-music-action-btn"]}>
+                {/* delete 모드일때 */}
+                {deleteModeState && !addModeState ? (
+                  <>
+                    <div
+                      className={styles["now-music-delete-btn"]}
+                      onClick={handleDelete}
+                    ></div>
+
+                    <div
+                      className={styles["now-music-mode-cancel-btn"]}
+                      onClick={handleModeCancel}
+                    ></div>
+                  </>
+                ) : // {/* add 모드일때 */}
+                !deleteModeState && addModeState ? (
+                  <>
+                    <div className={styles["now-music-add-btn"]}></div>
+
+                    <div
+                      className={styles["now-music-mode-cancel-btn"]}
+                      onClick={handleModeCancel}
+                    ></div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className={styles["now-music-add-btn"]}
+                      onClick={handleAddMode}
+                    ></div>
+                    <div
+                      className={styles["now-music-delete-btn"]}
+                      onClick={handleDeleteMode}
+                    ></div>
+                  </>
+                )}
+              </div>
+
+              {/* <div className={styles["now-music-action-btn"]}>
                 {deleteModeState || addModeState ? (
                   <div
                     className={styles["now-music-mode-cancel-btn"]}
@@ -187,7 +266,7 @@ const NowPlay = () => {
                     ></div>
                   </>
                 )}
-              </div>
+              </div> */}
             </div>
 
             <div className={styles["now-music-item-mid"]}>
@@ -199,33 +278,34 @@ const NowPlay = () => {
                       ? `${styles["now-music-item"]} ${styles["music-target"]}`
                       : styles["now-music-item"]
                   }
-                  onClick={() => onClickMusic(index)}
                   draggable
                   onDragStart={() => handleDragStart(index)}
                   onDragEnter={() => handleDragEnter(index)}
                   onDragEnd={() => handleDragEnd()}
                 >
-                  {deleteModeState && (
+                  {(deleteModeState || addModeState) && (
                     <div className={styles["music-info-play-check"]}>
                       <input
                         type="checkbox"
                         checked={checkedMusicIds.includes(
-                          Number(nowPlayingPlaylist.musicId)
+                          nowPlayingPlaylist.musicId
                         )}
-                        onChange={() =>
-                          handleCheck(Number(nowPlayingPlaylist.musicId))
-                        }
+                        onChange={() => handleCheck(nowPlayingPlaylist.musicId)}
                       />
                     </div>
                   )}
 
                   <div
                     className={styles["now-music-image"]}
+                    onClick={() => onClickMusic(index)}
                     style={{
                       backgroundImage: `url(${nowPlayingPlaylist.basicInfo.imageUrl})`,
                     }}
                   ></div>
-                  <div className={styles["now-music-info-box"]}>
+                  <div
+                    className={styles["now-music-info-box"]}
+                    onClick={() => onClickMusic(index)}
+                  >
                     <div className={styles["now-muisc-info-title"]}>
                       {nowPlayingPlaylist.basicInfo.title}
                     </div>

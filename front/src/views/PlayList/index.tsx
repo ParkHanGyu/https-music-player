@@ -418,6 +418,10 @@ const PlayList = () => {
       setIsPlaying(true);
     }
     setCheckedMusicIds([]);
+
+    if (!nowPlayViewState) {
+      setNowPlayViewState(true);
+    }
   };
 
   // 로딩 중 표시

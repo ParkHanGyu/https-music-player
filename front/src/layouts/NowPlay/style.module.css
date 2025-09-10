@@ -33,6 +33,7 @@
 
 .now-music-action-btn {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-right: 10px;
 }
@@ -164,11 +165,24 @@
   background-image: url("../../assets/moveBtn-hover.png");
   width: 20px;
   height: 20px;
-
   background-size: cover;
   margin: 20px 0px;
 }
 
 .now-music-item:hover .now-music-move-btn {
   display: block;
+}
+
+.now-music-mode-cancel-btn {
+  background-image: url("../../assets/x-icon.png");
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.now-music-mode-cancel-btn:hover {
+  background-image: url("../../assets/x-icon-hover.png");
 }
