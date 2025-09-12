@@ -18,8 +18,10 @@ import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 import { useParams } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
 import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
+import TestInfoData from "../../types/interface/music-info-data-test.interface";
 
 interface PlaylistLibraryProps {
+  // testData: TestInfoData[];
   infoData: NoembedMusicInfoData;
   infoDuration: number;
   playlistPopupOpen: boolean;
@@ -27,6 +29,7 @@ interface PlaylistLibraryProps {
 }
 
 const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
+  // testData,
   infoData,
   infoDuration,
   playlistPopupOpen,

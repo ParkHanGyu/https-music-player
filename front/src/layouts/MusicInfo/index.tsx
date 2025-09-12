@@ -24,6 +24,8 @@ import musicLikeStateResponseDto from "../../apis/response/Music/get-music-like-
 
 import defaultImageFile from "../../assets/album.png";
 import Music from "../../types/interface/music.interface";
+import { info } from "console";
+import TestInfoData from "../../types/interface/music-info-data-test.interface";
 
 const defaultImage = defaultImageFile;
 
@@ -166,6 +168,8 @@ const MusicInfo = () => {
   //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
+  const [testData, setTestData] = useState<TestInfoData[]>([]);
+
   //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
   const togglePlaylistPopup = () => {
     if (!loginUserInfo) {
@@ -177,6 +181,13 @@ const MusicInfo = () => {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
+
+    const addData: TestInfoData = {
+      basicInfo: infoData,
+      infoDuration: infoDuration,
+    };
+    setTestData((prev) => [...prev, addData]);
+
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
@@ -213,7 +224,9 @@ const MusicInfo = () => {
   };
 
   const testBtn = () => {
-    console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
+    // console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
+    console.log("infoDuration 값 : ", JSON.stringify(infoDuration, null, 2));
+    console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
   };
 
   const nowPlayHandleClick = () => {
@@ -317,6 +330,7 @@ const MusicInfo = () => {
       {/* =======================================재생목록 팝업 */}
       {playlistPopupOpen && (
         <PlaylistLibrary
+          // testData={testData}
           infoData={infoData}
           infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}

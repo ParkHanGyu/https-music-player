@@ -7,6 +7,7 @@ import { MAIN_PATH } from "../../constant";
 import useLoginUserStore from "../../store/login-user.store";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import Music from "../../types/interface/music.interface";
+import PlaylistLibrary from "../PlaylistLibrary";
 
 const NowPlay = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -142,6 +143,7 @@ const NowPlay = () => {
     );
   };
 
+  // modeCancel
   const handleModeCancel = () => {
     if (addModeState) {
       setAddModeState(false);
@@ -156,6 +158,7 @@ const NowPlay = () => {
     );
   };
 
+  // delete 기능
   const handleDelete = () => {
     // 체크한 노래 제외한 리스트 생성
     const filteredPlaylist = nowPlayingPlaylist.filter(
@@ -193,6 +196,30 @@ const NowPlay = () => {
       }
     }
   };
+
+  // add기능
+  const handleAdd = () => {
+    // 체크한게 있다면
+    if (checkedMusicIds.length) {
+      // 체크한 노래 리스트 생성
+      const filteredPlaylist = nowPlayingPlaylist.filter((music) =>
+        checkedMusicIds.includes(music.musicId)
+      );
+
+      console.log(
+        "추가하려는 노래 데이터 : " + JSON.stringify(filteredPlaylist, null, 2)
+      );
+    } else {
+      // 체크한게 없다면
+      alert("추가할 노래를 체크해주세요");
+      return;
+    }
+  };
+
+  // ====================================================== 재생목록 추가 관련
+  //      state:  재생목록 팝업 상태 상태        //
+  const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
+
   return (
     <>
       <div className={styles["main-wrap"]}>
@@ -225,7 +252,10 @@ const NowPlay = () => {
                 ) : // {/* add 모드일때 */}
                 !deleteModeState && addModeState ? (
                   <>
-                    <div className={styles["now-music-add-btn"]}></div>
+                    <div
+                      className={styles["now-music-add-btn"]}
+                      onClick={handleAdd}
+                    ></div>
 
                     <div
                       className={styles["now-music-mode-cancel-btn"]}
@@ -234,6 +264,7 @@ const NowPlay = () => {
                   </>
                 ) : (
                   <>
+                    {/* 기본 모드 */}
                     <div
                       className={styles["now-music-add-btn"]}
                       onClick={handleAddMode}
@@ -329,6 +360,16 @@ const NowPlay = () => {
           ></div>
         </div>
       </div>
+
+      {/* =======================================재생목록 팝업 */}
+      {/* {playlistPopupOpen && (
+        <PlaylistLibrary
+          infoData={infoData}
+          infoDuration={infoDuration}
+          playlistPopupOpen={playlistPopupOpen}
+          setPlaylistPopupOpen={setPlaylistPopupOpen}
+        />
+      )} */}
     </>
   );
 };
