@@ -565,14 +565,14 @@ const PlayList = () => {
             </div>
           )}
 
-          {playlistPopupOpen && (
+          {/* {playlistPopupOpen && (
             <PlaylistLibrary
               infoData={infoData}
               infoDuration={infoDuration}
               playlistPopupOpen={playlistPopupOpen}
               setPlaylistPopupOpen={setPlaylistPopupOpen}
             />
-          )}
+          )} */}
         </div>
       </div>
     </>

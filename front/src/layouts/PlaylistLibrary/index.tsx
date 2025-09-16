@@ -21,17 +21,17 @@ import NoembedMusicInfoData from "../../types/interface/music-info-data.interfac
 import TestInfoData from "../../types/interface/music-info-data-test.interface";
 
 interface PlaylistLibraryProps {
-  // testData: TestInfoData[];
-  infoData: NoembedMusicInfoData;
-  infoDuration: number;
+  testData: TestInfoData[];
+  // infoData: NoembedMusicInfoData;
+  // infoDuration: number;
   playlistPopupOpen: boolean;
   setPlaylistPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
-  // testData,
-  infoData,
-  infoDuration,
+  testData,
+  // infoData,
+  // infoDuration,
   playlistPopupOpen,
   setPlaylistPopupOpen,
 }) => {
@@ -156,8 +156,10 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
                   onClick={(event: React.MouseEvent<HTMLLIElement>) => (
                     event.stopPropagation(),
                     toggleAddMusicToPlaylist({
-                      musicInfoData: infoData,
-                      infoDuration: infoDuration,
+                      // musicInfoData: infoData,
+                      // infoDuration: infoDuration,
+                      musicInfoData: testData[index].basicInfo,
+                      infoDuration: testData[index].infoDuration,
                       playlistId: playlist.playlistId,
                     })
                   )}

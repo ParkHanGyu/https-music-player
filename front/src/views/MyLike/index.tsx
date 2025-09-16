@@ -274,14 +274,14 @@ const MyLike = () => {
         </div>
       </div>
       {/* =======================================재생목록 add 팝업 */}
-      {playlistPopupOpen && (
+      {/* {playlistPopupOpen && (
         <PlaylistLibrary
           infoData={targetInfoData}
           infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )}
+      )} */}
     </>
   );
 };

@@ -8,6 +8,7 @@ import useLoginUserStore from "../../store/login-user.store";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import Music from "../../types/interface/music.interface";
 import PlaylistLibrary from "../PlaylistLibrary";
+import TestInfoData from "../../types/interface/music-info-data-test.interface";
 
 const NowPlay = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -202,13 +203,22 @@ const NowPlay = () => {
     // 체크한게 있다면
     if (checkedMusicIds.length) {
       // 체크한 노래 리스트 생성
-      const filteredPlaylist = nowPlayingPlaylist.filter((music) =>
-        checkedMusicIds.includes(music.musicId)
-      );
+      const refinedPlaylist = nowPlayingPlaylist
+        .filter((music) => checkedMusicIds.includes(music.musicId))
+        .map((music) => ({
+          basicInfo: music.basicInfo,
+          infoDuration: music.duration, // 이름 바꿔서 TestInfoData에 맞춤
+        }));
 
       console.log(
-        "추가하려는 노래 데이터 : " + JSON.stringify(filteredPlaylist, null, 2)
+        "추가하려는 노래 데이터 : " + JSON.stringify(refinedPlaylist, null, 2)
       );
+      // const testInfo:TestInfoData = {
+      //     basicInfo: nowPlayingPlaylist.;
+      //     infoDuration: number;
+      // }
+
+      setTestData(refinedPlaylist);
     } else {
       // 체크한게 없다면
       alert("추가할 노래를 체크해주세요");
@@ -219,6 +229,8 @@ const NowPlay = () => {
   // ====================================================== 재생목록 추가 관련
   //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
+
+  const [testData, setTestData] = useState<TestInfoData[]>([]);
 
   return (
     <>
@@ -362,14 +374,15 @@ const NowPlay = () => {
       </div>
 
       {/* =======================================재생목록 팝업 */}
-      {/* {playlistPopupOpen && (
+      {playlistPopupOpen && (
         <PlaylistLibrary
-          infoData={infoData}
-          infoDuration={infoDuration}
+          // infoData={infoData}
+          // infoDuration={infoDuration}
+          testData={testData}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )} */}
+      )}
     </>
   );
 };

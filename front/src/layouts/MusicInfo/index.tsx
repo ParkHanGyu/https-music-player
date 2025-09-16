@@ -328,7 +328,7 @@ const MusicInfo = () => {
       )}
 
       {/* =======================================재생목록 팝업 */}
-      {playlistPopupOpen && (
+      {/* {playlistPopupOpen && (
         <PlaylistLibrary
           // testData={testData}
           infoData={infoData}
@@ -336,7 +336,7 @@ const MusicInfo = () => {
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )}
+      )} */}
     </>
   );
 };
