@@ -9,8 +9,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 public interface MusicService {
-    ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String email);
+    ResponseEntity<? super MusicResponse> addPlayListToMusic(List<AddPlayListToMusicRequest> request, String email);
 
     ResponseEntity<? super DeleteMusicResponse> deleteMusic(Long playlistId, Long musicId, String token);
 

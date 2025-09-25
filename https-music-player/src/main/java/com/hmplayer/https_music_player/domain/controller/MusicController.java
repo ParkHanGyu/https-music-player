@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/music")
@@ -21,7 +23,7 @@ public class MusicController {
 
     // 음악 추가
     @PostMapping("/add")
-    public ResponseEntity<? super MusicResponse> addPlayListToMusic(@RequestBody AddPlayListToMusicRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<? super MusicResponse> addPlayListToMusic(@RequestBody List<AddPlayListToMusicRequest> request, @RequestHeader("Authorization") String token) {
         return musicservice.addPlayListToMusic(request,token);
     }
 

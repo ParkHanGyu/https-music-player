@@ -19,9 +19,11 @@ import { useParams } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
 import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
 import TestInfoData from "../../types/interface/music-info-data-test.interface";
+import AddPlayListToMusicTestRequestDto from "../../apis/request/add-playlist-to-music-test.dto";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 interface PlaylistLibraryProps {
-  testData: TestInfoData[];
+  infoData: AddMusicInfoData[];
   // infoData: NoembedMusicInfoData;
   // infoDuration: number;
   playlistPopupOpen: boolean;
@@ -29,7 +31,7 @@ interface PlaylistLibraryProps {
 }
 
 const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
-  testData,
+  infoData,
   // infoData,
   // infoDuration,
   playlistPopupOpen,
@@ -54,14 +56,18 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   const [isAddPlaylistPopupOpen, setAddPlaylistPopupOpen] = useState(false); // 추가 팝업 상태 추가
   //      event handler: 재생 목록에 음악 추가 클릭 이벤트 처리 함수      //
   const toggleAddMusicToPlaylist = (
-    requestBody: AddPlayListToMusicRequestDto
+    requestBody: AddPlayListToMusicTestRequestDto
+    // testData : TestInfoData[], playlistId: string | undefined
   ) => {
-    if (!requestBody) {
+    if (!infoData) {
       return;
     }
 
     console.log("로딩 true");
     setPlaylistLoading(true);
+    console.log(
+      "api에 보내는 데이터 : " + JSON.stringify(requestBody, null, 2)
+    );
     // 음악 추가 api 실행
     playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
       (responseBody) => playlistAddMusicResponse(responseBody)
@@ -129,7 +135,7 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
   };
 
   const testBtn = () => {
-    alert(isAddPlaylistPopupOpen);
+    console.log("다룰 데이터 : " + JSON.stringify(infoData, null, 2));
   };
   return (
     <>
@@ -158,8 +164,9 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
                     toggleAddMusicToPlaylist({
                       // musicInfoData: infoData,
                       // infoDuration: infoDuration,
-                      musicInfoData: testData[index].basicInfo,
-                      infoDuration: testData[index].infoDuration,
+                      // musicInfoData: testData[index].basicInfo,
+                      // infoDuration: testData[index].infoDuration,
+                      addInfoDataDto: infoData,
                       playlistId: playlist.playlistId,
                     })
                   )}

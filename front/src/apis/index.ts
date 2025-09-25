@@ -16,6 +16,7 @@ import authNumberCheckResponseDto from "./response/auth/auth-number-check-respon
 import musicLikeRequestDto from "./request/music-like-request.dto";
 import musicLikeRankResponseDto from "./response/Music/get-music-like-rank.dto";
 import myMusicLikeResponseDto from "./response/Music/get-my-music-like.dto";
+import AddPlayListToMusicTestRequestDto from "./request/add-playlist-to-music-test.dto";
 
 // const DOMAIN = "http://172.30.40.137:8081";
 // const DOMAIN = "http://localhost:8081";
@@ -55,7 +56,7 @@ export const playlistCreateReqeust = async (
 // 재생목록에 음악 추가
 const ADD_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/music/add`;
 export const playlistAddMusicReqeust = async (
-  requestBody: AddPlayListToMusicRequestDto,
+  requestBody: AddPlayListToMusicTestRequestDto,
   accessToken: string
 ) => {
   const result = await axios

@@ -46,7 +46,7 @@ public class MusicServiceImpl implements MusicService {
 
     // 음악 추가
     @Override
-    public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
+    public ResponseEntity<? super MusicResponse> addPlayListToMusic(List<AddPlayListToMusicRequest> request, String token) {
         log.info("서버에서 받아온 request = {}", request);
         // 0. 데이터 무결성 확인
         // 0-1. 요청하는 user가 db에 존재하는 user인가
@@ -59,7 +59,7 @@ public class MusicServiceImpl implements MusicService {
         userRepository.findByEmail(requestUserEmail).orElseThrow(() -> new NonExistUserException(requestUserEmail));
 
         // 0-2. 추가하려는 playlist가 db에 존재하는 playlist인가
-        Long requestPlaylistId = request.getPlaylistId();
+        Long requestPlaylistId = request.get(0).getPlaylistId();
         Optional<Playlist> databasePlaylist = playListRepository.findByPlaylistId(requestPlaylistId);
         // 요청하는 playlist가 있으면 addPlaylistData에 저장 / 없으면 예외 발생
         Playlist addPlaylistData = databasePlaylist.orElseThrow(() ->
@@ -69,15 +69,15 @@ public class MusicServiceImpl implements MusicService {
         // 여기까지 왔다면 유저의 요청은 정상적임. 검증된 user, 존재하는 playlist 이므로 메소드 진행
         // 1. Music테이블 음악 확인
         // db에 해당 음악이 있는지 확인
-        String requestMusicUrl = request.getMusicInfoData().getUrl();
+        String requestMusicUrl = request.get(0).getAddInfoDataDto().getMusicInfoData().getUrl();
         Optional<Music> optionalMusic = musicRepository.findByUrl(requestMusicUrl);
         Music finalMusicData; // 최종적으로 사용할 Music 객체
         if(optionalMusic.isEmpty()) { // optionalMusic 값이 비어있을때 - Music 테이블 추가
             System.out.println("music 데이터 없음 - 새로운 music 데이터 추가");
             // 기본 음악 data
-            MusicInfoDataDto musicInfoData = request.getMusicInfoData();
+            MusicInfoDataDto musicInfoData = request.get(0).getAddInfoDataDto().getMusicInfoData();
             // 음악 time
-            int infoDuration = request.getInfoDuration();
+            int infoDuration = request.get(0).getAddInfoDataDto().getInfoDuration();
 
             Music newMusic = new Music(musicInfoData, infoDuration);
             finalMusicData = musicRepository.save(newMusic);
@@ -95,7 +95,7 @@ public class MusicServiceImpl implements MusicService {
 
         if(optionalPlaylistMusic.isPresent()) {// optionalPlaylistMusic 존재할때 - music도 있고 playlistMusic 테이블에도 있기 때문에 중복 추가 예외 발생
             System.out.println("playlistMusic 테이블에 데이터가 존재함. 음악 중복 추가로 예외 발생");
-            throw new PlaylistMusicDuplication(request.getMusicInfoData().getTitle(),request.getPlaylistId());
+            throw new PlaylistMusicDuplication(request.get(0).getAddInfoDataDto().getMusicInfoData().getTitle(),request.get(0).getPlaylistId());
         }
 
 

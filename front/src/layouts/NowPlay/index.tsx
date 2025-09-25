@@ -9,6 +9,7 @@ import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.inte
 import Music from "../../types/interface/music.interface";
 import PlaylistLibrary from "../PlaylistLibrary";
 import TestInfoData from "../../types/interface/music-info-data-test.interface";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 const NowPlay = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -218,7 +219,8 @@ const NowPlay = () => {
       //     infoDuration: number;
       // }
 
-      setTestData(refinedPlaylist);
+      setInfoData(refinedPlaylist);
+      setPlaylistPopupOpen(true);
     } else {
       // 체크한게 없다면
       alert("추가할 노래를 체크해주세요");
@@ -230,7 +232,7 @@ const NowPlay = () => {
   //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
-  const [testData, setTestData] = useState<TestInfoData[]>([]);
+  const [infoData, setInfoData] = useState<AddMusicInfoData[]>([]);
 
   return (
     <>
@@ -378,7 +380,7 @@ const NowPlay = () => {
         <PlaylistLibrary
           // infoData={infoData}
           // infoDuration={infoDuration}
-          testData={testData}
+          infoData={infoData}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
