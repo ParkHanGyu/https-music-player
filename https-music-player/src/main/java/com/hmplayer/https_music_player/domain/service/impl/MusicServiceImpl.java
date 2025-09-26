@@ -1,6 +1,7 @@
 package com.hmplayer.https_music_player.domain.service.impl;
 
 import com.hmplayer.https_music_player.domain.common.customexception.*;
+import com.hmplayer.https_music_player.domain.dto.object.AddInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicInfoDataDto;
 import com.hmplayer.https_music_player.domain.dto.object.MusicLikeCountDto;
@@ -22,8 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,9 +44,56 @@ public class MusicServiceImpl implements MusicService {
     private final MusicLikeRepository musicLikeRepository;
 
 
-    // 음악 추가
+
+    // 음악 복사(2개 이상)
     @Override
-    public ResponseEntity<? super MusicResponse> addPlayListToMusic(List<AddPlayListToMusicRequest> request, String token) {
+    public ResponseEntity<? super MusicResponse> addExistingMusicsToPlaylist(AddPlayListToMusicRequest request, String token) {
+        System.out.println("addExistingMusicsToPlaylist 실행");
+
+        int requestSize = request.getAddInfoDataDto().size();
+        log.info("데이터 size requestSize = {}", requestSize);
+
+
+        // 밑에는 기존 하나의 음악을 다룰때 작성한 로직이고 size가 2이상이면 여러개의 음악을 추가해야 함.
+        // 해당 로직 추가해야 함.
+        if (requestSize > 1) {
+
+            // DB에서 기존 플레이리스트 음악 가져오기
+            List<PlaylistMusic> existingPlaylistMusic = playlistMusicRepository.findByPlaylist_PlaylistId(request.getPlaylistId());
+            Set<String> existingUrls = existingPlaylistMusic.stream()
+                    .map(pm -> pm.getMusic().getUrl())
+                    .collect(Collectors.toSet());
+
+            log.info("기존 URL existingUrls = {}", existingUrls);
+
+
+            // url 기준으로 중복 제거
+            Set<String> urlSet = new HashSet<>();
+            List<AddInfoDataDto> filteredList = new ArrayList<>();
+
+            for (AddInfoDataDto music : request.getAddInfoDataDto()) {
+                String url = music.getBasicInfo().getUrl();
+
+                // 요청 리스트 내 중복 + DB 중복 제거
+                if (!urlSet.contains(url) && !existingUrls.contains(url)) {
+                    urlSet.add(url);          // 요청 안에서 중복 제거
+                    filteredList.add(music);  // 실제 추가할 리스트에 담기
+                }
+            }
+
+
+            log.info("반복문으로 중복 데이터 제거 후 추가할 노래 데이터 filteredList = {}", filteredList);
+
+            return null;
+        }
+        return null;
+    }
+
+
+    // 음악 추가(단일 음악 추가)
+    @Override
+    public ResponseEntity<? super MusicResponse> addPlayListToMusic(AddPlayListToMusicRequest request, String token) {
+        System.out.println("addPlayListToMusic 실행");
         log.info("서버에서 받아온 request = {}", request);
         // 0. 데이터 무결성 확인
         // 0-1. 요청하는 user가 db에 존재하는 user인가
@@ -59,7 +106,7 @@ public class MusicServiceImpl implements MusicService {
         userRepository.findByEmail(requestUserEmail).orElseThrow(() -> new NonExistUserException(requestUserEmail));
 
         // 0-2. 추가하려는 playlist가 db에 존재하는 playlist인가
-        Long requestPlaylistId = request.get(0).getPlaylistId();
+        Long requestPlaylistId = request.getPlaylistId();
         Optional<Playlist> databasePlaylist = playListRepository.findByPlaylistId(requestPlaylistId);
         // 요청하는 playlist가 있으면 addPlaylistData에 저장 / 없으면 예외 발생
         Playlist addPlaylistData = databasePlaylist.orElseThrow(() ->
@@ -69,15 +116,15 @@ public class MusicServiceImpl implements MusicService {
         // 여기까지 왔다면 유저의 요청은 정상적임. 검증된 user, 존재하는 playlist 이므로 메소드 진행
         // 1. Music테이블 음악 확인
         // db에 해당 음악이 있는지 확인
-        String requestMusicUrl = request.get(0).getAddInfoDataDto().getMusicInfoData().getUrl();
+        String requestMusicUrl = request.getAddInfoDataDto().get(0).getBasicInfo().getUrl();
         Optional<Music> optionalMusic = musicRepository.findByUrl(requestMusicUrl);
         Music finalMusicData; // 최종적으로 사용할 Music 객체
         if(optionalMusic.isEmpty()) { // optionalMusic 값이 비어있을때 - Music 테이블 추가
             System.out.println("music 데이터 없음 - 새로운 music 데이터 추가");
             // 기본 음악 data
-            MusicInfoDataDto musicInfoData = request.get(0).getAddInfoDataDto().getMusicInfoData();
+            MusicInfoDataDto musicInfoData = request.getAddInfoDataDto().get(0).getBasicInfo();
             // 음악 time
-            int infoDuration = request.get(0).getAddInfoDataDto().getInfoDuration();
+            int infoDuration = request.getAddInfoDataDto().get(0).getInfoDuration();
 
             Music newMusic = new Music(musicInfoData, infoDuration);
             finalMusicData = musicRepository.save(newMusic);
@@ -95,7 +142,7 @@ public class MusicServiceImpl implements MusicService {
 
         if(optionalPlaylistMusic.isPresent()) {// optionalPlaylistMusic 존재할때 - music도 있고 playlistMusic 테이블에도 있기 때문에 중복 추가 예외 발생
             System.out.println("playlistMusic 테이블에 데이터가 존재함. 음악 중복 추가로 예외 발생");
-            throw new PlaylistMusicDuplication(request.get(0).getAddInfoDataDto().getMusicInfoData().getTitle(),request.get(0).getPlaylistId());
+            throw new PlaylistMusicDuplication(request.getAddInfoDataDto().get(0).getBasicInfo().getTitle(),request.getPlaylistId());
         }
 
 

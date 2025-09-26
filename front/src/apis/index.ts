@@ -73,6 +73,27 @@ export const playlistAddMusicReqeust = async (
   return result;
 };
 
+
+// 재생목록A노래 -> 재생목록B로 복사(2개 이상)
+const ADD_EXISTING_MUSIC_TO_PLAYLIST_URL = () => `${API_DOMAIN}/music/copy`;
+export const addExistingMusicsToPlaylistReqeust = async (
+  requestBody: AddPlayListToMusicTestRequestDto,
+  accessToken: string
+) => {
+  const result = await axios
+    .post(ADD_EXISTING_MUSIC_TO_PLAYLIST_URL(), requestBody, authorication(accessToken))
+    .then((response) => {
+      const responseBody = response.data;
+      return responseBody;
+    })
+    .catch((error) => {
+      if (!error) return null;
+      const responseBody = error.response.data;
+      return responseBody;
+    });
+  return result;
+};
+
 // 재생목록 라이브러리 불러오기
 const GET_PLAYLIST_LIBRARY_URL = () => `${API_DOMAIN}/playlist/get`;
 export const getPlayListLibraryReqeust = async (accessToken: string) => {

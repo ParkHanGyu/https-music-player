@@ -380,6 +380,7 @@ const NowPlay = () => {
         <PlaylistLibrary
           // infoData={infoData}
           // infoDuration={infoDuration}
+          mode={"copy"}
           infoData={infoData}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}

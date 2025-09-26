@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
-import AddPlayListToMusicRequestDto from "../../apis/request/add-playlist-to-music.dto";
 import {
+  addExistingMusicsToPlaylistReqeust,
   getPlayListLibraryReqeust,
-  getPlaylistMusicReqeust,
   playlistAddMusicReqeust,
   playlistCreateReqeust,
 } from "../../apis";
@@ -14,11 +13,7 @@ import CreatePlayListRequestDto from "../../apis/request/create-play-list-reques
 import GetPlaylistResponseDto from "../../apis/response/PlayList/playlist-library.dto";
 import { ResponseUtil } from "../../utils";
 import { useVideoStore } from "../../store/useVideo.store";
-import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 import { useParams } from "react-router-dom";
-import Music from "../../types/interface/music.interface";
-import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
-import TestInfoData from "../../types/interface/music-info-data-test.interface";
 import AddPlayListToMusicTestRequestDto from "../../apis/request/add-playlist-to-music-test.dto";
 import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
@@ -27,10 +22,12 @@ interface PlaylistLibraryProps {
   // infoData: NoembedMusicInfoData;
   // infoDuration: number;
   playlistPopupOpen: boolean;
+  mode: String;
   setPlaylistPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
+  mode,
   infoData,
   // infoData,
   // infoDuration,
@@ -65,13 +62,19 @@ const PlaylistLibrary: React.FC<PlaylistLibraryProps> = ({
 
     console.log("로딩 true");
     setPlaylistLoading(true);
-    console.log(
-      "api에 보내는 데이터 : " + JSON.stringify(requestBody, null, 2)
-    );
-    // 음악 추가 api 실행
-    playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
-      (responseBody) => playlistAddMusicResponse(responseBody)
-    );
+    console.log("mode : " + mode);
+
+    if (mode === "copy") {
+      // 음악 추가 api 실행
+      addExistingMusicsToPlaylistReqeust(requestBody, cookies.accessToken).then(
+        (responseBody) => playlistAddMusicResponse(responseBody)
+      );
+    } else if (mode === "add") {
+      // 음악 추가 api 실행
+      playlistAddMusicReqeust(requestBody, cookies.accessToken).then(
+        (responseBody) => playlistAddMusicResponse(responseBody)
+      );
+    }
   };
   const playlistAddMusicResponse = (responseBody: ResponseDto | null) => {
     if (!ResponseUtil(responseBody)) {

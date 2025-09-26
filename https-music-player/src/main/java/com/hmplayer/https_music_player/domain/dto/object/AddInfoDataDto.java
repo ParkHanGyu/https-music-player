@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class AddInfoDataDto {
 
-    private MusicInfoDataDto musicInfoData;
+    private MusicInfoDataDto basicInfo;
     private int infoDuration;
 
 

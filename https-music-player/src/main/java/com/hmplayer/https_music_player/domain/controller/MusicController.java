@@ -23,8 +23,14 @@ public class MusicController {
 
     // 음악 추가
     @PostMapping("/add")
-    public ResponseEntity<? super MusicResponse> addPlayListToMusic(@RequestBody List<AddPlayListToMusicRequest> request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<? super MusicResponse> addPlayListToMusic(@RequestBody AddPlayListToMusicRequest request, @RequestHeader("Authorization") String token) {
         return musicservice.addPlayListToMusic(request,token);
+    }
+
+    // 음악 복사
+    @PostMapping("/copy")
+    public ResponseEntity<? super MusicResponse> addExistingMusicsToPlaylist(@RequestBody AddPlayListToMusicRequest request, @RequestHeader("Authorization") String token) {
+        return musicservice.addExistingMusicsToPlaylist(request,token);
     }
 
 

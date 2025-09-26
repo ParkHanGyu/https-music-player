@@ -58,4 +58,6 @@ public interface PlaylistMusicRepository extends JpaRepository<PlaylistMusic, Lo
 
     @Query("SELECT MAX(pm.orderValue) FROM PlaylistMusic pm WHERE pm.playlist.id = :playlistId")
     Optional<Integer> findMaxOrderValueByPlaylistId(@Param("playlistId") Long playlistId);
+
+    List<PlaylistMusic> findByPlaylist_PlaylistId(Long playlistId);
 }
