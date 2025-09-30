@@ -26,6 +26,7 @@ import defaultImageFile from "../../assets/album.png";
 import Music from "../../types/interface/music.interface";
 import { info } from "console";
 import TestInfoData from "../../types/interface/music-info-data-test.interface";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 const defaultImage = defaultImageFile;
 
@@ -182,7 +183,7 @@ const MusicInfo = () => {
       return;
     }
 
-    const addData: TestInfoData = {
+    const addData: AddMusicInfoData = {
       basicInfo: infoData,
       infoDuration: infoDuration,
     };
@@ -328,15 +329,14 @@ const MusicInfo = () => {
       )}
 
       {/* =======================================재생목록 팝업 */}
-      {/* {playlistPopupOpen && (
+      {playlistPopupOpen && (
         <PlaylistLibrary
-          // testData={testData}
-          infoData={infoData}
-          infoDuration={infoDuration}
+          mode={"add"}
+          infoData={testData}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )} */}
+      )}
     </>
   );
 };

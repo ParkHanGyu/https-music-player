@@ -45,7 +45,7 @@ public class MusicServiceImpl implements MusicService {
 
 
 
-    // 음악 복사(2개 이상)
+    // 음악 복사
     @Override
     public ResponseEntity<? super MusicResponse> addExistingMusicsToPlaylist(AddPlayListToMusicRequest request, String token) {
         System.out.println("addExistingMusicsToPlaylist 실행");
@@ -53,40 +53,65 @@ public class MusicServiceImpl implements MusicService {
         int requestSize = request.getAddInfoDataDto().size();
         log.info("데이터 size requestSize = {}", requestSize);
 
+        // 1. DB에서 기존 플레이리스트 음악 가져오기
+        List<PlaylistMusic> existingPlaylistMusic = playlistMusicRepository.findByPlaylist_PlaylistId(request.getPlaylistId());
+        Set<String> existingUrls = existingPlaylistMusic.stream()
+                .map(pm -> pm.getMusic().getUrl())
+                .collect(Collectors.toSet());
 
-        // 밑에는 기존 하나의 음악을 다룰때 작성한 로직이고 size가 2이상이면 여러개의 음악을 추가해야 함.
-        // 해당 로직 추가해야 함.
-        if (requestSize > 1) {
-
-            // DB에서 기존 플레이리스트 음악 가져오기
-            List<PlaylistMusic> existingPlaylistMusic = playlistMusicRepository.findByPlaylist_PlaylistId(request.getPlaylistId());
-            Set<String> existingUrls = existingPlaylistMusic.stream()
-                    .map(pm -> pm.getMusic().getUrl())
-                    .collect(Collectors.toSet());
-
-            log.info("기존 URL existingUrls = {}", existingUrls);
+        log.info("기존 URL existingUrls = {}", existingUrls);
 
 
-            // url 기준으로 중복 제거
-            Set<String> urlSet = new HashSet<>();
-            List<AddInfoDataDto> filteredList = new ArrayList<>();
+        // 2. url 기준으로 중복 제거
+        Set<String> urlSet = new HashSet<>();
+        List<AddInfoDataDto> filteredList = new ArrayList<>();
 
-            for (AddInfoDataDto music : request.getAddInfoDataDto()) {
-                String url = music.getBasicInfo().getUrl();
+        for (AddInfoDataDto music : request.getAddInfoDataDto()) {
+            String url = music.getBasicInfo().getUrl();
 
-                // 요청 리스트 내 중복 + DB 중복 제거
-                if (!urlSet.contains(url) && !existingUrls.contains(url)) {
-                    urlSet.add(url);          // 요청 안에서 중복 제거
-                    filteredList.add(music);  // 실제 추가할 리스트에 담기
-                }
+            // 요청 리스트 내 중복 + DB 중복 제거
+            if (!urlSet.contains(url) && !existingUrls.contains(url)) {
+                urlSet.add(url);          // 요청 안에서 중복 제거
+                filteredList.add(music);  // 실제 추가할 리스트에 담기
             }
-
-
-            log.info("반복문으로 중복 데이터 제거 후 추가할 노래 데이터 filteredList = {}", filteredList);
-
-            return null;
         }
-        return null;
+
+
+
+        // 3. 추가하려는 재생목록의 마지막 OrderValue 값 가져옴 -> 없으면 0으로 set
+        Long requestPlaylistId = request.getPlaylistId();
+        int currentMaxOrder = playlistMusicRepository
+                .findMaxOrderValueByPlaylistId(requestPlaylistId)
+                .orElse(0);
+
+
+        // 4. 추가하려는 playlist 데이터
+        Optional<Playlist> databasePlaylist = playListRepository.findByPlaylistId(requestPlaylistId);
+        Playlist addPlaylistData = databasePlaylist.orElseThrow(() ->
+                new PlaylistNotFoundException(requestPlaylistId)
+        );
+
+
+        // 5. 음악 추가
+        for (AddInfoDataDto addFilterMusicItem : filteredList) {
+            currentMaxOrder += 10;
+            // 추가하려는 Music 데이터
+            String requestMusicUrl = addFilterMusicItem.getBasicInfo().getUrl();
+            Optional<Music> optionalMusic = musicRepository.findByUrl(requestMusicUrl);
+            Music finalMusicData = optionalMusic.get();
+
+
+            PlaylistMusic newPlaylistMusicEntry = new PlaylistMusic(addPlaylistData, finalMusicData, currentMaxOrder);
+            // 슛
+            PlaylistMusic savedEntry = playlistMusicRepository.save(newPlaylistMusicEntry);
+            log.info("PlaylistMusic 테이블에 데이터 추가 완료. ID: {}, Playlist ID: {}, Music ID: {}, Order: {}",
+                    savedEntry.getId(), // 자동 생성된 PlaylistMusic 레코드의 ID
+                    addPlaylistData.getPlaylistId(),
+                    finalMusicData.getMusicId(),
+                    currentMaxOrder);
+        }
+
+        return MusicResponse.success();
     }
 
 
