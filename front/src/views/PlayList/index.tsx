@@ -22,6 +22,7 @@ import updatePlaylistOrderRequestDto from "../../apis/request/update-playlist-or
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import GetMusicResponseDto from "../../apis/response/Music/get-music.dto";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 const PlayList = () => {
   const [cookies] = useCookies();
@@ -176,10 +177,33 @@ const PlayList = () => {
     setIsOpen(true); // 외부 클릭 시 닫히는 기능 추가
   };
 
+  const [targetInfoData, setTargetInfoData] = useState<AddMusicInfoData[]>([
+    {
+      basicInfo: {
+        url: "",
+        author: "",
+        imageUrl: "",
+        title: "",
+      },
+      infoDuration: 0,
+    },
+  ]);
+
   // 음악 복사
   const onHandleMusicCopy = (index: number) => {
+    const targetMusicInfo: AddMusicInfoData[] = [
+      {
+        basicInfo: musics[index].basicInfo,
+        infoDuration: musics[index].duration,
+      },
+    ];
+
+    setTargetInfoData(targetMusicInfo);
+    // 더보기 창 닫기
     setOpenDropdownIndex(null);
+    // 음악 추가 창 열기
     setPlaylistPopupOpen(!playlistPopupOpen);
+
     const itemMusicUrl = musics[index].basicInfo.url;
 
     if (itemMusicUrl) {
@@ -565,14 +589,14 @@ const PlayList = () => {
             </div>
           )}
 
-          {/* {playlistPopupOpen && (
+          {playlistPopupOpen && (
             <PlaylistLibrary
-              infoData={infoData}
-              infoDuration={infoDuration}
+              infoData={targetInfoData}
+              mode={"copy"}
               playlistPopupOpen={playlistPopupOpen}
               setPlaylistPopupOpen={setPlaylistPopupOpen}
             />
-          )} */}
+          )}
         </div>
       </div>
     </>

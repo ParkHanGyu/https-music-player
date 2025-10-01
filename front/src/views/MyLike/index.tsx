@@ -16,6 +16,7 @@ import { useVideoStore } from "../../store/useVideo.store";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 const MyLike = () => {
   //      Zustand state : 로그인 유저 정보 상태      //
@@ -40,15 +41,17 @@ const MyLike = () => {
   //    Zustand state : playBar.tsx 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
 
-  const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
-    url: "",
-    author: "",
-    imageUrl: "",
-    title: "",
-  });
-
-  //      state:  url 시간 상태        //
-  const [infoDuration, setInfoDuration] = useState<number>(0);
+  const [targetInfoData, setTargetInfoData] = useState<AddMusicInfoData[]>([
+    {
+      basicInfo: {
+        url: "",
+        author: "",
+        imageUrl: "",
+        title: "",
+      },
+      infoDuration: 0,
+    },
+  ]);
 
   //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
   const togglePlaylistPopup = (music: Music) => {
@@ -57,15 +60,14 @@ const MyLike = () => {
       navigator(SIGN_IN_PATH());
       return;
     }
-    const targetMusicInfo: NoembedMusicInfoData = {
-      url: music.basicInfo.url,
-      author: music.basicInfo.author,
-      imageUrl: music.basicInfo.imageUrl,
-      title: music.basicInfo.title,
-    };
+    const targetMusicInfo: AddMusicInfoData[] = [
+      {
+        basicInfo: music.basicInfo,
+        infoDuration: music.duration,
+      },
+    ];
 
     setTargetInfoData(targetMusicInfo);
-    setInfoDuration(music.duration);
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
@@ -274,14 +276,14 @@ const MyLike = () => {
         </div>
       </div>
       {/* =======================================재생목록 add 팝업 */}
-      {/* {playlistPopupOpen && (
+      {playlistPopupOpen && (
         <PlaylistLibrary
           infoData={targetInfoData}
-          infoDuration={infoDuration}
+          mode={"copy"}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )} */}
+      )}
     </>
   );
 };

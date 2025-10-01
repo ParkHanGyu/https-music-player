@@ -23,6 +23,7 @@ import PlaylistLibrary from "../../layouts/PlaylistLibrary";
 import Music from "../../types/interface/music.interface";
 import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
+import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
@@ -130,12 +131,17 @@ const LikeRank = () => {
   //      state:  재생목록 팝업 상태 상태        //
   const [playlistPopupOpen, setPlaylistPopupOpen] = useState(false);
 
-  const [targetInfoData, setTargetInfoData] = useState<NoembedMusicInfoData>({
-    url: "",
-    author: "",
-    imageUrl: "",
-    title: "",
-  });
+  const [targetInfoData, setTargetInfoData] = useState<AddMusicInfoData[]>([
+    {
+      basicInfo: {
+        url: "",
+        author: "",
+        imageUrl: "",
+        title: "",
+      },
+      infoDuration: 0,
+    },
+  ]);
 
   //      event handler:  재생목록 추가 버튼 클릭 이벤트 함수       //
   const togglePlaylistPopup = (music: LikeRankMusic) => {
@@ -144,15 +150,14 @@ const LikeRank = () => {
       navigator(SIGN_IN_PATH());
       return;
     }
-    const targetMusicInfo: NoembedMusicInfoData = {
-      url: music.musicInfo.basicInfo.url,
-      author: music.musicInfo.basicInfo.author,
-      imageUrl: music.musicInfo.basicInfo.imageUrl,
-      title: music.musicInfo.basicInfo.title,
-    };
+    const targetMusicInfo: AddMusicInfoData[] = [
+      {
+        basicInfo: music.musicInfo.basicInfo,
+        infoDuration: music.musicInfo.duration,
+      },
+    ];
 
     setTargetInfoData(targetMusicInfo);
-    setInfoDuration(music.musicInfo.duration);
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
 
@@ -326,14 +331,14 @@ const LikeRank = () => {
         </div>
       </div>
       {/* =======================================재생목록 팝업 */}
-      {/* {playlistPopupOpen && (
+      {playlistPopupOpen && (
         <PlaylistLibrary
+          mode={"copy"}
           infoData={targetInfoData}
-          infoDuration={infoDuration}
           playlistPopupOpen={playlistPopupOpen}
           setPlaylistPopupOpen={setPlaylistPopupOpen}
         />
-      )} */}
+      )}
     </>
   );
 };
