@@ -39,6 +39,8 @@ const PlayBar = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
+    nowPlayIndex,
+    setNowPlayIndex,
   } = usePlaylistStore();
 
   const { playlistId } = useParams();
@@ -396,6 +398,9 @@ const PlayBar = () => {
         prevMusicLike = updatedNowRandomPlaylist[0].like;
         setNowRandomPlaylist(updatedNowRandomPlaylist);
       }
+
+      setNowPlayIndex(nowIndex + 1);
+      console.log("랜덤재생 nowIndex : " + nowIndex);
     }
 
     if (!isRandom) {
@@ -403,15 +408,23 @@ const PlayBar = () => {
         music.basicInfo.url.includes(playBarUrl)
       );
       // playlist의 총 노래개수와 현재 노래의 index값+1이 같다면 = playlist의 마지막 노래라면
+
+      console.log("nowPlayingPlaylist.length: ", nowPlayingPlaylist.length);
+      console.log("nowIndex + 1: ", nowIndex + 1);
+
       if (nowPlayingPlaylist.length === nowIndex + 1) {
         prevMusicUrl = nowPlayingPlaylist[0].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[0].like;
         console.log("마지막 노래라면 재생시킬 노래: ", prevMusicUrl);
+        setNowPlayIndex(0);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex + 1].like;
         console.log("마지막 노래가 아니라면 재생시킬 노래: ", prevMusicUrl);
+        setNowPlayIndex(nowIndex + 1);
       }
+
+      console.log("일반재생 nowIndex : " + nowIndex);
     }
 
     if (prevMusicUrl) {
@@ -461,7 +474,7 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log("isPlaying 상태 : ", JSON.stringify(isPlaying, null, 2));
+    console.log("nowPlayIndex상태 : ", JSON.stringify(nowPlayIndex, null, 2));
   };
 
   const handleMusicLikeClick = () => {

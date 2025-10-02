@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import { useVideoStore } from "../../store/useVideo.store";
@@ -23,6 +23,8 @@ const NowPlay = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
+    nowPlayIndex,
+    setNowPlayIndex,
   } = usePlaylistStore();
 
   //      Zustand state : playBar url, info, 로딩 상태      //
@@ -156,7 +158,8 @@ const NowPlay = () => {
 
   const testBtn = () => {
     console.log(
-      "nowPlayingPlaylist : " + JSON.stringify(nowPlayingPlaylist, null, 2)
+      " : " +
+        JSON.stringify(nowPlayingPlaylist[nowPlayIndex].basicInfo.url, null, 2)
     );
   };
 
@@ -290,36 +293,15 @@ const NowPlay = () => {
                   </>
                 )}
               </div>
-
-              {/* <div className={styles["now-music-action-btn"]}>
-                {deleteModeState || addModeState ? (
-                  <div
-                    className={styles["now-music-mode-cancel-btn"]}
-                    onClick={handleModeCancel}
-                  >
-                    cancel
-                  </div>
-                ) : (
-                  <>
-                    <div
-                      className={styles["now-music-add-btn"]}
-                      onClick={handleAddMode}
-                    ></div>
-                    <div
-                      className={styles["now-music-delete-btn"]}
-                      onClick={handleDeleteMode}
-                    ></div>
-                  </>
-                )}
-              </div> */}
             </div>
 
             <div className={styles["now-music-item-mid"]}>
-              {nowPlayingPlaylist.map((nowPlayingPlaylist, index) => (
+              {nowPlayingPlaylist.map((nowPlayingPlaylistItem, index) => (
                 <div
                   className={
                     playBarUrl &&
-                    nowPlayingPlaylist.basicInfo.url.includes(playBarUrl)
+                    nowPlayingPlaylistItem.basicInfo.url.includes(playBarUrl) &&
+                    index === nowPlayIndex
                       ? `${styles["now-music-item"]} ${styles["music-target"]}`
                       : styles["now-music-item"]
                   }
@@ -333,9 +315,11 @@ const NowPlay = () => {
                       <input
                         type="checkbox"
                         checked={checkedMusicIds.includes(
-                          nowPlayingPlaylist.musicId
+                          nowPlayingPlaylistItem.musicId
                         )}
-                        onChange={() => handleCheck(nowPlayingPlaylist.musicId)}
+                        onChange={() =>
+                          handleCheck(nowPlayingPlaylistItem.musicId)
+                        }
                       />
                     </div>
                   )}
@@ -344,7 +328,7 @@ const NowPlay = () => {
                     className={styles["now-music-image"]}
                     onClick={() => onClickMusic(index)}
                     style={{
-                      backgroundImage: `url(${nowPlayingPlaylist.basicInfo.imageUrl})`,
+                      backgroundImage: `url(${nowPlayingPlaylistItem.basicInfo.imageUrl})`,
                     }}
                   ></div>
                   <div
@@ -352,10 +336,10 @@ const NowPlay = () => {
                     onClick={() => onClickMusic(index)}
                   >
                     <div className={styles["now-muisc-info-title"]}>
-                      {nowPlayingPlaylist.basicInfo.title}
+                      {nowPlayingPlaylistItem.basicInfo.title}
                     </div>
                     <div className={styles["now-muisc-info-author"]}>
-                      {nowPlayingPlaylist.basicInfo.author}
+                      {nowPlayingPlaylistItem.basicInfo.author}
                     </div>
                   </div>
 
