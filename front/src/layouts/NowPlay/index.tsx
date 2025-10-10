@@ -87,6 +87,8 @@ const NowPlay = () => {
       : shufflePlaylist;
     // setNowRandomPlaylistID(playlistId);
     setNowRandomPlaylist(updatedNowRandomPlaylist);
+
+    setNowPlayIndex(index);
   };
 
   // ========================================== 재생목록 순서 드래그
@@ -157,10 +159,7 @@ const NowPlay = () => {
   };
 
   const testBtn = () => {
-    console.log(
-      " : " +
-        JSON.stringify(nowPlayingPlaylist[nowPlayIndex].basicInfo.url, null, 2)
-    );
+    console.log("nowPlayIndex : " + nowPlayIndex);
   };
 
   // delete 기능

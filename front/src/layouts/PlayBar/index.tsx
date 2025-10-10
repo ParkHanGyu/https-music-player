@@ -307,14 +307,15 @@ const PlayBar = () => {
         // nowIndex - 1 값이 있다면 이전노래의 index로
         prevMusicUrl = nowRandomPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[nowIndex - 1].like;
+        setNowPlayIndex(nowIndex - 1);
       } else if (!nowRandomPlaylist[nowIndex - 1]) {
         // nowIndex - 1 값이 없다면 마지막으로
-
         const randomPlaylistLength = nowRandomPlaylist.length;
 
         prevMusicUrl =
           nowRandomPlaylist[randomPlaylistLength - 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[randomPlaylistLength - 1].like;
+        setNowPlayIndex(randomPlaylistLength - 1);
       }
     }
 
@@ -329,9 +330,11 @@ const PlayBar = () => {
         const prevIndex = nowPlayingPlaylist.length - 1;
         prevMusicUrl = nowPlayingPlaylist[prevIndex].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[prevIndex].like;
+        setNowPlayIndex(prevIndex);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex - 1].like;
+        setNowPlayIndex(nowIndex - 1);
       }
     }
 
