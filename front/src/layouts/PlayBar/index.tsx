@@ -297,6 +297,7 @@ const PlayBar = () => {
     let prevMusicUrl;
     let prevMusicLike: boolean;
 
+    // 랜덤
     if (isRandom) {
       // nowRandomPlaylist에서 현재 음악 index
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
@@ -319,6 +320,7 @@ const PlayBar = () => {
       }
     }
 
+    // 일반
     if (!isRandom) {
       // nowPlayingPlaylist에서 현재 음악 index값
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
@@ -362,6 +364,7 @@ const PlayBar = () => {
     let prevMusicUrl; // urlMatch를 조건문 밖에서 선언
     let prevMusicLike: boolean;
 
+    // 랜덤
     if (isRandom) {
       console.log("onNextMusic() -> isRandom true if문 실행");
       console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
@@ -372,40 +375,33 @@ const PlayBar = () => {
 
       console.log("현재 노래의 index값 nowIndex : ", nowIndex);
 
-      // 2월9일 추가중 .
-      // .filter()로 삭제할 필요가 없으러 같음. 다음날 이걸로 로직 바꿔보기
-      if (nowRandomPlaylist[nowIndex + 1]) {
-        // nowIndex+1 값이 있다면 다음노래의 index로
+      console.log(
+        "nowRandomPlaylist[nowIndex + 1]  : ",
+        JSON.stringify(nowRandomPlaylist[nowIndex + 1], null, 2)
+      );
+
+      // 근데 마지막 노래라면
+      if (!nowRandomPlaylist[nowIndex + 1]) {
+        const filteredPlaylist = nowPlayingPlaylist.filter(
+          (_, index) => index !== nowIndex
+        );
+        const resetRandomPlaylist = shuffle(filteredPlaylist);
+
+        prevMusicUrl = resetRandomPlaylist[0].basicInfo.url;
+        prevMusicLike = resetRandomPlaylist[0].like;
+
+        setNowRandomPlaylist(resetRandomPlaylist);
+      } else {
+        // 그게 아니고 노래가 더 있다면
         prevMusicUrl = nowRandomPlaylist[nowIndex + 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[nowIndex + 1].like;
-      } else if (!nowRandomPlaylist[nowIndex + 1]) {
-        // nowIndex+1 값이 없다면 처음으로
-
-        const resetRandomPlaylist = shuffle(nowPlayingPlaylist);
-        // 옮길 배열
-        const targetItem = resetRandomPlaylist.find(
-          (item) => item.basicInfo.url === playBarUrl
-        );
-
-        // 이외 배열
-        const filteredList = resetRandomPlaylist.filter(
-          (item) => item.basicInfo.url !== playBarUrl
-        );
-
-        // 최종 결과 (targetItem을 맨 앞에 추가)
-        const updatedNowRandomPlaylist = targetItem
-          ? [...filteredList, targetItem]
-          : nowRandomPlaylist;
-
-        prevMusicUrl = updatedNowRandomPlaylist[0].basicInfo.url;
-        prevMusicLike = updatedNowRandomPlaylist[0].like;
-        setNowRandomPlaylist(updatedNowRandomPlaylist);
       }
 
       setNowPlayIndex(nowIndex + 1);
       console.log("랜덤재생 nowIndex : " + nowIndex);
     }
 
+    // 일반
     if (!isRandom) {
       const nowIndex = nowPlayingPlaylist.findIndex((music) =>
         music.basicInfo.url.includes(playBarUrl)
@@ -478,6 +474,10 @@ const PlayBar = () => {
 
   const testBtn = () => {
     console.log("nowPlayIndex상태 : ", JSON.stringify(nowPlayIndex, null, 2));
+    // console.log(
+    //   "nowRandomPlaylist 상태 : ",
+    //   JSON.stringify(nowRandomPlaylist, null, 2)
+    // );
   };
 
   const handleMusicLikeClick = () => {

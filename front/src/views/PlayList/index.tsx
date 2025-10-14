@@ -434,9 +434,11 @@ const PlayList = () => {
       like: selectedMusic[0].like,
     };
 
+    const shuffleMusic = shuffle(selectedMusic);
+
     setPlayBarInfo(item1info);
     setNowPlayingPlaylist(selectedMusic);
-    setNowRandomPlaylist(selectedMusic);
+    setNowRandomPlaylist(shuffleMusic);
     setNowRandomPlaylistID("");
     setNowPlayingPlaylistID("");
     setTimeout(() => {

@@ -19,7 +19,6 @@ const useMediaInfo = (defaultImage: string) => {
     fetch(fullUrl)
       .then((res) => res.json())
       .then((data) => {
-        console.log("noembed data 값 : ", JSON.stringify(data, null, 2));
         const { url, author_name, thumbnail_url, title, error } = data;
 
         if (error) {
