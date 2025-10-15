@@ -382,15 +382,23 @@ const PlayBar = () => {
 
       // 근데 마지막 노래라면
       if (!nowRandomPlaylist[nowIndex + 1]) {
-        const filteredPlaylist = nowPlayingPlaylist.filter(
-          (_, index) => index !== nowIndex
-        );
-        const resetRandomPlaylist = shuffle(filteredPlaylist);
+        // const filteredPlaylist = nowPlayingPlaylist.filter(
+        //   (_, index) => index !== nowIndex
+        // );
 
-        prevMusicUrl = resetRandomPlaylist[0].basicInfo.url;
-        prevMusicLike = resetRandomPlaylist[0].like;
+        const resetRandomPlaylist = shuffle(nowPlayingPlaylist);
 
-        setNowRandomPlaylist(resetRandomPlaylist);
+        const targetItem = nowRandomPlaylist[nowIndex];
+
+        const newList = [
+          ...resetRandomPlaylist.filter((_, index) => index !== nowIndex),
+          targetItem,
+        ];
+
+        prevMusicUrl = newList[0].basicInfo.url;
+        prevMusicLike = newList[0].like;
+
+        setNowRandomPlaylist(newList);
       } else {
         // 그게 아니고 노래가 더 있다면
         prevMusicUrl = nowRandomPlaylist[nowIndex + 1].basicInfo.url;
@@ -473,11 +481,11 @@ const PlayBar = () => {
   }, [playBarUrl]);
 
   const testBtn = () => {
-    console.log("nowPlayIndex상태 : ", JSON.stringify(nowPlayIndex, null, 2));
-    // console.log(
-    //   "nowRandomPlaylist 상태 : ",
-    //   JSON.stringify(nowRandomPlaylist, null, 2)
-    // );
+    // console.log("nowPlayIndex상태 : ", JSON.stringify(nowPlayIndex, null, 2));
+    console.log(
+      "nowRandomPlaylist 상태 : ",
+      JSON.stringify(nowRandomPlaylist, null, 2)
+    );
   };
 
   const handleMusicLikeClick = () => {

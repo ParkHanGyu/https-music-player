@@ -434,11 +434,16 @@ const PlayList = () => {
       like: selectedMusic[0].like,
     };
 
+    const targetItem = selectedMusic[0];
     const shuffleMusic = shuffle(selectedMusic);
+    const newList = [
+      targetItem,
+      ...shuffleMusic.filter(m => m.basicInfo.url !== targetItem.basicInfo.url),
+    ];
 
     setPlayBarInfo(item1info);
     setNowPlayingPlaylist(selectedMusic);
-    setNowRandomPlaylist(shuffleMusic);
+    setNowRandomPlaylist(newList);
     setNowRandomPlaylistID("");
     setNowPlayingPlaylistID("");
     setTimeout(() => {
