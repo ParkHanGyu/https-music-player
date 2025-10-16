@@ -52,8 +52,6 @@ const PlayList = () => {
     setMusics,
     nowPlayViewState,
     setNowPlayViewState,
-    nowPlayIndex,
-    setNowPlayIndex,
   } = usePlaylistStore();
 
   //    Zustand state : playBar.tsx 재생 상태    //
@@ -393,7 +391,7 @@ const PlayList = () => {
 
   //      event handler:  전체 재생 버튼 클릭 함수       //
   const handlePlaySelected = () => {
-    setNowPlayIndex(0);
+    // setNowPlayIndex(0);
 
     let targetMusic = musics;
 
@@ -438,7 +436,9 @@ const PlayList = () => {
     const shuffleMusic = shuffle(selectedMusic);
     const newList = [
       targetItem,
-      ...shuffleMusic.filter(m => m.basicInfo.url !== targetItem.basicInfo.url),
+      ...shuffleMusic.filter(
+        (m) => m.basicInfo.url !== targetItem.basicInfo.url
+      ),
     ];
 
     setPlayBarInfo(item1info);

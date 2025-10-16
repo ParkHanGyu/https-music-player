@@ -3,8 +3,8 @@ import Menu from "../Menu";
 import MusicInfo from "../MusicInfo";
 import PlayBar from "../PlayBar";
 import styles from "./style.module.css";
-import NowPlay from "../NowPlay";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
+import NowPlayList from "../NowPlayList";
 
 const Container = () => {
   //    Zustand state : playBar.tsx 관련 상태    //
@@ -15,7 +15,7 @@ const Container = () => {
         <Menu />
         <Outlet />
 
-        {nowPlayViewState ? <NowPlay /> : <MusicInfo />}
+        {nowPlayViewState ? <NowPlayList /> : <MusicInfo />}
       </div>
       <PlayBar />
     </>

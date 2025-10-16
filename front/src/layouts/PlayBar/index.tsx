@@ -17,7 +17,8 @@ import musicLikeRequestDto from "../../apis/request/music-like-request.dto";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import ResponseDto from "../../apis/response/response.dto";
 import { ResponseUtil } from "../../utils";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { NOW_PLAY_PATH } from "../../constant";
 
 const PlayBar = () => {
   const [cookies] = useCookies();
@@ -26,8 +27,8 @@ const PlayBar = () => {
     setPlayBarUrl,
     playBarInfo,
     setPlayBarInfo,
-    playlistLoading,
-    setPlaylistLoading,
+    // playBarDuration,
+    // setPlayBarDuration,
   } = useVideoStore();
   const {
     nowPlayingPlaylist,
@@ -39,8 +40,6 @@ const PlayBar = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
-    nowPlayIndex,
-    setNowPlayIndex,
   } = usePlaylistStore();
 
   const { playlistId } = useParams();
@@ -52,6 +51,8 @@ const PlayBar = () => {
 
   //      hook (커스텀) : musicInfo.tsx에서 set한 음악 정보     //
   const { infoData, setMusicInfo } = useMediaInfo("");
+
+  const navigator = useNavigate();
 
   //      event handler: 재생, 일시정지 이벤트 처리 함수       //
   const handlePlayPause = () => {
@@ -127,6 +128,10 @@ const PlayBar = () => {
     playerRef,
     isPlaying
   );
+
+  useEffect(() => {
+    // console.log("played : " + played);
+  }, [played]);
 
   // ======================================= 영상 진행도 수동 조절
   // 사용자에 의한 진행도 수동 이동
@@ -297,28 +302,48 @@ const PlayBar = () => {
     let prevMusicUrl;
     let prevMusicLike: boolean;
 
-    // 랜덤
     if (isRandom) {
-      // nowRandomPlaylist에서 현재 음악 index
+      // nowRandomPlaylist에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.basicInfo.url.includes(playBarUrl)
       );
+      // 근데 첫번째 노래라면
+      if (!nowRandomPlaylist[nowIndex - 1]) {
+        const lastIndex = nowRandomPlaylist.length - 1;
 
-      if (nowRandomPlaylist[nowIndex - 1]) {
-        // nowIndex - 1 값이 있다면 이전노래의 index로
+        prevMusicUrl = nowRandomPlaylist[lastIndex].basicInfo.url;
+        prevMusicLike = nowRandomPlaylist[lastIndex].like;
+      } else {
+        // 그게 아니고 노래가 더 있다면
         prevMusicUrl = nowRandomPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowRandomPlaylist[nowIndex - 1].like;
-        setNowPlayIndex(nowIndex - 1);
-      } else if (!nowRandomPlaylist[nowIndex - 1]) {
-        // nowIndex - 1 값이 없다면 마지막으로
-        const randomPlaylistLength = nowRandomPlaylist.length;
-
-        prevMusicUrl =
-          nowRandomPlaylist[randomPlaylistLength - 1].basicInfo.url;
-        prevMusicLike = nowRandomPlaylist[randomPlaylistLength - 1].like;
-        setNowPlayIndex(randomPlaylistLength - 1);
       }
+
+      console.log("랜덤재생 nowIndex : " + nowIndex);
     }
+
+    // // 랜덤
+    // if (isRandom) {
+    //   // nowRandomPlaylist에서 현재 음악 index
+    //   const nowIndex = nowRandomPlaylist.findIndex((music) =>
+    //     music.basicInfo.url.includes(playBarUrl)
+    //   );
+
+    //   if (nowRandomPlaylist[nowIndex - 1]) {
+    //     // nowIndex - 1 값이 있다면 이전노래의 index로
+    //     prevMusicUrl = nowRandomPlaylist[nowIndex - 1].basicInfo.url;
+    //     prevMusicLike = nowRandomPlaylist[nowIndex - 1].like;
+    //     setNowPlayIndex(nowIndex - 1);
+    //   } else if (!nowRandomPlaylist[nowIndex - 1]) {
+    //     // nowIndex - 1 값이 없다면 마지막으로
+    //     const randomPlaylistLength = nowRandomPlaylist.length;
+
+    //     prevMusicUrl =
+    //       nowRandomPlaylist[randomPlaylistLength - 1].basicInfo.url;
+    //     prevMusicLike = nowRandomPlaylist[randomPlaylistLength - 1].like;
+    //     setNowPlayIndex(randomPlaylistLength - 1);
+    //   }
+    // }
 
     // 일반
     if (!isRandom) {
@@ -332,11 +357,9 @@ const PlayBar = () => {
         const prevIndex = nowPlayingPlaylist.length - 1;
         prevMusicUrl = nowPlayingPlaylist[prevIndex].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[prevIndex].like;
-        setNowPlayIndex(prevIndex);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex - 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex - 1].like;
-        setNowPlayIndex(nowIndex - 1);
       }
     }
 
@@ -366,30 +389,23 @@ const PlayBar = () => {
 
     // 랜덤
     if (isRandom) {
-      console.log("onNextMusic() -> isRandom true if문 실행");
-      console.log("nowRandomPlaylist.length : ", nowRandomPlaylist.length);
       // nowRandomPlaylist에서 현재 음악 index값
       const nowIndex = nowRandomPlaylist.findIndex((music) =>
         music.basicInfo.url.includes(playBarUrl)
       );
-
-      console.log("현재 노래의 index값 nowIndex : ", nowIndex);
-
-      console.log(
-        "nowRandomPlaylist[nowIndex + 1]  : ",
-        JSON.stringify(nowRandomPlaylist[nowIndex + 1], null, 2)
-      );
-
       // 근데 마지막 노래라면
       if (!nowRandomPlaylist[nowIndex + 1]) {
         // const filteredPlaylist = nowPlayingPlaylist.filter(
         //   (_, index) => index !== nowIndex
         // );
 
+        // 기존 플레이리스트를 섞어서 새로운 배열에 복사(초기화)
         const resetRandomPlaylist = shuffle(nowPlayingPlaylist);
 
+        // 기존 배열에 지금 재생중인 노래 정보 저장
         const targetItem = nowRandomPlaylist[nowIndex];
 
+        // 초기화한 배열에 현재 듣는 노래를 삭제하고 맨 마지막 순서에 배치
         const newList = [
           ...resetRandomPlaylist.filter((_, index) => index !== nowIndex),
           targetItem,
@@ -405,7 +421,7 @@ const PlayBar = () => {
         prevMusicLike = nowRandomPlaylist[nowIndex + 1].like;
       }
 
-      setNowPlayIndex(nowIndex + 1);
+      // setNowPlayIndex(nowIndex + 1);
       console.log("랜덤재생 nowIndex : " + nowIndex);
     }
 
@@ -423,12 +439,12 @@ const PlayBar = () => {
         prevMusicUrl = nowPlayingPlaylist[0].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[0].like;
         console.log("마지막 노래라면 재생시킬 노래: ", prevMusicUrl);
-        setNowPlayIndex(0);
+        // setNowPlayIndex(0);
       } else {
         prevMusicUrl = nowPlayingPlaylist[nowIndex + 1].basicInfo.url;
         prevMusicLike = nowPlayingPlaylist[nowIndex + 1].like;
         console.log("마지막 노래가 아니라면 재생시킬 노래: ", prevMusicUrl);
-        setNowPlayIndex(nowIndex + 1);
+        // setNowPlayIndex(nowIndex + 1);
       }
 
       console.log("일반재생 nowIndex : " + nowIndex);
@@ -451,9 +467,11 @@ const PlayBar = () => {
 
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = () => {
-    if (playBarInfo && playBarInfo.musicInfo.url) {
-      window.open(playBarInfo.musicInfo.url, "_blank");
-    }
+    // if (playBarInfo && playBarInfo.musicInfo.url) {
+    //   window.open(playBarInfo.musicInfo.url, "_blank");
+    // }
+
+    navigator(NOW_PLAY_PATH());
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -643,6 +661,7 @@ const PlayBar = () => {
           <div className={styles["main-play-box"]}>
             <div className={styles["main-play-top"]}>
               <div className={styles["main-play-top-left"]}>
+                {/* 반복재생 버튼 */}
                 <div
                   className={`${styles["main-play-loop-btn"]} ${
                     isLoop ? styles["loop-active"] : undefined
@@ -652,10 +671,12 @@ const PlayBar = () => {
               </div>
 
               <div className={styles["main-play-top-mid"]}>
+                {/* 이전노래 */}
                 <div
                   className={styles["main-play-prev-btn"]}
                   onClick={onPrevMusic}
                 ></div>
+                {/* 재생, 일시정지 버튼 */}
                 <div
                   className={
                     isPlaying
@@ -664,6 +685,7 @@ const PlayBar = () => {
                   }
                   onClick={handlePlayPause}
                 ></div>
+                {/* 다음노래 */}
                 <div
                   className={styles["main-play-next-btn"]}
                   onClick={onNextMusic}
@@ -671,6 +693,7 @@ const PlayBar = () => {
               </div>
 
               <div className={styles["main-play-top-right"]}>
+                {/* 랜덤재생 버튼 */}
                 <div
                   className={`${styles["main-play-random-btn"]} ${
                     isRandom ? styles["random-active"] : undefined

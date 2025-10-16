@@ -18,6 +18,10 @@ interface VideoState {
   // 로딩상태
   playlistLoading: boolean;
   setPlaylistLoading: (isLoading: boolean) => void;
+
+  // // ====================
+  // playBarDuration: number | 0;
+  // setPlayBarDuration: (playBarDuration: number | 0) => void;
 }
 
 // Zustand 스토어 생성  - 초기값
@@ -39,4 +43,9 @@ export const useVideoStore = create<VideoState>((set) => ({
     set({ playlistLoading: playlistLoading }),
 
   // 음악 리스트 상태 및 함수들
+
+  // // ==========================
+  // playBarDuration: 0,
+  // setPlayBarDuration: (playBarDuration) =>
+  //   set({ playBarDuration: playBarDuration }),
 }));

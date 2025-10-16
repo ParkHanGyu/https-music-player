@@ -11,7 +11,7 @@ import PlaylistLibrary from "../PlaylistLibrary";
 import TestInfoData from "../../types/interface/music-info-data-test.interface";
 import AddMusicInfoData from "../../types/interface/music-info-data-test.interface";
 
-const NowPlay = () => {
+const NowPlayList = () => {
   //      Zustand state : playBar 재생목록 상태      //
   const {
     nowPlayingPlaylist,
@@ -23,8 +23,6 @@ const NowPlay = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
-    nowPlayIndex,
-    setNowPlayIndex,
   } = usePlaylistStore();
 
   //      Zustand state : playBar url, info, 로딩 상태      //
@@ -88,7 +86,7 @@ const NowPlay = () => {
     // setNowRandomPlaylistID(playlistId);
     setNowRandomPlaylist(updatedNowRandomPlaylist);
 
-    setNowPlayIndex(index);
+    // setNowPlayIndex(index);
   };
 
   // ========================================== 재생목록 순서 드래그
@@ -159,7 +157,7 @@ const NowPlay = () => {
   };
 
   const testBtn = () => {
-    console.log("nowPlayIndex : " + nowPlayIndex);
+    // console.log("nowPlayIndex : " + nowPlayIndex);
   };
 
   // delete 기능
@@ -300,7 +298,7 @@ const NowPlay = () => {
                   className={
                     playBarUrl &&
                     nowPlayingPlaylistItem.basicInfo.url.includes(playBarUrl) &&
-                    index === nowPlayIndex
+                    nowPlayingPlaylistItem.basicInfo.url === playBarUrl
                       ? `${styles["now-music-item"]} ${styles["music-target"]}`
                       : styles["now-music-item"]
                   }
@@ -373,4 +371,4 @@ const NowPlay = () => {
   );
 };
 
-export default NowPlay;
+export default NowPlayList;
