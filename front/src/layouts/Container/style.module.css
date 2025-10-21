@@ -3,3 +3,19 @@
   width: 100%;
   height: 89%;
 }
+
+.content {
+  color: #fff;
+  width: 67%;
+  /*  */
+}
+
+.playbar-container {
+  position: absolute;
+  /* 화면 하단에 고정 */
+  bottom: 27%;
+  left: 70vh;
+  /* width: 100%; */
+  z-index: 10; /* Outlet보다 위 */
+  pointer-events: auto; /* 클릭 가능 */
+}

@@ -1,121 +1,6 @@
-.main-wrap {
-  font-size: 14px;
-  color: #fff;
-  width: 100%;
-}
-
-.main-left {
-  background-color: rgb(25, 25, 25);
-  width: 18em;
-}
-
-.main-search-box {
-  display: flex;
-  width: 50em;
-  border: 1px solid rgb(51, 51, 51);
-  padding: 7px;
-  border-radius: 6px;
-  justify-content: center;
-  align-items: center;
-}
-
-.main-search-input {
-  background-color: rgb(11, 11, 11);
-  border: none;
-  outline: none;
-  color: #fff;
-  width: 95%;
-  margin-right: 5px;
-}
-.main-search-btn {
-  background-image: url("../../assets/magnifier1.png");
-  width: 20px;
-  height: 20px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-.main-center {
-  margin: auto;
-}
-
-/* 음악 데이터 부분 */
-.main-music-data-column-box,
-.main-music-data-info-box {
-  display: flex;
-  padding: 10px;
-}
-
-.music-info-number,
-.music-column-number {
-  width: 5px;
-  text-align: center;
-}
-
-.music-info-image-title-box,
-.music-column-title {
-  width: 500px;
-}
-
-.music-info-artist,
-.music-column-artist {
-  width: 300px;
-}
-
-.music-info-album,
-.music-column-album {
-  width: 300px;
-}
-
-.music-info-duration,
-.music-column-duration {
-  width: 300px;
-}
-
-.main-music-data-column-box > div,
-.main-music-data-info-box > div {
-  margin: 0px 20px;
-}
-
-.main-music-data-info-box {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.main-music-data-info-box:hover {
-  background-color: rgb(33, 33, 33);
-}
-
-.music-info-image {
-  background-image: url("../../assets/music-info-image.PNG");
-  width: 30px;
-  height: 30px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin-right: 10px;
-}
-
-.music-info-image-title-box {
-  display: flex;
-  align-items: center;
-}
-.main-music-data-column-box {
-  color: #dedede;
-  height: 2em;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgb(39, 39, 39);
-}
-
 /* ====================웹 하단=================== */
 
 .main-wrap-bottom {
-  /* display: flex; */
   border-top: 1px solid rgb(28, 28, 28);
   background-color: rgb(0, 0, 0);
 
@@ -410,7 +295,6 @@
 }
 
 .main-wrap-play-img-box {
-  /* outline: 1px solid orange; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -435,4 +319,75 @@
 .main-wrap-play-artist {
   font-size: 13px;
   color: #7c7c7c;
+}
+
+/* ======================== */
+
+.main-wrap-bottom-playBar-mode {
+  background-color: rgba(0, 0, 0, 0);
+  border-top: none;
+
+  display: grid;
+  grid-template-columns: 1fr 0fr; /* 두 칸 */
+  gap: 10px; /* 칸 사이 간격 */
+}
+
+.main-wrap-bottom-info-playBar-mode {
+  display: block;
+  margin-left: 10px;
+}
+
+.main-wrap-play-img-box-playBar-mode {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+}
+
+.main-wrap-play-img-playBar-mode {
+  border-radius: 5px;
+}
+
+.main-wrap-bottom-left-playBar-mode {
+  flex-direction: column-reverse;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.main-wrap-play-artist-playBar-mode {
+  text-align: center;
+}
+.main-wrap-play-title-playBar-mode {
+  text-align: center;
+  color: #333333;
+}
+
+.main-wrap-bottom-right-playBar-mode {
+  grid-column: 1;
+  grid-row: 1;
+  margin-top: auto;
+  margin-right: 13px;
+}
+
+.main-wrap-bottom-center-playBar-mode {
+  grid-row: 2;
+}
+
+.music-sound-icon-playBar-mode {
+  width: 30px;
+  height: 30px;
+}
+
+.main-wrap-bottom-like-playBar-mode {
+  width: 24px;
+  height: 24px;
+  margin: 0px;
+}
+
+.music-current-time-playBar-mode {
+  color: #333333;
+}
+
+.main-wrap-play-info-box-playBar-mode {
+  gap: 0px;
+  margin-top: 17px;
 }

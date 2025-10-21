@@ -5,19 +5,27 @@ import PlayBar from "../PlayBar";
 import styles from "./style.module.css";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
 import NowPlayList from "../NowPlayList";
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 
 const Container = () => {
   //    Zustand state : playBar.tsx 관련 상태    //
   const { nowPlayViewState } = usePlaylistStore();
+  const { playBarInOutlet, setPlayBarInOutlet } = usePlayerOptionStore();
+
   return (
     <>
       <div className={styles["warp"]}>
         <Menu />
-        <Outlet />
+        <div className={styles["content"]}>
+          <Outlet />
+        </div>
 
         {nowPlayViewState ? <NowPlayList /> : <MusicInfo />}
       </div>
-      <PlayBar />
+
+      <div className={playBarInOutlet ? styles["playbar-container"] : ""}>
+        <PlayBar />
+      </div>
     </>
   );
 };

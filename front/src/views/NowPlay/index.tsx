@@ -1,3 +1,4 @@
+import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { useVideoStore } from "../../store/useVideo.store";
 import styles from "./style.module.css";
 

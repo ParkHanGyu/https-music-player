@@ -44,7 +44,8 @@ const Menu = () => {
   const { setPlayBarUrl, resetPlayBarInfo } = useVideoStore();
 
   //    Zustand state : PlayBar 재생 상태    //
-  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  const { isPlaying, setIsPlaying, playBarInOutlet, setPlayBarInOutlet } =
+    usePlayerOptionStore();
 
   // url ID
   const { playlistId } = useParams();
@@ -66,6 +67,7 @@ const Menu = () => {
   };
 
   const homeClickHandler = () => {
+    playBarInOutletstate();
     navigator(MAIN_PATH());
   };
 
@@ -73,6 +75,12 @@ const Menu = () => {
     navigator(TEST_PATH());
     // console.log("playlistLibrary", JSON.stringify(playlistLibrary));
     // console.log("playlistId : ", playlistId);
+  };
+
+  const playBarInOutletstate = () => {
+    if (playBarInOutlet) {
+      setPlayBarInOutlet(false);
+    }
   };
 
   //========================================== playlist 드롭박스
@@ -97,12 +105,18 @@ const Menu = () => {
   const showPlaylistDetail = (playlistId: bigint) => {
     if (!loginUserInfo) {
       alert("로그인 만료");
+      if (playBarInOutlet) {
+        setPlayBarInOutlet(false);
+      }
       navigator(MAIN_PATH());
       return;
     }
 
     setIsOpen(false);
     if (currentPath !== `/play-list/${playlistId}`) {
+      if (playBarInOutlet) {
+        setPlayBarInOutlet(false);
+      }
       navigator(PLAY_LIST_PATH(playlistId));
     }
     return;
@@ -120,6 +134,7 @@ const Menu = () => {
 
   //      event handler: Top 클릭 이벤트 처리 함수       //
   const onTopClickHandler = () => {
+    playBarInOutletstate();
     navigator(LIKE_PATH());
   };
 
@@ -129,11 +144,13 @@ const Menu = () => {
       alert("로그인을 해주세요!");
       return;
     }
+    playBarInOutletstate();
     navigator(MY_LIKE_PATH());
   };
 
   //      event handler: 로그인 클릭 이벤트 처리 함수       //
   const onSignInClickHandler = () => {
+    playBarInOutletstate();
     navigator(SIGN_IN_PATH());
   };
 

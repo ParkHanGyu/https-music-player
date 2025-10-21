@@ -45,7 +45,8 @@ const PlayBar = () => {
   const { playlistId } = useParams();
 
   //    Zustand state : PlayBar 재생 상태    //
-  const { isPlaying, setIsPlaying } = usePlayerOptionStore();
+  const { isPlaying, setIsPlaying, playBarInOutlet, setPlayBarInOutlet } =
+    usePlayerOptionStore();
   //      Zustand state : 로그인 유저 정보 상태      //
   const { loginUserInfo } = useLoginUserStore();
 
@@ -472,6 +473,8 @@ const PlayBar = () => {
     // }
 
     navigator(NOW_PLAY_PATH());
+
+    setPlayBarInOutlet(!playBarInOutlet);
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -614,41 +617,101 @@ const PlayBar = () => {
       {/* 로딩 화면 */}
       {isLoading && <LoadingScreen loadingType="playBar" />}
       <div
-        className={`${styles["main-wrap-bottom"]} ${
-          isLoading ? styles["blur"] : undefined
-        }`}
+        className={`${styles["main-wrap-bottom"]} 
+    ${isLoading ? styles["blur"] : ""} 
+    ${playBarInOutlet ? styles["main-wrap-bottom-playBar-mode"] : ""}`}
       >
-        <div className={styles["main-wrap-bottom-left"]}>
+        <div
+          className={`${styles["main-wrap-bottom-left"]}
+        
+        ${playBarInOutlet && styles["main-wrap-bottom-left-playBar-mode"]}
+        
+        
+        `}
+        >
           {playBarInfo && (
             <>
               {/* 검색한 노래라면 like 버튼 x */}
               <div
-                className={`${styles["main-wrap-bottom-like"]} ${
-                  playBarInfo.like ? styles["like-true"] : undefined
-                }`}
+                className={`${styles["main-wrap-bottom-like"]} 
+                ${playBarInfo.like ? styles["like-true"] : undefined}
+                ${
+                  playBarInOutlet &&
+                  styles["main-wrap-bottom-like-playBar-mode"]
+                }
+                
+                `}
                 onClick={handleMusicLikeClick}
               ></div>
 
               <div
-                className={styles["main-wrap-bottom-info"]}
+                className={`${styles["main-wrap-bottom-info"]}
+                ${
+                  playBarInOutlet &&
+                  styles["main-wrap-bottom-info-playBar-mode"]
+                }
+                `}
                 onClick={handleMusicInfoClick}
                 style={{
                   cursor: playBarInfo ? "pointer" : "",
                 }}
               >
-                <div className={styles["main-wrap-play-img-box"]}>
+                <div
+                  className={`${styles["main-wrap-play-img-box"]}
+                  ${
+                    playBarInOutlet &&
+                    styles["main-wrap-play-img-box-playBar-mode"]
+                  }
+                  `}
+                >
                   <div
-                    className={styles["main-wrap-play-img"]}
+                    className={`${styles["main-wrap-play-img"]}
+                    
+                    ${
+                      playBarInOutlet &&
+                      styles["main-wrap-play-img-playBar-mode"]
+                    }
+                    `}
                     style={{
                       backgroundImage: `url(${playBarInfo?.musicInfo.imageUrl})`,
                     }}
                   ></div>
                 </div>
-                <div className={styles["main-wrap-play-info-box"]}>
-                  <div className={styles["main-wrap-play-title"]}>
+                <div
+                  className={`${styles["main-wrap-play-info-box"]}
+                ${
+                  playBarInOutlet &&
+                  styles["main-wrap-play-info-box-playBar-mode"]
+                }
+                
+                
+                
+                `}
+                >
+                  <div
+                    className={`${styles["main-wrap-play-title"]}
+                  
+                  ${
+                    playBarInOutlet &&
+                    styles["main-wrap-play-title-playBar-mode"]
+                  }
+                  
+                  
+                  
+                  `}
+                  >
                     {playBarInfo?.musicInfo.title}
                   </div>
-                  <div className={styles["main-wrap-play-artist"]}>
+                  <div
+                    className={`${styles["main-wrap-play-artist"]}
+                  
+                  ${
+                    playBarInOutlet &&
+                    styles["main-wrap-play-artist-playBar-mode"]
+                  }
+                  
+                  `}
+                  >
                     {playBarInfo?.musicInfo.author}
                   </div>
                 </div>
@@ -657,7 +720,13 @@ const PlayBar = () => {
           )}
         </div>
 
-        <div className={styles["main-wrap-bottom-center"]}>
+        <div
+          className={`${styles["main-wrap-bottom-center"]}
+        
+        ${playBarInOutlet && styles["main-wrap-bottom-center-playBar-mode"]}
+        
+        `}
+        >
           <div className={styles["main-play-box"]}>
             <div className={styles["main-play-top"]}>
               <div className={styles["main-play-top-left"]}>
@@ -704,7 +773,14 @@ const PlayBar = () => {
             </div>
 
             <div className={styles["main-play-bottom"]}>
-              <div className={styles["music-current-time"]}>
+              <div
+                className={`${styles["music-current-time"]}
+              
+              ${playBarInOutlet && styles["music-current-time-playBar-mode"]}
+              
+              
+              `}
+              >
                 {formatTime(currentTime)}
               </div>
               <div
@@ -717,18 +793,6 @@ const PlayBar = () => {
                     width: `${played * 100}%`,
                   }}
                 ></div>
-
-                <ReactPlayer
-                  ref={playerRef}
-                  url={playBarUrl}
-                  playing={isPlaying}
-                  onReady={handleReady}
-                  onDuration={handleDuration}
-                  onEnded={handleEnded}
-                  onError={handleError}
-                  volume={volume}
-                  style={{ display: "none" }}
-                />
               </div>
               <div className={styles["music-full-time"]}>
                 {formatTime(playBarDuration)}
@@ -737,7 +801,15 @@ const PlayBar = () => {
           </div>
         </div>
 
-        <div className={styles["main-wrap-bottom-right"]}>
+        <div
+          className={`${styles["main-wrap-bottom-right"]}
+        
+                ${
+                  playBarInOutlet &&
+                  styles["main-wrap-bottom-right-playBar-mode"]
+                }
+        `}
+        >
           {isOpen && (
             <div className={styles["music-sound-bar-container"]} ref={ref}>
               <div
@@ -755,12 +827,29 @@ const PlayBar = () => {
           )}
 
           <div
-            className={styles["music-sound-icon"]}
+            className={`${styles["music-sound-icon"]}
+            
+            ${playBarInOutlet && styles["music-sound-icon-playBar-mode"]}
+            
+            
+            `}
             // onClick={onSoundDropDown}
             onClick={testBtn}
           ></div>
         </div>
       </div>
+
+      <ReactPlayer
+        ref={playerRef}
+        url={playBarUrl}
+        playing={isPlaying}
+        onReady={handleReady}
+        onDuration={handleDuration}
+        onEnded={handleEnded}
+        onError={handleError}
+        volume={volume}
+        style={{ display: "none" }}
+      />
     </>
   );
 };
