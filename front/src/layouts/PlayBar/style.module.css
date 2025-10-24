@@ -340,7 +340,7 @@
 .main-wrap-play-img-box-playBar-mode {
   width: 400px;
   height: 400px;
-  margin: auto;
+  margin-left: 50px;
 }
 
 .main-wrap-play-img-playBar-mode {
@@ -358,7 +358,10 @@
 }
 .main-wrap-play-title-playBar-mode {
   text-align: center;
-  color: #333333;
+  color: #f0f0f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .main-wrap-bottom-right-playBar-mode {
@@ -384,7 +387,7 @@
 }
 
 .music-current-time-playBar-mode {
-  color: #333333;
+  color: rgb(173, 173, 173);
 }
 
 .main-wrap-play-info-box-playBar-mode {

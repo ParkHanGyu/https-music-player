@@ -651,7 +651,7 @@ const PlayBar = () => {
                   styles["main-wrap-bottom-info-playBar-mode"]
                 }
                 `}
-                onClick={handleMusicInfoClick}
+                onClick={!playBarInOutlet ? handleMusicInfoClick : undefined}
                 style={{
                   cursor: playBarInfo ? "pointer" : "",
                 }}

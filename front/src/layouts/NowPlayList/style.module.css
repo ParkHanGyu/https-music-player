@@ -1,7 +1,7 @@
 .main-wrap {
   /* border: 1px solid wheat; */
-  background-color: rgb(0, 0, 0);
-  width: 19.6%;
+  background-color: rgb(25, 25, 25);
+  width: 20%;
   height: 100%;
   font-size: 14px;
   color: #dddddd;
@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #292929;
 }
 
 .now-music-delete-btn {
@@ -65,10 +66,10 @@
 }
 /* 스크롤바 배경 */
 .now-music-item-mid::-webkit-scrollbar-track {
-  background-color: rgb(11, 11, 11);
+  background-color: rgb(33, 33, 33);
 }
 .now-music-item-mid::-webkit-scrollbar-thumb {
-  background-color: rgb(33, 33, 33);
+  background-color: rgb(46, 46, 46);
 }
 .now-music-item-mid::-webkit-scrollbar-button {
   display: none;
@@ -93,7 +94,7 @@
 }
 
 .now-music-item {
-  width: 99%;
+  width: 100%;
   height: 8%;
   display: flex;
   align-items: center;
@@ -117,7 +118,7 @@
 
 .now-music-info-box {
   margin: 10px 2px;
-  width: 70%;
+  width: 74%;
 }
 
 .now-muisc-info-author {
@@ -155,8 +156,8 @@
 }
 
 .music-target {
+  width: 100%;
   background-color: rgb(33, 33, 33);
-  border: 1px solid rgb(73, 73, 73);
   color: #e35647;
 }
 

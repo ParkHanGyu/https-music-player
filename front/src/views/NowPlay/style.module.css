@@ -9,12 +9,11 @@
 
 .background-music-image {
   width: 100%;
-  height: 100%;
+  height: 61%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(50px); /* 흐림 정도 */
-  /* transform: scale(1.1); */
+  filter: blur(90px);
 }
 
 .background-music-image::before {
