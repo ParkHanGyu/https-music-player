@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/https-music-player/static/css/main.76711ca6.css",
-    "main.js": "/https-music-player/static/js/main.edf00a18.js",
+    "main.css": "/https-music-player/static/css/main.6d1eb962.css",
+    "main.js": "/https-music-player/static/js/main.7ef202da.js",
     "reactPlayerYouTube.js": "/https-music-player/static/js/reactPlayerYouTube.aab22b27.chunk.js",
     "reactPlayerSoundCloud.js": "/https-music-player/static/js/reactPlayerSoundCloud.7cb165be.chunk.js",
     "reactPlayerVimeo.js": "/https-music-player/static/js/reactPlayerVimeo.72265b89.chunk.js",
@@ -33,8 +33,8 @@
     "static/media/play-button-arrowhead.png": "/https-music-player/static/media/play-button-arrowhead.56aa6f66ed531ccc175c.png",
     "static/media/music-info-image.PNG": "/https-music-player/static/media/music-info-image.6210b59af0ee4d3eea05.PNG",
     "index.html": "/https-music-player/index.html",
-    "main.76711ca6.css.map": "/https-music-player/static/css/main.76711ca6.css.map",
-    "main.edf00a18.js.map": "/https-music-player/static/js/main.edf00a18.js.map",
+    "main.6d1eb962.css.map": "/https-music-player/static/css/main.6d1eb962.css.map",
+    "main.7ef202da.js.map": "/https-music-player/static/js/main.7ef202da.js.map",
     "reactPlayerYouTube.aab22b27.chunk.js.map": "/https-music-player/static/js/reactPlayerYouTube.aab22b27.chunk.js.map",
     "reactPlayerSoundCloud.7cb165be.chunk.js.map": "/https-music-player/static/js/reactPlayerSoundCloud.7cb165be.chunk.js.map",
     "reactPlayerVimeo.72265b89.chunk.js.map": "/https-music-player/static/js/reactPlayerVimeo.72265b89.chunk.js.map",
@@ -52,7 +52,7 @@
     "453.80efc53e.chunk.js.map": "/https-music-player/static/js/453.80efc53e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.76711ca6.css",
-    "static/js/main.edf00a18.js"
+    "static/css/main.6d1eb962.css",
+    "static/js/main.7ef202da.js"
   ]
 }
