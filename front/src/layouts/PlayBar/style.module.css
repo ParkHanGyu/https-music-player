@@ -3,24 +3,21 @@
 .main-wrap-bottom {
   border-top: 1px solid rgb(28, 28, 28);
   background-color: rgb(0, 0, 0);
-
-  /* + */
   display: grid;
-  grid-template-columns: 1fr auto 1fr; /* 좌우 여백과 가운데 정렬 */
+  /* 좌우 여백 + 가운데 정렬 */
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
 }
 
 .blur {
-  filter: blur(2px); /* 흐림 효과 */
+  /* 흐림 효과 */
+  filter: blur(2px);
 }
 
 .loading-overlay {
   position: absolute;
-  /* top: 0; */
-  /* left: 0; */
   width: 100%;
   height: 95px;
-  /* background-color: rgba(255, 255, 255, 0.8); */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,22 +43,18 @@
 }
 
 .main-wrap-bottom-center {
-  /* + */
   justify-self: center;
 }
 
 .main-wrap-bottom-right {
   position: relative;
   margin-right: 20px;
-  /* + */
   justify-self: end;
 }
 
 .main-wrap-bottom-left {
   display: flex;
   margin-left: 20px;
-
-  /* + */
   justify-self: start;
 }
 
@@ -243,7 +236,6 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -268,7 +260,6 @@
 .music-sound-bar {
   width: 7px;
   height: 6.5em;
-
   background: #3f3f3f;
   position: relative;
   cursor: pointer;
@@ -321,7 +312,7 @@
   color: #7c7c7c;
 }
 
-/* ======================== */
+/* ======================== playBar-mode */
 
 .main-wrap-bottom-playBar-mode {
   background-color: rgba(0, 0, 0, 0);
@@ -334,7 +325,7 @@
 
 .main-wrap-bottom-info-playBar-mode {
   display: block;
-  margin-left: 10px;
+  margin-left: 14px;
 }
 
 .main-wrap-play-img-box-playBar-mode {
@@ -351,6 +342,7 @@
   flex-direction: column-reverse;
   grid-column: 1;
   grid-row: 1;
+  margin-left: 15px;
 }
 
 .main-wrap-play-artist-playBar-mode {

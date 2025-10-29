@@ -468,12 +468,13 @@ const PlayBar = () => {
 
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = () => {
-    // if (playBarInfo && playBarInfo.musicInfo.url) {
-    //   window.open(playBarInfo.musicInfo.url, "_blank");
-    // }
-
     navigator(NOW_PLAY_PATH());
+    setPlayBarInOutlet(!playBarInOutlet);
+  };
 
+  //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
+  const handlePlayBarModeMusicInfoClick = () => {
+    navigator(-1);
     setPlayBarInOutlet(!playBarInOutlet);
   };
 
@@ -623,10 +624,7 @@ const PlayBar = () => {
       >
         <div
           className={`${styles["main-wrap-bottom-left"]}
-        
         ${playBarInOutlet && styles["main-wrap-bottom-left-playBar-mode"]}
-        
-        
         `}
         >
           {playBarInfo && (
@@ -651,7 +649,11 @@ const PlayBar = () => {
                   styles["main-wrap-bottom-info-playBar-mode"]
                 }
                 `}
-                onClick={!playBarInOutlet ? handleMusicInfoClick : undefined}
+                onClick={
+                  !playBarInOutlet
+                    ? handleMusicInfoClick
+                    : handlePlayBarModeMusicInfoClick
+                }
                 style={{
                   cursor: playBarInfo ? "pointer" : "",
                 }}
@@ -684,8 +686,6 @@ const PlayBar = () => {
                   styles["main-wrap-play-info-box-playBar-mode"]
                 }
                 
-                
-                
                 `}
                 >
                   <div
@@ -695,7 +695,6 @@ const PlayBar = () => {
                     playBarInOutlet &&
                     styles["main-wrap-play-title-playBar-mode"]
                   }
-                  
                   
                   
                   `}
