@@ -87,6 +87,7 @@
 
 /* 더보기 버튼 */
 .music-info-action-btn {
+  z-index: 1000;
   position: relative; /* ul 기준 */
 
   display: none;
@@ -162,9 +163,9 @@
 
 /* =========================더보기  */
 .music-info-action-btn ul {
-  position: absolute; /* 기준인 div로 위치 설정 */
+  position: fixed; /* 기준인 div로 위치 설정 */
   border: none;
-  right: 0;
+  left: 10;
   min-width: 133px;
   min-height: 80px;
   background-color: rgb(25, 25, 25);

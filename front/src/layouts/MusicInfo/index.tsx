@@ -187,7 +187,7 @@ const MusicInfo = () => {
       basicInfo: infoData,
       infoDuration: infoDuration,
     };
-    setTestData((prev) => [...prev, addData]);
+    setTestData([addData]);
 
     setPlaylistPopupOpen(!playlistPopupOpen);
   };
@@ -226,8 +226,10 @@ const MusicInfo = () => {
 
   const testBtn = () => {
     // console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
-    console.log("infoDuration 값 : ", JSON.stringify(infoDuration, null, 2));
-    console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
+    // console.log("infoDuration 값 : ", JSON.stringify(infoDuration, null, 2));
+    // console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
+    console.log("searchUrl 값 : ", JSON.stringify(searchUrl, null, 2));
+    console.log("testData 값 : ", JSON.stringify(testData, null, 2));
   };
 
   const nowPlayHandleClick = () => {
