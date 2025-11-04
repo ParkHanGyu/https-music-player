@@ -30,7 +30,7 @@ const LikeRank = () => {
   const { musics } = usePlaylistStore();
 
   //    Zustand state : 메인 화면 검색 url 상태    //
-  const { setSearchUrl } = useVideoStore();
+  const { setMainSearchUrl } = useVideoStore();
 
   //      Zustand state : 로그인 유저 정보 상태      //
   const { loginUserInfo } = useLoginUserStore();
@@ -71,7 +71,7 @@ const LikeRank = () => {
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = (musicUrl: string) => {
     // window.open(musicUrl, "_blank");
-    setSearchUrl(musicUrl);
+    setMainSearchUrl(musicUrl);
   };
 
   //      event handler: 재생 버튼 클릭 이벤트 처리 함수       //

@@ -9,7 +9,7 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 
 const Container = () => {
   //    Zustand state : playBar.tsx 관련 상태    //
-  const { nowPlayViewState } = usePlaylistStore();
+  const { playBarModeState } = usePlaylistStore();
   const { playBarInOutlet, setPlayBarInOutlet } = usePlayerOptionStore();
 
   return (
@@ -20,7 +20,7 @@ const Container = () => {
           <Outlet />
         </div>
 
-        {nowPlayViewState ? <NowPlayList /> : <MusicInfo />}
+        {playBarModeState ? <NowPlayList /> : <MusicInfo />}
       </div>
 
       <div className={playBarInOutlet ? styles["playbar-container"] : ""}>

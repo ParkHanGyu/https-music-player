@@ -5,9 +5,9 @@ import { usePlaylistStore } from "../../store/usePlaylist.store";
 
 const Main = () => {
   //    Zustand state : 메인 화면 검색 url 상태    //
-  const { setSearchUrl } = useVideoStore();
+  const { setMainSearchUrl } = useVideoStore();
   //    Zustand state : playBar.tsx 관련 상태    //
-  const { nowPlayViewState, setNowPlayViewState } = usePlaylistStore();
+  const { playBarModeState, setPlayBarModeState } = usePlaylistStore();
   //      state: 검색할 url 상태      //
   const [videoUrl, setVideoUrl] = useState<string>("");
   //      event handler: url input값 변경      //
@@ -24,9 +24,15 @@ const Main = () => {
   //      function: 검색 URL 정규화 + 변수 할당 함수    //
   const videoSearch = () => {
     let urlMatch;
+
     if (videoUrl.includes("youtu")) {
+      // 유튜브일때
       const youTubeIdMatch = videoUrl.match(
         /(?:youtu\.be\/|(?:v=|.*[?&]v=))([a-zA-Z0-9_-]{11})/
+      );
+
+      console.log(
+        "youTubeIdMatch : " + JSON.stringify(youTubeIdMatch, null, 2)
       );
       if (youTubeIdMatch) {
         urlMatch = `https://youtu.be/${youTubeIdMatch[1]}`;
@@ -36,14 +42,14 @@ const Main = () => {
     }
 
     if (urlMatch) {
-      setSearchUrl(urlMatch);
+      setMainSearchUrl(urlMatch);
     } else {
       alert("형식에 맞는 URL을 입력해주세요.");
       return;
     }
 
-    if (nowPlayViewState) {
-      setNowPlayViewState(false);
+    if (playBarModeState) {
+      setPlayBarModeState(false);
     }
   };
 

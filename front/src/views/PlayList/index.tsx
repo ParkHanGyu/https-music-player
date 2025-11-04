@@ -35,8 +35,8 @@ const PlayList = () => {
     setPlayBarInfo,
     playlistLoading,
     setPlaylistLoading,
-    searchUrl,
-    setSearchUrl,
+    mainSearchUrl,
+    setMainSearchUrl,
   } = useVideoStore();
 
   //      Zustand state : playBar 재생목록 상태      //
@@ -50,8 +50,8 @@ const PlayList = () => {
     setNowRandomPlaylistID,
     musics,
     setMusics,
-    nowPlayViewState,
-    setNowPlayViewState,
+    playBarModeState,
+    setPlayBarModeState,
   } = usePlaylistStore();
 
   //    Zustand state : playBar.tsx 재생 상태    //
@@ -105,66 +105,11 @@ const PlayList = () => {
   //      event handler : 음악 정보 영역 클릭 이벤트 함수       //
   const handleMusicInfoClick = (musicUrl: string) => {
     // window.open(musicUrl, "_blank");
-    if (nowPlayViewState) {
-      setNowPlayViewState(false);
+    if (playBarModeState) {
+      setPlayBarModeState(false);
     }
-    setSearchUrl(musicUrl);
+    setMainSearchUrl(musicUrl);
   };
-
-  // const onPlayMusic = (index: number) => {
-  //   console.log("이때 loginUserInfo : ", loginUserInfo);
-  //   if (!loginUserInfo) {
-  //     console.log("playlist.tsx 96");
-  //     alert("유저 정보가 없습니다. 다시 로그인 해주세요.");
-  //     navigator(MAIN_PATH());
-  //     return;
-  //   }
-
-  //   const itemMusicUrl = musics[index].basicInfo.url;
-  //   const itemMusicLike = musics[index].like;
-  //   setMusicInfo(itemMusicUrl, (newInfoData) => {
-  //     const musicWithLike: MusicInfoAndLikeData = {
-  //       musicInfo: newInfoData,
-  //       like: itemMusicLike,
-  //     };
-  //     setPlayBarInfo(musicWithLike);
-  //   });
-
-  //   // 다른 재생목록의 같은 노래일 경우 같은 노래를 틀어야 하니 빈문자열로 set
-  //   if (itemMusicUrl === playBarUrl && nowPlayingPlaylistID !== playlistId) {
-  //     setPlayBarUrl("");
-  //   }
-
-  //   // useE!ffect를 너무 많이 사용하면 복잡하기 때문에 setTimeout으로 대체
-  //   // useE!ffect 또는 setTimeout을 사용하지 않으면 비동기상태이기 때문에 setPlayBarUrl("");을 해줄 이유가 없음
-  //   setTimeout(() => {
-  //     setPlayBarUrl(itemMusicUrl); // 이때 playBar.tsx에 있는 useEffect 실행
-  //     setNowPlayingPlaylistID(playlistId);
-  //     setNowPlayingPlaylist(musics);
-
-  //     // 랜덤 재생목록 set할때 내가 클릭한 노래가 제일 위로 위치하게
-  //     const shufflePlaylist = shuffle(musics);
-  //     // 옮길 배열
-  //     const targetItem = shufflePlaylist.find(
-  //       (item) => item.basicInfo.url === itemMusicUrl
-  //     );
-  //     // 이외 배열
-  //     const filteredList = shufflePlaylist.filter(
-  //       (item) => item.basicInfo.url !== itemMusicUrl
-  //     );
-  //     // 최종 결과 (targetItem을 맨 앞에 추가)
-  //     const updatedNowRandomPlaylist = targetItem
-  //       ? [targetItem, ...filteredList]
-  //       : shufflePlaylist;
-
-  //     setNowRandomPlaylistID(playlistId);
-  //     setNowRandomPlaylist(updatedNowRandomPlaylist);
-
-  //     if (!searchUrl) {
-  //       setNowPlayViewState(true);
-  //     }
-  //   }, 100);
-  // };
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
     null
@@ -454,8 +399,8 @@ const PlayList = () => {
     }
     setCheckedMusicIds([]);
 
-    if (!nowPlayViewState) {
-      setNowPlayViewState(true);
+    if (!playBarModeState) {
+      setPlayBarModeState(true);
     }
   };
 

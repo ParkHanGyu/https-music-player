@@ -32,8 +32,8 @@ const defaultImage = defaultImageFile;
 
 const MusicInfo = () => {
   const {
-    searchUrl,
-    setSearchUrl,
+    mainSearchUrl,
+    setMainSearchUrl,
     playBarUrl,
     setPlayBarUrl,
     playBarInfo,
@@ -47,8 +47,8 @@ const MusicInfo = () => {
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
-    nowPlayViewState,
-    setNowPlayViewState,
+    playBarModeState,
+    setPlayBarModeState,
   } = usePlaylistStore();
 
   //    Zustand state : playBar.tsx 재생 상태    //
@@ -73,17 +73,17 @@ const MusicInfo = () => {
   useEffect(() => {
     // 메인에서 검색한 url이 youtube 또는 soundcloud이 포함되어 있는지 확인
     if (
-      searchUrl.includes("youtube") ||
-      searchUrl.includes("youtu.be") ||
-      searchUrl.includes("soundcloud")
+      mainSearchUrl.includes("youtube") ||
+      mainSearchUrl.includes("youtu.be") ||
+      mainSearchUrl.includes("soundcloud")
     ) {
       // 포함되어 있다면 MusicInfo 컴포넌트에 사용할 데이터 set
       setIsLoading(true);
-      setMusicInfo(searchUrl);
+      setMusicInfo(mainSearchUrl);
     } else {
       return;
     }
-  }, [searchUrl]);
+  }, [mainSearchUrl]);
 
   //      event handler: 링크 클릭 이벤트 처리 함수       //
   const handleOpenVideo = () => {
@@ -100,19 +100,19 @@ const MusicInfo = () => {
       return;
     }
 
-    if (!searchUrl) {
+    if (!mainSearchUrl) {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
 
-    if (playBarUrl === searchUrl) {
+    if (playBarUrl === mainSearchUrl) {
       setPlayBarUrl("");
     }
 
     let musicWithLike: MusicInfoAndLikeData;
 
     const responseBody = await targetMusicLikeStateRequest(
-      searchUrl,
+      mainSearchUrl,
       cookies.accessToken
     );
 
@@ -141,7 +141,7 @@ const MusicInfo = () => {
     setPlayBarInfo(musicWithLike);
 
     setTimeout(() => {
-      setPlayBarUrl(searchUrl);
+      setPlayBarUrl(mainSearchUrl);
     }, 100);
 
     setNowRandomPlaylist([]);
@@ -178,7 +178,7 @@ const MusicInfo = () => {
       navigator(SIGN_IN_PATH());
       return;
     }
-    if (!searchUrl) {
+    if (!mainSearchUrl) {
       alert("음악 검색 후 시도 해주셈");
       return;
     }
@@ -228,22 +228,22 @@ const MusicInfo = () => {
     // console.log("playBarInfo 값 : ", JSON.stringify(playBarInfo, null, 2));
     // console.log("infoDuration 값 : ", JSON.stringify(infoDuration, null, 2));
     // console.log("infoData 값 : ", JSON.stringify(infoData, null, 2));
-    console.log("searchUrl 값 : ", JSON.stringify(searchUrl, null, 2));
+    console.log("searchUrl 값 : ", JSON.stringify(mainSearchUrl, null, 2));
     console.log("testData 값 : ", JSON.stringify(testData, null, 2));
   };
 
   const nowPlayHandleClick = () => {
-    setNowPlayViewState(true);
+    setPlayBarModeState(true);
   };
 
   const handleError = () => {
     alert(
       "동영상 소유자가 외부 재생을 제한했습니다. 확인 후 다시 시도해주세요."
     );
-    window.open(searchUrl);
+    window.open(mainSearchUrl);
     resetInfo();
     setIsInfoError(true);
-    setSearchUrl("");
+    setMainSearchUrl("");
     setIsLoading(false);
   };
 
@@ -316,9 +316,9 @@ const MusicInfo = () => {
           ></div>
         </div>
       </div>
-      {searchUrl && (
+      {mainSearchUrl && (
         <ReactPlayer
-          url={searchUrl}
+          url={mainSearchUrl}
           playing={false}
           onDuration={handleDuration}
           style={{ display: "none" }}

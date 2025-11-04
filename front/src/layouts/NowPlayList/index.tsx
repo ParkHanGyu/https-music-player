@@ -37,10 +37,10 @@ const NowPlayList = () => {
   const { loginUserInfo } = useLoginUserStore();
   const navigator = useNavigate();
 
-  const { setNowPlayViewState } = usePlaylistStore();
+  const { setPlayBarModeState } = usePlaylistStore();
 
   const searchClickHandler = () => {
-    setNowPlayViewState(false);
+    setPlayBarModeState(false);
   };
   //      event handler : 음악 셔플 이벤트 처리 함수       //
   const shuffle = (playlist: Music[]) => {
