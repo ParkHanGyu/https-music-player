@@ -417,6 +417,7 @@ const PlayList = () => {
       <div className={styles["main-wrap"]}>
         <div className={styles["main-right"]}>
           <div className={styles["main-music-data-column-box"]}>
+            {/* 체크 or 전체 재생 */}
             <div
               className={styles["music-column-play-btn"]}
               onClick={handlePlaySelected}

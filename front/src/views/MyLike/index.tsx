@@ -7,11 +7,9 @@ import ResponseDto from "../../apis/response/response.dto";
 import myMusicLikeResponseDto from "../../apis/response/Music/get-my-music-like.dto";
 import { ResponseUtil } from "../../utils";
 import useLoginUserStore from "../../store/login-user.store";
-import MusicInfoData from "../../types/interface/music-info-data.interface";
 import { SIGN_IN_PATH } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import Music from "../../types/interface/music.interface";
-import NoembedMusicInfoData from "../../types/interface/music-info-data.interface";
 import { useVideoStore } from "../../store/useVideo.store";
 import MusicInfoAndLikeData from "../../types/interface/music-info-and-like.interface";
 import { usePlaylistStore } from "../../store/usePlaylist.store";
@@ -32,11 +30,12 @@ const MyLike = () => {
 
   //    Zustand state : playBar.tsx 관련 상태    //
   const {
-    setPlaylistLibrary,
     setNowRandomPlaylist,
     setNowPlayingPlaylist,
     setNowPlayingPlaylistID,
     setNowRandomPlaylistID,
+    playBarModeState,
+    setPlayBarModeState,
   } = usePlaylistStore();
   //    Zustand state : playBar.tsx 재생 상태    //
   const { isPlaying, setIsPlaying } = usePlayerOptionStore();
@@ -166,6 +165,10 @@ const MyLike = () => {
     if (!isPlaying) {
       setIsPlaying(true);
     }
+
+    if (!playBarModeState) {
+      setPlayBarModeState(true);
+    }
   };
 
   //      state:  체크 상태 관리 상태        //
@@ -186,6 +189,7 @@ const MyLike = () => {
       <div className={styles["main-wrap"]}>
         <div className={styles["main-container"]}>
           <div className={styles["main-music-data-column-box"]}>
+            {/* 체크 or 전체 재생 */}
             <div
               className={styles["music-column-all-play"]}
               onClick={handlePlaySelected}

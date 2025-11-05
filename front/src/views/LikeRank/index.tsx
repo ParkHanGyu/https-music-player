@@ -27,7 +27,7 @@ import AddMusicInfoData from "../../types/interface/music-info-data-test.interfa
 
 const LikeRank = () => {
   //      Zustand state : playBar 재생목록 상태      //
-  const { musics } = usePlaylistStore();
+  const { playBarModeState, setPlayBarModeState } = usePlaylistStore();
 
   //    Zustand state : 메인 화면 검색 url 상태    //
   const { setMainSearchUrl } = useVideoStore();
@@ -223,8 +223,13 @@ const LikeRank = () => {
     setTimeout(() => {
       setPlayBarUrl(selectedMusic[0].basicInfo.url);
     }, 100);
+
     if (!isPlaying) {
       setIsPlaying(true);
+    }
+
+    if (!playBarModeState) {
+      setPlayBarModeState(true);
     }
   };
 
@@ -233,6 +238,7 @@ const LikeRank = () => {
       <div className={styles["main-wrap"]}>
         <div className={styles["main-container"]}>
           <div className={styles["main-music-data-column-box"]}>
+            {/* 체크 or 전체재생 */}
             <div
               className={styles["music-column-all-play"]}
               onClick={handlePlaySelected}
