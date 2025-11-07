@@ -97,6 +97,8 @@
 .input-look {
   background-color: rgb(145, 145, 145);
   cursor: default;
+  user-select: none;
+  pointer-events: none;
 }
 
 .sign-up-auth-top-box {

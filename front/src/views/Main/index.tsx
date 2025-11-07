@@ -26,33 +26,35 @@ const Main = () => {
     let urlMatch;
 
     if (videoUrl.includes("youtu")) {
-      // 1-1 유튜브일때 ->
+      // 1-1. 유튜브일때 ->
       const youTubeIdMatch = videoUrl.match(
         /(?:youtu\.be\/|(?:v=|.*[?&]v=))([a-zA-Z0-9_-]{11})/
       );
 
-      // 1-2 id값만 추출
+      //  id값만 추출
       if (youTubeIdMatch) {
         urlMatch = `https://youtu.be/${youTubeIdMatch[1]}`;
       }
 
-      // 2-1 사운드클라우드일때 -> url 그대로 사용
+      // 1-2. 사운드클라우드일때 -> url 그대로 사용
     } else if (videoUrl.includes("soundcloud")) {
       urlMatch = videoUrl;
     }
 
-    // 3. 위에 값들을 추출했을때 값이 있다면
+    // 2. 위에 값들을 추출했을때 값이 있다면
     if (urlMatch) {
-      // 3-1.Zustand로 관리중인 state에 값 저장
+      // 2-1. Zustand로 관리중인 state에 값 저장
       setMainSearchUrl(urlMatch);
     } else {
-      // 3-2. 없다면 옳바른 url이 아니니 alert
+      // 2-2. 없다면 옳바른 url이 아니니 alert
       alert("형식에 맞는 URL을 입력해주세요.");
       return;
     }
 
-    // 4. Zustand로 관리중인 searchMusic 컴포넌트 상태 변경
-    // ture-> false
+    // 4. Zustand로 관리중인 playBarModeState값으로
+    // searchMusic컴포넌트 -> NowPlay컴포넌트로 변경
+    // ture -> false
+    // false -> false
     if (playBarModeState) {
       setPlayBarModeState(false);
     }
