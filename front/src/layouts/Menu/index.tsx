@@ -73,8 +73,6 @@ const Menu = () => {
 
   const testValue = () => {
     navigator(TEST_PATH());
-    // console.log("playlistLibrary", JSON.stringify(playlistLibrary));
-    // console.log("playlistId : ", playlistId);
   };
 
   const playBarInOutletstate = () => {
@@ -411,7 +409,6 @@ const Menu = () => {
                   className={styles["main-menu-item-li"]}
                   style={{
                     backgroundColor:
-                      // playlistId === (index + 1).toString()
                       playlistId ===
                       playlistLibrary[index].playlistId.toString()
                         ? "#333333"
