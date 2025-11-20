@@ -38,47 +38,47 @@ const Menu = () => {
     setNowPlayingPlaylistID,
     setNowRandomPlaylist,
     setNowRandomPlaylistID,
+    playlistLibrary,
+    setPlaylistLibrary,
   } = usePlaylistStore();
 
   //      Zustand state : playBar url, info, 로딩 상태      //
   const { setPlayBarUrl, resetPlayBarInfo } = useVideoStore();
 
   //    Zustand state : PlayBar 재생 상태    //
-  const { isPlaying, setIsPlaying, playBarInOutlet, setPlayBarInOutlet } =
+  const { setIsPlaying, playBarInOutlet, setPlayBarInOutlet } =
     usePlayerOptionStore();
-
-  // url ID
-  const { playlistId } = useParams();
-  // 쿠키
-  const [cookies, removeCookie, deleteCookie] = useCookies();
 
   //      Zustand state : 로그인 유저 정보 상태      //
   const { loginUserInfo, setLoginUserInfo } = useLoginUserStore();
-
-  const { playlistLibrary, setPlaylistLibrary } = usePlaylistStore();
-  const navigator = useNavigate();
+  //  React Hooks ================================================== //
+  // 재생목록 url ID
+  const { playlistId } = useParams();
   const location = useLocation();
+  const navigator = useNavigate();
+
+  // Third-party Hooks ==============================================//
+  const [cookies, removeCookie, deleteCookie] = useCookies();
+
+  // Local variable =================================================//
   const currentPath = location.pathname;
-  // const tokenExp = useTokenExpiration(cookies.accessToken);
 
-  const playListClickHandler = () => {
-    console.log("실행");
-    setIsPlaylistDrop(!isPlaylistDrop);
-  };
-
-  const homeClickHandler = () => {
-    playBarInOutletstate();
-    navigator(MAIN_PATH());
-  };
-
-  const testValue = () => {
-    navigator(TEST_PATH());
-  };
-
+  // function =======================================================//
   const playBarInOutletstate = () => {
     if (playBarInOutlet) {
       setPlayBarInOutlet(false);
     }
+  };
+
+  //      event handler: playList 클릭 함수       //
+  const playListClickHandler = () => {
+    setIsPlaylistDrop(!isPlaylistDrop);
+  };
+
+  //      event handler: home 클릭 함수       //
+  const homeClickHandler = () => {
+    playBarInOutletstate();
+    navigator(MAIN_PATH());
   };
 
   //========================================== playlist 드롭박스
@@ -99,7 +99,7 @@ const Menu = () => {
     }
   }, [currentPath]);
 
-  // ++ ====== playlist item
+  // ++ ====== playlist 드롭박스 items
   const showPlaylistDetail = (playlistId: bigint) => {
     if (!loginUserInfo) {
       alert("로그인 만료");
@@ -167,7 +167,7 @@ const Menu = () => {
     }
   };
 
-  // ===================================================== 프로필 이미지 관련
+  // ===================================================== 프로필 관련
   const onImageModifyHandler = () => {
     const fileInput = document.getElementById("file-input") as HTMLInputElement;
     fileInput?.click(); // 숨겨진 파일 입력창 클릭
@@ -344,6 +344,10 @@ const Menu = () => {
     setModifyName(targetPlaylist.title);
     setModifyPlaylistId(targetPlaylist.playlistId);
     setIsModifyPlaylistPopupOpen(true);
+  };
+
+  const testValue = () => {
+    navigator(TEST_PATH());
   };
 
   return (
