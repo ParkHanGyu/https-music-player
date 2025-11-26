@@ -31,6 +31,7 @@ import { usePlayerOptionStore } from "../../store/usePlayerOptions.store";
 import { userInfo } from "os";
 
 const Menu = () => {
+  // ============================================= 공통 ============= //
   //      Zustand state : playBar 재생목록 상태      //
   const {
     setNowPlayingPlaylist,
@@ -45,7 +46,7 @@ const Menu = () => {
   //      Zustand state : playBar url, info, 로딩 상태      //
   const { setPlayBarUrl, resetPlayBarInfo } = useVideoStore();
 
-  //    Zustand state : PlayBar 재생 상태    //
+  //    Zustand state : PlayBar 상태    //
   const { setIsPlaying, playBarInOutlet, setPlayBarInOutlet } =
     usePlayerOptionStore();
 
@@ -61,91 +62,18 @@ const Menu = () => {
   const [cookies, removeCookie, deleteCookie] = useCookies();
 
   // Local variable =================================================//
+  // url 도메인
   const currentPath = location.pathname;
 
   // function =======================================================//
+  // playBar 디테일모드
   const playBarInOutletstate = () => {
     if (playBarInOutlet) {
       setPlayBarInOutlet(false);
     }
   };
 
-  //      event handler: playList 클릭 함수       //
-  const playListClickHandler = () => {
-    setIsPlaylistDrop(!isPlaylistDrop);
-  };
-
-  //      event handler: home 클릭 함수       //
-  const homeClickHandler = () => {
-    playBarInOutletstate();
-    navigator(MAIN_PATH());
-  };
-
-  //========================================== playlist 드롭박스
-  //      state: playlist 드롭 상태        //
-  const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
-  // url이 play-list을 포함할때. 즉 사용자가 재생목록을 보고 있다면
-  useEffect(() => {
-    // url이 "play-list"를 포함하고 재생목록 드롭박스가 열려있지 않으면
-    if (currentPath.includes("play-list") && !isPlaylistDrop) {
-      // 열어주기
-      setIsPlaylistDrop(true);
-
-      // url이 "play-list"를 포함하지 않고 재생목록 드롭박스가 열려있으면
-    } else if (!currentPath.includes("play-list") && isPlaylistDrop) {
-      setIsPlaylistDrop(false);
-    } else {
-      return;
-    }
-  }, [currentPath]);
-
-  // ++ ====== playlist 드롭박스 items
-  const showPlaylistDetail = (playlistId: bigint) => {
-    if (!loginUserInfo) {
-      alert("로그인 만료");
-      if (playBarInOutlet) {
-        setPlayBarInOutlet(false);
-      }
-      navigator(MAIN_PATH());
-      return;
-    }
-
-    setIsOpen(false);
-    if (currentPath !== `/play-list/${playlistId}`) {
-      if (playBarInOutlet) {
-        setPlayBarInOutlet(false);
-      }
-      navigator(PLAY_LIST_PATH(playlistId));
-    }
-    return;
-  };
-
-  // ============================================ menu item
-  const openPlatformPage = (pageName: string) => {
-    if (pageName === "youtube") {
-      window.open(`https://www.${pageName}.com`);
-    }
-    if (pageName === "soundcloud") {
-      window.open(`https://www.${pageName}.com`);
-    }
-  };
-
-  //      event handler: Top 클릭 이벤트 처리 함수       //
-  const onTopClickHandler = () => {
-    playBarInOutletstate();
-    navigator(LIKE_PATH());
-  };
-
-  //      event handler: Like 클릭 이벤트 처리 함수       //
-  const onLikeClickHandler = () => {
-    if (!loginUserInfo) {
-      alert("로그인을 해주세요!");
-      return;
-    }
-    playBarInOutletstate();
-    navigator(MY_LIKE_PATH());
-  };
-
+  // =================================== 로그인 관련=================//
   //      event handler: 로그인 클릭 이벤트 처리 함수       //
   const onSignInClickHandler = () => {
     playBarInOutletstate();
@@ -207,21 +135,68 @@ const Menu = () => {
     }
   };
 
-  // ======================================= playlist item별 더보기 버튼 관련
+  // ======================================================== menu item
+  // playlist
+  //      state: playlist 드롭 상태        //
+  const [isPlaylistDrop, setIsPlaylistDrop] = useState(false);
+  // url이 play-list을 포함할때. 즉 사용자가 재생목록을 보고 있다면
+  // useEffect : url 변경시
+  useEffect(() => {
+    // url이 "play-list"를 포함하고 재생목록 드롭박스가 열려있지 않으면
+    if (currentPath.includes("play-list") && !isPlaylistDrop) {
+      // 열어주기
+      setIsPlaylistDrop(true);
+
+      // url이 "play-list"를 포함하지 않고 재생목록 드롭박스가 열려있으면
+    } else if (!currentPath.includes("play-list") && isPlaylistDrop) {
+      // 닫아주기
+      setIsPlaylistDrop(false);
+    } else {
+      return;
+    }
+  }, [currentPath]);
+
+  //      event handler: playList 클릭 함수       //
+  const playListClickHandler = () => {
+    setIsPlaylistDrop(!isPlaylistDrop);
+  };
+
+  // ++ playlist item
+  const showPlaylistDetail = (playlistId: bigint) => {
+    if (!loginUserInfo) {
+      alert("로그인 만료");
+      if (playBarInOutlet) {
+        setPlayBarInOutlet(false);
+      }
+      navigator(MAIN_PATH());
+      return;
+    }
+
+    setIsOpen(false);
+    if (currentPath !== `/play-list/${playlistId}`) {
+      if (playBarInOutlet) {
+        setPlayBarInOutlet(false);
+      }
+      navigator(PLAY_LIST_PATH(playlistId));
+    }
+    return;
+  };
+
+  // ++ playlist item별 더보기( : ) 버튼 관련
   //      state: playlist item action btn 드롭 상태        //
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(
-    null
-  );
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<
+    number | undefined
+  >(undefined);
 
   //      hook: 외부 클릭 커스텀 훅       //
   const { isOpen, setIsOpen, ref } = useOutsideClick<HTMLUListElement>(false);
 
-  //      event handler: >> : << 버튼 클릭시 동작 이벤트 처리 함수       //
+  //      event handler: ( : ) 버튼 클릭시 동작 이벤트 처리 함수       //
   const onMenuAction = (index: number) => {
     // 현재 선택된 인덱스가 열려있다면 닫고,
     if (openDropdownIndex === index) {
       setIsOpen(false);
-      setOpenDropdownIndex(null);
+      setOpenDropdownIndex(undefined);
       return;
     } else {
       // 아니면 열기.
@@ -231,10 +206,10 @@ const Menu = () => {
     }
   };
 
+  // useEffect =======
   useEffect(() => {
     if (!isOpen && openDropdownIndex !== null) {
-      console.log("isOpen이 바뀌어서 useEffect if문 실행");
-      setOpenDropdownIndex(null);
+      setOpenDropdownIndex(undefined);
     }
   }, [isOpen]);
 
@@ -339,12 +314,51 @@ const Menu = () => {
     setIsModifyPlaylistPopupOpen(false);
   };
 
+  // 끝 ================================= 재생목록 이름 수정
+
   //      event handler: 더보기 btn에서 수정 버튼 클릭 이벤트 처리 함수      //
   const onHandlePlaylistModify = (targetPlaylist: Playlist) => {
     setModifyName(targetPlaylist.title);
     setModifyPlaylistId(targetPlaylist.playlistId);
     setIsModifyPlaylistPopupOpen(true);
   };
+
+  // home
+  //      event handler: home 클릭 함수       //
+  const homeClickHandler = () => {
+    playBarInOutletstate();
+    navigator(MAIN_PATH());
+  };
+
+  // TOP
+  //      event handler: Top 클릭 이벤트 처리 함수       //
+  const onTopClickHandler = () => {
+    playBarInOutletstate();
+    navigator(LIKE_PATH());
+  };
+
+  // MyLike
+  //      event handler: Like 클릭 이벤트 처리 함수       //
+  const onLikeClickHandler = () => {
+    if (!loginUserInfo) {
+      alert("로그인을 해주세요!");
+      return;
+    }
+    playBarInOutletstate();
+    navigator(MY_LIKE_PATH());
+  };
+
+  // youtube or soundcloud
+  const openPlatformPage = (pageName: string) => {
+    if (pageName === "youtube") {
+      window.open(`https://www.${pageName}.com`);
+    }
+    if (pageName === "soundcloud") {
+      window.open(`https://www.${pageName}.com`);
+    }
+  };
+
+  // ===================================================== //
 
   const testValue = () => {
     navigator(TEST_PATH());
